@@ -5,25 +5,30 @@
 @import "nativewind/theme";
 
 @theme {
+
+  /* font */
+  --font-pretendard: "Pretendard";
+
+  /* primary color */
   --color-primary: #C4D96A;
   --color-primary-pressed: #A9C92D;
   --color-primary-dark: #7E9432;
   --color-primary-light: #F3F8DE;
 
-  /* text */
+  /* text color */
   --color-text-primary: #1A1A1A;
   --color-text-secondary: #444444;
   --color-text-muted: #888888;
 
-  /* border */
+  /* border color */
   --color-border: #D9D9D9;
 
-  /* background */
+  /* background color */
   --color-bg: #FFFFFF;
   --color-bg-subtle: #F5F5F5;
   --color-bg-disabled: #F4F4F4;
 
-  /* button */
+  /* button color */
   --color-btn-secondary-pressed: #3D3D3D;
   --color-btn-secondary-text: #FFFFFF;
   --color-btn-secondary-text-disabled: #888888;

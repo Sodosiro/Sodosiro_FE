@@ -1,6 +1,7 @@
+import { BingoIcon, ExploreIcon, HomeIcon, MyIcon, TripIcon } from '@/assets/navbar';
+import AnimatedTabIcon from '@/components/AnimatedTabIcon';
 import AnimatedTabLabel from '@/components/AnimatedTabLabel';
 import { Tabs } from 'expo-router';
-import { View } from 'react-native';
 
 export default function TabLayout() {
 
@@ -11,49 +12,53 @@ export default function TabLayout() {
         tabBarShowLabel: true,
         tabBarLabelPosition: 'below-icon',
         tabBarStyle: {
-          height: 60,
+          height: 88,
         },
         tabBarLabelStyle: {
           fontFamily: 'Pretendard',
           fontSize: 11,
           fontWeight: '700',
         },
+        tabBarIconStyle: {
+          marginBottom: 8,
+          marginTop: 10,
+        },
         tabBarActiveTintColor: '#1A1A1A',
-        tabBarInactiveTintColor: '#CCCCCC',
+        tabBarInactiveTintColor: '#888888',
       }}>
       <Tabs.Screen
         name="index"
         options={{
-          tabBarLabel: ({ focused }) => <AnimatedTabLabel focused={focused} title="홈"/>,
-          tabBarIcon: ({ }) => {},
+          tabBarLabel: ({ focused }) => <AnimatedTabLabel focused={focused} title="홈" />,
+          tabBarIcon: ({ focused }) => <AnimatedTabIcon focused={focused} Icon={HomeIcon}/>,
         }}
       />
       <Tabs.Screen
-        name="search"
+        name="explore"
         options={{
-          tabBarLabel: ({ focused }) => <AnimatedTabLabel focused={focused} title="탐색"/>,
-          tabBarIcon: ({ }) => {},
+          tabBarLabel: ({ focused }) => <AnimatedTabLabel focused={focused} title="탐색" />,
+          tabBarIcon: ({ focused }) => <AnimatedTabIcon focused={focused} Icon={ExploreIcon}/>,
         }}
       />
       <Tabs.Screen
-        name="plan"
+        name="trip"
         options={{
-          tabBarLabel: ({ focused }) => <AnimatedTabLabel focused={focused} title="내 여행"/>,
-          tabBarIcon: ({ }) => {},
+          tabBarLabel: ({ focused }) => <AnimatedTabLabel focused={focused} title="내 여행" />,
+          tabBarIcon: ({ focused }) => <AnimatedTabIcon focused={focused} Icon={TripIcon}/>,
         }}
       />
       <Tabs.Screen
         name="bingo"
         options={{
-          tabBarLabel: ({ focused }) => <AnimatedTabLabel focused={focused} title="빙고"/>,
-          tabBarIcon: ({ }) => {},
+          tabBarLabel: ({ focused }) => <AnimatedTabLabel focused={focused} title="빙고" />,
+          tabBarIcon: ({ focused }) => <AnimatedTabIcon focused={focused} Icon={BingoIcon}/>,
         }}
       />
       <Tabs.Screen
         name="mypage"
         options={{
-          tabBarLabel: ({ focused }) => <AnimatedTabLabel focused={focused} title="마이"/>,
-          tabBarIcon: ({ }) => {},
+          tabBarLabel: ({ focused }) => <AnimatedTabLabel focused={focused} title="내 정보" />,
+          tabBarIcon: ({ focused }) => <AnimatedTabIcon focused={focused} Icon={MyIcon}/>,
         }}
       />
     </Tabs>

@@ -1,0 +1,17 @@
+export { default as AwardIcon } from './award.svg';
+export { default as BigCheckIcon } from './big-check.svg';
+export { default as BusIcon } from './bus.svg';
+export { default as CalendarIcon } from './calendar.svg';
+export { default as CarIcon } from './car.svg';
+export { default as CheckIcon } from './check.svg';
+export { default as LeftIcon } from './chevron-left.svg';
+export { default as RightIcon } from './chevron-right.svg';
+export { default as ChipIcon } from './chip.svg';
+export { default as DownIcon } from './down.svg';
+export { default as HeartIcon } from './heart.svg';
+export { default as NotificationIcon } from './notification.svg';
+export { default as RefreshIcon } from './refresh.svg';
+export { default as RemoveIcon } from './remove.svg';
+export { default as SearchIcon } from './search.svg';
+export { default as UpIcon } from './up.svg';
+export { default as XIcon } from './x.svg';

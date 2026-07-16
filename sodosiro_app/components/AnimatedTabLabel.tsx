@@ -1,10 +1,12 @@
+import { useEffect } from "react";
+import { View } from "react-native"
 import Animated, {
   interpolateColor,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import { useEffect } from "react";
+
 
 export default function AnimatedTabLabel({
   focused,
@@ -17,7 +19,7 @@ export default function AnimatedTabLabel({
 
   useEffect(() => {
     progress.value = withTiming(focused ? 1 : 0, {
-      duration: 200,
+      duration: 0,
     });
   }, [focused]);
 
@@ -25,22 +27,19 @@ export default function AnimatedTabLabel({
     color: interpolateColor(
       progress.value,
       [0, 1],
-      ["#CCCCCC", "#1A1A1A"]
+      ["#888888", "#1A1A1A"]
     ),
   }));
 
+
   return (
-    <Animated.Text
-      style={[
-        {
-          fontFamily: "Pretendard",
-          fontSize: 11,
-          fontWeight: "700",
-        },
-        animatedStyle,
-      ]}
-    >
-      {title}
-    </Animated.Text>
+    <View>
+      <Animated.Text
+        className={`${focused ? `text-body2-tight` : `text-body3-tight`} font-pretendard`}
+        style={[animatedStyle]}
+      >
+        {title}
+      </Animated.Text>
+    </View>
   );
 }

@@ -26,7 +26,8 @@
   /* background color */
   --color-bg: #FFFFFF;
   --color-bg-subtle: #F5F5F5;
-  --color-bg-disabled: #F4F4F4;
+  --color-bg-muted: #E6E6E6;
+  
 
   /* button color */
   --color-btn-secondary-pressed: #3D3D3D;
@@ -34,7 +35,7 @@
   --color-btn-secondary-text-disabled: #888888;
   --color-btn-tertiary: #F5F5F5;
   --color-btn-tertiary-pressed: #E2E2E8;
-
+  --color-btn-disabled: #F4F4F4;
 
   /* typography */
   --text-display: 24px;

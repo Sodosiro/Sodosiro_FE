@@ -1,6 +1,6 @@
-import { BingoIcon, ExploreIcon, HomeIcon, MyIcon, TripIcon } from '@/assets/navbar';
-import AnimatedTabIcon from '@/components/AnimatedTabIcon';
-import AnimatedTabLabel from '@/components/AnimatedTabLabel';
+import { BingoIcon, ExploreIcon, HomeIcon, MyIcon, TripIcon } from '@/assets/bottombar';
+import AnimatedTabIcon from '@/components/bottombar/AnimatedTabIcon';
+import AnimatedTabLabel from '@/components/bottombar/AnimatedTabLabel';
 import { Tabs } from 'expo-router';
 
 export default function TabLayout() {

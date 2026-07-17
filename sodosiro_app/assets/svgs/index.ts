@@ -9,6 +9,7 @@ export { default as RightIcon } from './chevron-right.svg';
 export { default as ChipIcon } from './chip.svg';
 export { default as DownIcon } from './down.svg';
 export { default as HeartIcon } from './heart.svg';
+export { default as SpinnerIcon } from './spinner.svg';
 export { default as NotificationIcon } from './notification.svg';
 export { default as RefreshIcon } from './refresh.svg';
 export { default as RemoveIcon } from './remove.svg';

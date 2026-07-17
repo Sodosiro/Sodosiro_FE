@@ -16,3 +16,6 @@ export { default as RemoveIcon } from './remove.svg';
 export { default as SearchIcon } from './search.svg';
 export { default as UpIcon } from './up.svg';
 export { default as XIcon } from './x.svg';
+export { default as HeartCircle } from './heart_circle.svg';
+export { default as HeartCircleStroke } from './heart_circle_stroke.svg';
+export { default as XCircleIcon } from './x_circle.svg';

@@ -38,9 +38,9 @@ export default function CustomButton({
       ),
   }));
 
-  const primaryButtonSize = size === 'large' ? 'w-[320px] h-13' : size === 'medium' ? 'w-[235px] h-13' : 'w-[106px] h-11';
-  const secondaryButtonSize = checked ? 'w-[134px] h-11' : 'w-[106px] h-11';
-  const tertiaryButtonSize = 'w-26.5 h-11'
+  const primaryButtonSize = size === 'large' ? 'w-[320px] h-13' : size === 'medium' ? 'w-[235px] h-13' : 'self-start px-4 h-11';
+  const secondaryButtonSize = 'self-start px-4 h-11';
+  const tertiaryButtonSize = 'self-start px-4 h-11'
 
   const textSize = type === 'primary' && size !== 'small' ? 'text-title-tight' : 'text-body3-tight'
 

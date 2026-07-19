@@ -14,3 +14,5 @@ export { default as Restaurant } from "./restaurant.svg";
 export { default as RestaurantMarker } from "./restaurant_marker.svg";
 export { default as Shopping } from "./shopping.svg";
 export { default as ShoppingMarker } from "./shopping_marker.svg";
+export { default as Culture } from "./culture.svg";
+export { default as CultureMarker } from "./culture_marker.svg";

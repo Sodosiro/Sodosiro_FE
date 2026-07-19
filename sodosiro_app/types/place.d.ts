@@ -1,0 +1,1 @@
+type CategoryType = 'activity' | 'attraction' | 'cafe' | 'nature' | 'restaurant' | 'shopping' | 'culture'

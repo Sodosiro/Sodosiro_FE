@@ -8,31 +8,40 @@ type Props = {
   imageSource: ImageSourcePropType;
   title: string;
   desc: string;
-}
+};
 
 export default function PopularPlace({
   id,
   index,
   imageSource,
   title,
-  desc
+  desc,
 }: Props) {
-
   return (
     <View className={`flex-row items-center justify-between`}>
-      <CustomText className={`w-4 text-body3 text-text-muted`}>{index + 1}</CustomText>
+      <CustomText className={`w-4 text-body3 text-text-muted`}>
+        {index + 1}
+      </CustomText>
       <View className={`flex-row items-center flex-1 gap-3`}>
         <Image
           source={imageSource}
           className={`rounded-xl`}
           style={{ width: 52, height: 52 }}
-          resizeMode="cover" />
+          resizeMode="cover"
+        />
         <View className={`flex-1 gap-0.5`}>
-          <CustomText className={`text-title`} numberOfLines={1}>{title}</CustomText>
-          <CustomText className={`text-body3 text-text-muted`}>{desc}</CustomText>
+          <CustomText className={`text-title`} numberOfLines={1}>
+            {title}
+          </CustomText>
+          <CustomText
+            className={`text-body3 text-text-muted`}
+            numberOfLines={1}
+          >
+            {desc}
+          </CustomText>
         </View>
       </View>
       <RightIcon />
     </View>
-  )
+  );
 }

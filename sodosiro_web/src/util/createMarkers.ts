@@ -31,11 +31,11 @@ export function createMarkers({
     if (!imageCache.has(item.category)) {
       imageCache.set(item.category, {
         normal: new kakao.maps.MarkerImage(
-          getMarkerIcon(item.category),
+          getMarkerIcon(item.category, item.favorite, item.popular),
           new kakao.maps.Size(24, 24)
         ),
         selected: new kakao.maps.MarkerImage(
-          getSelectedMarkerIcon(item.category)!,
+          getSelectedMarkerIcon(item.category, item.favorite, item.popular),
           new kakao.maps.Size(60, 60)
         ),
       });

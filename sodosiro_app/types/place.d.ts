@@ -4,5 +4,7 @@ type PlaceType = {
   id: number;
   lat: number;
   lng: number;
-  category: CategoryType | 'favorite' | 'popular';
+  category: CategoryType;
+  favorite: boolean;
+  popular: boolean;
 };

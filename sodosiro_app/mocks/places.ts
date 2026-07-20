@@ -60,13 +60,11 @@ export const Festivals = [
 ]
 
 
-const categories: (CategoryType | 'favorite' | 'popular')[] = [
+const categories: (CategoryType)[] = [
   "activity",
   "attraction",
   "cafe",
-  "favorite",
   "nature",
-  "popular",
   "restaurant",
   "shopping",
 ];
@@ -92,5 +90,7 @@ export const Places: PlaceType[] = Array.from(
           Math.random() * categories.length
         )
       ],
+    favorite: Math.random() < 0.2,
+    popular: Math.random() < 0.4,
   })
 );

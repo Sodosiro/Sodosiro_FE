@@ -1,4 +1,4 @@
-export const Categorys: CategoryType[] = [
+export const Categories: CategoryType[] = [
   'all',
   'activity', 
   'attraction', 

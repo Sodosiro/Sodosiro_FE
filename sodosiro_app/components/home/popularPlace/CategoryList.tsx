@@ -1,4 +1,4 @@
-import { Categorys } from "@/constants/Category";
+import { Categories } from "@/constants/Category";
 import { ScrollView } from "react-native";
 import CategoryBadge from "../../common/CategoryBadge";
 import { Dispatch, SetStateAction } from "react";
@@ -17,7 +17,7 @@ export default function CategoryList({
       horizontal
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={{ gap: 4 }}>
-      {Categorys.map((category) => (
+      {Categories.map((category) => (
         <CategoryBadge key={category} category={category} selected={selectedCategory === category} onPress={async () => setSelectedCategory(category)} />
       ))}
     </ScrollView>

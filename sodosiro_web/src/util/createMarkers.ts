@@ -49,6 +49,7 @@ export function createMarkers({
         item.lng
       ),
       image: images.normal,
+      zIndex: 0,
     });
 
     markerImageMap.set(marker, images);
@@ -63,10 +64,12 @@ export function createMarkers({
 
         if (prev) {
           selectedMarkerRef.current.setImage(prev.normal);
+          selectedMarkerRef.current.setZIndex(0);
         }
       }
 
       marker.setImage(images.selected);
+      marker.setZIndex(999);
       selectedMarkerRef.current = marker;
 
       if (window.ReactNativeWebView) {

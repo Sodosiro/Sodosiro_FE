@@ -1,5 +1,6 @@
 import { ActivityIcon, AttractionIcon, CafeIcon, CultureIcon, NatureIcon, RestaurantIcon, ShoppingIcon } from "@/assets/svgs";
 import { Pressable, Text } from "react-native";
+import CustomText from "./CustomText";
 
 type Props = {
   disabled?: boolean;
@@ -46,9 +47,9 @@ export default function CategoryBadge({
       onPress={onPress}>
       {Icon && <Icon color={selected ? "white" : disabled ? "#888888" : "#1A1A1A"} />}
 
-      <Text className={`${selected ? `text-white` : disabled ? `text-text-muted` : `text-[#1A1A1A]`} text-body3-tight`}>
+      <CustomText className={`${selected ? `text-white` : disabled ? `text-text-muted` : `text-[#1A1A1A]`} text-body3-tight`}>
         {text}
-      </Text>
+      </CustomText>
     </Pressable>
   )
 }

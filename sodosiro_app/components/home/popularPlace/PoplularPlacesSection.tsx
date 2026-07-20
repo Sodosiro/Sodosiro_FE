@@ -1,8 +1,6 @@
 import { View } from "react-native";
-import CustomText from "../../common/CustomText";
-import { RightIcon } from "@/assets/svgs";
 import { useState } from "react";
-import CategoryList from "./CategoryList";
+import CategoryList from "../../common/CategoryList";
 import PopularPlacesList from "./PopularPlacesList";
 import SectionTitle from "../SectionTitle";
 

@@ -10,13 +10,14 @@ export const unstable_settings = {
 
 export default function RootLayout() {
 
-  const [loaded] = useFonts({
+  useFonts({
     Pretendard: require("../assets/fonts/PretendardVariable.ttf"),
   });
 
   return (
     <Stack>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="(tabs)" options={{ presentation: "modal", animation: "fade", headerShown: false }} />
+      <Stack.Screen name="explore/search" options={{ presentation: "modal", animation: "fade", headerShown: false }} />
     </Stack>
   );
 }

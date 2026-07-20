@@ -38,7 +38,7 @@ export default function CustomButton({
       ),
   }));
 
-  const primaryButtonSize = size === 'large' ? 'w-[320px] h-13' : size === 'medium' ? 'w-[235px] h-13' : 'self-start px-4 h-11';
+  const primaryButtonSize = size === 'large' ? 'h-13' : size === 'medium' ? 'w-[235px] h-13' : 'self-start px-4 h-11';
   const secondaryButtonSize = 'self-start px-4 h-11';
   const tertiaryButtonSize = 'self-start px-4 h-11'
 

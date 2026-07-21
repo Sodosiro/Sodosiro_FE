@@ -2,9 +2,14 @@ type CategoryType = 'all' | 'activity' | 'attraction' | 'cafe' | 'nature' | 'res
 
 type PlaceType = {
   id: number;
-  lat: number;
-  lng: number;
+  title?: string;
+  imageSource?: any;
+  desc?: string;
+  rate?: number;
+  review?: number;
   category: CategoryType;
-  favorite: boolean;
-  popular: boolean;
+  lat?: number;
+  lng?: number;
+  favorite?: boolean;
+  popular?: boolean;
 };

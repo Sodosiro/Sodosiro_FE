@@ -1,6 +1,9 @@
 // 장소 좋아요 icon
 export { default as PlaceHeartIcon } from './place_heart.svg';
 
+// 14px
+export { default as StarIcon } from './14px/star.svg';
+
 // 16px
 export { default as RemoveMiniIcon } from './16px/remove_mini.svg';
 export { default as InfoMiniIcon } from './16px/info_mini.svg';

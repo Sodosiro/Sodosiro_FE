@@ -29,7 +29,7 @@ export const HomePopularPlaces = [
     title: "강릉 숲길공원",
     desc: "자연을 즐길 수 있는 산책로",
   },
-]
+];
 
 export const Festivals = [
   {
@@ -56,11 +56,9 @@ export const Festivals = [
     startDate: new Date("2026-10-9"),
     endDate: new Date("2026-10-13"),
   },
-  
-]
+];
 
-
-const categories: (CategoryType)[] = [
+const categories: CategoryType[] = [
   "activity",
   "attraction",
   "cafe",
@@ -74,23 +72,95 @@ const center = {
   lng: 126.978,
 };
 
-export const Places: PlaceType[] = Array.from(
-  { length: 500 },
-  (_, index) => ({
-    id: index + 1,
-    lat:
-      center.lat +
-      (Math.random() - 0.5) * 0.06,
-    lng:
-      center.lng +
-      (Math.random() - 0.5) * 0.06,
-    category:
-      categories[
-        Math.floor(
-          Math.random() * categories.length
-        )
-      ],
-    favorite: Math.random() < 0.2,
-    popular: Math.random() < 0.4,
-  })
-);
+export const Places: PlaceType[] = Array.from({ length: 500 }, (_, index) => ({
+  id: index + 1,
+  lat: center.lat + (Math.random() - 0.5) * 0.06,
+  lng: center.lng + (Math.random() - 0.5) * 0.06,
+  category: categories[Math.floor(Math.random() * categories.length)],
+  favorite: Math.random() < 0.2,
+  popular: Math.random() < 0.4,
+}));
+
+export const PlaceList: PlaceType[] = [
+  {
+    id: 1,
+    title: "강릉길감자",
+    imageSource: require("../assets/mocks/place_1.png"),
+    category: "restaurant",
+    desc: "쫀득하고 바삭한 이색 간식",
+    rate: 4.8,
+    review: 214,
+  },
+  {
+    id: 2,
+    title: "동화가든",
+    imageSource: require("../assets/mocks/place_2.png"),
+    category: "restaurant",
+    desc: "포슬포슬 맛있는 우리집 감자",
+    rate: 4.8,
+    review: 214,
+  },
+  {
+    id: 3,
+    title: "감자좋아",
+    imageSource: require("../assets/mocks/place_1.png"),
+    category: "restaurant",
+    desc: "포슬포슬 맛있는 우리집 감자",
+    rate: 4.8,
+    review: 214,
+  },
+  {
+    id: 4,
+    title: "강릉길감자",
+    imageSource: require("../assets/mocks/place_1.png"),
+    category: "restaurant",
+    desc: "쫀득하고 바삭한 이색 간식",
+    rate: 4.8,
+    review: 214,
+  },
+  {
+    id: 5,
+    title: "동화가든",
+    imageSource: require("../assets/mocks/place_2.png"),
+    category: "restaurant",
+    desc: "포슬포슬 맛있는 우리집 감자",
+    rate: 4.8,
+    review: 214,
+  },
+  {
+    id: 6,
+    title: "감자좋아",
+    imageSource: require("../assets/mocks/place_1.png"),
+    category: "restaurant",
+    desc: "포슬포슬 맛있는 우리집 감자",
+    rate: 4.8,
+    review: 214,
+  },
+  {
+    id: 7,
+    title: "강릉길감자",
+    imageSource: require("../assets/mocks/place_1.png"),
+    category: "restaurant",
+    desc: "쫀득하고 바삭한 이색 간식",
+    rate: 4.8,
+    review: 214,
+  },
+  {
+    id: 8,
+    title: "동화가든",
+    imageSource: require("../assets/mocks/place_2.png"),
+    category: "restaurant",
+    desc: "포슬포슬 맛있는 우리집 감자",
+    rate: 4.8,
+    review: 214,
+  },
+  {
+    id: 9,
+    title: "감자좋아",
+    imageSource: require("../assets/mocks/place_1.png"),
+    category: "restaurant",
+    desc: "포슬포슬 맛있는 우리집 감자",
+    rate: 4.8,
+    review: 214,
+  },
+];

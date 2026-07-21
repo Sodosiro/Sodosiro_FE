@@ -27,10 +27,10 @@ export default function MapOverlay() {
       </View>
 
       <View className={`flex-1`}>
-        <PlaceLegend className={`absolute bottom-0 left-5`} />
+        <PlaceLegend className={`absolute bottom-7 left-5`} />
         {param && (
           <ClearSearchButton
-            className={`absolute bottom-0 self-center`}
+            className={`absolute bottom-7 self-center`}
             onPress={() => router.push("/(tabs)/explore")}
           />
         )}

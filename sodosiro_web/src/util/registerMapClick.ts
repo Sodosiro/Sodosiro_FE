@@ -16,6 +16,7 @@ export function registerMapClick({
 
     if (images) {
       selectedMarkerRef.current.setImage(images.normal);
+      selectedMarkerRef.current.setZIndex(0);
     }
 
     selectedMarkerRef.current = null;

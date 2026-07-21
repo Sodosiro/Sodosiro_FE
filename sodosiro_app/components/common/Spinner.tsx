@@ -9,6 +9,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 export default function Spinner({
+  size = 24,
   color = "#1A1A1A",
 }) {
   const rotation = useSharedValue(0);
@@ -20,7 +21,7 @@ export default function Spinner({
         easing: Easing.linear,
       }),
       -1,
-      false
+      false,
     );
   }, []);
 
@@ -33,10 +34,18 @@ export default function Spinner({
   }));
 
   return (
-    <Animated.View style={animatedStyle}>
-      <SpinnerIcon
-        color={color}
-      />
+    <Animated.View
+      style={[
+        animatedStyle,
+        {
+          width: size,
+          height: size,
+          justifyContent: "center",
+          alignItems: "center",
+        },
+      ]}
+    >
+      <SpinnerIcon width={size} height={size} color={color} />
     </Animated.View>
   );
 }

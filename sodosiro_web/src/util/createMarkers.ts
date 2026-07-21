@@ -31,11 +31,11 @@ export function createMarkers({
     if (!imageCache.has(item.category)) {
       imageCache.set(item.category, {
         normal: new kakao.maps.MarkerImage(
-          getMarkerIcon(item.category),
+          getMarkerIcon(item.category, item.favorite, item.popular),
           new kakao.maps.Size(24, 24)
         ),
         selected: new kakao.maps.MarkerImage(
-          getSelectedMarkerIcon(item.category)!,
+          getSelectedMarkerIcon(item.category, item.favorite, item.popular),
           new kakao.maps.Size(60, 60)
         ),
       });
@@ -49,6 +49,7 @@ export function createMarkers({
         item.lng
       ),
       image: images.normal,
+      zIndex: 0,
     });
 
     markerImageMap.set(marker, images);
@@ -63,10 +64,12 @@ export function createMarkers({
 
         if (prev) {
           selectedMarkerRef.current.setImage(prev.normal);
+          selectedMarkerRef.current.setZIndex(0);
         }
       }
 
       marker.setImage(images.selected);
+      marker.setZIndex(999);
       selectedMarkerRef.current = marker;
 
       if (window.ReactNativeWebView) {

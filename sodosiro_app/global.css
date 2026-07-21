@@ -5,77 +5,77 @@
 @import "nativewind/theme";
 
 @theme {
-
   /* font */
-  --font-pretendard: "Pretendard";
+  --font-pretendard-bold: "PretendardBold";
+  --font-pretendard-semibold: "PretendardSemiBold";
+  --font-pretendard-medium: "PretendardMedium";
 
   /* primary color */
-  --color-primary: #C4D96A;
-  --color-primary-pressed: #A9C92D;
-  --color-primary-dark: #7E9432;
-  --color-primary-light: #F3F8DE;
+  --color-primary: #c4d96a;
+  --color-primary-pressed: #a9c92d;
+  --color-primary-dark: #7e9432;
+  --color-primary-light: #f3f8de;
 
   /* text color */
-  --color-text-primary: #1A1A1A;
+  --color-text-primary: #1a1a1a;
   --color-text-secondary: #444444;
   --color-text-muted: #888888;
 
   /* border color */
-  --color-border: #D9D9D9;
+  --color-border: #d9d9d9;
 
   /* background color */
-  --color-bg: #FFFFFF;
-  --color-bg-subtle: #F5F5F5;
-  --color-bg-soft: #EDEDED;
-  --color-bg-muted: #E6E6E6;
-  
+  --color-bg: #ffffff;
+  --color-bg-subtle: #f5f5f5;
+  --color-bg-soft: #ededed;
+  --color-bg-muted: #e6e6e6;
 
   /* button color */
-  --color-btn-secondary-pressed: #3D3D3D;
-  --color-btn-secondary-text: #FFFFFF;
+  --color-btn-secondary-pressed: #3d3d3d;
+  --color-btn-secondary-text: #ffffff;
   --color-btn-secondary-text-disabled: #888888;
-  --color-btn-tertiary: #F5F5F5;
-  --color-btn-tertiary-pressed: #E2E2E8;
-  --color-btn-disabled: #F4F4F4;
+  --color-btn-tertiary: #f5f5f5;
+  --color-btn-tertiary-pressed: #e2e2e8;
+  --color-btn-disabled: #f4f4f4;
 
   /* typography */
   --text-display: 24px;
   --text-display--line-height: 1.3;
-  --text-display--font-weight: 700;
+  /* --text-display--font-weight: 700; */
 
-  --text-heading1: 18px;
+  --text-heading1: 20px;
   --text-heading1--line-height: 1.3;
-  --text-heading1--font-weight: 700;
-  
+  /* --text-heading1--font-weight: 600; */
+
   --text-heading2: 18px;
   --text-heading2--line-height: 1.3;
-  --text-heading2--font-weight: 600;
-  
+  /* --text-heading2--font-weight: 600; */
+
   --text-title: 16px;
   --text-title--line-height: 1.3;
-  --text-title--font-weight: 600;
+  /* --text-title--font-weight: 600; */
 
   --text-title-tight: 16px;
   --text-title-tight--line-height: 1;
-  --text-title-tight--font-weight: 600;
-  
+  /* --text-title-tight--font-weight: 600; */
+
   --text-body1: 16px;
   --text-body1--line-height: 1.3;
-  --text-body1--font-weight: 500;
+  /* --text-body1--font-weight: 500; */
 
   --text-body2: 14px;
   --text-body2--line-height: 1.3;
-  --text-body2--font-weight: 600;
-  
+  /* --text-body2--font-weight: 600; */
+
   --text-body2-tight: 14px;
   --text-body2-tight--line-height: 1;
-  --text-body2-tight--font-weight: 600;
-  
+  /* --text-body2-tight--font-weight: 600; */
+
   --text-body3: 14px;
   --text-body3--line-height: 1.3;
-  --text-body3--font-weight: 500;
-  
+  /* --text-body3--font-weight: 500; */
+
   --text-body3-tight: 14px;
   --text-body3-tight--line-height: 1;
-  --text-body3-tight--font-weight: 500;
+  /* --text-body3-tight--font-weight: 500; */
 }

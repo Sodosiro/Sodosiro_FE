@@ -1,74 +1,61 @@
-import { Activity, ActivityMarker, Attraction, AttractionMarker, Cafe, CafeMarker, Favorite, FavoriteMarker, Nature, NatureMarker, Popular, PopularMarker, Restaurant, RestaurantMarker, Shopping, ShoppingMarker } from "../assets/svgs";
+import { renderToStaticMarkup } from "react-dom/server";
+import { Activity, ActivityMarker, Attraction, AttractionMarker, Cafe, CafeMarker, Culture, CultureMarker, Nature, NatureMarker, Restaurant, RestaurantMarker, Shopping, ShoppingMarker } from "../assets/svgs";
 
-export function getMarkerIcon(category: CategoryType): string {
-  switch (category) {
-    case 'activity':
-      return Activity
-      break;
+export function getMarkerIcon(
+  category: CategoryType,
+  favorite=false,
+  popular=false,
+) {
 
-    case 'attraction':
-      return Attraction
-      break;
+  const color = favorite ? "#ECB76E" : popular ? "#6AD9CA" : "#C4D96A";
 
-    case 'cafe':
-      return Cafe
-      break;
+  const IconMap = {
+    activity: Activity,
+    attraction: Attraction,
+    cafe: Cafe,
+    nature: Nature,
+    restaurant: Restaurant,
+    shopping: Shopping,
+    culture: Culture,
+  } satisfies Record<CategoryType, React.ComponentType<{ color: string }>>;
 
-    case 'favorite':
-      return Favorite
-      break;
+  const Icon = IconMap[category];
 
-    case 'nature':
-      return Nature
-      break;
+  const svg = renderToStaticMarkup(
+    <Icon color={color} />
+  );
 
-    case 'popular':
-      return Popular
-      break;
+  const url = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
 
-    case 'restaurant':
-      return Restaurant
-      break;
-
-    case 'shopping':
-      return Shopping
-      break;
-  }
+  return url;
 }
 
 
-export function getSelectedMarkerIcon(category: CategoryType): string | undefined {
-  switch (category) {
-    case 'activity':
-      return ActivityMarker
-      break;
+export function getSelectedMarkerIcon(
+  category: CategoryType,
+  favorite=false,
+  popular=false,
+) {
 
-    case 'attraction':
-      return AttractionMarker
-      break;
+  const color = favorite ? "#ECB76E" : popular ? "#6AD9CA" : "#C4D96A";
 
-    case 'cafe':
-      return CafeMarker
-      break;
+  const IconMap = {
+    activity: ActivityMarker,
+    attraction: AttractionMarker,
+    cafe: CafeMarker,
+    nature: NatureMarker,
+    restaurant: RestaurantMarker,
+    shopping: ShoppingMarker,
+    culture: CultureMarker,
+  } satisfies Record<CategoryType, React.ComponentType<{ color: string }>>;
 
-    case 'favorite':
-      return FavoriteMarker
-      break;
+  const Icon = IconMap[category];
 
-    case 'nature':
-      return NatureMarker
-      break;
+  const svg = renderToStaticMarkup(
+    <Icon color={color} />
+  );
 
-    case 'popular':
-      return PopularMarker
-      break;
+  const url = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
 
-    case 'restaurant':
-      return RestaurantMarker
-      break;
-
-    case 'shopping':
-      return ShoppingMarker
-      break;
-  }
+  return url;
 }

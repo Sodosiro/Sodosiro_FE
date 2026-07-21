@@ -5,10 +5,9 @@ export default function CustomText({
   children,
   ...props
 }: TextProps) {
-
   return (
-    <Text className={`${className} text-text-primary font-pretendard`} {...props}>
+    <Text className={`${className} font-pretendard`} {...props}>
       {children}
     </Text>
-  )
+  );
 }

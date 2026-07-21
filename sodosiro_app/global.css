@@ -43,21 +43,21 @@
   --text-display--line-height: 1.3;
   --text-display--font-weight: 700;
 
-  --text-heading1: 18px;
+  --text-heading1: 20px;
   --text-heading1--line-height: 1.3;
   --text-heading1--font-weight: 700;
   
   --text-heading2: 18px;
   --text-heading2--line-height: 1.3;
-  --text-heading2--font-weight: 600;
+  --text-heading2--font-weight: 700;
   
   --text-title: 16px;
   --text-title--line-height: 1.3;
-  --text-title--font-weight: 600;
+  --text-title--font-weight: 700;
 
   --text-title-tight: 16px;
   --text-title-tight--line-height: 1;
-  --text-title-tight--font-weight: 600;
+  --text-title-tight--font-weight: 700;
   
   --text-body1: 16px;
   --text-body1--line-height: 1.3;
@@ -65,11 +65,11 @@
 
   --text-body2: 14px;
   --text-body2--line-height: 1.3;
-  --text-body2--font-weight: 600;
+  --text-body2--font-weight: 700;
   
   --text-body2-tight: 14px;
   --text-body2-tight--line-height: 1;
-  --text-body2-tight--font-weight: 600;
+  --text-body2-tight--font-weight: 700;
   
   --text-body3: 14px;
   --text-body3--line-height: 1.3;

@@ -10,7 +10,7 @@
   "prettier.trailingComma": "all",
   "prettier.semi": true,
   "prettier.arrowParens": "always",
-  "prettier.printWidth": 1000,
+  "prettier.printWidth": 100,
   "prettier.tabWidth": 2,
 
   "editor.tabSize": 2,

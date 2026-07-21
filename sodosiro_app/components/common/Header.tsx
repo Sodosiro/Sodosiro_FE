@@ -1,7 +1,7 @@
-import { LeftIcon } from '@/assets/svgs';
+import { LeftIcon } from "@/assets/svgs";
+import { useNavigation } from "expo-router";
 
-import { Pressable, Text, View } from 'react-native';
-// import { useNavigation } from '@react-navigation/native';
+import { Pressable, Text, View } from "react-native";
 
 type Props = {
   title: string;
@@ -10,12 +10,12 @@ type Props = {
 };
 
 export default function Header({ title, showBackButton = true, rightComponent }: Props) {
-  // const navigation = useNavigation();
+  const navigation = useNavigation();
 
   const handleBack = () => {
-    // if (navigation.canGoBack()) {
-    //   navigation.goBack();
-    // }
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    }
   };
 
   return (

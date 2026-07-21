@@ -7,6 +7,7 @@ import CategoryBadge from "@/components/common/CategoryBadge";
 import Header from "@/components/common/Header";
 import Subtitle from "@/components/common/Subtitle";
 import DatePickerButton from "@/components/trip/DatePickerButton";
+import LocationPickerButton from "@/components/trip/LocationPickerButton";
 import TransportCard from "@/components/trip/TransportCard";
 
 type TransportType = "car" | "bus";
@@ -115,7 +116,12 @@ export default function TripScreen() {
         </View>
         <View className="gap-3">
           <Subtitle title="꼭 가고 싶은 곳이 있으신가요?" description="선택사항" />
-          <View className="flex-row gap-3"></View>
+          <View className="flex-row gap-3">
+            <LocationPickerButton
+              locationName={"죽도해변"}
+              onPress={() => console.log("장소 선택하기")}
+            />
+          </View>
         </View>
       </View>
     </SafeAreaView>

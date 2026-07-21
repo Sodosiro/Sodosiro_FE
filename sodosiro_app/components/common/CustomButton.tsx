@@ -2,6 +2,7 @@ import { Text, View } from "react-native";
 import Spinner from "./Spinner";
 import { BigCheckIcon } from "@/assets/svgs";
 import AnimatedButton from "./AnimatedButton";
+import { Body3TightClass, TitleTightClass } from "@/styles/Typography";
 
 type ButtonProps = {
   type: "primary" | "secondary" | "tertiary";
@@ -44,8 +45,8 @@ export default function CustomButton({
 
   const textSize =
     type === "primary" && size !== "small"
-      ? "text-title-tight"
-      : "text-body3-tight";
+      ? TitleTightClass
+      : Body3TightClass;
 
   const textClass = disabled
     ? "text-text-muted"
@@ -63,7 +64,7 @@ export default function CustomButton({
   return (
     <AnimatedButton
       className={`
-        flex justify-center items-center ${type === "primary" ? primaryButtonSize : type === "secondary" ? secondaryButtonSize : tertiaryButtonSize} text-title-tight rounded-full ${type === "tertiary" ? borderClass : ``}`}
+        flex justify-center items-center ${type === "primary" ? primaryButtonSize : type === "secondary" ? secondaryButtonSize : tertiaryButtonSize} rounded-full ${type === "tertiary" ? borderClass : ``}`}
       disabled={disabled || loading}
       loading={loading}
       backgroundColor={backgroundColor}

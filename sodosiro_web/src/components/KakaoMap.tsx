@@ -26,7 +26,7 @@ export default function KakaoMap() {
       averageCenter: true,
       minLevel: 5,
 
-      calculator: [20, 100],
+      calculator: [10, 50],
 
       texts: (count) => `${count}`,
 
@@ -118,6 +118,11 @@ const MarkerStyles = [
     alignItems: "center",
     justifyContent: "center",
     boxShadow: "0 0 0 4px #C3D96A50, 0 0 0 8px #C3D96A30",
+    textShadow: `
+      -0.5px -0.5px 0 white, 
+      0.5px -0.5px 0 white, 
+      -0.5px 0.5px 0 white, 
+      0.5px 0.5px 0 white`,
   },
   {
     width: "42px",
@@ -132,6 +137,11 @@ const MarkerStyles = [
     alignItems: "center",
     justifyContent: "center",
     boxShadow: "0 0 0 5px #A9C92D50, 0 0 0 10px #A9C92D30",
+    textShadow: `
+      -0.5px -0.5px 0 white, 
+      0.5px -0.5px 0 white, 
+      -0.5px 0.5px 0 white, 
+      0.5px 0.5px 0 white`,
   },
   {
     width: "52px",
@@ -146,5 +156,10 @@ const MarkerStyles = [
     alignItems: "center",
     justifyContent: "center",
     boxShadow: "0 0 0 6px #7E943250, 0 0 0 12px #7E943230",
+    textShadow: `
+      -1px -1px 0 white, 
+      1px -1px 0 white, 
+      -1px 1px 0 white, 
+      1px 1px 0 white`,
   },
 ];

@@ -6,6 +6,7 @@ import { Body3TightClass, TitleTightClass } from "@/styles/Typography";
 
 type ButtonProps = {
   type: "primary" | "secondary" | "tertiary";
+  stretch?: boolean;
   title: string;
   size?: "small" | "medium" | "large";
   disabled?: boolean;
@@ -16,6 +17,7 @@ type ButtonProps = {
 
 export default function CustomButton({
   type,
+  stretch = false,
   title,
   size = "large",
   checked = false,
@@ -44,9 +46,7 @@ export default function CustomButton({
   const tertiaryButtonSize = "self-start px-4 h-11";
 
   const textSize =
-    type === "primary" && size !== "small"
-      ? TitleTightClass
-      : Body3TightClass;
+    type === "primary" && size !== "small" ? TitleTightClass : Body3TightClass;
 
   const textClass = disabled
     ? "text-text-muted"
@@ -63,7 +63,7 @@ export default function CustomButton({
 
   return (
     <AnimatedButton
-      className={`
+      className={`${stretch ? `flex-1` : ``}
         flex justify-center items-center ${type === "primary" ? primaryButtonSize : type === "secondary" ? secondaryButtonSize : tertiaryButtonSize} rounded-full ${type === "tertiary" ? borderClass : ``}`}
       disabled={disabled || loading}
       loading={loading}

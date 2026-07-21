@@ -3,10 +3,19 @@ import "react-native-reanimated";
 import { useFonts } from "expo-font";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "../global.css";
+import {
+  configureReanimatedLogger,
+  ReanimatedLogLevel,
+} from "react-native-reanimated";
 
 export const unstable_settings = {
   anchor: "(tabs)",
 };
+
+configureReanimatedLogger({
+  level: ReanimatedLogLevel.warn,
+  strict: false,
+});
 
 export default function RootLayout() {
   useFonts({
@@ -28,6 +37,14 @@ export default function RootLayout() {
         />
         <Stack.Screen
           name="explore/search"
+          options={{
+            presentation: "modal",
+            animation: "fade",
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="roulette"
           options={{
             presentation: "modal",
             animation: "fade",

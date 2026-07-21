@@ -130,7 +130,7 @@ export default function TripScreen() {
                     key={category}
                     category={category}
                     selected={isSelected}
-                    onPress={() => handleSelectCategory(category)}
+                    onPress={async () => handleSelectCategory(category)}
                   />
                 );
               })}

@@ -34,8 +34,9 @@ export default function SearchTextBar() {
         <SearchIcon color={"#888888"} />
       </View>
       <CustomText
+        font="body1"
         onPress={() => router.back()}
-        className={`text-body1 text-text-muted p-2.5`}
+        className={`text-text-muted p-2.5`}
       >
         닫기
       </CustomText>

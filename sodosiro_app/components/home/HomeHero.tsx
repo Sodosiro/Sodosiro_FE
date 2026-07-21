@@ -2,6 +2,8 @@ import { NotificationIcon, SearchIcon } from "@/assets/svgs";
 import { Image, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomButton from "../common/CustomButton";
+import { router } from "expo-router";
+import CustomText from "../common/CustomText";
 
 export default function HomeHero() {
   return (
@@ -33,14 +35,20 @@ export default function HomeHero() {
           </View>
 
           <View className={`flex-col gap-2`}>
-            <Text className={`text-display text-white`}>강원도 어디 가지?</Text>
-            <Text className={`text-body3 text-white`}>
+            <CustomText font="display" className={`text-white`}>
+              강원도 어디 가지?
+            </CustomText>
+            <CustomText font="body3" className={`text-white`}>
               취향만 입력하면 숨은 명소로 구성된{"\n"}여행 동선을 만들어드려요.
-            </Text>
+            </CustomText>
           </View>
         </View>
 
-        <CustomButton type="primary" title="코스 만들기" />
+        <CustomButton
+          type="primary"
+          title="코스 만들기"
+          onPress={() => router.push("/roulette/result")}
+        />
       </SafeAreaView>
     </View>
   );

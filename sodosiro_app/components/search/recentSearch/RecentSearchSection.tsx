@@ -38,9 +38,10 @@ export default function RecentSearchSection() {
   return (
     <View className={`gap-3`}>
       <View className={`flex-row justify-between items-center`}>
-        <CustomText className={`text-heading2`}>최근 검색어</CustomText>
+        <CustomText font="heading2">최근 검색어</CustomText>
         <CustomText
-          className={`text-body1 text-text-muted`}
+          font="body1"
+          className={`text-text-muted`}
           onPress={handleClear}
         >
           모두 지우기

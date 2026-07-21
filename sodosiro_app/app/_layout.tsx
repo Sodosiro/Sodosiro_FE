@@ -10,7 +10,9 @@ export const unstable_settings = {
 
 export default function RootLayout() {
   useFonts({
-    Pretendard: require("../assets/fonts/PretendardVariable.ttf"),
+    PretendardBold: require("../assets/fonts/Pretendard-Bold.otf"),
+    PretendardSemiBold: require("../assets/fonts/Pretendard-SemiBold.otf"),
+    PretendardMedium: require("../assets/fonts/Pretendard-Medium.otf"),
   });
 
   return (

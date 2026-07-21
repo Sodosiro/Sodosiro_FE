@@ -16,10 +16,10 @@ export default function PopularSearch({
       onPress={() => handleSearch(popularSearch)}
     >
       <View className={`flex-row gap-2 flex-1`}>
-        <CustomText className={`w-4 text-body1 text-text-muted`}>
+        <CustomText font="body1" className={`w-4 text-text-muted`}>
           {index}
         </CustomText>
-        <CustomText className={`text-body1 flex-1`} numberOfLines={1}>
+        <CustomText font="body1" className={`flex-1`} numberOfLines={1}>
           {popularSearch}
         </CustomText>
       </View>

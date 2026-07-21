@@ -19,7 +19,7 @@ export default function PopularPlace({
 }: Props) {
   return (
     <View className={`flex-row items-center justify-between`}>
-      <CustomText className={`w-4 text-body3 text-text-muted`}>
+      <CustomText font="body3" className={`w-4 text-text-muted`}>
         {index + 1}
       </CustomText>
       <View className={`flex-row items-center flex-1 gap-3`}>
@@ -30,18 +30,19 @@ export default function PopularPlace({
           resizeMode="cover"
         />
         <View className={`flex-1 gap-0.5`}>
-          <CustomText className={`text-title`} numberOfLines={1}>
+          <CustomText font="title" numberOfLines={1}>
             {title}
           </CustomText>
           <CustomText
-            className={`text-body3 text-text-muted`}
+            font="body3"
+            className={`text-text-muted`}
             numberOfLines={1}
           >
             {desc}
           </CustomText>
         </View>
       </View>
-      <RightIcon />
+      <RightIcon color={"#777777"} />
     </View>
   );
 }

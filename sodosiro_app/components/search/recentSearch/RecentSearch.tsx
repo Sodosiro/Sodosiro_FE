@@ -16,7 +16,7 @@ export default function RecentSearch({
       onPress={() => handleSearch(recentSearch)}
       backgroundColor={["#FFFFFF", "#F5F5F5"]}
     >
-      <CustomText className={`text-body3-tight text-text-secondary`}>
+      <CustomText font="body3 tight" className={`text-text-secondary`}>
         {recentSearch}
       </CustomText>
       <RemoveMiniIcon onPress={() => onRemove(recentSearch)} />

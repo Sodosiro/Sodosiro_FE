@@ -29,7 +29,8 @@ export default function CategoryBadge({
       )}
 
       <CustomText
-        className={`${selected ? `text-white` : disabled ? `text-text-muted` : `text-[#1A1A1A]`} text-body3-tight`}
+        font="body3 tight"
+        className={`${selected ? `text-white` : disabled ? `text-text-muted` : `text-[#1A1A1A]`}`}
       >
         {text}
       </CustomText>

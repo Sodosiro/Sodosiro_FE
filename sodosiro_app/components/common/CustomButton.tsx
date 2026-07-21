@@ -10,6 +10,7 @@ type ButtonProps = {
   disabled?: boolean;
   checked?: boolean;
   loading?: boolean;
+  onPress?: () => void;
 };
 
 export default function CustomButton({
@@ -19,6 +20,7 @@ export default function CustomButton({
   checked = false,
   disabled = false,
   loading = false,
+  onPress,
 }: ButtonProps) {
   const PrimaryColor = ["#C4D96A", "#A9C92D"];
   const SecondaryColor = ["#1A1A1A", "#3D3D3D"];
@@ -66,6 +68,7 @@ export default function CustomButton({
       loading={loading}
       backgroundColor={backgroundColor}
       disabledColor="#F4F4F4"
+      onPress={onPress}
     >
       {!loading ? (
         <View className={`flex flex-row justify-center items-center gap-1`}>

@@ -17,7 +17,8 @@ export default function SearchBar({ keyword }: { keyword?: string }) {
       }}
     >
       <CustomText
-        className={`${keyword ? `text-text-primary` : `text-text-secondary`} text-title-tight flex-1 h-4`}
+        font="body1"
+        className={`${keyword ? `text-text-primary` : `text-text-secondary`} flex-1 h-5`}
       >
         {keyword?.trim() ? keyword : "가고 싶은 여행지를 검색해보세요"}
       </CustomText>

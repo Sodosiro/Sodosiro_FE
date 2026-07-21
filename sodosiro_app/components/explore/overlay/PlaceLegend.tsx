@@ -23,7 +23,7 @@ export default function PlaceLegend({ className }: { className?: string }) {
             className={`w-5 h-5 rounded-full`}
             style={{ backgroundColor: item.color }}
           ></View>
-          <CustomText className={`text-body3`}>{item.title}</CustomText>
+          <CustomText font="body3">{item.title}</CustomText>
         </View>
       ))}
     </View>

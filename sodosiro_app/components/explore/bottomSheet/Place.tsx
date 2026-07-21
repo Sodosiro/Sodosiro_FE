@@ -15,33 +15,34 @@ export default function Place({ place }: { place: PlaceType }) {
       />
       <View className={`gap-1 flex-1 justify-center`}>
         <View className={`flex-row gap-1 items-center justify-start`}>
-          <CustomText className={`text-title`} numberOfLines={1}>
+          <CustomText font="title" numberOfLines={1}>
             {place.title}
           </CustomText>
           <View className={`px-1.5 py-1 bg-bg-subtle rounded-sm`}>
-            <CustomText className={`text-body3-tight`}>
+            <CustomText font="body3 tight">
               {CategoryMap[place.category]}
             </CustomText>
           </View>
         </View>
         <View className={`gap-0.5`}>
           <CustomText
-            className={`text-body-3 text-text-muted`}
+            font="body3"
+            className={`text-text-muted`}
             numberOfLines={1}
           >
             {place.desc}
           </CustomText>
           <View className={`flex-row items-center gap-0.5`}>
             <StarIcon />
-            <CustomText className={`text-body2`}>{place.rate}</CustomText>
-            <CustomText className={`text-body3 text-[#666666]`}>
+            <CustomText font="body2">{place.rate}</CustomText>
+            <CustomText font="body3" className={`text-[#666666]`}>
               {"("}
               {place.review}
               {")"}
             </CustomText>
           </View>
         </View>
-        <CustomText className={`text-body2 text-primary-dark`}>
+        <CustomText font="body2" className={`text-primary-dark`}>
           상세보기
         </CustomText>
       </View>

@@ -27,7 +27,7 @@ export default function RecentSearchList({
     </ScrollView>
   ) : (
     <View className={`h-10 flex justify-center items-center py-2`}>
-      <CustomText className={`text-text-muted flex-1`}>
+      <CustomText font="body2" className={`text-text-muted flex-1`}>
         최근 검색어가 없습니다
       </CustomText>
     </View>

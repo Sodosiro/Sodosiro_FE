@@ -16,7 +16,7 @@ export default function ClearSearchButton({
       onPress={onPress}
     >
       <RefreshMiniIcon />
-      <CustomText className={`text-body3-tight`}>검색 초기화</CustomText>
+      <CustomText font="body3 tight">검색 초기화</CustomText>
     </AnimatedButton>
   );
 }

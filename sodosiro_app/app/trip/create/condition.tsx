@@ -7,6 +7,7 @@ import BottomSheet from "@/components/common/BottomSheet";
 import CategoryBadge from "@/components/common/CategoryBadge";
 import Header from "@/components/common/Header";
 import Subtitle from "@/components/common/Subtitle";
+import PopularPlacesSection from "@/components/home/popularPlace/PoplularPlacesSection";
 import DatePickerButton from "@/components/trip/DatePickerButton";
 import DatePickerSheet from "@/components/trip/DatePickerSheet";
 import LocationPickerButton from "@/components/trip/LocationPickerButton";
@@ -33,6 +34,7 @@ const CATEGORIES: CategoryType[] = [
 
 export default function TripScreen() {
   const [showCalendar, setShowCalendar] = useState(false);
+  const [showLocation, setShowLocation] = useState(false);
   const [transport, setTransport] = useState<TransportType>("");
   const [dateRange, setDateRange] = useState<DateRange>({
     startDate: null,
@@ -162,8 +164,14 @@ export default function TripScreen() {
             <View className="flex-row gap-3">
               <LocationPickerButton
                 locationName={"죽도해변"}
-                onPress={() => console.log("장소 선택하기")}
+                onPress={() => setShowLocation(true)}
               />
+              {showLocation && (
+                <BottomSheet visible={showLocation} onClose={() => setShowLocation(false)}>
+                  <PopularPlacesSection />
+                  <View className="pt-5"></View>
+                </BottomSheet>
+              )}
             </View>
           </View>
         </View>

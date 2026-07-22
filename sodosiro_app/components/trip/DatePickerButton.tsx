@@ -18,7 +18,10 @@ function formatDate(date: Date) {
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
 
-  return `${year}.${month}.${day}`;
+  const weekDays = ["일", "월", "화", "수", "목", "금", "토"];
+  const weekDay = weekDays[date.getDay()];
+
+  return `${year}.${month}.${day} (${weekDay})`;
 }
 
 export default function DatePickerButton({
@@ -30,6 +33,7 @@ export default function DatePickerButton({
   const { startDate, endDate } = dateRange;
 
   const hasValue = startDate && endDate;
+  const isOneDay = startDate && endDate === null;
 
   return (
     <Pressable
@@ -48,8 +52,14 @@ export default function DatePickerButton({
         ${disabled ? "opacity-40" : ""}
       `}
     >
-      <Text className={`text-base ${hasValue ? "text-[#1A1A1A] font-medium" : "text-text-muted"}`}>
-        {hasValue ? `${formatDate(startDate)} ~ ${formatDate(endDate)}` : placeholder}
+      <Text
+        className={`text-base ${hasValue || isOneDay ? "text-[#1A1A1A] font-medium" : "text-text-muted"}`}
+      >
+        {hasValue && !isOneDay
+          ? `${formatDate(startDate)} ~ ${formatDate(endDate)}`
+          : isOneDay
+            ? `${formatDate(startDate)}`
+            : placeholder}
       </Text>
 
       <CalendarIcon color="#888888" />

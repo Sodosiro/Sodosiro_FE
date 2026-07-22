@@ -109,7 +109,16 @@ export default function TripScreen() {
             {showCalendar && (
               <BottomSheet visible={showCalendar} onClose={() => setShowCalendar(false)}>
                 <DatePickerSheet
-                  onConfirm={() => {
+                  initialStartDate={dateRange.startDate ?? undefined}
+                  initialEndDate={dateRange.endDate ?? undefined}
+                  onConfirm={(start, end) => {
+                    if (start) {
+                      const resultDateRange: DateRange = {
+                        startDate: parseDate(start),
+                        endDate: start == end ? null : parseDate(end),
+                      };
+                      setDateRange(resultDateRange);
+                    }
                     setShowCalendar(false);
                   }}
                 />
@@ -162,4 +171,10 @@ export default function TripScreen() {
       <TripConditionFooter onReset={handleReset} onSubmit={handleSubmit} />
     </SafeAreaView>
   );
+}
+
+function parseDate(dateString: string): Date {
+  const [year, month, day] = dateString.split("-").map(Number);
+
+  return new Date(year, month - 1, day);
 }

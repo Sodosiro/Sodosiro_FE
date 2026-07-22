@@ -32,8 +32,8 @@ export default function BottomSheet({ visible, onClose, children }: Props) {
           className="rounded-t-[28px] bg-white"
         >
           {/* Handle */}
-          <View className="mb-6 items-center">
-            <View className="h-1.5 w-12 rounded-full bg-[#D9D9D9]" />
+          <View className="mt-2 mb-4 items-center">
+            <View className="h-1 w-12 rounded-full bg-[#D9D9D9]" />
           </View>
 
           {children}

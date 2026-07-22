@@ -3,16 +3,18 @@ import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { BusIcon, CarIcon } from "@/assets/svgs";
+import BottomSheet from "@/components/common/BottomSheet";
 import CategoryBadge from "@/components/common/CategoryBadge";
 import Header from "@/components/common/Header";
 import Subtitle from "@/components/common/Subtitle";
 import DatePickerButton from "@/components/trip/DatePickerButton";
+import DatePickerSheet from "@/components/trip/DatePickerSheet";
 import LocationPickerButton from "@/components/trip/LocationPickerButton";
 import TransportCard from "@/components/trip/TransportCard";
 import TripConditionFooter from "@/components/trip/TripConditionFooter";
 import { Stack } from "expo-router";
 
-type TransportType = "car" | "bus";
+type TransportType = "car" | "bus" | "";
 type DateRange = {
   startDate: Date | null;
   endDate: Date | null;
@@ -30,10 +32,11 @@ const CATEGORIES: CategoryType[] = [
 ];
 
 export default function TripScreen() {
-  const [transport, setTransport] = useState<TransportType>("car");
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [transport, setTransport] = useState<TransportType>("");
   const [dateRange, setDateRange] = useState<DateRange>({
-    startDate: new Date(2026, 9, 5),
-    endDate: new Date(2026, 9, 8),
+    startDate: null,
+    endDate: null,
   });
 
   const transportList = [
@@ -100,9 +103,18 @@ export default function TripScreen() {
             <DatePickerButton
               dateRange={dateRange}
               onPress={() => {
-                console.log("달력 열기");
+                setShowCalendar(true);
               }}
             />
+            {showCalendar && (
+              <BottomSheet visible={showCalendar} onClose={() => setShowCalendar(false)}>
+                <DatePickerSheet
+                  onConfirm={() => {
+                    setShowCalendar(false);
+                  }}
+                />
+              </BottomSheet>
+            )}
           </View>
           <View className="gap-3">
             <Subtitle title="이동 수단 선택" />

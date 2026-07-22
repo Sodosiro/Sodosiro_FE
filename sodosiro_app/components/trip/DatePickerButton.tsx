@@ -1,5 +1,5 @@
-import { CalendarIcon } from '@/assets/svgs';
-import { Pressable, Text } from 'react-native';
+import { CalendarIcon } from "@/assets/svgs";
+import { Pressable, Text } from "react-native";
 
 export interface DateRange {
   startDate: Date | null;
@@ -15,13 +15,18 @@ type Props = {
 
 function formatDate(date: Date) {
   const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
 
   return `${year}.${month}.${day}`;
 }
 
-export default function DatePickerButton({ dateRange, placeholder = '여행 일정을 선택해주세요.', disabled = false, onPress }: Props) {
+export default function DatePickerButton({
+  dateRange,
+  placeholder = "여행 일정을 선택해주세요.",
+  disabled = false,
+  onPress,
+}: Props) {
   const { startDate, endDate } = dateRange;
 
   const hasValue = startDate && endDate;
@@ -40,10 +45,12 @@ export default function DatePickerButton({ dateRange, placeholder = '여행 일�
         bg-[#F5F5F5]
         px-5
         py-4
-        ${disabled ? 'opacity-40' : ''}
+        ${disabled ? "opacity-40" : ""}
       `}
     >
-      <Text className={`text-base ${hasValue ? 'text-[#1A1A1A] font-medium' : 'text-text-muted'}`}>{hasValue ? `${formatDate(startDate)} ~ ${formatDate(endDate)}` : placeholder}</Text>
+      <Text className={`text-base ${hasValue ? "text-[#1A1A1A] font-medium" : "text-text-muted"}`}>
+        {hasValue ? `${formatDate(startDate)} ~ ${formatDate(endDate)}` : placeholder}
+      </Text>
 
       <CalendarIcon color="#888888" />
     </Pressable>

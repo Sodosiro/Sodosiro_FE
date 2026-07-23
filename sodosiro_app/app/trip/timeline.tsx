@@ -1,12 +1,14 @@
-import { NavigationMiniIcon } from "@/assets/svgs";
+import { DownIcon, KakaomapIcon, StarIcon } from "@/assets/svgs";
 import AnimatedButton from "@/components/common/AnimatedButton";
 import BottomActionFooter from "@/components/common/BottomActionFooter";
 import CustomButton from "@/components/common/CustomButton";
 import CustomText from "@/components/common/CustomText";
 import Header from "@/components/common/Header";
+import Badge from "@/components/trip/Badge";
 import { Stack } from "expo-router";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
+  Animated,
   LayoutChangeEvent,
   NativeScrollEvent,
   NativeSyntheticEvent,
@@ -17,7 +19,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 // ----------------------------
-// Mock Types & Data (추후 실제 API 응답 타입으로 교체)
+// Mock Types & Data
 // ----------------------------
 type PlaceType = "식당" | "관광지" | "카페";
 
@@ -33,7 +35,7 @@ type PlaceItem = {
 
 type DayPlan = {
   day: number;
-  dateLabel: string; // "10/5 (토)"
+  dateLabel: string;
   places: PlaceItem[];
 };
 
@@ -46,15 +48,15 @@ const MOCK_PLAN: DayPlan[] = [
         id: "1-1",
         order: 1,
         name: "낙산사",
-        type: "식당",
+        type: "관광지",
         description: "동해가 보이는 천년 고찰",
         rating: 4.9,
         reviewCount: 214,
       },
       { id: "1-2", order: 2, name: "초당순두부마을", type: "식당" },
-      { id: "1-3", order: 3, name: "안목해변 커피거리", type: "식당" },
+      { id: "1-3", order: 3, name: "안목해변 커피거리", type: "카페" },
       { id: "1-4", order: 4, name: "오죽헌", type: "관광지" },
-      { id: "1-5", order: 5, name: "초당순두부마을초당순두...", type: "식당" },
+      { id: "1-5", order: 5, name: "초당순두부마을초당순두부순두부순두부순두부", type: "식당" },
     ],
   },
   {
@@ -65,13 +67,13 @@ const MOCK_PLAN: DayPlan[] = [
         id: "2-1",
         order: 1,
         name: "낙산사",
-        type: "식당",
+        type: "관광지",
         description: "동해가 보이는 천년 고찰",
         rating: 4.9,
         reviewCount: 214,
       },
       { id: "2-2", order: 2, name: "초당순두부마을", type: "식당" },
-      { id: "2-3", order: 3, name: "안목해변 커피거리", type: "식당" },
+      { id: "2-3", order: 3, name: "안목해변 커피거리", type: "카페" },
       { id: "2-4", order: 4, name: "오죽헌", type: "관광지" },
       { id: "2-5", order: 5, name: "초당순두부마을초당순두...", type: "식당" },
     ],
@@ -91,40 +93,184 @@ const MOCK_PLAN: DayPlan[] = [
   },
 ];
 
-const COLORS = {
-  black: "#1A1A1A",
-  gray: "#8C8C8C",
-  border: "#EDEDED",
-  green: "#8DC63F",
-  greenLight: "#EDF1D9",
-  star: "#F5A623",
-};
-
-// 스크롤 스파이 시 "이 y좌표를 지나면 해당 day를 active로 본다" 판단할 때 쓰는 여유값
+const DEFAULT_BUTTON_WIDTH = 96;
+const FADE_WIDTH = 32;
+const FADE_STEPS = 6;
 const SCROLL_SPY_OFFSET = 80;
-// 뱃지 탭 시 프로그래매틱 스크롤 중에는 onScroll 기반 active 갱신을 잠깐 무시하기 위한 시간
 const PROGRAMMATIC_SCROLL_LOCK_MS = 400;
 
+// ----------------------------
+// 180도 회전 아이콘 컴포넌트
+// ----------------------------
+function RotatingArrowIcon({ isExpanded }: { isExpanded: boolean }) {
+  const rotateAnim = useRef(new Animated.Value(isExpanded ? 1 : 0)).current;
+
+  useEffect(() => {
+    Animated.timing(rotateAnim, {
+      toValue: isExpanded ? 1 : 0,
+      duration: 250,
+      useNativeDriver: true,
+    }).start();
+  }, [isExpanded, rotateAnim]);
+
+  const spin = rotateAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["0deg", "180deg"],
+  });
+
+  return (
+    <Animated.View style={{ transform: [{ rotate: spin }] }}>
+      <DownIcon />
+    </Animated.View>
+  );
+}
+
+// ----------------------------
+// 자연스러운 드롭다운 개별 아이템 컴포넌트
+// ----------------------------
+type TimelineItemProps = {
+  place: PlaceItem;
+  isLast: boolean;
+  isExpanded: boolean;
+  onToggle: (id: string) => void;
+};
+
+function TimelineItem({ place, isLast, isExpanded, onToggle }: TimelineItemProps) {
+  const [contentHeight, setContentHeight] = useState(0);
+  const animatedController = useRef(new Animated.Value(isExpanded ? 1 : 0)).current;
+
+  useEffect(() => {
+    Animated.timing(animatedController, {
+      toValue: isExpanded ? 1 : 0,
+      duration: 250,
+      useNativeDriver: false, // height 애니메이션을 위해 false 설정
+    }).start();
+  }, [isExpanded, animatedController]);
+
+  // 측정된 높이를 바탕으로 0 ~ 실제높이 범위 보간
+  const bodyHeight = animatedController.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, contentHeight],
+  });
+
+  const bodyOpacity = animatedController.interpolate({
+    inputRange: [0, 0.5, 1],
+    outputRange: [0, 0, 1],
+  });
+
+  const handleLayout = (e: LayoutChangeEvent) => {
+    const { height } = e.nativeEvent.layout;
+    if (height > 0 && contentHeight === 0) {
+      setContentHeight(height);
+    }
+  };
+
+  return (
+    <View className={`px-4 py-3 ${isLast ? "" : "border-b border-[#EDEDED]"}`}>
+      {/* 헤더 부분 (클릭 영역) */}
+      <Pressable onPress={() => onToggle(place.id)} className="flex-row items-center">
+        <View className="w-6 h-6 rounded-xl bg-[#1A1A1A] items-center justify-center mr-2.5">
+          <CustomText font="body3" className="text-white">
+            {place.order}
+          </CustomText>
+        </View>
+
+        <CustomText font="body1" numberOfLines={1} className="flex-shrink">
+          {place.name}
+        </CustomText>
+
+        <View className="ml-1.5 px-1.5 py-0.5 rounded-md bg-bg-subtle">
+          <CustomText font="body2 tight">{place.type}</CustomText>
+        </View>
+
+        <View className="flex-1" />
+
+        <RotatingArrowIcon isExpanded={isExpanded} />
+      </Pressable>
+
+      {/* 부드럽게 스르륵 펼쳐지는 드롭다운 영역 */}
+      <Animated.View style={{ height: bodyHeight, overflow: "hidden" }}>
+        <Animated.View
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            opacity: bodyOpacity,
+          }}
+          onLayout={handleLayout}
+        >
+          <View className="pt-2.5 pl-8 pb-1">
+            {place.description && (
+              <CustomText font="body2" className="text-text-muted mb-1.5">
+                {place.description}
+              </CustomText>
+            )}
+
+            {place.rating !== undefined && (
+              <View className="flex-row items-center mb-3">
+                <StarIcon />
+                <CustomText font="body2" className="ml-1">
+                  {place.rating.toFixed(1)}
+                </CustomText>
+                {place.reviewCount !== undefined && (
+                  <CustomText font="body2" className="text-text-muted ml-1">
+                    ({place.reviewCount})
+                  </CustomText>
+                )}
+              </View>
+            )}
+
+            <View className="flex-row gap-2">
+              <Badge
+                onLayout={() => {}}
+                onPress={() => {
+                  // TODO: 장소 상세보기
+                }}
+                text="장소 상세보기"
+                selected={false}
+                update={true}
+              />
+              <Badge
+                onLayout={() => {}}
+                onPress={() => {
+                  // TODO: 다른 곳으로 변경하기
+                }}
+                text="다른 곳으로 변경하기"
+                selected={true}
+                update={true}
+              />
+            </View>
+          </View>
+        </Animated.View>
+      </Animated.View>
+    </View>
+  );
+}
+
+// ----------------------------
+// 메인 스크린
+// ----------------------------
 export default function TimelineScreen() {
   const [activeDay, setActiveDay] = useState(MOCK_PLAN[0].day);
-  const [expandedId, setExpandedId] = useState<string | null>(MOCK_PLAN[0].places[0]?.id ?? null);
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(
+    new Set([MOCK_PLAN[0].places[0]?.id].filter(Boolean)),
+  );
+  const [tripTitle, setTripTitle] = useState("강릉 여행");
+  const [editButtonWidth, setEditButtonWidth] = useState(DEFAULT_BUTTON_WIDTH);
 
   const mainScrollRef = useRef<ScrollView>(null);
   const badgeScrollRef = useRef<ScrollView>(null);
 
-  // day별 섹션의 y offset (main ScrollView 컨텐츠 기준)
   const sectionOffsets = useRef<Record<number, number>>({});
-  // day 뱃지의 x offset / width (badge ScrollView 기준)
   const badgeLayouts = useRef<Record<number, { x: number; width: number }>>({});
 
-  // 탭으로 인한 프로그래매틱 스크롤 중엔 onScroll 스파이를 무시
   const isProgrammaticScroll = useRef(false);
   const programmaticScrollTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const scrollBadgeIntoView = useCallback((day: number) => {
     const layout = badgeLayouts.current[day];
     if (!layout) return;
-    // 살짝 여백을 두고 왼쪽에 보이도록 스크롤
     const targetX = Math.max(layout.x - 20, 0);
     badgeScrollRef.current?.scrollTo({ x: targetX, animated: true });
   }, []);
@@ -156,7 +302,6 @@ export default function TimelineScreen() {
       const entries = Object.entries(sectionOffsets.current) as unknown as [string, number][];
       if (entries.length === 0) return;
 
-      // y를 넘긴(지나온) 마지막 섹션을 active로 판단
       let current = entries[0][0];
       let currentOffset = -Infinity;
       for (const [dayKey, offsetY] of entries) {
@@ -188,80 +333,81 @@ export default function TimelineScreen() {
   }, []);
 
   const toggleExpand = useCallback((id: string) => {
-    setExpandedId((prev) => (prev === id ? null : id));
+    setExpandedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
   }, []);
 
   return (
-    <SafeAreaView className="flex-1" edges={["top", "bottom"]}>
+    <SafeAreaView className="flex-1 bg-white" edges={["top", "bottom"]}>
       <Stack.Screen options={{ headerShown: false }} />
-      <Header title="강릉 여행" />
-      <View className="flex-1">
-        {/* 일차 뱃지 - 가로 스크롤 */}
-        <ScrollView
-          ref={badgeScrollRef}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingHorizontal: 20, gap: 8 }}
-          className="py-2"
-          style={{
-            flexGrow: 0,
-          }}
-        >
-          {MOCK_PLAN.map(({ day }) => {
-            const isActive = day === activeDay;
-            return (
-              <Pressable
-                key={day}
-                onLayout={(e) => handleBadgeLayout(day, e)}
-                onPress={() => handlePressDayBadge(day)}
-                style={{
-                  paddingHorizontal: 16,
-                  paddingVertical: 8,
-                  borderRadius: 20,
-                  backgroundColor: isActive ? COLORS.black : "#FFFFFF",
-                  borderWidth: isActive ? 0 : 1,
-                  borderColor: COLORS.border,
-                }}
-              >
-                <CustomText
-                  font="body3"
-                  style={{
-                    fontWeight: "500",
-                    color: isActive ? "#FFFFFF" : COLORS.black,
-                  }}
-                >
-                  {day}일차
-                </CustomText>
-              </Pressable>
-            );
-          })}
+      <Header title={tripTitle} showPencil onTitleChange={(newTitle) => setTripTitle(newTitle)} />
 
-          <Pressable
-            onPress={() => {
-              // TODO: 수정 모드 진입 핸들러 연결
-            }}
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 4,
-              paddingHorizontal: 16,
-              paddingVertical: 8,
-              borderRadius: 20,
-              backgroundColor: COLORS.black,
+      <View className="flex-1">
+        {/* 일차 뱃지 바 */}
+        <View className="relative py-2">
+          <ScrollView
+            ref={badgeScrollRef}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{
+              paddingLeft: 20,
+              paddingRight: editButtonWidth + 12,
+              gap: 8,
             }}
           >
-            {/* <Pencil size={14} color="#FFFFFF" /> */}
-            <CustomText
-              font="body3"
-              className={`text-body3-tight`}
-              style={{ fontWeight: "500", color: "#FFFFFF" }}
-            >
-              수정하기
-            </CustomText>
-          </Pressable>
-        </ScrollView>
+            {MOCK_PLAN.map(({ day }) => {
+              const isActive = day === activeDay;
+              return (
+                <Badge
+                  key={day}
+                  onLayout={(e) => handleBadgeLayout(day, e)}
+                  onPress={() => handlePressDayBadge(day)}
+                  text={`${day}일차`}
+                  selected={isActive}
+                />
+              );
+            })}
+          </ScrollView>
 
-        {/* 일정 카드 - 세로 스크롤 */}
+          {/* 스크롤 페이드 뷰 */}
+          <View
+            pointerEvents="none"
+            className="absolute top-0 bottom-0 flex-row"
+            style={{
+              right: editButtonWidth,
+              width: FADE_WIDTH,
+            }}
+          >
+            {Array.from({ length: FADE_STEPS }).map((_, i) => (
+              <View key={i} className="flex-1 bg-white" style={{ opacity: (i + 1) / FADE_STEPS }} />
+            ))}
+          </View>
+
+          {/* 수정하기 버튼 */}
+          <View className="absolute top-0 bottom-0 right-0 justify-center items-end bg-white pr-5">
+            <Badge
+              onLayout={(e) => {
+                const measuredWidth = e.nativeEvent.layout.width + 20;
+                setEditButtonWidth((prev) =>
+                  Math.abs(prev - measuredWidth) > 1 ? measuredWidth : prev,
+                );
+              }}
+              onPress={() => {}}
+              text="수정하기"
+              selected={false}
+              update={true}
+            />
+          </View>
+        </View>
+
+        {/* 일정 리스트 */}
         <ScrollView
           ref={mainScrollRef}
           className="flex-1"
@@ -274,185 +420,37 @@ export default function TimelineScreen() {
             <View
               key={dayPlan.day}
               onLayout={(e) => handleSectionLayout(dayPlan.day, e)}
-              className="mb-6"
+              className="mb-6 rounded-2xl border border-[#EDEDED] bg-white py-1"
             >
-              <View
-                style={{
-                  backgroundColor: "#FFFFFF",
-                  borderRadius: 16,
-                  borderWidth: 1,
-                  borderColor: COLORS.border,
-                  paddingVertical: 4,
-                }}
-              >
-                <CustomText font="title" className={`text-primary-dark px-3 pt-3`}>
-                  {dayPlan.dateLabel}
-                </CustomText>
-                {dayPlan.places.map((place, index) => {
-                  const isExpanded = expandedId === place.id;
-                  const isLast = index === dayPlan.places.length - 1;
+              <CustomText font="title" className="text-primary-dark px-3 pt-3">
+                {dayPlan.dateLabel}
+              </CustomText>
 
-                  return (
-                    <View
-                      key={place.id}
-                      style={{
-                        borderBottomWidth: isLast ? 0 : 1,
-                        borderBottomColor: COLORS.border,
-                        paddingHorizontal: 16,
-                        paddingVertical: 12,
-                      }}
-                    >
-                      <Pressable
-                        onPress={() => toggleExpand(place.id)}
-                        style={{ flexDirection: "row", alignItems: "center" }}
-                      >
-                        <View
-                          style={{
-                            width: 22,
-                            height: 22,
-                            borderRadius: 11,
-                            backgroundColor: "#F3F3F3",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            marginRight: 10,
-                          }}
-                        >
-                          <CustomText
-                            font="body3"
-                            style={{ fontWeight: "600", color: COLORS.black }}
-                          >
-                            {place.order}
-                          </CustomText>
-                        </View>
-
-                        <CustomText
-                          font="body2"
-                          style={{ fontWeight: "500", color: COLORS.black, flexShrink: 1 }}
-                          numberOfLines={1}
-                        >
-                          {place.name}
-                        </CustomText>
-
-                        <View
-                          style={{
-                            marginLeft: 6,
-                            paddingHorizontal: 6,
-                            paddingVertical: 2,
-                            borderRadius: 6,
-                            backgroundColor: "#F3F3F3",
-                          }}
-                        >
-                          <CustomText font="body2" style={{ color: COLORS.gray }}>
-                            {place.type}
-                          </CustomText>
-                        </View>
-
-                        <View style={{ flex: 1 }} />
-
-                        {/* {isExpanded ? (
-                        <ChevronUp size={18} color={COLORS.gray} />
-                      ) : (
-                        <ChevronDown size={18} color={COLORS.gray} />
-                      )} */}
-                      </Pressable>
-
-                      {isExpanded && (
-                        <View style={{ marginTop: 10, paddingLeft: 32 }}>
-                          {place.description && (
-                            <CustomText
-                              font="body3 tight"
-                              style={{ color: COLORS.gray, marginBottom: 6 }}
-                            >
-                              {place.description}
-                            </CustomText>
-                          )}
-
-                          {place.rating !== undefined && (
-                            <View
-                              style={{
-                                flexDirection: "row",
-                                alignItems: "center",
-                                marginBottom: 12,
-                              }}
-                            >
-                              {/* <Star size={14} color={COLORS.star} fill={COLORS.star} /> */}
-                              <CustomText
-                                font="body3"
-                                style={{ fontWeight: "600", color: COLORS.black, marginLeft: 4 }}
-                              >
-                                {place.rating.toFixed(1)}
-                              </CustomText>
-                              {place.reviewCount !== undefined && (
-                                <CustomText
-                                  font="body3"
-                                  style={{ color: COLORS.gray, marginLeft: 4 }}
-                                >
-                                  ({place.reviewCount})
-                                </CustomText>
-                              )}
-                            </View>
-                          )}
-
-                          <View style={{ flexDirection: "row", gap: 8 }}>
-                            <Pressable
-                              style={{
-                                paddingHorizontal: 14,
-                                paddingVertical: 8,
-                                borderRadius: 18,
-                                backgroundColor: "#F3F3F3",
-                              }}
-                            >
-                              <CustomText
-                                font="body3"
-                                style={{ fontWeight: "500", color: COLORS.black }}
-                              >
-                                장소 상세보기
-                              </CustomText>
-                            </Pressable>
-
-                            <Pressable
-                              style={{
-                                paddingHorizontal: 14,
-                                paddingVertical: 8,
-                                borderRadius: 18,
-                                backgroundColor: COLORS.black,
-                              }}
-                            >
-                              <CustomText
-                                font="body3"
-                                style={{ fontWeight: "500", color: "#FFFFFF" }}
-                              >
-                                다른 곳으로 변경하기
-                              </CustomText>
-                            </Pressable>
-                          </View>
-                        </View>
-                      )}
-                    </View>
-                  );
-                })}
-              </View>
+              {dayPlan.places.map((place, index) => (
+                <TimelineItem
+                  key={place.id}
+                  place={place}
+                  isLast={index === dayPlan.places.length - 1}
+                  isExpanded={expandedIds.has(place.id)}
+                  onToggle={toggleExpand}
+                />
+              ))}
             </View>
           ))}
         </ScrollView>
 
-        {/* 하단 액션 */}
+        {/* 하단 푸터 */}
         <BottomActionFooter>
           <AnimatedButton
-            className={`flex-row items-center justify-center px-4 gap-1 rounded-full`}
+            className="flex-row items-center justify-center px-4 gap-1 rounded-full"
             backgroundColor={["#FFFFFF", "#F5F5F5"]}
           >
-            <NavigationMiniIcon width={16} />
+            <KakaomapIcon />
+            {/* <StarIcon /> */}
             <CustomText font="body1">내보내기</CustomText>
           </AnimatedButton>
-          <CustomButton
-            type="primary"
-            title="이 일정대로 여행하기"
-            stretch
-            size="medium"
-            // disabled={disabled}
-            // onPress={onSubmit}
-          />
+
+          <CustomButton type="primary" title="이 일정대로 여행하기" stretch size="medium" />
         </BottomActionFooter>
       </View>
     </SafeAreaView>

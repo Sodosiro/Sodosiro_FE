@@ -24,7 +24,6 @@ export { default as LeftIcon } from "./24px/chevron-left.svg";
 export { default as RightIcon } from "./24px/chevron-right.svg";
 export { default as ChipIcon } from "./24px/chip.svg";
 export { default as DownIcon } from "./24px/down.svg";
-export { default as KakaomapIcon } from "./24px/kakaomap.svg";
 export { default as NotificationIcon } from "./24px/notification.svg";
 export { default as RefreshIcon } from "./24px/refresh.svg";
 export { default as RemoveIcon } from "./24px/remove.svg";

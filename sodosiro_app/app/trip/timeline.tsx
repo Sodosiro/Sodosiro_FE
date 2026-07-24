@@ -1,4 +1,4 @@
-import { DownIcon, KakaomapIcon, StarIcon } from "@/assets/svgs";
+import { DownIcon, StarIcon } from "@/assets/svgs";
 import AnimatedButton from "@/components/common/AnimatedButton";
 import BottomActionFooter from "@/components/common/BottomActionFooter";
 import CustomButton from "@/components/common/CustomButton";
@@ -9,6 +9,7 @@ import { Stack } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Animated,
+  Image,
   LayoutChangeEvent,
   NativeScrollEvent,
   NativeSyntheticEvent,
@@ -445,9 +446,16 @@ export default function TimelineScreen() {
             className="flex-row items-center justify-center px-4 gap-1 rounded-full"
             backgroundColor={["#FFFFFF", "#F5F5F5"]}
           >
-            <KakaomapIcon />
+            <Image
+              source={require("@/assets/images/kakaomap.png")}
+              resizeMode="cover"
+              // className={`absolute`}
+              style={{ width: 24, height: 24 }}
+            />
             {/* <StarIcon /> */}
-            <CustomText font="body1">내보내기</CustomText>
+            <CustomText font="body1" className="ml-1">
+              내보내기
+            </CustomText>
           </AnimatedButton>
 
           <CustomButton type="primary" title="이 일정대로 여행하기" stretch size="medium" />

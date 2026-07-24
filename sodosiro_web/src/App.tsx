@@ -1,12 +1,10 @@
-import KakaoMap from "./components/KakaoMap";
+import { Route, Routes } from "react-router-dom";
+import Index from "./pages/Index";
 
 export default function App() {
-
   return (
-    <>
-      <div className={`w-screen h-screen`}>
-        <KakaoMap />
-      </div>
-    </>
-  )
+    <Routes>
+      <Route path="/" element={<Index />} />
+    </Routes>
+  );
 }

@@ -1,33 +1,61 @@
 import { Places } from "@/mocks/places";
+import { Route as RouteInfo } from "@/mocks/route";
 import { Dispatch, SetStateAction, useRef } from "react";
-import { View } from "react-native";
+import Animated, {
+  SharedValue,
+  useAnimatedStyle,
+} from "react-native-reanimated";
 import { WebView, WebViewMessageEvent } from "react-native-webview";
 
 export default function KakaoMap({
   isLoading,
   setIsLoading,
+  mode,
+  animatedPosition,
 }: {
   isLoading: boolean;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
+  mode: "marker" | "navigation";
+  animatedPosition: SharedValue<number>;
 }) {
   const webViewRef = useRef<React.ComponentRef<typeof WebView>>(null);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    height: animatedPosition.value + 8,
+  }));
 
   const handleMessage = (event: WebViewMessageEvent) => {
     const data = JSON.parse(event.nativeEvent.data);
 
+    console.log(data.type, data.data);
+
     if (data.type === "MAP_READY") {
-      webViewRef.current?.postMessage(
-        JSON.stringify({
-          type: "SET_PLACES",
-          places: Places,
-        }),
-      );
+      switch (mode) {
+        case "marker":
+          webViewRef.current?.postMessage(
+            JSON.stringify({
+              type: "SET_PLACES",
+              places: Places,
+            }),
+          );
+          break;
+
+        case "navigation":
+          webViewRef.current?.postMessage(
+            JSON.stringify({
+              type: "SET_ROUTE",
+              routeInfo: RouteInfo,
+            }),
+          );
+          break;
+      }
     }
   };
 
   return (
-    <View
-      className={`w-screen h-screen absolute ${isLoading ? `opacity-0` : ``}`}
+    <Animated.View
+      className={`w-screen absolute ${isLoading ? `opacity-0` : ``}`}
+      style={animatedStyle}
     >
       <WebView
         ref={webViewRef}
@@ -41,6 +69,6 @@ export default function KakaoMap({
           setIsLoading(false);
         }}
       />
-    </View>
+    </Animated.View>
   );
 }

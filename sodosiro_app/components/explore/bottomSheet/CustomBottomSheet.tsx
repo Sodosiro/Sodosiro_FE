@@ -5,8 +5,14 @@ import BottomSheet, {
 } from "@gorhom/bottom-sheet";
 import { PlaceList } from "@/mocks/places";
 import Place from "./Place";
+import { SharedValue } from "react-native-reanimated";
+import { BottomSheetSnapPoints } from "@/constants/BottomSheet";
 
-export default function CustomBottomSheet() {
+export default function CustomBottomSheet({
+  animatedPosition,
+}: {
+  animatedPosition: SharedValue<number>;
+}) {
   const animationConfigs = useBottomSheetSpringConfigs({
     damping: 100,
     stiffness: 400,
@@ -16,7 +22,8 @@ export default function CustomBottomSheet() {
   return (
     <BottomSheet
       index={1}
-      snapPoints={[24, 226, "80%"]}
+      snapPoints={BottomSheetSnapPoints}
+      animatedPosition={animatedPosition}
       backgroundStyle={{
         backgroundColor: "white",
       }}

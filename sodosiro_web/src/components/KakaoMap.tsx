@@ -1,8 +1,9 @@
 import { useEffect, useRef } from "react";
 import { Map, useKakaoLoader } from "react-kakao-maps-sdk";
-
-import { createMarkers, type MarkerImages } from "../util/createMarkers";
 import { registerMapClick } from "../util/registerMapClick";
+import { useClusterer } from "../hooks/useClusterer";
+import { useMarkers } from "../hooks/useMarkers";
+import { useRoute } from "../hooks/useRoute";
 
 export default function KakaoMap() {
   useKakaoLoader({
@@ -10,34 +11,24 @@ export default function KakaoMap() {
     libraries: ["clusterer"],
   });
 
-  const clustererRef = useRef<kakao.maps.MarkerClusterer | null>(null);
+  const mapRef = useRef<kakao.maps.Map | null>(null);
 
-  const selectedMarkerRef = useRef<kakao.maps.Marker | null>(null);
-
-  const imageCacheRef = useRef(new globalThis.Map<string, MarkerImages>());
-
-  const markerImageMapRef = useRef(
-    new WeakMap<kakao.maps.Marker, MarkerImages>(),
-  );
+  const {
+    create: createMarker,
+    selectedMarkerRef,
+    markerImageMapRef,
+  } = useMarkers();
+  const { create: createCluster, setMarkers } = useClusterer();
+  const { drawRoute } = useRoute();
 
   const handleCreate = (map: kakao.maps.Map) => {
-    const clusterer = new kakao.maps.MarkerClusterer({
-      map,
-      averageCenter: true,
-      minLevel: 5,
+    mapRef.current = map;
 
-      calculator: [10, 50],
-
-      texts: (count) => `${count}`,
-
-      styles: MarkerStyles,
-    });
-
-    clustererRef.current = clusterer;
+    createCluster(map);
 
     registerMapClick({
       map,
-      markerImageMap: markerImageMapRef.current,
+      markerImageMapRef: markerImageMapRef.current,
       selectedMarkerRef,
     });
 
@@ -50,20 +41,8 @@ export default function KakaoMap() {
   };
 
   const renderPlaces = (places: PlaceType[]) => {
-    if (!clustererRef.current) return;
-
-    clustererRef.current.clear();
-
-    selectedMarkerRef.current = null;
-
-    const markers = createMarkers({
-      places,
-      imageCache: imageCacheRef.current,
-      markerImageMap: markerImageMapRef.current,
-      selectedMarkerRef,
-    });
-
-    clustererRef.current.addMarkers(markers);
+    const markers = createMarker(places);
+    setMarkers(markers);
   };
 
   useEffect(() => {
@@ -74,6 +53,11 @@ export default function KakaoMap() {
       switch (data.type) {
         case "SET_PLACES":
           renderPlaces(data.places);
+          break;
+
+        case "SET_ROUTE":
+          if (!mapRef.current) return;
+          drawRoute(mapRef.current, data.routeInfo);
           break;
       }
     };
@@ -88,78 +72,24 @@ export default function KakaoMap() {
   }, []);
 
   return (
-    <Map
-      // 추후에 위치추적 기능 추가
-      center={{
-        lat: 37.5665,
-        lng: 126.978,
-      }}
-      level={5}
-      style={{
-        width: "100vw",
-        height: "100vh",
-      }}
-      onCreate={handleCreate}
-    />
+    <div
+      className={`w-screen h-screen flex flex-col justify-center items-center`}
+    >
+      <div className={`w-screen min-h-200 h-screen`}>
+        <Map
+          // 추후에 위치추적 기능 추가
+          center={{
+            lat: 37.5665,
+            lng: 126.978,
+          }}
+          level={5}
+          style={{
+            width: "100vw",
+            height: "100%",
+          }}
+          onCreate={handleCreate}
+        />
+      </div>
+    </div>
   );
 }
-
-const MarkerStyles = [
-  {
-    width: "32px",
-    height: "32px",
-    opacity: 0.8,
-    background: "#C4D96A",
-    borderRadius: "999px",
-    color: "#1A1A1A",
-    fontSize: "14px",
-    fontWeight: "bold",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    boxShadow: "0 0 0 4px #C3D96A50, 0 0 0 8px #C3D96A30",
-    textShadow: `
-      -0.5px -0.5px 0 white, 
-      0.5px -0.5px 0 white, 
-      -0.5px 0.5px 0 white, 
-      0.5px 0.5px 0 white`,
-  },
-  {
-    width: "42px",
-    height: "42px",
-    opacity: 0.8,
-    background: "#A9C92D",
-    borderRadius: "999px",
-    color: "#1A1A1A",
-    fontSize: "16px",
-    fontWeight: "bold",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    boxShadow: "0 0 0 5px #A9C92D50, 0 0 0 10px #A9C92D30",
-    textShadow: `
-      -0.5px -0.5px 0 white, 
-      0.5px -0.5px 0 white, 
-      -0.5px 0.5px 0 white, 
-      0.5px 0.5px 0 white`,
-  },
-  {
-    width: "52px",
-    height: "52px",
-    opacity: 0.8,
-    background: "#7E9432",
-    borderRadius: "999px",
-    color: "#1A1A1A",
-    fontSize: "18px",
-    fontWeight: "bold",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    boxShadow: "0 0 0 6px #7E943250, 0 0 0 12px #7E943230",
-    textShadow: `
-      -1px -1px 0 white, 
-      1px -1px 0 white, 
-      -1px 1px 0 white, 
-      1px 1px 0 white`,
-  },
-];

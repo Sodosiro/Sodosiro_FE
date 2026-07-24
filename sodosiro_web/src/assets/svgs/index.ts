@@ -16,3 +16,7 @@ export { default as Shopping } from "./shopping.svg?react";
 export { default as ShoppingMarker } from "./shopping_marker.svg?react";
 export { default as Culture } from "./culture.svg?react";
 export { default as CultureMarker } from "./culture_marker.svg?react";
+
+export { default as DepartMarker } from "./depart_marker.svg?url";
+export { default as ArrivalMarker } from "./arrival_marker.svg?url";
+export { default as TransitMarker } from "./transit_marker.svg?url";

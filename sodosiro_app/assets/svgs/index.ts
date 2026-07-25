@@ -11,6 +11,7 @@ export { default as PinMiniIcon } from "./16px/pin_mini.svg";
 export { default as RefreshMiniIcon } from "./16px/refresh_mini.svg";
 export { default as RemoveMiniIcon } from "./16px/remove_mini.svg";
 export { default as ShareMiniIcon } from "./16px/share_mini.svg";
+export { default as XMiniIcon } from "./16px/x-mini.svg";
 
 // 20px
 export { default as PencilIcon } from "./20px/pencil.svg";

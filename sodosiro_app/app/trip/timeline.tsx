@@ -6,7 +6,7 @@ import CustomText from "@/components/common/CustomText";
 import Header from "@/components/common/Header";
 import Badge from "@/components/trip/Badge";
 import { Stack } from "expo-router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
   Image,
@@ -35,14 +35,14 @@ type PlaceItem = {
 };
 
 type DayPlan = {
-  day: number;
   dateLabel: string;
   places: PlaceItem[];
 };
 
-const MOCK_PLAN: DayPlan[] = [
+// 초기값으로만 사용, 이후에는 상태(state)로 관리됨
+// day 필드는 더 이상 사용하지 않고, 배열 내 index를 식별자로 사용함
+const INITIAL_PLAN: DayPlan[] = [
   {
-    day: 1,
     dateLabel: "10/5 (토)",
     places: [
       {
@@ -61,7 +61,6 @@ const MOCK_PLAN: DayPlan[] = [
     ],
   },
   {
-    day: 2,
     dateLabel: "10/6 (일)",
     places: [
       {
@@ -80,7 +79,6 @@ const MOCK_PLAN: DayPlan[] = [
     ],
   },
   {
-    day: 3,
     dateLabel: "10/7 (월)",
     places: [
       { id: "3-1", order: 1, name: "경포호", type: "관광지" },
@@ -88,7 +86,6 @@ const MOCK_PLAN: DayPlan[] = [
     ],
   },
   {
-    day: 4,
     dateLabel: "10/8 (화)",
     places: [{ id: "4-1", order: 1, name: "정동진", type: "관광지" }],
   },
@@ -148,7 +145,6 @@ function TimelineItem({ place, isLast, isExpanded, onToggle }: TimelineItemProps
     }).start();
   }, [isExpanded, animatedController]);
 
-  // 측정된 높이를 바탕으로 0 ~ 실제높이 범위 보간
   const bodyHeight = animatedController.interpolate({
     inputRange: [0, 1],
     outputRange: [0, contentHeight],
@@ -168,7 +164,6 @@ function TimelineItem({ place, isLast, isExpanded, onToggle }: TimelineItemProps
 
   return (
     <View className={`px-4 py-3 ${isLast ? "" : "border-b border-[#EDEDED]"}`}>
-      {/* 헤더 부분 (클릭 영역) */}
       <Pressable onPress={() => onToggle(place.id)} className="flex-row items-center">
         <View className="w-6 h-6 rounded-xl bg-[#1A1A1A] items-center justify-center mr-2.5">
           <CustomText font="body3" className="text-white">
@@ -180,7 +175,7 @@ function TimelineItem({ place, isLast, isExpanded, onToggle }: TimelineItemProps
           {place.name}
         </CustomText>
 
-        <View className="ml-1.5 px-1.5 py-0.5 rounded-md bg-bg-subtle">
+        <View className="ml-1.5 px-1.5 py-1.5 rounded-md bg-bg-subtle">
           <CustomText font="body2 tight">{place.type}</CustomText>
         </View>
 
@@ -189,7 +184,6 @@ function TimelineItem({ place, isLast, isExpanded, onToggle }: TimelineItemProps
         <RotatingArrowIcon isExpanded={isExpanded} />
       </Pressable>
 
-      {/* 부드럽게 스르륵 펼쳐지는 드롭다운 영역 */}
       <Animated.View style={{ height: bodyHeight, overflow: "hidden" }}>
         <Animated.View
           style={{
@@ -230,7 +224,7 @@ function TimelineItem({ place, isLast, isExpanded, onToggle }: TimelineItemProps
                 }}
                 text="장소 상세보기"
                 selected={false}
-                update={true}
+                bgWhite={true}
               />
               <Badge
                 onLayout={() => {}}
@@ -239,7 +233,7 @@ function TimelineItem({ place, isLast, isExpanded, onToggle }: TimelineItemProps
                 }}
                 text="다른 곳으로 변경하기"
                 selected={true}
-                update={true}
+                bgWhite={true}
               />
             </View>
           </View>
@@ -253,12 +247,29 @@ function TimelineItem({ place, isLast, isExpanded, onToggle }: TimelineItemProps
 // 메인 스크린
 // ----------------------------
 export default function TimelineScreen() {
-  const [activeDay, setActiveDay] = useState(MOCK_PLAN[0].day);
+  // mock 데이터를 반응형 상태로 관리
+  const [plan, setPlan] = useState<DayPlan[]>(INITIAL_PLAN);
+
+  // day 필드 대신 배열 index를 식별자로 사용
+  const [activeIndex, setActiveIndex] = useState(0);
   const [expandedIds, setExpandedIds] = useState<Set<string>>(
-    new Set([MOCK_PLAN[0].places[0]?.id].filter(Boolean)),
+    new Set([plan[0]?.places[0]?.id].filter(Boolean) as string[]),
   );
   const [tripTitle, setTripTitle] = useState("강릉 여행");
   const [editButtonWidth, setEditButtonWidth] = useState(DEFAULT_BUTTON_WIDTH);
+
+  // 수정 모드 & 삭제 대기중인 index들
+  const [isEditing, setIsEditing] = useState(false);
+  const [pendingDeleteIndices, setPendingDeleteIndices] = useState<Set<number>>(new Set());
+
+  // 삭제 대기중인 index는 화면에서 임시로 감춤 (확인 누르기 전까지 실제 데이터는 유지)
+  const visiblePlan = useMemo(
+    () =>
+      plan
+        .map((dayPlan, index) => ({ dayPlan, index }))
+        .filter(({ index }) => !pendingDeleteIndices.has(index)),
+    [plan, pendingDeleteIndices],
+  );
 
   const mainScrollRef = useRef<ScrollView>(null);
   const badgeScrollRef = useRef<ScrollView>(null);
@@ -269,23 +280,23 @@ export default function TimelineScreen() {
   const isProgrammaticScroll = useRef(false);
   const programmaticScrollTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const scrollBadgeIntoView = useCallback((day: number) => {
-    const layout = badgeLayouts.current[day];
+  const scrollBadgeIntoView = useCallback((index: number) => {
+    const layout = badgeLayouts.current[index];
     if (!layout) return;
     const targetX = Math.max(layout.x - 20, 0);
     badgeScrollRef.current?.scrollTo({ x: targetX, animated: true });
   }, []);
 
   const handlePressDayBadge = useCallback(
-    (day: number) => {
-      const offsetY = sectionOffsets.current[day];
+    (index: number) => {
+      const offsetY = sectionOffsets.current[index];
       if (offsetY === undefined) return;
 
       isProgrammaticScroll.current = true;
       if (programmaticScrollTimer.current) clearTimeout(programmaticScrollTimer.current);
 
-      setActiveDay(day);
-      scrollBadgeIntoView(day);
+      setActiveIndex(index);
+      scrollBadgeIntoView(index);
       mainScrollRef.current?.scrollTo({ y: Math.max(offsetY - 12, 0), animated: true });
 
       programmaticScrollTimer.current = setTimeout(() => {
@@ -305,18 +316,18 @@ export default function TimelineScreen() {
 
       let current = entries[0][0];
       let currentOffset = -Infinity;
-      for (const [dayKey, offsetY] of entries) {
+      for (const [indexKey, offsetY] of entries) {
         if (offsetY - SCROLL_SPY_OFFSET <= y && offsetY > currentOffset) {
-          current = dayKey;
+          current = indexKey;
           currentOffset = offsetY;
         }
       }
 
-      const currentDay = Number(current);
-      setActiveDay((prev) => {
-        if (prev !== currentDay) {
-          scrollBadgeIntoView(currentDay);
-          return currentDay;
+      const currentIndex = Number(current);
+      setActiveIndex((prev) => {
+        if (prev !== currentIndex) {
+          scrollBadgeIntoView(currentIndex);
+          return currentIndex;
         }
         return prev;
       });
@@ -324,13 +335,13 @@ export default function TimelineScreen() {
     [scrollBadgeIntoView],
   );
 
-  const handleSectionLayout = useCallback((day: number, e: LayoutChangeEvent) => {
-    sectionOffsets.current[day] = e.nativeEvent.layout.y;
+  const handleSectionLayout = useCallback((index: number, e: LayoutChangeEvent) => {
+    sectionOffsets.current[index] = e.nativeEvent.layout.y;
   }, []);
 
-  const handleBadgeLayout = useCallback((day: number, e: LayoutChangeEvent) => {
+  const handleBadgeLayout = useCallback((index: number, e: LayoutChangeEvent) => {
     const { x, width } = e.nativeEvent.layout;
-    badgeLayouts.current[day] = { x, width };
+    badgeLayouts.current[index] = { x, width };
   }, []);
 
   const toggleExpand = useCallback((id: string) => {
@@ -345,6 +356,43 @@ export default function TimelineScreen() {
     });
   }, []);
 
+  // 일차 뱃지 삭제(X) → 임시 삭제 (확인 누르기 전까지는 실제 데이터에서 지우지 않음)
+  const handleRequestDeleteDay = useCallback((index: number) => {
+    setPendingDeleteIndices((prev) => {
+      const next = new Set(prev);
+      next.add(index);
+      return next;
+    });
+  }, []);
+
+  // 수정하기 / 확인 버튼
+  const handlePressEditButton = useCallback(() => {
+    if (!isEditing) {
+      setIsEditing(true);
+      return;
+    }
+
+    if (pendingDeleteIndices.size > 0) {
+      setPlan((prev) => {
+        const nextPlan = prev.filter((_, idx) => !pendingDeleteIndices.has(idx));
+
+        if (pendingDeleteIndices.has(activeIndex)) {
+          // 보고있던 일차가 삭제됐다면 맨 앞으로
+          setActiveIndex(0);
+        } else {
+          // 삭제된 항목들만큼 앞으로 당겨진 index로 보정
+          const shift = Array.from(pendingDeleteIndices).filter((idx) => idx < activeIndex).length;
+          setActiveIndex(activeIndex - shift);
+        }
+
+        return nextPlan;
+      });
+      setPendingDeleteIndices(new Set());
+    }
+
+    setIsEditing(false);
+  }, [isEditing, pendingDeleteIndices, activeIndex]);
+
   return (
     <SafeAreaView className="flex-1 bg-white" edges={["top", "bottom"]}>
       <Stack.Screen options={{ headerShown: false }} />
@@ -352,7 +400,7 @@ export default function TimelineScreen() {
 
       <View className="flex-1">
         {/* 일차 뱃지 바 */}
-        <View className="relative py-2">
+        <View className="relative py-2" style={{ zIndex: 20 }}>
           <ScrollView
             ref={badgeScrollRef}
             horizontal
@@ -363,15 +411,17 @@ export default function TimelineScreen() {
               gap: 8,
             }}
           >
-            {MOCK_PLAN.map(({ day }) => {
-              const isActive = day === activeDay;
+            {visiblePlan.map(({ index }) => {
+              const isActive = index === activeIndex;
               return (
                 <Badge
-                  key={day}
-                  onLayout={(e) => handleBadgeLayout(day, e)}
-                  onPress={() => handlePressDayBadge(day)}
-                  text={`${day}일차`}
+                  key={index}
+                  onLayout={(e) => handleBadgeLayout(index, e)}
+                  onPress={() => handlePressDayBadge(index)}
+                  text={`${index + 1}일차`}
                   selected={isActive}
+                  removable={isEditing}
+                  onDelete={() => handleRequestDeleteDay(index)}
                 />
               );
             })}
@@ -391,7 +441,7 @@ export default function TimelineScreen() {
             ))}
           </View>
 
-          {/* 수정하기 버튼 */}
+          {/* 수정하기 / 확인 버튼 */}
           <View className="absolute top-0 bottom-0 right-0 justify-center items-end bg-white pr-5">
             <Badge
               onLayout={(e) => {
@@ -400,10 +450,11 @@ export default function TimelineScreen() {
                   Math.abs(prev - measuredWidth) > 1 ? measuredWidth : prev,
                 );
               }}
-              onPress={() => {}}
-              text="수정하기"
+              onPress={handlePressEditButton}
+              text={isEditing ? "확인" : "수정하기"}
               selected={false}
-              update={true}
+              isEditButton={true}
+              isEditing={isEditing}
             />
           </View>
         </View>
@@ -417,21 +468,21 @@ export default function TimelineScreen() {
           scrollEventThrottle={16}
           showsVerticalScrollIndicator={false}
         >
-          {MOCK_PLAN.map((dayPlan) => (
+          {visiblePlan.map(({ dayPlan, index }) => (
             <View
-              key={dayPlan.day}
-              onLayout={(e) => handleSectionLayout(dayPlan.day, e)}
+              key={index}
+              onLayout={(e) => handleSectionLayout(index, e)}
               className="mb-6 rounded-2xl border border-[#EDEDED] bg-white py-1"
             >
               <CustomText font="title" className="text-primary-dark px-3 pt-3">
                 {dayPlan.dateLabel}
               </CustomText>
 
-              {dayPlan.places.map((place, index) => (
+              {dayPlan.places.map((place, placeIndex) => (
                 <TimelineItem
                   key={place.id}
                   place={place}
-                  isLast={index === dayPlan.places.length - 1}
+                  isLast={placeIndex === dayPlan.places.length - 1}
                   isExpanded={expandedIds.has(place.id)}
                   onToggle={toggleExpand}
                 />
@@ -449,10 +500,8 @@ export default function TimelineScreen() {
             <Image
               source={require("@/assets/images/kakaomap.png")}
               resizeMode="cover"
-              // className={`absolute`}
               style={{ width: 24, height: 24 }}
             />
-            {/* <StarIcon /> */}
             <CustomText font="body1" className="ml-1">
               내보내기
             </CustomText>

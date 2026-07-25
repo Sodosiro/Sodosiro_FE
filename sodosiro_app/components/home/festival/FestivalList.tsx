@@ -1,17 +1,17 @@
-import { Festivals } from "@/mocks/places";
-import { ScrollView, View } from "react-native";
-import Festival from "./Festival";
 import { NotificationIcon } from "@/assets/svgs";
 import CustomText from "@/components/common/CustomText";
+import { FESTIVALS } from "@/mocks/places";
+import { ScrollView, View } from "react-native";
+import Festival from "./Festival";
 
 export default function FestivalList() {
-  return Festivals.length > 0 ? (
+  return FESTIVALS.length > 0 ? (
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={{ gap: 8 }}
     >
-      {Festivals.map((festival) => (
+      {FESTIVALS.map((festival) => (
         <Festival
           key={festival.id}
           id={festival.id}

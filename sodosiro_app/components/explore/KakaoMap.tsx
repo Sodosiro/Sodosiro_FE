@@ -1,4 +1,4 @@
-import { Places } from "@/mocks/places";
+import { PLACES } from "@/mocks/places";
 import { Route as RouteInfo } from "@/mocks/route";
 import type { Dispatch, SetStateAction } from "react";
 import { useRef } from "react";
@@ -35,7 +35,7 @@ export default function KakaoMap({
           webViewRef.current?.postMessage(
             JSON.stringify({
               type: "SET_PLACES",
-              places: Places,
+              places: PLACES,
             }),
           );
           break;

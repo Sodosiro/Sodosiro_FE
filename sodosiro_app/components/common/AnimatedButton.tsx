@@ -27,9 +27,11 @@ export default function AnimatedButton({
   const pressed = useSharedValue(0);
 
   const animatedStyle = useAnimatedStyle(() => ({
-    backgroundColor: loading ? backgroundColor[0] : disabled
-      ? disabledColor
-      : interpolateColor(pressed.value, [0, 1], backgroundColor),
+    backgroundColor: loading
+      ? backgroundColor[0]
+      : disabled
+        ? disabledColor
+        : interpolateColor(pressed.value, [0, 1], backgroundColor),
   }));
 
   return (

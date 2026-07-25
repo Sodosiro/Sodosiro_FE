@@ -1,8 +1,8 @@
-import { Text, View } from "react-native";
-import Spinner from "./Spinner";
 import { BigCheckIcon } from "@/assets/svgs";
-import AnimatedButton from "./AnimatedButton";
 import { Body3TightClass, TitleTightClass } from "@/styles/Typography";
+import { Text, View } from "react-native";
+import AnimatedButton from "./AnimatedButton";
+import Spinner from "./Spinner";
 
 type ButtonProps = {
   type: "primary" | "secondary" | "tertiary";
@@ -13,6 +13,7 @@ type ButtonProps = {
   checked?: boolean;
   loading?: boolean;
   onPress?: () => void;
+  Icon?: React.ReactNode;
 };
 
 export default function CustomButton({
@@ -24,6 +25,7 @@ export default function CustomButton({
   disabled = false,
   loading = false,
   onPress,
+  Icon,
 }: ButtonProps) {
   const PrimaryColor = ["#C4D96A", "#A9C92D"];
   const SecondaryColor = ["#1A1A1A", "#3D3D3D"];
@@ -41,9 +43,9 @@ export default function CustomButton({
       ? "h-13"
       : size === "medium"
         ? "w-[235px] h-13"
-        : "self-start px-4 h-11";
-  const secondaryButtonSize = "self-start px-4 h-11";
-  const tertiaryButtonSize = "self-start px-4 h-11";
+        : "self-start px-5 h-11";
+  const secondaryButtonSize = `self-start px-5 ${size === "small" ? `h-11` : `h-13`}`;
+  const tertiaryButtonSize = `self-start px-5 ${size === "small" ? `h-11` : `h-13`}`;
 
   const textSize =
     type === "primary" && size !== "small" ? TitleTightClass : Body3TightClass;
@@ -74,6 +76,7 @@ export default function CustomButton({
       {!loading ? (
         <View className={`flex flex-row justify-center items-center gap-1`}>
           {checked && <BigCheckIcon color={textColor} />}
+          {Icon && Icon}
           <Text className={`${textSize} ${textClass}`}>{title}</Text>
         </View>
       ) : (

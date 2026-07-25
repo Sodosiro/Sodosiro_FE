@@ -1,12 +1,12 @@
-import { View } from "react-native";
+import { BottomSheetSnapPoints } from "@/constants/BottomSheet";
+import { PLACE_LIST } from "@/mocks/places";
 import BottomSheet, {
   BottomSheetFlatList,
   useBottomSheetSpringConfigs,
 } from "@gorhom/bottom-sheet";
-import { PlaceList } from "@/mocks/places";
-import Place from "./Place";
+import { View } from "react-native";
 import type { SharedValue } from "react-native-reanimated";
-import { BottomSheetSnapPoints } from "@/constants/BottomSheet";
+import Place from "./Place";
 
 export default function CustomBottomSheet({
   animatedPosition,
@@ -39,7 +39,7 @@ export default function CustomBottomSheet({
       animationConfigs={animationConfigs}
     >
       <BottomSheetFlatList
-        data={PlaceList}
+        data={PLACE_LIST}
         nestedScrollEnabled
         keyExtractor={(item) => String(item.id)}
         contentContainerStyle={{
@@ -48,7 +48,7 @@ export default function CustomBottomSheet({
         renderItem={({ item, index }) => (
           <View key={index}>
             <Place place={item} />
-            {index !== PlaceList.length - 1 && (
+            {index !== PLACE_LIST.length - 1 && (
               <View className="h-px bg-bg-subtle mx-5" />
             )}
           </View>

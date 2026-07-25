@@ -1,12 +1,12 @@
-import { View } from "react-native";
-import { HomePopularPlaces } from "@/mocks/places";
-import PlaceMini from "../../place/PlaceMini";
 import CustomText from "@/components/common/CustomText";
+import { HOME_POPULAR_PLACES } from "@/mocks/places";
+import { View } from "react-native";
+import PlaceMini from "../../common/place/PlaceMini";
 
 export default function PopularPlacesList() {
   return (
     <View className={`gap-4 mt-1`}>
-      {HomePopularPlaces.map((place, index) => (
+      {HOME_POPULAR_PLACES.map((place, index) => (
         <View key={index} className={`flex-row items-center justify-between`}>
           <CustomText font="body3" className={`w-4 text-text-muted`}>
             {index + 1}

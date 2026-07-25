@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import getMarker from "../components/Marker";
+import getLabel from "../components/Marker";
 import { getMarkerIcon, getSelectedMarkerIcon } from "../util/getMarkerIcon";
 
 export function useMarkers() {
@@ -63,7 +63,7 @@ export function useMarkers() {
 
         const overlay = new kakao.maps.CustomOverlay({
           position: marker.getPosition(),
-          content: getMarker(place.title),
+          content: getLabel(place.title),
           yAnchor: 0,
         });
 

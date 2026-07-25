@@ -1,4 +1,4 @@
-import getMarker from "../components/Marker";
+import getLabel from "../components/Marker";
 import { getSelectedMarkerIcon } from "../util/getMarkerIcon";
 
 export function useMarker() {
@@ -16,7 +16,7 @@ export function useMarker() {
 
     const overlay = new kakao.maps.CustomOverlay({
       position: marker.getPosition(),
-      content: getMarker(place.title),
+      content: getLabel(place.title),
       yAnchor: 0,
     });
 

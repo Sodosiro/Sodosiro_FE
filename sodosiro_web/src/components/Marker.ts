@@ -1,4 +1,4 @@
-export default function getMarker(title: string) {
+export default function getLabel(title: string) {
   return `
         <div style="
           text-shadow:

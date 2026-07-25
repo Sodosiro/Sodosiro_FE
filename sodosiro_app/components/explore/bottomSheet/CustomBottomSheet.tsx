@@ -1,10 +1,11 @@
 import { BottomSheetSnapPoints } from "@/constants/BottomSheet";
 import { PLACE_LIST } from "@/mocks/places";
+import { useSearchStore } from "@/stores/useSearchStore";
 import BottomSheet, {
   BottomSheetFlatList,
   useBottomSheetSpringConfigs,
 } from "@gorhom/bottom-sheet";
-import { useState, type RefObject } from "react";
+import { useEffect, useState, type RefObject } from "react";
 import { View } from "react-native";
 import type { SharedValue } from "react-native-reanimated";
 import Place from "./Place";
@@ -25,6 +26,12 @@ export default function CustomBottomSheet({
   });
 
   const [isClosing, setIsClosing] = useState(false);
+  const { result, keyword } = useSearchStore();
+
+  useEffect(() => {
+    if (result.length > 0) bottomSheetRef.current?.snapToIndex(1);
+    else bottomSheetRef.current?.close();
+  }, [result, keyword]);
 
   return (
     <BottomSheet
@@ -56,7 +63,7 @@ export default function CustomBottomSheet({
       animationConfigs={animationConfigs}
     >
       <BottomSheetFlatList
-        data={PLACE_LIST}
+        data={result}
         nestedScrollEnabled
         keyExtractor={(item) => String(item.id)}
         contentContainerStyle={{

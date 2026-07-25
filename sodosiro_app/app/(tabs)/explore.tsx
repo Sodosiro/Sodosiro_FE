@@ -2,44 +2,34 @@ import Spinner from "@/components/common/Spinner";
 import CustomBottomSheet from "@/components/explore/bottomSheet/CustomBottomSheet";
 import KakaoMap from "@/components/explore/KakaoMap";
 import MapOverlay from "@/components/explore/overlay/MapOverlay";
+import { useWebViewStore } from "@/stores/useWebViewStore";
 import type BottomSheet from "@gorhom/bottom-sheet";
-import { useLocalSearchParams } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { Dimensions, View } from "react-native";
 import { useSharedValue } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
+import WebView from "react-native-webview";
 
 export default function ExploreScreen() {
-  const [isLoading, setIsLoading] = useState(true);
-
+  const { isLoading } = useWebViewStore();
   const bottomSheetRef = useRef<BottomSheet>(null);
-
   const screenHeight = Dimensions.get("window").height;
   const animatedPosition = useSharedValue(screenHeight);
-
-  const { keyword: param } = useLocalSearchParams<{
-    keyword?: string;
-  }>();
-
   const animatedIndex = useSharedValue(-1);
 
-  useEffect(() => {
-    if (!isLoading && param) {
-      bottomSheetRef.current?.snapToIndex(1);
-    }
-  }, [param, isLoading]);
+  const webViewRef = useRef<React.ComponentRef<typeof WebView>>(null);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <KakaoMap
-        isLoading={isLoading}
-        setIsLoading={setIsLoading}
+        webViewRef={webViewRef}
         mode="marker"
         animatedPosition={animatedPosition}
       />
       {!isLoading ? (
         <>
           <MapOverlay
+            webViewRef={webViewRef}
             bottomSheetRef={bottomSheetRef}
             animatedPosition={animatedPosition}
             animatedIndex={animatedIndex}

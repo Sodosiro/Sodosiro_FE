@@ -1,9 +1,11 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { Map, useKakaoLoader } from "react-kakao-maps-sdk";
 import { useClusterer } from "../hooks/useClusterer";
+import { useCurrentLocationMarker } from "../hooks/useCurrentLocationMarker";
 import { useMarker } from "../hooks/useMarker";
 import { useMarkers } from "../hooks/useMarkers";
 import { useRoute } from "../hooks/useRoute";
+import { useWebViewMessage } from "../hooks/useWebViewMessage";
 import { registerMapClick } from "../util/registerMapClick";
 
 export default function KakaoMap() {
@@ -20,11 +22,34 @@ export default function KakaoMap() {
     markerImageMapRef,
     overlayRef,
   } = useMarkers();
-  const { create: createMarker } = useMarker();
+
   const { create: createCluster, setMarkers } = useClusterer();
+
+  const { create: createMarker } = useMarker();
   const { drawRoute } = useRoute();
 
+  const { updateLocation, startTracking, stopTracking, denyLocation } =
+    useCurrentLocationMarker(mapRef);
+
+  const renderPlaces = (places: PlaceType[]) => {
+    const markers = createMarkers(places);
+    setMarkers(markers);
+  };
+
+  useWebViewMessage({
+    mapRef,
+    createCluster: () => createCluster(mapRef.current!),
+    renderPlaces,
+    createMarker,
+    drawRoute,
+    updateLocation,
+    startTracking,
+    denyLocation,
+  });
+
   const handleCreate = (map: kakao.maps.Map) => {
+    mapRef.current = map;
+
     registerMapClick({
       map,
       markerImageMapRef: markerImageMapRef.current,
@@ -32,7 +57,8 @@ export default function KakaoMap() {
       overlayRef,
     });
 
-    // RN에게 지도 준비 완료 알림
+    kakao.maps.event.addListener(map, "dragstart", stopTracking);
+
     window.ReactNativeWebView?.postMessage(
       JSON.stringify({
         type: "MAP_READY",
@@ -40,51 +66,12 @@ export default function KakaoMap() {
     );
   };
 
-  const renderPlaces = (places: PlaceType[]) => {
-    const markers = createMarkers(places);
-    setMarkers(markers);
-  };
-
-  useEffect(() => {
-    const receiveMessage = (event: MessageEvent) => {
-      const data =
-        typeof event.data === "string" ? JSON.parse(event.data) : event.data;
-
-      switch (data.type) {
-        case "SET_PLACES":
-          if (!mapRef.current) return;
-          createCluster(mapRef.current);
-          renderPlaces(data.places);
-          break;
-
-        case "SET_ROUTE":
-          if (!mapRef.current) return;
-          drawRoute(mapRef.current, data.routeInfo);
-          break;
-
-        case "SET_PLACE":
-          if (!mapRef.current) return;
-          createMarker(mapRef.current, data.place);
-          break;
-      }
-    };
-
-    window.addEventListener("message", receiveMessage);
-    document.addEventListener("message", receiveMessage as EventListener);
-
-    return () => {
-      window.removeEventListener("message", receiveMessage);
-      document.removeEventListener("message", receiveMessage as EventListener);
-    };
-  }, []);
-
   return (
     <div
       className={`w-screen h-screen flex flex-col justify-center items-center`}
     >
       <div className={`w-screen min-h-250 h-screen`}>
         <Map
-          // 추후에 위치추적 기능 추가
           ref={mapRef}
           center={{
             lat: 37.5665,
@@ -92,7 +79,7 @@ export default function KakaoMap() {
           }}
           level={5}
           style={{
-            width: "100vw",
+            width: "100%",
             height: "100%",
           }}
           onCreate={handleCreate}

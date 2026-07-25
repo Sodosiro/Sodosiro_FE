@@ -1,6 +1,8 @@
-import { HeartCircle, HeartCircleStroke, StarIcon } from "@/assets/svgs";
+import { HeartCircle, HeartCircleStroke } from "@/assets/svgs";
 import CustomText from "@/components/common/CustomText";
-import { CategoryMap } from "@/util/place/category";
+import CategoryTag from "@/components/common/place/CategoryTag";
+import Rate from "@/components/common/place/Rate";
+import { router } from "expo-router";
 import { useState } from "react";
 import { Image, View } from "react-native";
 
@@ -18,11 +20,7 @@ export default function Place({ place }: { place: PlaceType }) {
           <CustomText font="title" numberOfLines={1}>
             {place.title}
           </CustomText>
-          <View className={`px-1.5 py-1 bg-bg-subtle rounded-sm`}>
-            <CustomText font="body3 tight">
-              {CategoryMap[place.category]}
-            </CustomText>
-          </View>
+          <CategoryTag category={place.category} />
         </View>
         <View className={`gap-0.5`}>
           <CustomText
@@ -32,17 +30,23 @@ export default function Place({ place }: { place: PlaceType }) {
           >
             {place.desc}
           </CustomText>
-          <View className={`flex-row items-center gap-0.5`}>
-            <StarIcon />
-            <CustomText font="body2">{place.rate}</CustomText>
-            <CustomText font="body3" className={`text-[#666666]`}>
-              {"("}
-              {place.review}
-              {")"}
+          <View className={`flex-row gap-1`}>
+            <CustomText font="body3" className={`text-text-secondary`}>
+              영업 중
             </CustomText>
+            <Rate rate={place.rate} reviewCount={place.reviewCount} />
           </View>
         </View>
-        <CustomText font="body2" className={`text-primary-dark`}>
+        <CustomText
+          font="body2"
+          className={`text-primary-dark self-start`}
+          onPress={() =>
+            router.push({
+              pathname: "/place/[placeId]",
+              params: { placeId: "1" },
+            })
+          }
+        >
           상세보기
         </CustomText>
       </View>

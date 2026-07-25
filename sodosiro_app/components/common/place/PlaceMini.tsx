@@ -1,6 +1,8 @@
-import { Image, ImageSourcePropType, View } from "react-native";
-import CustomText from "../common/CustomText";
 import { RightIcon } from "@/assets/svgs";
+import { router } from "expo-router";
+import type { ImageSourcePropType } from "react-native";
+import { Image, Pressable, View } from "react-native";
+import CustomText from "../CustomText";
 
 type Props = {
   imageSource: ImageSourcePropType | string;
@@ -10,7 +12,12 @@ type Props = {
 
 export default function PlaceMini({ imageSource, title, desc }: Props) {
   return (
-    <View className={`flex-row items-center flex-1 gap-3`}>
+    <Pressable
+      className={`flex-row items-center flex-1 gap-3`}
+      onPress={() =>
+        router.push({ pathname: "/place/[placeId]", params: { placeId: "1" } })
+      }
+    >
       <Image
         source={
           typeof imageSource === "string" ? { uri: imageSource } : imageSource
@@ -32,6 +39,6 @@ export default function PlaceMini({ imageSource, title, desc }: Props) {
         </CustomText>
       </View>
       <RightIcon color={"#777777"} />
-    </View>
+    </Pressable>
   );
 }

@@ -1,13 +1,10 @@
 import { useRef } from "react";
+import getLabel from "../components/Marker";
 import { getMarkerIcon, getSelectedMarkerIcon } from "../util/getMarkerIcon";
-
-export type MarkerImages = {
-  normal: kakao.maps.MarkerImage;
-  selected: kakao.maps.MarkerImage;
-};
 
 export function useMarkers() {
   const selectedMarkerRef = useRef<kakao.maps.Marker | null>(null);
+  const overlayRef = useRef<kakao.maps.CustomOverlay | null>(null);
 
   const imageCacheRef = useRef(new Map<string, MarkerImages>());
 
@@ -18,24 +15,28 @@ export function useMarkers() {
   const create = (places: PlaceType[]) => {
     selectedMarkerRef.current = null;
 
-    return places.map((item) => {
-      if (!imageCacheRef.current.has(item.category)) {
-        imageCacheRef.current.set(item.category, {
+    return places.map((place) => {
+      if (!imageCacheRef.current.has(place.category)) {
+        imageCacheRef.current.set(place.category, {
           normal: new kakao.maps.MarkerImage(
-            getMarkerIcon(item.category, item.favorite, item.popular),
+            getMarkerIcon(place.category, place.favorite, place.popular),
             new kakao.maps.Size(24, 24),
           ),
           selected: new kakao.maps.MarkerImage(
-            getSelectedMarkerIcon(item.category, item.favorite, item.popular),
+            getSelectedMarkerIcon(
+              place.category,
+              place.favorite,
+              place.popular,
+            ),
             new kakao.maps.Size(60, 60),
           ),
         });
       }
 
-      const images = imageCacheRef.current.get(item.category)!;
+      const images = imageCacheRef.current.get(place.category)!;
 
       const marker = new kakao.maps.Marker({
-        position: new kakao.maps.LatLng(item.lat, item.lng),
+        position: new kakao.maps.LatLng(place.lat, place.lng),
         image: images.normal,
         zIndex: 0,
       });
@@ -43,8 +44,6 @@ export function useMarkers() {
       markerImageMapRef.current.set(marker, images);
 
       kakao.maps.event.addListener(marker, "click", () => {
-        if (selectedMarkerRef.current === marker) return;
-
         if (selectedMarkerRef.current) {
           const prev = markerImageMapRef.current.get(selectedMarkerRef.current);
 
@@ -54,15 +53,28 @@ export function useMarkers() {
           }
         }
 
+        overlayRef.current?.setMap(null);
+
+        // 현재 마커 선택
         marker.setImage(images.selected);
         marker.setZIndex(999);
 
         selectedMarkerRef.current = marker;
 
+        const overlay = new kakao.maps.CustomOverlay({
+          position: marker.getPosition(),
+          content: getLabel(place.title),
+          yAnchor: 0,
+        });
+
+        overlay.setMap(marker.getMap());
+
+        overlayRef.current = overlay;
+
         window.ReactNativeWebView?.postMessage(
           JSON.stringify({
             type: "MARKER_CLICK",
-            place: item,
+            place: place,
           }),
         );
       });
@@ -75,5 +87,6 @@ export function useMarkers() {
     create,
     selectedMarkerRef,
     markerImageMapRef,
+    overlayRef,
   };
 }

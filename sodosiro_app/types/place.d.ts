@@ -1,4 +1,12 @@
-type CategoryType = 'all' | 'activity' | 'attraction' | 'cafe' | 'nature' | 'restaurant' | 'shopping' | 'culture'
+type CategoryType =
+  | "all"
+  | "activity"
+  | "attraction"
+  | "cafe"
+  | "nature"
+  | "restaurant"
+  | "shopping"
+  | "culture";
 
 type PlaceType = {
   id: number;
@@ -6,7 +14,7 @@ type PlaceType = {
   imageSource?: any;
   desc?: string;
   rate?: number;
-  review?: number;
+  reviewCount?: number;
   category: CategoryType;
   lat?: number;
   lng?: number;

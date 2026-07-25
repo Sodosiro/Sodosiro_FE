@@ -1,34 +1,53 @@
-import { Dimensions, View } from "react-native";
-import SearchBar from "./SearchBar";
-import CategoryList from "../../common/CategoryList";
-import PlaceLegend from "./PlaceLegend";
-import ClearSearchButton from "./ClearSearchButton";
-import { router, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
-import Animated, {
-  SharedValue,
-  useAnimatedStyle,
-} from "react-native-reanimated";
 import { BottomSheetSnapPoints } from "@/constants/BottomSheet";
+import { useLocationStore } from "@/stores/useLocationStore";
+import { useSearchStore } from "@/stores/useSearchStore";
+import type BottomSheet from "@gorhom/bottom-sheet";
+import type { RefObject } from "react";
+import { useState } from "react";
+import { Dimensions, Pressable, View } from "react-native";
+import type { SharedValue } from "react-native-reanimated";
+import Animated, { useAnimatedStyle } from "react-native-reanimated";
+import WebView from "react-native-webview";
+import CategoryList from "../../common/CategoryList";
+import ClearSearchButton from "./ClearSearchButton";
+import PlaceLegend from "./PlaceLegend";
+import SearchBar from "./SearchBar";
+
+const BOTTOM_OFFSET = 3.5;
 
 export default function MapOverlay({
+  webViewRef,
   animatedPosition,
+  bottomSheetRef,
+  animatedIndex,
 }: {
+  webViewRef: RefObject<WebView<unknown> | null>;
   animatedPosition: SharedValue<number>;
+  bottomSheetRef: RefObject<BottomSheet | null>;
+  animatedIndex: SharedValue<number>;
 }) {
-  const { keyword: param } = useLocalSearchParams<{
-    keyword?: string;
-  }>();
+  const { keyword, clearResult } = useSearchStore();
+
+  const { isDenied } = useLocationStore();
 
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>("all");
 
   const screenHeight = Dimensions.get("window").height;
 
   const animatedStyle = useAnimatedStyle(() => {
-    const sheetHeight = screenHeight - animatedPosition.value;
+    if (animatedIndex.value === -1) {
+      return {
+        bottom: -BOTTOM_OFFSET,
+      };
+    }
+
+    const sheetHeight = screenHeight - animatedPosition.value - 40;
 
     return {
-      bottom: Math.min(sheetHeight - 40, BottomSheetSnapPoints[1] as number),
+      bottom: Math.min(
+        sheetHeight,
+        (BottomSheetSnapPoints[1] as number) - BOTTOM_OFFSET,
+      ),
     };
   });
 
@@ -36,7 +55,7 @@ export default function MapOverlay({
     <View className={`flex-1`}>
       <View>
         <View className={`px-5 py-3`}>
-          <SearchBar keyword={param} />
+          <SearchBar keyword={keyword} bottomSheetRef={bottomSheetRef} />
         </View>
         <CategoryList
           selectedCategory={selectedCategory}
@@ -48,12 +67,27 @@ export default function MapOverlay({
       <Animated.View
         className={`w-screen flex-row absolute`}
         style={animatedStyle}
+        pointerEvents="box-none"
       >
         <PlaceLegend className={`left-5`} />
-        {param && (
+        {!isDenied && (
+          <Pressable
+            className={`absolute w-14 h-14 rounded-full bg-bg right-6 bottom-0 border border-border`}
+            onPress={() => {
+              webViewRef.current?.postMessage(
+                JSON.stringify({
+                  type: "START_TRACKING",
+                }),
+              );
+            }}
+          />
+        )}
+        {keyword && (
           <ClearSearchButton
             className={`absolute self-center left-1/2 -translate-x-1/2 top-6`}
-            onPress={() => router.push("/(tabs)/explore")}
+            onPress={() => {
+              clearResult();
+            }}
           />
         )}
       </Animated.View>

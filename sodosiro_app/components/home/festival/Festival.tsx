@@ -1,7 +1,8 @@
-import { Image, ImageSourcePropType, View } from "react-native";
-import FestivalBadge from "./FestivalBadge";
-import { format } from "date-fns";
 import CustomText from "@/components/common/CustomText";
+import { format } from "date-fns";
+import type { ImageSourcePropType } from "react-native";
+import { Image, View } from "react-native";
+import FestivalBadge from "./FestivalBadge";
 
 type Props = {
   id: number;

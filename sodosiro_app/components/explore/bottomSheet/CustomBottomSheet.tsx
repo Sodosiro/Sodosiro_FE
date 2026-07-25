@@ -5,7 +5,7 @@ import BottomSheet, {
 } from "@gorhom/bottom-sheet";
 import { PlaceList } from "@/mocks/places";
 import Place from "./Place";
-import { SharedValue } from "react-native-reanimated";
+import type { SharedValue } from "react-native-reanimated";
 import { BottomSheetSnapPoints } from "@/constants/BottomSheet";
 
 export default function CustomBottomSheet({

@@ -1,4 +1,5 @@
-import { Image, ImageSourcePropType, View } from "react-native";
+import type { ImageSourcePropType} from "react-native";
+import { Image, View } from "react-native";
 import CustomText from "../common/CustomText";
 import { RightIcon } from "@/assets/svgs";
 

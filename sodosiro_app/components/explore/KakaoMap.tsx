@@ -1,11 +1,11 @@
 import { Places } from "@/mocks/places";
 import { Route as RouteInfo } from "@/mocks/route";
-import { Dispatch, SetStateAction, useRef } from "react";
-import Animated, {
-  SharedValue,
-  useAnimatedStyle,
-} from "react-native-reanimated";
-import { WebView, WebViewMessageEvent } from "react-native-webview";
+import type { Dispatch, SetStateAction } from "react";
+import { useRef } from "react";
+import type { SharedValue } from "react-native-reanimated";
+import Animated, { useAnimatedStyle } from "react-native-reanimated";
+import type { WebViewMessageEvent } from "react-native-webview";
+import { WebView } from "react-native-webview";
 
 export default function KakaoMap({
   isLoading,

@@ -1,15 +1,13 @@
-import { Dimensions, View } from "react-native";
-import SearchBar from "./SearchBar";
-import CategoryList from "../../common/CategoryList";
-import PlaceLegend from "./PlaceLegend";
-import ClearSearchButton from "./ClearSearchButton";
+import { BottomSheetSnapPoints } from "@/constants/BottomSheet";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import Animated, {
-  SharedValue,
-  useAnimatedStyle,
-} from "react-native-reanimated";
-import { BottomSheetSnapPoints } from "@/constants/BottomSheet";
+import { Dimensions, View } from "react-native";
+import type { SharedValue } from "react-native-reanimated";
+import Animated, { useAnimatedStyle } from "react-native-reanimated";
+import CategoryList from "../../common/CategoryList";
+import ClearSearchButton from "./ClearSearchButton";
+import PlaceLegend from "./PlaceLegend";
+import SearchBar from "./SearchBar";
 
 export default function MapOverlay({
   animatedPosition,

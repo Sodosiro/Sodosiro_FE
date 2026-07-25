@@ -1,0 +1,118 @@
+import { NavigationIcon, PlaceHeartIcon } from "@/assets/svgs";
+import BottomActionBar from "@/components/common/BottomActionBar";
+import CustomButton from "@/components/common/CustomButton";
+import CustomCarousel from "@/components/common/CustomCarousel";
+import CustomText from "@/components/common/CustomText";
+import Header from "@/components/common/Header";
+import AIRecommend from "@/components/placeDetail/placeOverview/AIRecommend";
+import PlaceInfo from "@/components/placeDetail/placeOverview/PlaceInfo";
+import PlaceTabBar from "@/components/placeDetail/PlaceTabBar";
+import LocationSection from "@/components/placeDetail/section/LocationSection";
+import PlaceInfoSection from "@/components/placeDetail/section/PlaceInfoSection";
+import RecommedSection from "@/components/placeDetail/section/RecommendSection";
+import { usePlaceDetailTab } from "@/hooks/usePlaceDetailTab";
+import { PLACE_DETAIL } from "@/mocks/places";
+import { useState } from "react";
+import { ScrollView } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+export default function PlaceDetailScreen() {
+  const {
+    scrollRef,
+    infoRef,
+    locationRef,
+    recommendRef,
+    currentTab,
+    moveToSection,
+    handleScroll,
+    handleOnLayout,
+  } = usePlaceDetailTab();
+
+  const [heart, setHeart] = useState(PLACE_DETAIL.heart);
+
+  return (
+    <SafeAreaView
+      style={{
+        backgroundColor: "white",
+        flex: 1,
+      }}
+    >
+      <Header title="장소 상세보기" />
+
+      <ScrollView
+        ref={scrollRef}
+        className="flex-1"
+        style={{ flex: 1 }}
+        stickyHeaderIndices={[3]}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+      >
+        {/* 캐러셀 */}
+        <CustomCarousel images={PLACE_DETAIL.images} />
+
+        {/* AI 추천 이유 */}
+        <AIRecommend reason={PLACE_DETAIL.reason} />
+
+        {/* 장소 정보 */}
+        <PlaceInfo
+          category={PLACE_DETAIL.category}
+          title={PLACE_DETAIL.title}
+          desc={PLACE_DETAIL.desc}
+          rate={PLACE_DETAIL.rate}
+          reviewCount={PLACE_DETAIL.reviewCount}
+        />
+
+        {/* 탭 바 */}
+        <PlaceTabBar currentTab={currentTab} moveToSection={moveToSection} />
+
+        {/* 이용 정보 */}
+        <PlaceInfoSection
+          ref={infoRef}
+          info={PLACE_DETAIL.info}
+          onLayout={(e) => handleOnLayout(e, "이용 정보")}
+        />
+
+        {/* 위치 */}
+        <LocationSection
+          ref={locationRef}
+          address={PLACE_DETAIL.address}
+          className="px-5 pt-8 gap-3"
+          onLayout={(e) => handleOnLayout(e, "위치")}
+        >
+          <CustomText font="title">위치</CustomText>
+        </LocationSection>
+
+        {/* 함께 추천 */}
+        <RecommedSection
+          ref={recommendRef}
+          recommendPlaces={PLACE_DETAIL.recommendPlaces}
+          onLayout={(e) => handleOnLayout(e, "함께 추천")}
+        />
+      </ScrollView>
+
+      {/* 하단 액션 바 */}
+      <BottomActionBar>
+        <>
+          <CustomButton
+            type="tertiary"
+            title="좋아요"
+            Icon={
+              <PlaceHeartIcon
+                height={14}
+                color={heart ? "#C4D96A" : "#f5f5f5"}
+              />
+            }
+            onPress={() => setHeart(!heart)}
+          />
+          <CustomButton
+            stretch
+            type="primary"
+            size="medium"
+            title="길찾기"
+            Icon={<NavigationIcon height={20} />}
+          />
+        </>
+      </BottomActionBar>
+    </SafeAreaView>
+  );
+}

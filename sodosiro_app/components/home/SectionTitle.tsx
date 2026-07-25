@@ -1,6 +1,6 @@
+import { RightIcon } from "@/assets/svgs";
 import { Pressable, View } from "react-native";
 import CustomText from "../common/CustomText";
-import { RightIcon } from "@/assets/svgs";
 
 type Props = {
   title: string;

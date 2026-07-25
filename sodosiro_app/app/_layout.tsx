@@ -1,12 +1,12 @@
-import { Stack } from "expo-router";
-import "react-native-reanimated";
 import { useFonts } from "expo-font";
+import { Stack } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import "../global.css";
+import "react-native-reanimated";
 import {
   configureReanimatedLogger,
   ReanimatedLogLevel,
 } from "react-native-reanimated";
+import "../global.css";
 
 export const unstable_settings = {
   anchor: "(tabs)",
@@ -45,6 +45,14 @@ export default function RootLayout() {
         />
         <Stack.Screen
           name="roulette"
+          options={{
+            presentation: "modal",
+            animation: "fade",
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="place"
           options={{
             presentation: "modal",
             animation: "fade",

@@ -1,9 +1,10 @@
 import { useEffect, useRef } from "react";
 import { Map, useKakaoLoader } from "react-kakao-maps-sdk";
-import { registerMapClick } from "../util/registerMapClick";
 import { useClusterer } from "../hooks/useClusterer";
+import { useMarker } from "../hooks/useMarker";
 import { useMarkers } from "../hooks/useMarkers";
 import { useRoute } from "../hooks/useRoute";
+import { registerMapClick } from "../util/registerMapClick";
 
 export default function KakaoMap() {
   useKakaoLoader({
@@ -14,22 +15,21 @@ export default function KakaoMap() {
   const mapRef = useRef<kakao.maps.Map | null>(null);
 
   const {
-    create: createMarker,
+    create: createMarkers,
     selectedMarkerRef,
     markerImageMapRef,
+    overlayRef,
   } = useMarkers();
+  const { create: createMarker } = useMarker();
   const { create: createCluster, setMarkers } = useClusterer();
   const { drawRoute } = useRoute();
 
   const handleCreate = (map: kakao.maps.Map) => {
-    mapRef.current = map;
-
-    createCluster(map);
-
     registerMapClick({
       map,
       markerImageMapRef: markerImageMapRef.current,
       selectedMarkerRef,
+      overlayRef,
     });
 
     // RN에게 지도 준비 완료 알림
@@ -41,7 +41,7 @@ export default function KakaoMap() {
   };
 
   const renderPlaces = (places: PlaceType[]) => {
-    const markers = createMarker(places);
+    const markers = createMarkers(places);
     setMarkers(markers);
   };
 
@@ -52,12 +52,19 @@ export default function KakaoMap() {
 
       switch (data.type) {
         case "SET_PLACES":
+          if (!mapRef.current) return;
+          createCluster(mapRef.current);
           renderPlaces(data.places);
           break;
 
         case "SET_ROUTE":
           if (!mapRef.current) return;
           drawRoute(mapRef.current, data.routeInfo);
+          break;
+
+        case "SET_PLACE":
+          if (!mapRef.current) return;
+          createMarker(mapRef.current, data.place);
           break;
       }
     };
@@ -78,6 +85,7 @@ export default function KakaoMap() {
       <div className={`w-screen min-h-200 h-screen`}>
         <Map
           // 추후에 위치추적 기능 추가
+          ref={mapRef}
           center={{
             lat: 37.5665,
             lng: 126.978,

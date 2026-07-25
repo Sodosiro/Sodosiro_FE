@@ -1,13 +1,9 @@
 import { useRef } from "react";
 import { getMarkerIcon, getSelectedMarkerIcon } from "../util/getMarkerIcon";
 
-export type MarkerImages = {
-  normal: kakao.maps.MarkerImage;
-  selected: kakao.maps.MarkerImage;
-};
-
 export function useMarkers() {
   const selectedMarkerRef = useRef<kakao.maps.Marker | null>(null);
+  const overlayRef = useRef<kakao.maps.CustomOverlay | null>(null);
 
   const imageCacheRef = useRef(new Map<string, MarkerImages>());
 
@@ -43,8 +39,6 @@ export function useMarkers() {
       markerImageMapRef.current.set(marker, images);
 
       kakao.maps.event.addListener(marker, "click", () => {
-        if (selectedMarkerRef.current === marker) return;
-
         if (selectedMarkerRef.current) {
           const prev = markerImageMapRef.current.get(selectedMarkerRef.current);
 
@@ -54,10 +48,36 @@ export function useMarkers() {
           }
         }
 
+        overlayRef.current?.setMap(null);
+
+        // 현재 마커 선택
         marker.setImage(images.selected);
         marker.setZIndex(999);
 
         selectedMarkerRef.current = marker;
+
+        const overlay = new kakao.maps.CustomOverlay({
+          position: marker.getPosition(),
+          content: `
+            <div style="
+              text-shadow:
+                -1px -1px 0 white,
+                1px -1px 0 white,
+                -1px 1px 0 white,
+                1px 1px 0 white;
+              font-size: 14px;
+              font-weight: 600;
+              white-space: nowrap;
+            ">
+              ${item.title}
+            </div>
+          `,
+          yAnchor: 0,
+        });
+
+        overlay.setMap(marker.getMap());
+
+        overlayRef.current = overlay;
 
         window.ReactNativeWebView?.postMessage(
           JSON.stringify({
@@ -75,5 +95,6 @@ export function useMarkers() {
     create,
     selectedMarkerRef,
     markerImageMapRef,
+    overlayRef,
   };
 }

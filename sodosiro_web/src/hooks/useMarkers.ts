@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import getMarker from "../components/Marker";
 import { getMarkerIcon, getSelectedMarkerIcon } from "../util/getMarkerIcon";
 
 export function useMarkers() {
@@ -14,24 +15,28 @@ export function useMarkers() {
   const create = (places: PlaceType[]) => {
     selectedMarkerRef.current = null;
 
-    return places.map((item) => {
-      if (!imageCacheRef.current.has(item.category)) {
-        imageCacheRef.current.set(item.category, {
+    return places.map((place) => {
+      if (!imageCacheRef.current.has(place.category)) {
+        imageCacheRef.current.set(place.category, {
           normal: new kakao.maps.MarkerImage(
-            getMarkerIcon(item.category, item.favorite, item.popular),
+            getMarkerIcon(place.category, place.favorite, place.popular),
             new kakao.maps.Size(24, 24),
           ),
           selected: new kakao.maps.MarkerImage(
-            getSelectedMarkerIcon(item.category, item.favorite, item.popular),
+            getSelectedMarkerIcon(
+              place.category,
+              place.favorite,
+              place.popular,
+            ),
             new kakao.maps.Size(60, 60),
           ),
         });
       }
 
-      const images = imageCacheRef.current.get(item.category)!;
+      const images = imageCacheRef.current.get(place.category)!;
 
       const marker = new kakao.maps.Marker({
-        position: new kakao.maps.LatLng(item.lat, item.lng),
+        position: new kakao.maps.LatLng(place.lat, place.lng),
         image: images.normal,
         zIndex: 0,
       });
@@ -58,20 +63,7 @@ export function useMarkers() {
 
         const overlay = new kakao.maps.CustomOverlay({
           position: marker.getPosition(),
-          content: `
-            <div style="
-              text-shadow:
-                -1px -1px 0 white,
-                1px -1px 0 white,
-                -1px 1px 0 white,
-                1px 1px 0 white;
-              font-size: 14px;
-              font-weight: 600;
-              white-space: nowrap;
-            ">
-              ${item.title}
-            </div>
-          `,
+          content: getMarker(place.title),
           yAnchor: 0,
         });
 
@@ -82,7 +74,7 @@ export function useMarkers() {
         window.ReactNativeWebView?.postMessage(
           JSON.stringify({
             type: "MARKER_CLICK",
-            place: item,
+            place: place,
           }),
         );
       });

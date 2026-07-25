@@ -82,7 +82,7 @@ export default function KakaoMap() {
     <div
       className={`w-screen h-screen flex flex-col justify-center items-center`}
     >
-      <div className={`w-screen min-h-200 h-screen`}>
+      <div className={`w-screen min-h-250 h-screen`}>
         <Map
           // 추후에 위치추적 기능 추가
           ref={mapRef}

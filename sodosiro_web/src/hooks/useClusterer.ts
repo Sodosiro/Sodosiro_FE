@@ -45,6 +45,7 @@ const ClusterStyles = [
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    userSelect: "none",
     boxShadow: "0 0 0 4px #C3D96A50, 0 0 0 8px #C3D96A30",
     textShadow: `
       -0.5px -0.5px 0 white,
@@ -64,6 +65,7 @@ const ClusterStyles = [
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    userSelect: "none",
     boxShadow: "0 0 0 5px #A9C92D50, 0 0 0 10px #A9C92D30",
     textShadow: `
       -0.5px -0.5px 0 white,
@@ -83,6 +85,7 @@ const ClusterStyles = [
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    userSelect: "none",
     boxShadow: "0 0 0 6px #7E943250, 0 0 0 12px #7E943230",
     textShadow: `
       -1px -1px 0 white,

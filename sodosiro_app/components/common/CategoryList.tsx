@@ -1,7 +1,7 @@
 import { Categories } from "@/constants/Category";
 import { ScrollView } from "react-native";
 import CategoryBadge from "./CategoryBadge";
-import { Dispatch, SetStateAction } from "react";
+import type { Dispatch, SetStateAction } from "react";
 
 type Props = {
   selectedCategory: CategoryType;

@@ -1,7 +1,11 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { Map, useKakaoLoader } from "react-kakao-maps-sdk";
-
-import { createMarkers, type MarkerImages } from "../util/createMarkers";
+import { useClusterer } from "../hooks/useClusterer";
+import { useCurrentLocationMarker } from "../hooks/useCurrentLocationMarker";
+import { useMarker } from "../hooks/useMarker";
+import { useMarkers } from "../hooks/useMarkers";
+import { useRoute } from "../hooks/useRoute";
+import { useWebViewMessage } from "../hooks/useWebViewMessage";
 import { registerMapClick } from "../util/registerMapClick";
 
 export default function KakaoMap() {
@@ -10,38 +14,51 @@ export default function KakaoMap() {
     libraries: ["clusterer"],
   });
 
-  const clustererRef = useRef<kakao.maps.MarkerClusterer | null>(null);
+  const mapRef = useRef<kakao.maps.Map | null>(null);
 
-  const selectedMarkerRef = useRef<kakao.maps.Marker | null>(null);
+  const {
+    create: createMarkers,
+    selectedMarkerRef,
+    markerImageMapRef,
+    overlayRef,
+  } = useMarkers();
 
-  const imageCacheRef = useRef(new globalThis.Map<string, MarkerImages>());
+  const { create: createCluster, setMarkers } = useClusterer();
 
-  const markerImageMapRef = useRef(
-    new WeakMap<kakao.maps.Marker, MarkerImages>(),
-  );
+  const { create: createMarker } = useMarker();
+  const { drawRoute } = useRoute();
+
+  const { updateLocation, startTracking, stopTracking, denyLocation } =
+    useCurrentLocationMarker(mapRef);
+
+  const renderPlaces = (places: PlaceType[]) => {
+    const markers = createMarkers(places);
+    setMarkers(markers);
+  };
+
+  useWebViewMessage({
+    mapRef,
+    createCluster: () => createCluster(mapRef.current!),
+    renderPlaces,
+    createMarker,
+    drawRoute,
+    updateLocation,
+    startTracking,
+    denyLocation,
+  });
 
   const handleCreate = (map: kakao.maps.Map) => {
-    const clusterer = new kakao.maps.MarkerClusterer({
-      map,
-      averageCenter: true,
-      minLevel: 5,
-
-      calculator: [10, 50],
-
-      texts: (count) => `${count}`,
-
-      styles: MarkerStyles,
-    });
-
-    clustererRef.current = clusterer;
+    mapRef.current = map;
 
     registerMapClick({
       map,
-      markerImageMap: markerImageMapRef.current,
+      markerImageMapRef: markerImageMapRef.current,
       selectedMarkerRef,
+      overlayRef,
     });
 
-    // RN에게 지도 준비 완료 알림
+    kakao.maps.event.addListener(map, "dragstart", stopTracking);
+
     window.ReactNativeWebView?.postMessage(
       JSON.stringify({
         type: "MAP_READY",
@@ -49,117 +66,25 @@ export default function KakaoMap() {
     );
   };
 
-  const renderPlaces = (places: PlaceType[]) => {
-    if (!clustererRef.current) return;
-
-    clustererRef.current.clear();
-
-    selectedMarkerRef.current = null;
-
-    const markers = createMarkers({
-      places,
-      imageCache: imageCacheRef.current,
-      markerImageMap: markerImageMapRef.current,
-      selectedMarkerRef,
-    });
-
-    clustererRef.current.addMarkers(markers);
-  };
-
-  useEffect(() => {
-    const receiveMessage = (event: MessageEvent) => {
-      const data =
-        typeof event.data === "string" ? JSON.parse(event.data) : event.data;
-
-      switch (data.type) {
-        case "SET_PLACES":
-          renderPlaces(data.places);
-          break;
-      }
-    };
-
-    window.addEventListener("message", receiveMessage);
-    document.addEventListener("message", receiveMessage as EventListener);
-
-    return () => {
-      window.removeEventListener("message", receiveMessage);
-      document.removeEventListener("message", receiveMessage as EventListener);
-    };
-  }, []);
-
   return (
-    <Map
-      // 추후에 위치추적 기능 추가
-      center={{
-        lat: 37.5665,
-        lng: 126.978,
-      }}
-      level={5}
-      style={{
-        width: "100vw",
-        height: "100vh",
-      }}
-      onCreate={handleCreate}
-    />
+    <div
+      className={`w-screen h-screen flex flex-col justify-center items-center`}
+    >
+      <div className={`w-screen min-h-250 h-screen`}>
+        <Map
+          ref={mapRef}
+          center={{
+            lat: 37.5665,
+            lng: 126.978,
+          }}
+          level={5}
+          style={{
+            width: "100%",
+            height: "100%",
+          }}
+          onCreate={handleCreate}
+        />
+      </div>
+    </div>
   );
 }
-
-const MarkerStyles = [
-  {
-    width: "32px",
-    height: "32px",
-    opacity: 0.8,
-    background: "#C4D96A",
-    borderRadius: "999px",
-    color: "#1A1A1A",
-    fontSize: "14px",
-    fontWeight: "bold",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    boxShadow: "0 0 0 4px #C3D96A50, 0 0 0 8px #C3D96A30",
-    textShadow: `
-      -0.5px -0.5px 0 white, 
-      0.5px -0.5px 0 white, 
-      -0.5px 0.5px 0 white, 
-      0.5px 0.5px 0 white`,
-  },
-  {
-    width: "42px",
-    height: "42px",
-    opacity: 0.8,
-    background: "#A9C92D",
-    borderRadius: "999px",
-    color: "#1A1A1A",
-    fontSize: "16px",
-    fontWeight: "bold",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    boxShadow: "0 0 0 5px #A9C92D50, 0 0 0 10px #A9C92D30",
-    textShadow: `
-      -0.5px -0.5px 0 white, 
-      0.5px -0.5px 0 white, 
-      -0.5px 0.5px 0 white, 
-      0.5px 0.5px 0 white`,
-  },
-  {
-    width: "52px",
-    height: "52px",
-    opacity: 0.8,
-    background: "#7E9432",
-    borderRadius: "999px",
-    color: "#1A1A1A",
-    fontSize: "18px",
-    fontWeight: "bold",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    boxShadow: "0 0 0 6px #7E943250, 0 0 0 12px #7E943230",
-    textShadow: `
-      -1px -1px 0 white, 
-      1px -1px 0 white, 
-      -1px 1px 0 white, 
-      1px 1px 0 white`,
-  },
-];

@@ -1,4 +1,5 @@
 import { LeftIcon, PencilIcon, XIcon } from "@/assets/svgs";
+import { Heading1Class } from "@/styles/Typography";
 import { useNavigation } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { Modal, Pressable, TextInput, View } from "react-native";
@@ -61,7 +62,7 @@ export default function Header({
   };
 
   return (
-    <View className="h-14 flex-row items-center px-5 bg-white">
+    <View className="h-16 flex-row items-center px-5 bg-white">
       {showBackButton ? (
         <Pressable onPress={handleBack} hitSlop={12} className="mr-2">
           <LeftIcon color="#1A1A1A" />
@@ -76,6 +77,7 @@ export default function Header({
           <PencilIcon color="#1A1A1A" />
         </Pressable>
       ) : null}
+      <Text className={`flex-1 ${Heading1Class}`}>{title}</Text>
 
       {rightComponent ?? <View className="w-6" />}
 

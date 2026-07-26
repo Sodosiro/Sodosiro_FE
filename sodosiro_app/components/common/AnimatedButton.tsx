@@ -1,4 +1,5 @@
-import { Pressable, PressableProps, View, ViewStyle } from "react-native";
+import type { PressableProps, ViewStyle } from "react-native";
+import { Pressable } from "react-native";
 import Animated, {
   interpolateColor,
   useAnimatedStyle,
@@ -26,9 +27,11 @@ export default function AnimatedButton({
   const pressed = useSharedValue(0);
 
   const animatedStyle = useAnimatedStyle(() => ({
-    backgroundColor: loading ? backgroundColor[0] : disabled
-      ? disabledColor
-      : interpolateColor(pressed.value, [0, 1], backgroundColor),
+    backgroundColor: loading
+      ? backgroundColor[0]
+      : disabled
+        ? disabledColor
+        : interpolateColor(pressed.value, [0, 1], backgroundColor),
   }));
 
   return (

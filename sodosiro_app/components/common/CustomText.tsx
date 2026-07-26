@@ -10,7 +10,8 @@ import {
   TitleClass,
   TitleTightClass,
 } from "@/styles/Typography";
-import { Text, TextProps } from "react-native";
+import type { TextProps } from "react-native";
+import { Text } from "react-native";
 
 interface Props extends TextProps {
   font: TypoType;

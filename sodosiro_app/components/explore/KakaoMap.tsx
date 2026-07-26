@@ -1,46 +1,57 @@
-import { Places } from "@/mocks/places";
-import { Dispatch, SetStateAction, useRef } from "react";
-import { View } from "react-native";
-import { WebView, WebViewMessageEvent } from "react-native-webview";
+import { useEffect, type RefObject } from "react";
+import type { SharedValue } from "react-native-reanimated";
+import Animated, { useAnimatedStyle } from "react-native-reanimated";
+import { WebView } from "react-native-webview";
+
+import { useLocation } from "@/hooks/useLocation";
+import { useWebView } from "@/hooks/useWebView";
+import { useLocationStore } from "@/stores/useLocationStore";
+import { useWebViewStore } from "@/stores/useWebViewStore";
 
 export default function KakaoMap({
-  isLoading,
-  setIsLoading,
+  webViewRef,
+  mode,
+  animatedPosition,
 }: {
-  isLoading: boolean;
-  setIsLoading: Dispatch<SetStateAction<boolean>>;
+  webViewRef: RefObject<WebView<unknown> | null>;
+  mode: "marker" | "navigation";
+  animatedPosition: SharedValue<number>;
 }) {
-  const webViewRef = useRef<React.ComponentRef<typeof WebView>>(null);
+  const { isLoading, setIsLoading } = useWebViewStore();
 
-  const handleMessage = (event: WebViewMessageEvent) => {
-    const data = JSON.parse(event.nativeEvent.data);
+  const { sendLocation, handleMessage } = useWebView({
+    webViewRef,
+    mode,
+    setIsLoading,
+  });
 
-    if (data.type === "MAP_READY") {
-      webViewRef.current?.postMessage(
-        JSON.stringify({
-          type: "SET_PLACES",
-          places: Places,
-        }),
-      );
-    }
-  };
+  useLocation(sendLocation);
+
+  const { location, isDenied } = useLocationStore();
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    height: animatedPosition.value + 8,
+  }));
+
+  useEffect(() => {
+    if (!location) return;
+    sendLocation(location, isDenied);
+  }, [location]);
 
   return (
-    <View
-      className={`w-screen h-screen absolute ${isLoading ? `opacity-0` : ``}`}
+    <Animated.View
+      className={`w-screen absolute ${isLoading ? "opacity-0" : ""}`}
+      style={animatedStyle}
     >
       <WebView
         ref={webViewRef}
-        source={{ uri: process.env.EXPO_PUBLIC_WEBVIEW_URI as string }}
+        source={{
+          uri: process.env.EXPO_PUBLIC_WEBVIEW_URI as string,
+        }}
         style={{ flex: 1 }}
         onMessage={handleMessage}
-        onLoadStart={() => {
-          setIsLoading(true);
-        }}
-        onLoadEnd={() => {
-          setIsLoading(false);
-        }}
+        onLoadStart={() => setIsLoading(true)}
       />
-    </View>
+    </Animated.View>
   );
 }

@@ -1,18 +1,21 @@
-import type { MarkerImages } from "./createMarkers";
-
 export function registerMapClick({
   map,
-  markerImageMap,
+  markerImageMapRef,
   selectedMarkerRef,
+  overlayRef: overlayRef,
 }: {
   map: kakao.maps.Map;
-  markerImageMap: WeakMap<kakao.maps.Marker, MarkerImages>;
-  selectedMarkerRef: React.MutableRefObject<kakao.maps.Marker | null>;
+  markerImageMapRef: WeakMap<kakao.maps.Marker, MarkerImages>;
+  selectedMarkerRef: React.RefObject<kakao.maps.Marker | null>;
+  overlayRef: React.RefObject<kakao.maps.CustomOverlay | null>;
 }) {
   kakao.maps.event.addListener(map, "click", () => {
+    overlayRef.current?.setMap(null);
+    overlayRef.current = null;
+
     if (!selectedMarkerRef.current) return;
 
-    const images = markerImageMap.get(selectedMarkerRef.current);
+    const images = markerImageMapRef.get(selectedMarkerRef.current);
 
     if (images) {
       selectedMarkerRef.current.setImage(images.normal);

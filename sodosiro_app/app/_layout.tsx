@@ -86,6 +86,14 @@ export default function RootLayout() {
             headerShown: false,
           }}
         />
+        <Stack.Screen
+          name="place"
+          options={{
+            presentation: "modal",
+            animation: "fade",
+            headerShown: false,
+          }}
+        />
       </Stack>
     </GestureHandlerRootView>
   );

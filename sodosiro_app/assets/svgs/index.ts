@@ -5,8 +5,12 @@ export { default as PlaceHeartIcon } from "./place_heart.svg";
 export { default as StarIcon } from "./14px/star.svg";
 
 // 16px
+export { default as CallMiniIcon } from "./16px/call_mini.svg";
+export { default as ClockMiniIcon } from "./16px/clock_mini.svg";
 export { default as InfoMiniIcon } from "./16px/info_mini.svg";
 export { default as NavigationMiniIcon } from "./16px/navigation_mini.svg";
+export { default as ParkingMiniIcon } from "./16px/parking_mini.svg";
+export { default as PetMiniIcon } from "./16px/pet_mini.svg";
 export { default as PinMiniIcon } from "./16px/pin_mini.svg";
 export { default as RefreshMiniIcon } from "./16px/refresh_mini.svg";
 export { default as RemoveMiniIcon } from "./16px/remove_mini.svg";
@@ -25,6 +29,7 @@ export { default as LeftIcon } from "./24px/chevron-left.svg";
 export { default as RightIcon } from "./24px/chevron-right.svg";
 export { default as ChipIcon } from "./24px/chip.svg";
 export { default as DownIcon } from "./24px/down.svg";
+export { default as NavigationIcon } from "./24px/navigation.svg";
 export { default as NotificationIcon } from "./24px/notification.svg";
 export { default as RefreshIcon } from "./24px/refresh.svg";
 export { default as RemoveIcon } from "./24px/remove.svg";

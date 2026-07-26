@@ -1,22 +1,45 @@
-import { View } from "react-native";
+import { BottomSheetSnapPoints } from "@/constants/BottomSheet";
+import { PLACE_LIST } from "@/mocks/places";
+import { useSearchStore } from "@/stores/useSearchStore";
 import BottomSheet, {
   BottomSheetFlatList,
   useBottomSheetSpringConfigs,
 } from "@gorhom/bottom-sheet";
-import { PlaceList } from "@/mocks/places";
+import { useEffect, useState, type RefObject } from "react";
+import { View } from "react-native";
+import type { SharedValue } from "react-native-reanimated";
 import Place from "./Place";
 
-export default function CustomBottomSheet() {
+export default function CustomBottomSheet({
+  animatedPosition,
+  bottomSheetRef,
+  animatedIndex,
+}: {
+  animatedPosition: SharedValue<number>;
+  bottomSheetRef: RefObject<BottomSheet | null>;
+  animatedIndex: SharedValue<number>;
+}) {
   const animationConfigs = useBottomSheetSpringConfigs({
     damping: 100,
     stiffness: 400,
     mass: 1,
   });
 
+  const [isClosing, setIsClosing] = useState(false);
+  const { result, keyword } = useSearchStore();
+
+  useEffect(() => {
+    if (result.length > 0) bottomSheetRef.current?.snapToIndex(1);
+    else bottomSheetRef.current?.close();
+  }, [result, keyword]);
+
   return (
     <BottomSheet
-      index={1}
-      snapPoints={[24, 226, "80%"]}
+      ref={bottomSheetRef}
+      index={-1}
+      animatedIndex={animatedIndex}
+      snapPoints={BottomSheetSnapPoints}
+      animatedPosition={animatedPosition}
       backgroundStyle={{
         backgroundColor: "white",
       }}
@@ -25,14 +48,22 @@ export default function CustomBottomSheet() {
         width: 50,
         height: 5,
       }}
+      onAnimate={(from, to) => {
+        if (to === -1) {
+          setIsClosing(true);
+        }
+      }}
+      onClose={() => {
+        setIsClosing(false);
+      }}
       enableDynamicSizing={false}
       enablePanDownToClose={false}
-      enableContentPanningGesture={true}
-      enableHandlePanningGesture={true}
+      enableContentPanningGesture={!isClosing}
+      enableHandlePanningGesture={!isClosing}
       animationConfigs={animationConfigs}
     >
       <BottomSheetFlatList
-        data={PlaceList}
+        data={result}
         nestedScrollEnabled
         keyExtractor={(item) => String(item.id)}
         contentContainerStyle={{
@@ -41,7 +72,7 @@ export default function CustomBottomSheet() {
         renderItem={({ item, index }) => (
           <View key={index}>
             <Place place={item} />
-            {index !== PlaceList.length - 1 && (
+            {index !== PLACE_LIST.length - 1 && (
               <View className="h-px bg-bg-subtle mx-5" />
             )}
           </View>

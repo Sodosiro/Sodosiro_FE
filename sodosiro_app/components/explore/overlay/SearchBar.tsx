@@ -1,9 +1,19 @@
 import { RemoveIcon, SearchIcon } from "@/assets/svgs";
+import { useSearchStore } from "@/stores/useSearchStore";
+import type BottomSheet from "@gorhom/bottom-sheet";
+import { router } from "expo-router";
+import type { RefObject } from "react";
 import { Pressable } from "react-native";
 import CustomText from "../../common/CustomText";
-import { router } from "expo-router";
 
-export default function SearchBar({ keyword }: { keyword?: string }) {
+export default function SearchBar({
+  keyword,
+  bottomSheetRef,
+}: {
+  keyword?: string;
+  bottomSheetRef: RefObject<BottomSheet | null>;
+}) {
+  const { clearResult } = useSearchStore();
   return (
     <Pressable
       className={`flex-row justify-between items-center border border-border bg-white w-full px-6 h-15 rounded-full`}
@@ -26,7 +36,7 @@ export default function SearchBar({ keyword }: { keyword?: string }) {
         <RemoveIcon
           color={"#888888"}
           onPress={() => {
-            router.replace("/(tabs)/explore");
+            clearResult();
             router.push("/explore/search");
           }}
         />

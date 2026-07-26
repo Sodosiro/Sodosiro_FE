@@ -13,7 +13,7 @@ type Props = {
   onTitleChange?: (title: string) => void;
 };
 
-const HEADER_HEIGHT = 56; // h-14
+const HEADER_HEIGHT = 64; // h-14
 
 export default function Header({
   title,
@@ -71,13 +71,14 @@ export default function Header({
         <View className="w-6 mr-4" />
       )}
 
-      <CustomText font="heading1">{title}</CustomText>
+      <CustomText font="heading1" className={`${Heading1Class}`}>
+        {title}
+      </CustomText>
       {showPencil ? (
         <Pressable onPress={startEditing} hitSlop={12} className="ml-1">
           <PencilIcon color="#1A1A1A" />
         </Pressable>
       ) : null}
-      <Text className={`flex-1 ${Heading1Class}`}>{title}</Text>
 
       {rightComponent ?? <View className="w-6" />}
 

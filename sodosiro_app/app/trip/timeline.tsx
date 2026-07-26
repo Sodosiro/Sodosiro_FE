@@ -92,8 +92,8 @@ const INITIAL_PLAN: DayPlan[] = [
 ];
 
 const DEFAULT_BUTTON_WIDTH = 96;
-const FADE_WIDTH = 32;
-const FADE_STEPS = 6;
+const FADE_WIDTH = 16;
+const FADE_STEPS = 16;
 const SCROLL_SPY_OFFSET = 80;
 const PROGRAMMATIC_SCROLL_LOCK_MS = 400;
 
@@ -195,15 +195,17 @@ function TimelineItem({ place, isLast, isExpanded, onToggle }: TimelineItemProps
           }}
           onLayout={handleLayout}
         >
-          <View className="pt-2.5 pl-8 pb-1">
+          <View>
             {place.description && (
-              <CustomText font="body2" className="text-text-muted mb-1.5">
-                {place.description}
-              </CustomText>
+              <View style={{ paddingLeft: 34 }}>
+                <CustomText font="body2" className="text-text-muted mb-1.5">
+                  {place.description}
+                </CustomText>
+              </View>
             )}
 
             {place.rating !== undefined && (
-              <View className="flex-row items-center mb-3">
+              <View className="flex-row items-center" style={{ paddingLeft: 34 }}>
                 <StarIcon />
                 <CustomText font="body2" className="ml-1">
                   {place.rating.toFixed(1)}
@@ -216,7 +218,7 @@ function TimelineItem({ place, isLast, isExpanded, onToggle }: TimelineItemProps
               </View>
             )}
 
-            <View className="flex-row gap-2">
+            <View className="flex-row  gap-2 mt-3" style={{ alignSelf: "flex-end" }}>
               <Badge
                 onLayout={() => {}}
                 onPress={() => {

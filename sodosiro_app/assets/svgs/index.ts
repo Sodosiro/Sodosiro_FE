@@ -16,9 +16,14 @@ export { default as RefreshMiniIcon } from "./16px/refresh_mini.svg";
 export { default as RemoveMiniIcon } from "./16px/remove_mini.svg";
 export { default as ShareMiniIcon } from "./16px/share_mini.svg";
 export { default as SortMiniIcon } from "./16px/sort_mini.svg";
+export { default as XMiniIcon } from "./16px/x-mini.svg";
+
+// 20px
+export { default as PencilIcon } from "./20px/pencil.svg";
 
 // 24px
 export { default as AwardIcon } from "./24px/award.svg";
+export { default as WhiteBigCheckIcon } from "./24px/big-check-white.svg";
 export { default as BigCheckIcon } from "./24px/big-check.svg";
 export { default as CalendarIcon } from "./24px/calendar.svg";
 export { default as CheckIcon } from "./24px/check.svg";

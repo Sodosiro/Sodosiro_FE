@@ -1,5 +1,5 @@
 import { PLACES } from "@/mocks/places";
-import { Route as RouteInfo } from "@/mocks/route";
+import { ROUTE_INFO } from "@/mocks/route";
 import type { RefObject } from "react";
 import { useCallback } from "react";
 import type { WebView, WebViewMessageEvent } from "react-native-webview";
@@ -59,7 +59,7 @@ export function useWebView({
           webViewRef.current?.postMessage(
             JSON.stringify({
               type: "SET_ROUTE",
-              routeInfo: RouteInfo,
+              routeInfo: ROUTE_INFO,
             }),
           );
         }

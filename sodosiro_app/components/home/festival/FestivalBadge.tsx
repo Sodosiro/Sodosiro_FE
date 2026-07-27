@@ -1,6 +1,6 @@
-import { View } from "react-native";
-import { differenceInCalendarDays } from "date-fns";
 import CustomText from "@/components/common/CustomText";
+import { differenceInCalendarDays } from "date-fns";
+import { View } from "react-native";
 
 type Props = {
   className?: string;
@@ -13,7 +13,7 @@ export default function FestivalBadge({ className, startDate }: Props) {
   const dDayText = dDay > 0 ? `D-${dDay}` : "D-Day";
 
   return (
-    <View className={`${className} bg-white px-3 py-2 rounded-full`}>
+    <View className={`${className} bg-white px-3 py-2 rounded-full self-start`}>
       <CustomText font="body3 tight">{dDayText}</CustomText>
     </View>
   );

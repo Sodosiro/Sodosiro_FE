@@ -37,7 +37,10 @@ export default function CustomText({
   };
 
   return (
-    <Text className={`${className} ${ClassMap[font]} text-[#1A1A1A]`} {...props}>
+    <Text
+      className={`${className} ${ClassMap[font]} text-[#1A1A1A]`}
+      {...props}
+    >
       {children}
     </Text>
   );

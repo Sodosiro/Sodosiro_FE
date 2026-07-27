@@ -48,6 +48,7 @@ export default function AnimatedButton({
       }}
       style={animatedStyle as ViewStyle | string}
       className={`${className}`}
+      disabled={disabled}
       {...props}
     >
       {children}

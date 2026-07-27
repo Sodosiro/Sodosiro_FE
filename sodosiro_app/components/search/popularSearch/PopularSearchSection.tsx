@@ -1,5 +1,5 @@
 import CustomText from "@/components/common/CustomText";
-import { PopularSearchList } from "@/mocks/search";
+import { POPULAR_SEARCH_LIST } from "@/mocks/search";
 import { View } from "react-native";
 import PopularSearch from "./PopularSearch";
 
@@ -8,7 +8,7 @@ export default function PopularSearchSection() {
     <View className={`gap-4 pb-2`}>
       <CustomText font="heading2">지금 많이 찾는 검색어</CustomText>
       <View className={`gap-1`}>
-        {PopularSearchList.map((item, index) => (
+        {POPULAR_SEARCH_LIST.map((item, index) => (
           <PopularSearch key={index} popularSearch={item} index={index + 1} />
         ))}
       </View>

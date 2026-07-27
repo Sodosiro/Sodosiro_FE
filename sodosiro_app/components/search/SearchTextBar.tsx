@@ -1,6 +1,7 @@
 import { SearchIcon } from "@/assets/svgs";
 import CustomText from "@/components/common/CustomText";
 import { useSearchStore } from "@/stores/useSearchStore";
+import { TitleTightClass } from "@/styles/Typography";
 import { handleSearch } from "@/util/search/search";
 import { router } from "expo-router";
 import { TextInput, View } from "react-native";
@@ -21,7 +22,7 @@ export default function SearchTextBar() {
           returnKeyType="search"
           placeholder="가고 싶은 여행지를 검색해보세요"
           placeholderTextColor={"#888888"}
-          className={`font-pretendard text-title-tight text-text-primary flex-1 w-full h-15 p-0`}
+          className={`${TitleTightClass} text-text-primary flex-1 w-full h-15 p-0`}
         />
         <SearchIcon color={"#888888"} />
       </View>

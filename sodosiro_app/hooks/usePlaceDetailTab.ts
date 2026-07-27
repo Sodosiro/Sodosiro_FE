@@ -65,7 +65,7 @@ export function usePlaceDetailTab() {
 
     const positions = sectionPositions.current;
 
-    if (screenBottom >= positions["함께 추천"].end) {
+    if (screenBottom + 1 >= positions["함께 추천"].end) {
       setCurrentTab("함께 추천");
     } else if (screenBottom >= positions["위치"].end) {
       setCurrentTab("위치");

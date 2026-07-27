@@ -1,4 +1,4 @@
-export const Region = {
+export const REGION = {
   title: "양양",
   desc: "서핑과 자연이 공존하는 동해안 소도시",
   tags: ["서핑", "해변", "감성 카페"],
@@ -14,18 +14,21 @@ export const Region = {
   ],
   topAttractions: [
     {
+      id: 1,
       title: "하조대해수욕장",
       desc: "하조대해수욕장",
       imageUrl:
         "http://tong.visitkorea.or.kr/cms/resource/73/2745273_image2_1.jpg",
     },
     {
+      id: 2,
       title: "휴휴암",
       desc: "바닷가에 위치한 작은 사찰",
       imageUrl:
         "http://tong.visitkorea.or.kr/cms/resource/38/3490638_image2_1.jpg",
     },
     {
+      id: 3,
       title: "낙산사",
       desc: "강원도 유형문화재 제33호 사찰",
       imageUrl:
@@ -39,3 +42,5 @@ export const Region = {
   },
   topFoods: ["물회", "송이버섯 요리", "메밀 국수", "양양 연어"],
 };
+
+export const VISITED_REGION = ["영월", "양양", "강릉"];

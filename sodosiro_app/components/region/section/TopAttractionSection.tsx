@@ -8,6 +8,7 @@ export default function TopAttractionSection({
 }: {
   title: string;
   topAttractions: {
+    id: number;
     imageUrl: string;
     title: string;
     desc: string;
@@ -15,10 +16,11 @@ export default function TopAttractionSection({
 }) {
   return (
     <RegionSectionContainer title={`${title}의 대표 명소`}>
-      <View className={`flex-col flex-1 gap-3`}>
+      <View className={`flex-col flex-1 gap-4`}>
         {topAttractions.map((attraction, index) => (
           <PlaceMini
             key={index}
+            id={attraction.id}
             imageSource={attraction.imageUrl}
             title={attraction.title}
             desc={attraction.desc}

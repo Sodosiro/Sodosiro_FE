@@ -28,10 +28,11 @@ export default function RecommedSection({
       className={`pb-8`}
       {...props}
     >
-      <View className={`flex-col flex-1 gap-3`}>
+      <View className={`flex-col flex-1 gap-4`}>
         {recommendPlaces.map((attraction, index) => (
           <PlaceMini
             key={index}
+            id={attraction.id}
             imageSource={attraction.imageSource}
             title={attraction.title}
             desc={attraction.desc}

@@ -15,6 +15,7 @@ export { default as PinMiniIcon } from "./16px/pin_mini.svg";
 export { default as RefreshMiniIcon } from "./16px/refresh_mini.svg";
 export { default as RemoveMiniIcon } from "./16px/remove_mini.svg";
 export { default as ShareMiniIcon } from "./16px/share_mini.svg";
+export { default as SortMiniIcon } from "./16px/sort_mini.svg";
 export { default as XMiniIcon } from "./16px/x-mini.svg";
 
 // 20px
@@ -26,6 +27,8 @@ export { default as WhiteBigCheckIcon } from "./24px/big-check-white.svg";
 export { default as BigCheckIcon } from "./24px/big-check.svg";
 export { default as CalendarIcon } from "./24px/calendar.svg";
 export { default as CheckIcon } from "./24px/check.svg";
+export { default as CheckOffIcon } from "./24px/check_off.svg";
+export { default as CheckOnIcon } from "./24px/check_on.svg";
 export { default as LeftIcon } from "./24px/chevron-left.svg";
 export { default as RightIcon } from "./24px/chevron-right.svg";
 export { default as ChipIcon } from "./24px/chip.svg";
@@ -35,6 +38,7 @@ export { default as NotificationIcon } from "./24px/notification.svg";
 export { default as RefreshIcon } from "./24px/refresh.svg";
 export { default as RemoveIcon } from "./24px/remove.svg";
 export { default as SearchIcon } from "./24px/search.svg";
+export { default as TrashIcon } from "./24px/trash.svg";
 export { default as UpIcon } from "./24px/up.svg";
 export { default as XIcon } from "./24px/x.svg";
 
@@ -58,4 +62,3 @@ export { default as CultureIcon } from "./category/culture.svg";
 export { default as NatureIcon } from "./category/nature.svg";
 export { default as RestaurantIcon } from "./category/restaurant.svg";
 export { default as ShoppingIcon } from "./category/shopping.svg";
-

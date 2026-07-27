@@ -1,6 +1,6 @@
 import { ScrollView, View } from "react-native";
 import CustomText from "../../common/CustomText";
-import RegionTag from "../RegionTag";
+import RegionKeywordBadge from "../RegionKeywordBadge";
 
 export default function RegionInfoSection({
   title,
@@ -23,7 +23,7 @@ export default function RegionInfoSection({
         contentContainerStyle={{ gap: 4 }}
       >
         {tags.map((tag, index) => (
-          <RegionTag key={index} title={tag} />
+          <RegionKeywordBadge key={index} title={tag} />
         ))}
       </ScrollView>
     </View>

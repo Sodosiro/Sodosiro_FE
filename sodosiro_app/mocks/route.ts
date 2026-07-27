@@ -1,4 +1,4 @@
-export const Route = {
+export const ROUTE_INFO = {
   origin: {
     x: 127.11023403583478,
     y: 37.39434769502827,

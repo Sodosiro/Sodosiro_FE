@@ -12,6 +12,7 @@ export default function PopularPlacesList() {
             {index + 1}
           </CustomText>
           <PlaceMini
+            id={place.id}
             imageSource={place.imageSource}
             title={place.title}
             desc={place.desc}

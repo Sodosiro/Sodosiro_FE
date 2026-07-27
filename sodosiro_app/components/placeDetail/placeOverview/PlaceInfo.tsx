@@ -19,7 +19,7 @@ export default function PlaceInfo({
   return (
     <View className="px-5 py-4 gap-1">
       <CategoryTag category={category} />
-      <CustomText font="heading2">{title}</CustomText>
+      <CustomText font="heading1">{title}</CustomText>
       <View className="flex-row">
         <CustomText
           font="body3"

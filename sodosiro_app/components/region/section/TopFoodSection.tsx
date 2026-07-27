@@ -1,5 +1,5 @@
 import { ScrollView } from "react-native";
-import RegionTag from "../RegionTag";
+import RegionKeywordBadge from "../RegionKeywordBadge";
 import RegionSectionContainer from "./RegionSectionContainer";
 
 export default function TopFoodSection({ topFoods }: { topFoods: string[] }) {
@@ -11,7 +11,7 @@ export default function TopFoodSection({ topFoods }: { topFoods: string[] }) {
         contentContainerStyle={{ gap: 4 }}
       >
         {topFoods.map((food, index) => (
-          <RegionTag key={index} title={food} />
+          <RegionKeywordBadge key={index} title={food} />
         ))}
       </ScrollView>
     </RegionSectionContainer>

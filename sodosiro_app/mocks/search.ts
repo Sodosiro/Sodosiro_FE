@@ -1,4 +1,4 @@
-export const PopularSearchList = [
+export const POPULAR_SEARCH_LIST = [
   "초당순두부마을",
   "경포호수 산책로",
   "죽도해변",

@@ -5,18 +5,27 @@ import { Image, Pressable, View } from "react-native";
 import CustomText from "../CustomText";
 
 type Props = {
+  id: number;
   imageSource: ImageSourcePropType | string;
   title: string;
   desc: string;
+  icon?: React.ReactNode;
+  onPress?: () => void;
 };
 
-export default function PlaceMini({ imageSource, title, desc }: Props) {
+export default function PlaceMini({
+  id,
+  imageSource,
+  title,
+  desc,
+  icon = <RightIcon color={"#777777"} />,
+  onPress = () =>
+    router.push({ pathname: "/place/[placeId]", params: { placeId: id } }),
+}: Props) {
   return (
     <Pressable
       className={`flex-row items-center flex-1 gap-3`}
-      onPress={() =>
-        router.push({ pathname: "/place/[placeId]", params: { placeId: "1" } })
-      }
+      onPress={onPress}
     >
       <Image
         source={
@@ -38,7 +47,7 @@ export default function PlaceMini({ imageSource, title, desc }: Props) {
           {desc}
         </CustomText>
       </View>
-      <RightIcon color={"#777777"} />
+      {icon}
     </Pressable>
   );
 }

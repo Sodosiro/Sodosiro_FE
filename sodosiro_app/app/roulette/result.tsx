@@ -10,7 +10,7 @@ import RecommendReasonSection from "@/components/region/section/RecommendReasonS
 import RegionInfoSection from "@/components/region/section/RegionInfoSection";
 import TopAttractionSection from "@/components/region/section/TopAttractionSection";
 import TopFoodSection from "@/components/region/section/TopFoodSection";
-import { Region } from "@/mocks/region";
+import { REGION } from "@/mocks/region";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -19,7 +19,7 @@ export default function RouletteResultScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <ScrollView contentContainerStyle={{ paddingBottom: 32 }}>
         <Header
-          title="룰렛 결과"
+          title="오늘의 소도시"
           rightComponent={
             <View className={`flex-row gap-1 items-center`}>
               <CustomText font="body1" className={`text-text-muted`}>
@@ -31,20 +31,20 @@ export default function RouletteResultScreen() {
             </View>
           }
         />
-        <CustomCarousel images={Region.images} />
+        <CustomCarousel images={REGION.images} />
         <View className={`px-5 gap-8 flex-1`}>
           <RegionInfoSection
-            title={Region.title}
-            desc={Region.desc}
-            tags={Region.tags}
+            title={REGION.title}
+            desc={REGION.desc}
+            tags={REGION.tags}
           />
-          <RecommendReasonSection reasons={Region.reasons} />
+          <RecommendReasonSection reasons={REGION.reasons} />
           <TopAttractionSection
-            title={Region.title}
-            topAttractions={Region.topAttractions}
+            title={REGION.title}
+            topAttractions={REGION.topAttractions}
           />
-          <RecommendMonthSection recommendMonth={Region.recommendMonth} />
-          <TopFoodSection topFoods={Region.topFoods} />
+          <RecommendMonthSection recommendMonth={REGION.recommendMonth} />
+          <TopFoodSection topFoods={REGION.topFoods} />
         </View>
       </ScrollView>
 
@@ -60,7 +60,7 @@ export default function RouletteResultScreen() {
           stretch
           type="primary"
           size="medium"
-          title={`${Region.title} 여행 일정 짜기`}
+          title={`${REGION.title} 여행 일정 짜기`}
         />
       </BottomActionBar>
     </SafeAreaView>

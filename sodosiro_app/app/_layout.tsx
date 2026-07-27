@@ -59,6 +59,14 @@ export default function RootLayout() {
             headerShown: false,
           }}
         />
+        <Stack.Screen
+          name="mypage"
+          options={{
+            presentation: "modal",
+            animation: "fade",
+            headerShown: false,
+          }}
+        />
       </Stack>
     </GestureHandlerRootView>
   );

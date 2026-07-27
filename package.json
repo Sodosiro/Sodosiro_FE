@@ -1,0 +1,5 @@
+{
+	"devDependencies": {
+		"@expo/config": "^57.0.6"
+	}
+}

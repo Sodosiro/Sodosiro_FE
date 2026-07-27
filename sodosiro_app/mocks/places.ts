@@ -31,6 +31,44 @@ export const HOME_POPULAR_PLACES = [
   },
 ];
 
+export const FAVORITE_PLACES = [
+  {
+    id: 1,
+    imageSource: require("../assets/mocks/popular_1.png"),
+    title: "거진항 백섬해상전망대",
+    desc: "여름에 가기 좋은 전망대",
+    createdAt: "2026-07-27T10:30:00",
+  },
+  {
+    id: 2,
+    imageSource: require("../assets/mocks/popular_2.png"),
+    title: "논골담길",
+    desc: "바다와 벽화가 어우러진 감성 골목길",
+    createdAt: "2026-07-26T15:20:00",
+  },
+  {
+    id: 3,
+    imageSource: require("../assets/mocks/popular_3.png"),
+    title: "보사노바 커피로스터스 강릉점",
+    desc: "바다 품은 오션뷰 카페",
+    createdAt: "2026-07-25T12:10:00",
+  },
+  {
+    id: 4,
+    imageSource: require("../assets/mocks/popular_4.png"),
+    title: "초당순두부마을",
+    desc: "순두부 먹자골목",
+    createdAt: "2026-07-24T09:00:00",
+  },
+  {
+    id: 5,
+    imageSource: require("../assets/mocks/popular_5.png"),
+    title: "강릉 숲길공원",
+    desc: "자연을 즐길 수 있는 산책로",
+    createdAt: "2026-07-20T18:40:00",
+  },
+];
+
 export const FESTIVALS = [
   {
     id: 1,

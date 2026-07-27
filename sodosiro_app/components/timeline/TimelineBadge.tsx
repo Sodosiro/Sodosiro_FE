@@ -1,4 +1,4 @@
-import { InfoMiniIcon, XIcon } from "@/assets/svgs";
+import { InfoMiniIcon, WhiteBigCheckIcon, XIcon } from "@/assets/svgs";
 import { useEffect, useRef, useState } from "react";
 import { Animated, Easing, LayoutChangeEvent, Pressable, View } from "react-native";
 import CustomText from "../common/CustomText";
@@ -21,6 +21,8 @@ type Props = {
   removable?: boolean;
   isEditButton?: boolean;
   isEditing?: boolean;
+  isAuthCompleted?: boolean;
+  isOngoing?: boolean;
   infoTooltipText?: string;
   text: string;
   onPress: () => void;
@@ -35,6 +37,8 @@ export default function Badge({
   removable = false,
   isEditButton = false,
   isEditing = false,
+  isAuthCompleted = false,
+  isOngoing = false,
   infoTooltipText = "일정을 꾹 눌러 끌면 순서를 바꿀 수 있어요.",
   text,
   onPress,
@@ -119,15 +123,16 @@ export default function Badge({
 
   return (
     <AnimatedPressable
-      className={`${selected ? `bg-[#1A1A1A]` : disabled ? `bg-btn-disabled` : bgWhite || isEditButton ? `bg-white` : `bg-bg-muted`} flex-row items-center self-start pl-4 py-2.5 h-9 gap-1 rounded-full border border-border`}
+      className={`${isOngoing ? `bg-[#c4d96a]` : selected ? `bg-[#1A1A1A]` : disabled ? `bg-btn-disabled` : bgWhite || isEditButton ? `bg-white` : `bg-bg-muted`} flex-row items-center self-start pl-4 py-2.5 h-9 gap-1 rounded-full border border-border`}
       style={{ paddingRight }}
       disabled={disabled}
       onPress={onPress}
       onLayout={onLayout}
     >
+      {isAuthCompleted && <WhiteBigCheckIcon />}
       <CustomText
         font="body3 tight"
-        className={`${selected ? `text-white` : disabled ? `text-text-muted` : `text-text-primary`}`}
+        className={`${isOngoing ? `text-text-primary` : selected ? `text-white` : disabled ? `text-text-muted` : `text-text-primary`}`}
       >
         {text}
       </CustomText>

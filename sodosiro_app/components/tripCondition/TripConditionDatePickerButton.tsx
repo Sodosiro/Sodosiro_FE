@@ -24,7 +24,7 @@ function formatDate(date: Date) {
   return `${year}.${month}.${day} (${weekDay})`;
 }
 
-export default function DatePickerButton({
+export default function TripConditionDatePickerButton({
   dateRange,
   placeholder = "여행 일정을 선택해주세요.",
   disabled = false,

@@ -67,9 +67,7 @@ export default function Header({
         <Pressable onPress={handleBack} hitSlop={12} className="mr-2">
           <LeftIcon color="#1A1A1A" />
         </Pressable>
-      ) : (
-        <View className="w-6 mr-4" />
-      )}
+      ) : null}
 
       <CustomText font="heading1" className={`${Heading1Class}`}>
         {title}

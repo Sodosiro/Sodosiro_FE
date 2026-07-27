@@ -1,4 +1,8 @@
+packages:
+  - .
+
 allowBuilds:
   dooboolab-welcome: true
+
 overrides:
   lightningcss: 1.30.1

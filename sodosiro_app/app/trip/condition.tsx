@@ -8,11 +8,11 @@ import CategoryBadge from "@/components/common/CategoryBadge";
 import Header from "@/components/common/Header";
 import Subtitle from "@/components/common/Subtitle";
 import PopularPlacesSection from "@/components/home/popularPlace/PoplularPlacesSection";
-import DatePickerButton from "@/components/trip/DatePickerButton";
-import DatePickerSheet from "@/components/trip/DatePickerSheet";
-import LocationPickerButton from "@/components/trip/LocationPickerButton";
-import TransportCard from "@/components/trip/TransportCard";
-import TripConditionFooter from "@/components/trip/TripConditionFooter";
+import TripConditionDatePickerButton from "@/components/tripCondition/TripConditionDatePickerButton";
+import DatePickerSheet from "@/components/tripCondition/TripConditionDatePickerSheet";
+import TripConditionFooter from "@/components/tripCondition/TripConditionFooter";
+import LocationPickerButton from "@/components/tripCondition/TripConditionLocationButton";
+import TransportCard from "@/components/tripCondition/TripConditionTransportCard";
 import { Stack } from "expo-router";
 
 type TransportType = "car" | "bus" | "";
@@ -102,7 +102,7 @@ export default function TripScreen() {
         <View className="px-5 pt-3 gap-8">
           <View className="gap-3">
             <Subtitle title="여행 일정" />
-            <DatePickerButton
+            <TripConditionDatePickerButton
               dateRange={dateRange}
               onPress={() => {
                 setShowCalendar(true);

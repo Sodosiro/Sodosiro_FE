@@ -13,7 +13,7 @@ export default function FavoriteListScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <Header
         title="좋아요한 장소"
-        rightComponent={<SearchIcon color="#1a1a1a" />}
+        rightComponent={<SearchIcon color="#1a1a1a" height={20} />}
       />
       <SortBadgeList
         sortOption={sortOption}

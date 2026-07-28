@@ -69,7 +69,10 @@ export default function Header({
         </Pressable>
       ) : null}
 
-      <CustomText font="heading1" className={`${Heading1Class}`}>
+      <CustomText
+        font="heading1"
+        className={`${Heading1Class} ${!showPencil && `flex-1`}`}
+      >
         {title}
       </CustomText>
       {showPencil ? (
@@ -90,7 +93,10 @@ export default function Header({
       >
         <View className="flex-1">
           {/* 헤더 자리 (dimm 되지 않음, 흰 배경) */}
-          <View style={{ height: HEADER_HEIGHT }} className="flex-row items-center px-5 bg-white">
+          <View
+            style={{ height: HEADER_HEIGHT }}
+            className="flex-row items-center px-5 bg-white"
+          >
             {showBackButton ? (
               <View className="mr-2 opacity-40">
                 <LeftIcon color="#1A1A1A" />

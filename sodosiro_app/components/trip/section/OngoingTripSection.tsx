@@ -5,8 +5,11 @@ import { useExpandedItems } from "@/hooks/useExpandedItems";
 import { useTimelineScrollSpy } from "@/hooks/useTimelineScrollSpy";
 import { useTripPlanEditor } from "@/hooks/useTripPlanEditor";
 import { INITIAL_PLAN } from "@/mocks/trip";
+import { router } from "expo-router";
 import { useCallback, useState } from "react";
-import { LayoutChangeEvent, ScrollView, View } from "react-native";
+import { Image, LayoutChangeEvent, ScrollView, View } from "react-native";
+import EmptyState from "../EmptyState";
+import OnAirBanner from "../OnAirBanner";
 
 const DEFAULT_BUTTON_WIDTH = 96;
 type OngoingTripSectionProps = {};
@@ -42,40 +45,58 @@ export default function OngoingTripSection({}: OngoingTripSectionProps) {
 
   return (
     <View className="flex-1">
-      <DayBadgeBar
-        dayIndices={visiblePlan.map(({ index }) => index)}
-        activeIndex={activeIndex}
-        isEditing={isEditing}
-        editButtonWidth={editButtonWidth}
-        badgeScrollRef={badgeScrollRef}
-        showEditButton={false}
-        onPressDayBadge={handlePressDayBadge}
-        onLayoutDayBadge={handleBadgeLayout}
-        onRequestDeleteDay={requestDeleteDay}
-        onPressEditButton={pressEditButton}
-        onLayoutEditButton={handleEditButtonLayout}
-      />
-
-      {/* 일정 리스트 */}
-      <ScrollView
-        ref={mainScrollRef}
-        className="flex-1"
-        contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 8, paddingBottom: 24 }}
-        onScroll={handleMainScroll}
-        scrollEventThrottle={16}
-        showsVerticalScrollIndicator={false}
-      >
-        {visiblePlan.map(({ dayPlan, index }) => (
-          <TimelineDaySection
-            key={index}
-            dayPlan={dayPlan}
-            dayOrder={index + 1}
-            expandedIds={expandedIds}
-            onToggleItem={toggleExpand}
-            onLayout={(e) => handleSectionLayout(index, e)}
+      {/* nodata */}
+      {visiblePlan.length === 0 ? (
+        <EmptyState
+          title="아직 여행 일정이 없어요."
+          description="새로운 여행 일정을 만들까요?"
+          actionLabel="새 일정 만들기"
+          onPressAction={() => router.push("/trip/condition")}
+        />
+      ) : (
+        <>
+          <OnAirBanner tripTitle="강릉 여행" />
+          <Image
+            source={require("@/assets/images/map.png")}
+            resizeMode="cover"
+            style={{ width: `100%` }}
           />
-        ))}
-      </ScrollView>
+          <DayBadgeBar
+            dayIndices={visiblePlan.map(({ index }) => index)}
+            activeIndex={activeIndex}
+            isEditing={isEditing}
+            editButtonWidth={editButtonWidth}
+            badgeScrollRef={badgeScrollRef}
+            showEditButton={false}
+            onPressDayBadge={handlePressDayBadge}
+            onLayoutDayBadge={handleBadgeLayout}
+            onRequestDeleteDay={requestDeleteDay}
+            onPressEditButton={pressEditButton}
+            onLayoutEditButton={handleEditButtonLayout}
+          />
+
+          {/* 일정 리스트 */}
+          <ScrollView
+            ref={mainScrollRef}
+            className="flex-1"
+            contentContainerStyle={{ paddingHorizontal: 20 }}
+            onScroll={handleMainScroll}
+            scrollEventThrottle={16}
+            showsVerticalScrollIndicator={false}
+          >
+            {visiblePlan.map(({ dayPlan, index }) => (
+              <TimelineDaySection
+                key={index}
+                dayPlan={dayPlan}
+                dayOrder={index + 1}
+                expandedIds={expandedIds}
+                onToggleItem={toggleExpand}
+                onLayout={(e) => handleSectionLayout(index, e)}
+              />
+            ))}
+          </ScrollView>
+        </>
+      )}
     </View>
   );
 }

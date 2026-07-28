@@ -34,7 +34,7 @@ export default function DayBadgeBar({
   onLayoutEditButton,
 }: DayBadgeBarProps) {
   return (
-    <View className="relative py-2" style={{ zIndex: 20 }}>
+    <View className="relative py-3" style={{ zIndex: 20 }}>
       <ScrollView
         ref={badgeScrollRef}
         horizontal

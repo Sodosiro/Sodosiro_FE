@@ -1,3 +1,4 @@
+// export const INITIAL_PLAN: DayPlan[] = [];
 export const INITIAL_PLAN: DayPlan[] = [
   {
     id: "1",

@@ -13,7 +13,7 @@ export default function TripScreen() {
   const [currentTab, setCurrentTab] = useState<TabType>("진행중");
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <Header title="내 여행" showBackButton={true} showPencil={true} />
+      <Header title="내 여행" showBackButton={false} />
       <TripTabBar currentTab={currentTab} moveToSection={setCurrentTab} />
 
       {/* {currentTab === "예정" && <UpcomingTripSection />}

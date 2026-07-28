@@ -1,6 +1,9 @@
 // 장소 좋아요 icon
 export { default as PlaceHeartIcon } from "./place_heart.svg";
 
+// 10px
+export { default as OnAirIcon } from "./10px/on-air.svg";
+
 // 14px
 export { default as StarIcon } from "./14px/star.svg";
 
@@ -62,3 +65,4 @@ export { default as CultureIcon } from "./category/culture.svg";
 export { default as NatureIcon } from "./category/nature.svg";
 export { default as RestaurantIcon } from "./category/restaurant.svg";
 export { default as ShoppingIcon } from "./category/shopping.svg";
+

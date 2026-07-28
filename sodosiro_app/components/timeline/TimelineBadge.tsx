@@ -123,7 +123,7 @@ export default function Badge({
 
   return (
     <AnimatedPressable
-      className={`${isOngoing ? `bg-[#c4d96a]` : selected ? `bg-[#1A1A1A]` : disabled ? `bg-btn-disabled` : bgWhite || isEditButton ? `bg-white` : `bg-bg-muted`} flex-row items-center self-start pl-4 py-2.5 h-9 gap-1 rounded-full border border-border`}
+      className={`${isOngoing ? `bg-[#c4d96a]` : selected ? `bg-[#1A1A1A]` : disabled ? `bg-btn-disabled` : bgWhite || isEditButton ? `bg-white` : `bg-bg-muted`} flex-row items-center self-start pl-4 py-1.5 h-9 gap-1 rounded-full border border-border`}
       style={{ paddingRight }}
       disabled={disabled}
       onPress={onPress}

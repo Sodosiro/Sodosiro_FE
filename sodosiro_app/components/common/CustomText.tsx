@@ -3,6 +3,7 @@ import {
   Body2Class,
   Body2TightClass,
   Body3Class,
+  Body3Review,
   Body3TightClass,
   DisplayClass,
   Heading1Class,
@@ -33,6 +34,7 @@ export default function CustomText({
     body2: Body2Class,
     "body2 tight": Body2TightClass,
     body3: Body3Class,
+    "body3 review": Body3Review,
     "body3 tight": Body3TightClass,
   };
 

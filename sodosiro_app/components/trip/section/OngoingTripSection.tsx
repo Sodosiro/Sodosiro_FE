@@ -55,7 +55,7 @@ export default function OngoingTripSection({}: OngoingTripSectionProps) {
         />
       ) : (
         <>
-          <OnAirBanner tripTitle="강릉 여행" />
+          <OnAirBanner tripTitle={tripTitle} />
           <Image
             source={require("@/assets/images/map.png")}
             resizeMode="cover"
@@ -88,6 +88,8 @@ export default function OngoingTripSection({}: OngoingTripSectionProps) {
               <TimelineDaySection
                 key={index}
                 dayPlan={dayPlan}
+                isOngoing={true}
+                isUpcoming={false}
                 dayOrder={index + 1}
                 expandedIds={expandedIds}
                 onToggleItem={toggleExpand}

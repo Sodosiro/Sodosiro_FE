@@ -79,6 +79,8 @@ export default function TimelineScreen() {
               dayOrder={index + 1}
               expandedIds={expandedIds}
               onToggleItem={toggleExpand}
+              isOngoing={false}
+              isUpcoming={false}
               onLayout={(e) => handleSectionLayout(index, e)}
             />
           ))}

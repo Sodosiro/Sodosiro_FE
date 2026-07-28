@@ -30,7 +30,7 @@ type Props = {
   onLayout: (e: LayoutChangeEvent) => void;
 };
 
-export default function Badge({
+export default function TimelineBadge({
   disabled = false,
   selected = false,
   bgWhite = false,

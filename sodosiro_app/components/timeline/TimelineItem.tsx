@@ -14,6 +14,7 @@ type TimelineItemProps = {
   order: number;
   expandKey: string;
   isOngoing: boolean;
+  isUpcoming: boolean;
   isAuthCompleted?: boolean;
 };
 
@@ -27,6 +28,7 @@ export default function TimelineItem({
   order,
   expandKey,
   isOngoing,
+  isUpcoming,
   isAuthCompleted = false,
 }: TimelineItemProps) {
   const { showToast } = useToast();

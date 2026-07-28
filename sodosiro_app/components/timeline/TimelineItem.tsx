@@ -2,6 +2,7 @@ import { StarIcon } from "@/assets/svgs";
 import CustomText from "@/components/common/CustomText";
 import Dropdown from "@/components/common/Dropdown";
 import TimelineBadge from "@/components/timeline/TimelineBadge";
+import { useToast } from "@/contexts/ToastProvider";
 import { CategoryMap } from "@/util/place/category";
 import { View } from "react-native";
 
@@ -28,6 +29,8 @@ export default function TimelineItem({
   isOngoing,
   isAuthCompleted = false,
 }: TimelineItemProps) {
+  const { showToast } = useToast();
+
   return (
     <View className={`px-4 py-3 ${isLast ? "" : "border-b border-[#EDEDED]"}`}>
       <Dropdown
@@ -100,8 +103,9 @@ export default function TimelineItem({
                 <TimelineBadge
                   onLayout={() => {}}
                   onPress={() => {
-                    // TODO: 방문 인증하기
+                    showToast("300m 이내에서 인증할 수 있어요");
                   }}
+
                   text={"방문 인증하기"}
                   selected={true}
                   bgWhite={true}

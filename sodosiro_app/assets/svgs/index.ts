@@ -6,6 +6,7 @@ export { default as StarIcon } from "./14px/star.svg";
 
 // 16px
 export { default as CallMiniIcon } from "./16px/call_mini.svg";
+export { default as CameraMiniIcon } from "./16px/camera_mini.svg";
 export { default as ClockMiniIcon } from "./16px/clock_mini.svg";
 export { default as InfoMiniIcon } from "./16px/info_mini.svg";
 export { default as NavigationMiniIcon } from "./16px/navigation_mini.svg";

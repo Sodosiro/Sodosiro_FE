@@ -7,16 +7,21 @@ export default function PlaceDetailSectionContainer({
   title,
   children,
   className,
+  rightComponent,
   ...props
 }: {
   ref: RefObject<View | null>;
   title: string;
+  rightComponent?: React.ReactNode;
   children: React.ReactNode;
   className?: string;
 }) {
   return (
-    <View ref={ref} className={`px-5 pt-8 gap-3 ${className}`} {...props}>
-      <CustomText font="heading2">{title}</CustomText>
+    <View ref={ref} className={`px-5 pt-8 ${className}`} {...props}>
+      <View className={`flex-row items-center justify-between`}>
+        <CustomText font="heading2">{title}</CustomText>
+        {rightComponent}
+      </View>
       {children}
     </View>
   );

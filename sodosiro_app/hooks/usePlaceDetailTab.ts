@@ -7,7 +7,7 @@ import type {
   View,
 } from "react-native";
 
-type TabType = "이용 정보" | "위치" | "함께 추천";
+type TabType = "이용 정보" | "리뷰" | "함께 추천";
 
 type SectionPosition = {
   start: number;
@@ -17,24 +17,20 @@ type SectionPosition = {
 export function usePlaceDetailTab() {
   const scrollRef = useRef<ScrollView>(null);
   const infoRef = useRef<View>(null);
-  const locationRef = useRef<View>(null);
+  const reviewRef = useRef<View>(null);
   const recommendRef = useRef<View>(null);
   const isScrolling = useRef(false);
   const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const sectionPositions = useRef<Record<TabType, SectionPosition>>({
     "이용 정보": { start: 0, end: 0 },
-    위치: { start: 0, end: 0 },
+    리뷰: { start: 0, end: 0 },
     "함께 추천": { start: 0, end: 0 },
   });
   const [currentTab, setCurrentTab] = useState<TabType>("이용 정보");
 
   const moveToSection = (tab: TabType) => {
     const ref =
-      tab === "이용 정보"
-        ? infoRef
-        : tab === "위치"
-          ? locationRef
-          : recommendRef;
+      tab === "이용 정보" ? infoRef : tab === "리뷰" ? reviewRef : recommendRef;
 
     setCurrentTab(tab);
 
@@ -67,8 +63,8 @@ export function usePlaceDetailTab() {
 
     if (screenBottom + 1 >= positions["함께 추천"].end) {
       setCurrentTab("함께 추천");
-    } else if (screenBottom >= positions["위치"].end) {
-      setCurrentTab("위치");
+    } else if (screenBottom >= positions["리뷰"].end) {
+      setCurrentTab("리뷰");
     } else {
       setCurrentTab("이용 정보");
     }
@@ -86,7 +82,7 @@ export function usePlaceDetailTab() {
   return {
     scrollRef,
     infoRef,
-    locationRef,
+    reviewRef,
     recommendRef,
     currentTab,
     moveToSection,

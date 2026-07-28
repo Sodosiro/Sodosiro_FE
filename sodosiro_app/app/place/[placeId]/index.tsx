@@ -2,14 +2,13 @@ import { NavigationIcon, PlaceHeartIcon } from "@/assets/svgs";
 import BottomActionBar from "@/components/common/BottomActionBar";
 import CustomButton from "@/components/common/CustomButton";
 import CustomCarousel from "@/components/common/CustomCarousel";
-import CustomText from "@/components/common/CustomText";
 import Header from "@/components/common/Header";
 import AIRecommend from "@/components/placeDetail/placeOverview/AIRecommend";
 import PlaceInfo from "@/components/placeDetail/placeOverview/PlaceInfo";
 import PlaceTabBar from "@/components/placeDetail/PlaceTabBar";
-import LocationSection from "@/components/placeDetail/section/LocationSection";
 import PlaceInfoSection from "@/components/placeDetail/section/PlaceInfoSection";
 import RecommedSection from "@/components/placeDetail/section/RecommendSection";
+import ReviewSection from "@/components/placeDetail/section/ReviewSection";
 import { usePlaceDetailTab } from "@/hooks/usePlaceDetailTab";
 import { PLACE_DETAIL } from "@/mocks/places";
 import { useState } from "react";
@@ -20,7 +19,7 @@ export default function PlaceDetailScreen() {
   const {
     scrollRef,
     infoRef,
-    locationRef,
+    reviewRef,
     recommendRef,
     currentTab,
     moveToSection,
@@ -68,19 +67,17 @@ export default function PlaceDetailScreen() {
         {/* 이용 정보 */}
         <PlaceInfoSection
           ref={infoRef}
+          address={PLACE_DETAIL.address}
           info={PLACE_DETAIL.info}
           onLayout={(e) => handleOnLayout(e, "이용 정보")}
         />
 
-        {/* 위치 */}
-        <LocationSection
-          ref={locationRef}
-          address={PLACE_DETAIL.address}
-          className="px-5 pt-8 gap-3"
-          onLayout={(e) => handleOnLayout(e, "위치")}
-        >
-          <CustomText font="title">위치</CustomText>
-        </LocationSection>
+        {/* 리뷰 */}
+        <ReviewSection
+          ref={reviewRef}
+          reviews={PLACE_DETAIL.reviews}
+          onLayout={(e) => handleOnLayout(e, "리뷰")}
+        />
 
         {/* 함께 추천 */}
         <RecommedSection

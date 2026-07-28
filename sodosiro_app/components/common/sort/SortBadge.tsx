@@ -26,7 +26,7 @@ export default function SortBadge({
   return (
     <>
       <Pressable
-        className="flex-row gap-1 rounded-full border border-border px-4 py-2.5"
+        className="flex-row gap-1 rounded-full border border-border px-4 py-2.5 self-start"
         onPress={() => setIsSortModalVisible(true)}
       >
         <SortMiniIcon />

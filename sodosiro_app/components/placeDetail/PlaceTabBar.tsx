@@ -7,7 +7,7 @@ import Animated, {
 } from "react-native-reanimated";
 import CustomText from "../common/CustomText";
 
-type TabType = "이용 정보" | "위치" | "함께 추천";
+type TabType = "이용 정보" | "리뷰" | "함께 추천";
 
 export default function PlaceTabBar({
   currentTab,
@@ -16,7 +16,7 @@ export default function PlaceTabBar({
   currentTab: TabType;
   moveToSection: (tab: TabType) => void;
 }) {
-  const tabs: TabType[] = ["이용 정보", "위치", "함께 추천"];
+  const tabs: TabType[] = ["이용 정보", "리뷰", "함께 추천"];
   const [tabWidth, setTabWidth] = useState(0);
   const currentIndex = tabs.indexOf(currentTab);
   const indicatorStyle = useAnimatedStyle(() => ({

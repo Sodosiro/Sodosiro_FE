@@ -220,14 +220,72 @@ export const PLACE_DETAIL = {
   ],
   reason:
     "소박하지만 깊은 맛, 강릉길감자에서 특별한 감자 요리를 만날 수 있어요.",
-  rate: 4.8,
-  reviewCount: 214,
+  rate: 4.5,
+  reviewCount: 6,
   info: {
     opening: "매일 10:30 ~ 20:00",
     phoneNumber: "0507-1391-1967",
     parking: true,
     pet: true,
   },
+
+  reviews: [
+    {
+      id: 1,
+      nickname: "감자도리",
+      imageSource:
+        "https://lh3.googleusercontent.com/grass-cs/ACvplmNUovuuPwMKAvQtPHlM6pYb2rGU3vwIwD5MgSbNkQ0Kc6y9VnWJT43jyofbyiGxC6hD70Nzni8GO9rj5BRwui3iHs1lylPmpdFJ5dqAFy8J5G1p1gxrZOSp4GPorZ09wY-_lv6i1g5Hu6xt=s2916-w2916-h1630-rw",
+      rate: 5,
+      comment:
+        "겉은 바삭하고 속은 쫄깃한 감자 반죽에 짭쪼름한 특제소스가 어우러진 간식. 감자에 진심인 한국인이라면 도저히 싫어할 수 없는 맛🥺",
+      createdAt: new Date("2026-10-29"),
+    },
+    {
+      id: 2,
+      nickname: "강릉꾸러기",
+      imageSource: null,
+      rate: 4.5,
+      comment:
+        "평일 오전에 방문해서 웨이팅도 길지 않았어요. 강릉중앙시장에 간다면 한 번쯤 먹어볼 만한 간식이에요.",
+      createdAt: new Date("2026-10-26"),
+    },
+    {
+      id: 3,
+      nickname: "감자먹는사람",
+      imageSource: null,
+      rate: 4,
+      comment:
+        "한번쯤 먹을 만한 것 같아요. 길게 줄을 섰지만 가게 안에서 완전 감자 굽는 기계처럼 일하고 계셔서 20분 안에 받아갈 수 있었어요.",
+      createdAt: new Date("2026-10-22"),
+    },
+    {
+      id: 4,
+      nickname: "감자도리",
+      imageSource: null,
+      rate: 5,
+      comment:
+        "겉은 바삭하고 속은 쫄깃한 감자 반죽에 짭쪼름한 특제소스가 어우러진 간식. 감자에 진심인 한국인이라면 도저히 싫어할 수 없는 맛🥺",
+      createdAt: new Date("2026-10-19"),
+    },
+    {
+      id: 5,
+      nickname: "강릉꾸러기",
+      imageSource: null,
+      rate: 4,
+      comment:
+        "평일 오전에 방문해서 웨이팅도 길지 않았어요. 강릉중앙시장에 간다면 한 번쯤 먹어볼 만한 간식이에요.",
+      createdAt: new Date("2026-10-19"),
+    },
+    {
+      id: 6,
+      nickname: "감자먹는사람",
+      imageSource: null,
+      rate: 4.5,
+      comment:
+        "한번쯤 먹을 만한 것 같아요. 길게 줄을 섰지만 가게 안에서 완전 감자 굽는 기계처럼 일하고 계셔서 20분 안에 받아갈 수 있었어요.",
+      createdAt: new Date("2026-10-13"),
+    },
+  ],
 
   recommendPlaces: [
     {

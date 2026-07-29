@@ -1,6 +1,6 @@
 import { Stack } from "expo-router";
 
-export default function TripLayout() {
+export default function PlaceLayout() {
   return (
     <Stack
       screenOptions={{
@@ -9,8 +9,8 @@ export default function TripLayout() {
       }}
     >
       <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="condition" options={{ headerShown: false }} />
-      <Stack.Screen name="timeline" options={{ headerShown: false }} />
+      <Stack.Screen name="review" options={{ headerShown: false }} />
+      <Stack.Screen name="reviewWrite" options={{ headerShown: false }} />
     </Stack>
   );
 }

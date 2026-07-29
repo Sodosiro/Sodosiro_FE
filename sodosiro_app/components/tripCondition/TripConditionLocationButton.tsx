@@ -30,8 +30,6 @@ export default function LocationPickerButton({
         items-center
         justify-between
         rounded-full
-        border
-        border-border
         bg-[#F5F5F5]
         px-5
         py-4
@@ -40,7 +38,7 @@ export default function LocationPickerButton({
       `}
     >
       {/* 좌측: 아이콘 + 장소 텍스트 */}
-      <View className="flex-row items-center space-x-2">
+      <View className="flex-row items-center space-x-2 gap-0.5">
         <PinMiniIcon color={hasValue ? "#1A1A1A" : "#888888"} />
         <Text
           className={`text-base ${hasValue ? "font-medium text-[#1A1A1A]" : "text-text-muted"}`}
@@ -50,7 +48,11 @@ export default function LocationPickerButton({
       </View>
 
       {/* 우측: 값이 있을 때만 '변경하기' 텍스트 표시 */}
-      {hasValue && <Text className="text-sm text-[#888888] font-regular">{actionText}</Text>}
+      {hasValue && (
+        <Text className="text-sm text-[#888888] font-regular">
+          {actionText}
+        </Text>
+      )}
     </Pressable>
   );
 }

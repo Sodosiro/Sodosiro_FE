@@ -1,7 +1,7 @@
 import { SearchIcon } from "@/assets/svgs";
 import Header from "@/components/common/Header";
+import FavoriteFilter from "@/components/mypage/favorite/FavoriteFilter";
 import FavoriteList from "@/components/mypage/favorite/FavoriteList";
-import SortBadgeList from "@/components/mypage/favorite/SortBadgeList";
 import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -15,7 +15,7 @@ export default function FavoriteListScreen() {
         title="좋아요한 장소"
         rightComponent={<SearchIcon color="#1a1a1a" height={20} />}
       />
-      <SortBadgeList
+      <FavoriteFilter
         sortOption={sortOption}
         setSortOption={setSortOption}
         selectedCategory={selectedCategory}

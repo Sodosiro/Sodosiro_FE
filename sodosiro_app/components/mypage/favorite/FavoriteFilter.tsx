@@ -3,7 +3,7 @@ import SortBadge from "@/components/common/sort/SortBadge";
 import { Dispatch, SetStateAction, useState } from "react";
 import { View } from "react-native";
 
-export default function SortBadgeList({
+export default function FavoriteFilter({
   sortOption,
   setSortOption,
   selectedCategory,

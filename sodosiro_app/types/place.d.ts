@@ -21,3 +21,12 @@ type PlaceType = {
   favorite?: boolean;
   popular?: boolean;
 };
+
+type ReviewType = {
+  id: number;
+  nickname: string;
+  imageSource: string | null;
+  rate: number;
+  comment: string;
+  createdAt: Date;
+};

@@ -12,6 +12,7 @@ type Props = {
   showPencil?: boolean;
   rightComponent?: React.ReactNode;
   onTitleChange?: (title: string) => void;
+  isBgWhite?: boolean;
 };
 
 const HEADER_HEIGHT = 64; // h-14
@@ -22,6 +23,7 @@ export default function Header({
   rightComponent,
   showPencil = false,
   onTitleChange,
+  isBgWhite = true,
 }: Props) {
   const navigation = useNavigation();
   // Modal 내부에서는 SafeAreaProvider 컨텍스트가 정상 전달되지 않으므로
@@ -64,7 +66,9 @@ export default function Header({
   };
 
   return (
-    <View className="h-16 flex-row items-center px-5 bg-white">
+    <View
+      className={`h-16 flex-row items-center px-5 ${isBgWhite && `bg-white`}`}
+    >
       {showBackButton ? (
         <Pressable onPress={handleBack} hitSlop={12} className="mr-2">
           <LeftIcon color="#1A1A1A" />

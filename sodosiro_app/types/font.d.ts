@@ -8,4 +8,5 @@ type TypoType =
   | "body2"
   | "body2 tight"
   | "body3"
+  | "body3 review"
   | "body3 tight";

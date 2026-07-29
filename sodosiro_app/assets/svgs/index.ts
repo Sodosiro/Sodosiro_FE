@@ -10,6 +10,7 @@ export { default as StarIcon } from "./14px/star.svg";
 // 16px
 export { default as CalendarMiniIcon } from "./16px/calendar-mini.svg";
 export { default as CallMiniIcon } from "./16px/call_mini.svg";
+export { default as CameraMiniIcon } from "./16px/camera_mini.svg";
 export { default as ClockMiniIcon } from "./16px/clock_mini.svg";
 export { default as InfoMiniIcon } from "./16px/info_mini.svg";
 export { default as NavigationMiniIcon } from "./16px/navigation_mini.svg";
@@ -54,6 +55,11 @@ export { default as BusIcon } from "./32px/bus.svg";
 export { default as CarIcon } from "./32px/car.svg";
 export { default as HeartCircle } from "./32px/heart_circle.svg";
 export { default as HeartCircleStroke } from "./32px/heart_circle_stroke.svg";
+
+// 36px
+export { default as EmptyRateIcon } from "./36px/empty_rate.svg";
+export { default as HalfRateIcon } from "./36px/half_rate.svg";
+export { default as RateIcon } from "./36px/rate.svg";
 
 // 10px
 export { default as DotIcon } from "./10px/dot.svg";

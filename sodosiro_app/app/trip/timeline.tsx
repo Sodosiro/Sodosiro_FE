@@ -29,24 +29,36 @@ export default function TimelineScreen() {
     handleBadgeLayout,
   } = useTimelineScrollSpy();
 
-  const { visiblePlan, isEditing, requestDeleteDay, pressEditButton } = useTripPlanEditor({
-    initialPlan: INITIAL_PLAN,
-    activeIndex,
-    onActiveIndexChange: setActiveIndex,
-  });
+  const { visiblePlan, isEditing, requestDeleteDay, pressEditButton } =
+    useTripPlanEditor({
+      initialPlan: INITIAL_PLAN,
+      activeIndex,
+      onActiveIndexChange: setActiveIndex,
+    });
 
-  const initialExpanded = [`${INITIAL_PLAN[0].id}-${INITIAL_PLAN[0].places[0].id}`];
+  const initialExpanded = [
+    `${INITIAL_PLAN[0].id}-${INITIAL_PLAN[0].places[0].id}`,
+  ];
   const { expandedIds, toggleExpand } = useExpandedItems(initialExpanded);
 
   const handleEditButtonLayout = useCallback((e: LayoutChangeEvent) => {
     const measuredWidth = e.nativeEvent.layout.width + 20;
-    setEditButtonWidth((prev) => (Math.abs(prev - measuredWidth) > 1 ? measuredWidth : prev));
+    setEditButtonWidth((prev) =>
+      Math.abs(prev - measuredWidth) > 1 ? measuredWidth : prev,
+    );
   }, []);
 
   return (
-    <SafeAreaView className="flex-1 bg-white" edges={["top", "bottom"]}>
+    <SafeAreaView
+      style={{ flex: 1, backgroundColor: "white" }}
+      edges={["top", "bottom"]}
+    >
       <Stack.Screen options={{ headerShown: false }} />
-      <Header title={tripTitle} showPencil onTitleChange={(newTitle) => setTripTitle(newTitle)} />
+      <Header
+        title={tripTitle}
+        showPencil
+        onTitleChange={(newTitle) => setTripTitle(newTitle)}
+      />
 
       <View className="flex-1">
         <DayBadgeBar
@@ -67,7 +79,11 @@ export default function TimelineScreen() {
         <ScrollView
           ref={mainScrollRef}
           className="flex-1"
-          contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 8, paddingBottom: 24 }}
+          contentContainerStyle={{
+            paddingHorizontal: 20,
+            paddingTop: 8,
+            paddingBottom: 24,
+          }}
           onScroll={handleMainScroll}
           scrollEventThrottle={16}
           showsVerticalScrollIndicator={false}

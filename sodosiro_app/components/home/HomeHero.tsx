@@ -1,8 +1,8 @@
 import { NotificationIcon, SearchIcon } from "@/assets/svgs";
+import { router } from "expo-router";
 import { Image, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomButton from "../common/CustomButton";
-import { router } from "expo-router";
 import CustomText from "../common/CustomText";
 
 export default function HomeHero() {
@@ -47,7 +47,7 @@ export default function HomeHero() {
         <CustomButton
           type="primary"
           title="코스 만들기"
-          onPress={() => router.push("/roulette/result")}
+          onPress={() => router.push("/roulette")}
         />
       </SafeAreaView>
     </View>

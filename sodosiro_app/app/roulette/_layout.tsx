@@ -1,6 +1,6 @@
 import { Stack } from "expo-router";
 
-export default function RoulletLayout() {
+export default function RouletteLayout() {
   return (
     <Stack
       screenOptions={{

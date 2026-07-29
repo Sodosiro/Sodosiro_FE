@@ -1,14 +1,13 @@
 import { SODOSI_LIST } from "@/constants/Sodosi";
 import { router } from "expo-router";
 import { Dispatch, SetStateAction, useRef, useState } from "react";
-import { Image, Modal, Pressable, View } from "react-native";
+import { Image, Modal, View } from "react-native";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import { AnimatedPressable } from "../common/Animated";
 import CustomButton from "../common/CustomButton";
 import CustomText from "../common/CustomText";
 import RoulettePicker, { RoulettePickerHandle } from "./RoulettePicker";
 import RouletteTitle from "./RouletteTitle";
-
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export default function RoulleteContent({
   chance,
@@ -134,7 +133,6 @@ const ChanceModal = ({
       onRequestClose={() => setIsModalVisible(false)}
       className={`items-center`}
     >
-      {/* 어두운 배경 */}
       <AnimatedPressable
         entering={FadeIn.duration(250)}
         exiting={FadeOut.duration(250)}

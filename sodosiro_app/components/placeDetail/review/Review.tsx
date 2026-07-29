@@ -1,18 +1,19 @@
 import { StarIcon } from "@/assets/svgs";
 import CustomText from "@/components/common/CustomText";
-import { Image, View } from "react-native";
+import { Image, Pressable, View } from "react-native";
 
 export default function Review({
   review,
   isLast = false,
   prev = false,
+  handleImageClick,
 }: {
   review: ReviewType;
   isLast?: boolean;
   prev?: boolean;
+  handleImageClick: (imageSource: string) => void;
 }) {
   const date = review.createdAt;
-
   const formattedDate = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
 
   return (
@@ -46,11 +47,15 @@ export default function Review({
         >
           {review.comment}
         </CustomText>
-        {review.imageSources.length > 0 && (
-          <Image
-            source={{ uri: review.imageSources[0] }}
-            className={`${prev ? `w-13 h-13` : `w-20 h-20`} rounded-xl`}
-          />
+        {review.imageSource && (
+          <Pressable
+            onPress={() => handleImageClick(review.imageSource as string)}
+          >
+            <Image
+              source={{ uri: review.imageSource }}
+              className={`${prev ? `w-13 h-13` : `w-20 h-20`} rounded-xl`}
+            />
+          </Pressable>
         )}
       </View>
     </View>

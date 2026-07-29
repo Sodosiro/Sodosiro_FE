@@ -25,7 +25,7 @@ type PlaceType = {
 type ReviewType = {
   id: number;
   nickname: string;
-  imageSources: string[];
+  imageSource: string | null;
   rate: number;
   comment: string;
   createdAt: Date;

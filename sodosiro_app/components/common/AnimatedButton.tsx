@@ -1,19 +1,17 @@
 import type { PressableProps, ViewStyle } from "react-native";
-import { Pressable } from "react-native";
-import Animated, {
+import {
   interpolateColor,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
+import { AnimatedPressable } from "./Animated";
 
 interface Props extends PressableProps {
   backgroundColor: string[];
   disabledColor?: string;
   loading?: boolean;
 }
-
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export default function AnimatedButton({
   className,

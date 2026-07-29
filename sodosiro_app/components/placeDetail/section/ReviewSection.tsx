@@ -8,11 +8,17 @@ import ReviewList from "../review/ReviewList";
 import PlaceDetailSectionContainer from "./PlaceDetailSectionContainer";
 
 interface Props extends ViewProps {
+  title: string;
   reviews: ReviewType[];
   ref: RefObject<View | null>;
 }
 
-export default function ReviewSection({ reviews, ref, ...props }: Props) {
+export default function ReviewSection({
+  title,
+  reviews,
+  ref,
+  ...props
+}: Props) {
   return (
     <PlaceDetailSectionContainer
       ref={ref}
@@ -27,6 +33,7 @@ export default function ReviewSection({ reviews, ref, ...props }: Props) {
                 pathname: "/place/[placeId]/review",
                 params: {
                   placeId: "123",
+                  placeTitle: title,
                 },
               })
             }
@@ -40,7 +47,7 @@ export default function ReviewSection({ reviews, ref, ...props }: Props) {
       }
       {...props}
     >
-      <ReviewList reviews={reviews.slice(0, 3)} prev />
+      <ReviewList title={title} reviews={reviews.slice(0, 3)} prev />
     </PlaceDetailSectionContainer>
   );
 }

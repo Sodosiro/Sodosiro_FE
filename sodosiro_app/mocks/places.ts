@@ -233,10 +233,8 @@ export const PLACE_DETAIL = {
     {
       id: 1,
       nickname: "감자도리",
-      imageSources: [
-        "https://lh3.googleusercontent.com/grass-cs/ACvplmObko7gemytt6GM3PSNWQyjbeWIj9-owXTJE-NUQpBRsXK1v1ZDH1EpgLd8FezPdlCcS6X7q1W1PEaXwuAkS1i3MlVhiOMqtRDOR8yA2uBcZE4RBWlLg-MKp-ig4EHa4D_56gDs7g5wlAI=s2916-w2916-h1630-rw",
+      imageSource:
         "https://lh3.googleusercontent.com/grass-cs/ACvplmNUovuuPwMKAvQtPHlM6pYb2rGU3vwIwD5MgSbNkQ0Kc6y9VnWJT43jyofbyiGxC6hD70Nzni8GO9rj5BRwui3iHs1lylPmpdFJ5dqAFy8J5G1p1gxrZOSp4GPorZ09wY-_lv6i1g5Hu6xt=s2916-w2916-h1630-rw",
-      ],
       rate: 5,
       comment:
         "겉은 바삭하고 속은 쫄깃한 감자 반죽에 짭쪼름한 특제소스가 어우러진 간식. 감자에 진심인 한국인이라면 도저히 싫어할 수 없는 맛🥺",
@@ -245,7 +243,7 @@ export const PLACE_DETAIL = {
     {
       id: 2,
       nickname: "강릉꾸러기",
-      imageSources: [],
+      imageSource: null,
       rate: 4.5,
       comment:
         "평일 오전에 방문해서 웨이팅도 길지 않았어요. 강릉중앙시장에 간다면 한 번쯤 먹어볼 만한 간식이에요.",
@@ -254,7 +252,7 @@ export const PLACE_DETAIL = {
     {
       id: 3,
       nickname: "감자먹는사람",
-      imageSources: [],
+      imageSource: null,
       rate: 4,
       comment:
         "한번쯤 먹을 만한 것 같아요. 길게 줄을 섰지만 가게 안에서 완전 감자 굽는 기계처럼 일하고 계셔서 20분 안에 받아갈 수 있었어요.",
@@ -263,7 +261,7 @@ export const PLACE_DETAIL = {
     {
       id: 4,
       nickname: "감자도리",
-      imageSources: [],
+      imageSource: null,
       rate: 5,
       comment:
         "겉은 바삭하고 속은 쫄깃한 감자 반죽에 짭쪼름한 특제소스가 어우러진 간식. 감자에 진심인 한국인이라면 도저히 싫어할 수 없는 맛🥺",
@@ -272,7 +270,7 @@ export const PLACE_DETAIL = {
     {
       id: 5,
       nickname: "강릉꾸러기",
-      imageSources: [],
+      imageSource: null,
       rate: 4,
       comment:
         "평일 오전에 방문해서 웨이팅도 길지 않았어요. 강릉중앙시장에 간다면 한 번쯤 먹어볼 만한 간식이에요.",
@@ -281,7 +279,7 @@ export const PLACE_DETAIL = {
     {
       id: 6,
       nickname: "감자먹는사람",
-      imageSources: [],
+      imageSource: null,
       rate: 4.5,
       comment:
         "한번쯤 먹을 만한 것 같아요. 길게 줄을 섰지만 가게 안에서 완전 감자 굽는 기계처럼 일하고 계셔서 20분 안에 받아갈 수 있었어요.",

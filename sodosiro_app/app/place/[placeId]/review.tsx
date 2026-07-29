@@ -4,6 +4,7 @@ import Header from "@/components/common/Header";
 import ReviewFilter from "@/components/placeDetail/review/ReviewFilter";
 import ReviewList from "@/components/placeDetail/review/ReviewList";
 import { PLACE_DETAIL } from "@/mocks/places";
+import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -12,6 +13,10 @@ export default function ReviewScreen() {
   const [isSortModalVisible, setIsSortModalVisible] = useState(false);
   const [sortOption, setSortOption] = useState("최신순");
   const [onlyPhotoReview, setOnlyPhotoReview] = useState(false);
+
+  const { title } = useLocalSearchParams<{
+    title: string;
+  }>();
 
   return (
     <SafeAreaView
@@ -42,7 +47,7 @@ export default function ReviewScreen() {
       <ScrollView contentContainerClassName="pb-8 px-5">
         <CustomText font="heading2">리뷰</CustomText>
 
-        <ReviewList reviews={PLACE_DETAIL.reviews} />
+        <ReviewList title={title} reviews={PLACE_DETAIL.reviews} />
       </ScrollView>
     </SafeAreaView>
   );

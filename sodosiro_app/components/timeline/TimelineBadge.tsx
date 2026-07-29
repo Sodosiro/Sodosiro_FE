@@ -1,9 +1,14 @@
 import { InfoMiniIcon, WhiteBigCheckIcon, XIcon } from "@/assets/svgs";
 import { useEffect, useRef, useState } from "react";
-import { Animated, Easing, LayoutChangeEvent, Pressable, View } from "react-native";
+import {
+  Animated,
+  Easing,
+  LayoutChangeEvent,
+  Pressable,
+  View,
+} from "react-native";
+import { AnimatedPressable } from "../common/Animated";
 import CustomText from "../common/CustomText";
-
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 const PADDING_RIGHT_DEFAULT = 16; // px-4
 const PADDING_RIGHT_REMOVABLE = 12; // pr-3
@@ -178,7 +183,10 @@ export default function Badge({
             right: 0,
             zIndex: 30,
             opacity: tooltipOpacity,
-            transform: [{ translateY: tooltipTranslateY }, { scale: tooltipScale }],
+            transform: [
+              { translateY: tooltipTranslateY },
+              { scale: tooltipScale },
+            ],
           }}
         >
           {/* 화살표 */}

@@ -7,10 +7,10 @@ import Animated, {
   SlideInDown,
   SlideOutDown,
 } from "react-native-reanimated";
+import { AnimatedPressable } from "../Animated";
 import CustomText from "../CustomText";
 
 const SORT_OPTIONS = ["최신순", "오래된순", "오름차순", "내림차순"];
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export default function SortBadge({
   isSortModalVisible,
@@ -40,7 +40,6 @@ export default function SortBadge({
         onRequestClose={() => setIsSortModalVisible(false)}
       >
         <View className="flex-1 justify-end">
-          {/* 어두운 배경 */}
           <AnimatedPressable
             entering={FadeIn.duration(250)}
             exiting={FadeOut.duration(250)}

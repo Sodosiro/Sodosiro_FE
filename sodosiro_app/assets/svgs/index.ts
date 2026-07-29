@@ -52,6 +52,11 @@ export { default as CarIcon } from "./32px/car.svg";
 export { default as HeartCircle } from "./32px/heart_circle.svg";
 export { default as HeartCircleStroke } from "./32px/heart_circle_stroke.svg";
 
+// 36px
+export { default as EmptyRateIcon } from "./36px/empty_rate.svg";
+export { default as HalfRateIcon } from "./36px/half_rate.svg";
+export { default as RateIcon } from "./36px/rate.svg";
+
 // 10px
 export { default as DotIcon } from "./10px/dot.svg";
 

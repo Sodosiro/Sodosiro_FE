@@ -75,6 +75,7 @@ export default function PlaceDetailScreen() {
         {/* 리뷰 */}
         <ReviewSection
           ref={reviewRef}
+          title={PLACE_DETAIL.title}
           reviews={PLACE_DETAIL.reviews}
           onLayout={(e) => handleOnLayout(e, "리뷰")}
         />

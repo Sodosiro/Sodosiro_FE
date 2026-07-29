@@ -6,6 +6,8 @@ type TimelineDaySectionProps = {
   dayPlan: DayPlan;
   /** 몇 번째 일차인지 (뱃지 번호로 사용) */
   dayOrder: number;
+  isOngoing: boolean;
+  isUpcoming: boolean;
   expandedIds: Set<string>;
   onToggleItem: (id: string) => void;
   onLayout: (e: LayoutChangeEvent) => void;
@@ -15,6 +17,8 @@ type TimelineDaySectionProps = {
 export default function TimelineDaySection({
   dayPlan,
   dayOrder,
+  isOngoing,
+  isUpcoming,
   expandedIds,
   onToggleItem,
   onLayout,
@@ -37,7 +41,8 @@ export default function TimelineDaySection({
             onToggle={onToggleItem}
             expandKey={expandKey}
             order={dayOrder}
-            isOngoing={true}
+            isOngoing={isOngoing}
+            isUpcoming={isUpcoming}
           />
         );
       })}

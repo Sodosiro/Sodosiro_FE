@@ -1,3 +1,4 @@
+// export const INITIAL_PLAN: DayPlan[] = [];
 export const INITIAL_PLAN: DayPlan[] = [
   {
     id: "1",
@@ -47,5 +48,35 @@ export const INITIAL_PLAN: DayPlan[] = [
     id: "4",
     dateLabel: "10/8 (화)",
     places: [{ id: 1, title: "정동진", category: "attraction" }],
+  },
+];
+
+export const UPCOMING_TRIPS: UpcomingTripCardType[] = [
+  {
+    id: "trip-001",
+    dDay: 3,
+    title: "원이랑 강원도 여행",
+    region: "영월",
+    startDate: "10/14 (수)",
+    nights: 1,
+    locationText: "청령포 외 4곳",
+  },
+  {
+    id: "trip-002",
+    dDay: 15,
+    title: "가족과 제주도 여행",
+    region: "제주",
+    startDate: "10/26 (월)",
+    nights: 3,
+    locationText: "성산일출봉 외 6곳",
+  },
+  {
+    id: "trip-003",
+    dDay: 42,
+    title: "친구들과 부산 여행",
+    region: "부산",
+    startDate: "11/22 (일)",
+    nights: 2,
+    locationText: "해운대 외 5곳",
   },
 ];

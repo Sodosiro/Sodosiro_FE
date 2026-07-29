@@ -14,6 +14,7 @@ configureReanimatedLogger({
   strict: false,
 });
 
+import { ToastProvider } from "@/contexts/ToastProvider";
 import { LocaleConfig } from "react-native-calendars";
 
 LocaleConfig.locales.kr = {
@@ -60,49 +61,51 @@ export default function RootLayout() {
   });
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <Stack>
-        <Stack.Screen
-          name="(tabs)"
-          options={{
-            presentation: "modal",
-            animation: "fade",
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="explore/search"
-          options={{
-            presentation: "modal",
-            animation: "fade",
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="roulette"
-          options={{
-            presentation: "modal",
-            animation: "fade",
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="place"
-          options={{
-            presentation: "modal",
-            animation: "fade",
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="mypage"
-          options={{
-            presentation: "modal",
-            animation: "fade",
-            headerShown: false,
-          }}
-        />
-      </Stack>
-    </GestureHandlerRootView>
+    <ToastProvider>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <Stack>
+          <Stack.Screen
+            name="(tabs)"
+            options={{
+              presentation: "modal",
+              animation: "fade",
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="explore/search"
+            options={{
+              presentation: "modal",
+              animation: "fade",
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="roulette"
+            options={{
+              presentation: "modal",
+              animation: "fade",
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="place"
+            options={{
+              presentation: "modal",
+              animation: "fade",
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="mypage"
+            options={{
+              presentation: "modal",
+              animation: "fade",
+              headerShown: false,
+            }}
+          />
+        </Stack>
+      </GestureHandlerRootView>
+    </ToastProvider>
   );
 }

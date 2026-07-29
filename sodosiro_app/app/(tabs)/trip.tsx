@@ -12,9 +12,16 @@ type TabType = "예정" | "진행중" | "완료";
 export default function TripScreen() {
   const [currentTab, setCurrentTab] = useState<TabType>("진행중");
   return (
-    <SafeAreaView className="flex-1">
+    <SafeAreaView style={{ flex: 1 }}>
       <Header title="내 여행" showBackButton={false} />
-      <TripTabBar currentTab={currentTab} moveToSection={setCurrentTab} />
+      <TripTabBar
+        currentTab={currentTab}
+        moveToSection={setCurrentTab}
+        counts={{
+          upcoming: 3,
+          completed: 2,
+        }}
+      />
 
       {/* {currentTab === "예정" && <UpcomingTripSection />}
       {currentTab === "진행중" && <OngoingTripSection />}

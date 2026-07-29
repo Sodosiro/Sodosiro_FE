@@ -3,6 +3,7 @@ import { Heading1Class } from "@/styles/Typography";
 import { useNavigation } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { Modal, Pressable, TextInput, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import CustomText from "./CustomText";
 
 type Props = {
@@ -25,12 +26,14 @@ export default function Header({
   isBgWhite = true,
 }: Props) {
   const navigation = useNavigation();
+  // Modal 내부에서는 SafeAreaProvider 컨텍스트가 정상 전달되지 않으므로
+  // 바깥(Header 컴포넌트 최상단)에서 미리 insets를 구해둡니다.
+  const insets = useSafeAreaInsets();
 
   const [isEditing, setIsEditing] = useState(false);
   const [draftTitle, setDraftTitle] = useState(title);
   const inputRef = useRef<TextInput>(null);
 
-  // title prop이 외부에서 바뀌면 draft도 동기화
   useEffect(() => {
     setDraftTitle(title);
   }, [title]);
@@ -44,7 +47,6 @@ export default function Header({
   const startEditing = () => {
     setDraftTitle(title);
     setIsEditing(true);
-    // Modal 마운트 직후 포커스
     requestAnimationFrame(() => {
       inputRef.current?.focus();
     });
@@ -73,21 +75,17 @@ export default function Header({
         </Pressable>
       ) : null}
 
-      <CustomText
-        font="heading1"
-        className={`${Heading1Class} ${!showPencil && `flex-1`}`}
-      >
+      <CustomText font="heading1" className={`${Heading1Class} ${!showPencil && `flex-1`}`}>
         {title}
       </CustomText>
       {showPencil ? (
         <Pressable onPress={startEditing} hitSlop={12} className="ml-1">
-          <PencilIcon color="#1A1A1A" />
+          <PencilIcon color="#1A1A1A" style={{ height: `100%` }} />
         </Pressable>
       ) : null}
 
       {rightComponent ?? <View className="w-6" />}
 
-      {/* 편집 모드: 헤더는 그대로 보이고 나머지 화면은 dimm 처리 */}
       <Modal
         visible={isEditing}
         transparent
@@ -95,12 +93,12 @@ export default function Header({
         statusBarTranslucent
         onRequestClose={cancelEdit}
       >
-        <View className="flex-1">
+        <View className="flex-1" style={{ backgroundColor: "transparent" }}>
+          {/* 상태바 영역: SafeAreaView 대신 미리 구해둔 insets.top으로 직접 확보 */}
+          <View style={{ height: insets.top - 4 }} className="bg-white" />
+
           {/* 헤더 자리 (dimm 되지 않음, 흰 배경) */}
-          <View
-            style={{ height: HEADER_HEIGHT }}
-            className="flex-row items-center px-5 bg-white"
-          >
+          <View style={{ height: HEADER_HEIGHT }} className="flex-row items-center px-5 bg-white">
             {showBackButton ? (
               <View className="mr-2 opacity-40">
                 <LeftIcon color="#1A1A1A" />

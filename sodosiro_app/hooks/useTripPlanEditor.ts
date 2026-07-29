@@ -2,13 +2,10 @@ import { useCallback, useMemo, useState } from "react";
 
 type UseTripPlanEditorParams = {
   initialPlan: DayPlan[];
-  /** 스크롤 스파이 훅에서 넘겨받는 현재 활성 일차 index */
   activeIndex: number;
-  /** 삭제로 인해 활성 일차 index가 바뀌어야 할 때 호출 (보통 useTimelineScrollSpy의 setActiveIndex) */
   onActiveIndexChange: (index: number) => void;
 };
 
-// 일정(plan) 데이터, 수정 모드, 삭제 대기 상태를 함께 관리하는 훅
 export function useTripPlanEditor({
   initialPlan,
   activeIndex,
@@ -17,8 +14,8 @@ export function useTripPlanEditor({
   const [plan, setPlan] = useState<DayPlan[]>(initialPlan);
   const [isEditing, setIsEditing] = useState(false);
   const [pendingDeleteIndices, setPendingDeleteIndices] = useState<Set<number>>(new Set());
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
-  // 삭제 대기중인 index는 화면에서 임시로 감춤 (확인 누르기 전까지 실제 데이터는 유지)
   const visiblePlan = useMemo(
     () =>
       plan
@@ -27,7 +24,6 @@ export function useTripPlanEditor({
     [plan, pendingDeleteIndices],
   );
 
-  // 일차 뱃지 삭제(X) → 임시 삭제 (확인 누르기 전까지는 실제 데이터에서 지우지 않음)
   const requestDeleteDay = useCallback((index: number) => {
     setPendingDeleteIndices((prev) => {
       const next = new Set(prev);
@@ -36,22 +32,31 @@ export function useTripPlanEditor({
     });
   }, []);
 
-  // 수정하기 / 확인 버튼
   const pressEditButton = useCallback(() => {
     if (!isEditing) {
       setIsEditing(true);
       return;
     }
 
+    // 삭제 대기 중인 항목이 없으면(변경사항이 없으면) 컨펌 없이 바로 편집 모드 종료
+    if (pendingDeleteIndices.size === 0) {
+      setIsEditing(false);
+      return;
+    }
+
+    // 변경사항이 있을 때만 컨펌 모달 오픈
+    setIsConfirmOpen(true);
+  }, [isEditing, pendingDeleteIndices]);
+
+  // [저장하기] 누를 때 -> 삭제 내역 반영 및 저장
+  const confirmSave = useCallback(() => {
     if (pendingDeleteIndices.size > 0) {
       setPlan((prev) => {
         const nextPlan = prev.filter((_, idx) => !pendingDeleteIndices.has(idx));
 
         if (pendingDeleteIndices.has(activeIndex)) {
-          // 보고있던 일차가 삭제됐다면 맨 앞으로
           onActiveIndexChange(0);
         } else {
-          // 삭제된 항목들만큼 앞으로 당겨진 index로 보정
           const shift = Array.from(pendingDeleteIndices).filter((idx) => idx < activeIndex).length;
           onActiveIndexChange(activeIndex - shift);
         }
@@ -61,14 +66,25 @@ export function useTripPlanEditor({
       setPendingDeleteIndices(new Set());
     }
 
+    setIsConfirmOpen(false);
     setIsEditing(false);
-  }, [isEditing, pendingDeleteIndices, activeIndex, onActiveIndexChange]);
+  }, [pendingDeleteIndices, activeIndex, onActiveIndexChange]);
+
+  // [취소] 누를 때 -> 삭제 대기 내역 초기화 (원복) + 편집 모드 종료 + 모달 닫기
+  const cancelEdit = useCallback(() => {
+    setPendingDeleteIndices(new Set()); // 임시 삭제했던 일차들 복구
+    setIsEditing(false); // 편집 모드 종료
+    setIsConfirmOpen(false); // 모달 닫기
+  }, []);
 
   return {
     plan,
     visiblePlan,
     isEditing,
+    isConfirmOpen,
     requestDeleteDay,
     pressEditButton,
+    confirmSave,
+    cancelEdit,
   };
 }

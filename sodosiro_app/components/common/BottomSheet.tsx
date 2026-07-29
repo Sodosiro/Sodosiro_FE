@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Animated, Dimensions, Modal, Pressable, View } from "react-native";
+import { Animated, Dimensions, Modal, Pressable, ScrollView, View } from "react-native";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 const SHEET_HEIGHT = SCREEN_HEIGHT * 0.8; // 화면 높이의 80% 고정
@@ -59,7 +59,7 @@ export default function BottomSheet({ visible, onClose, children }: Props) {
         {/* 바텀시트 컨테이너 */}
         <Animated.View
           style={{
-            height: SHEET_HEIGHT,
+            maxHeight: SHEET_HEIGHT,
             transform: [{ translateY }],
           }}
           className="w-full rounded-t-[28px] bg-white flex-col"
@@ -70,7 +70,12 @@ export default function BottomSheet({ visible, onClose, children }: Props) {
           </View>
 
           {/* 자식 요소 (Scrollable 영역) */}
-          <View className="flex-1 overflow-hidden pb-6">{children}</View>
+          <ScrollView
+            contentContainerStyle={{ paddingBottom: 24 }}
+            showsVerticalScrollIndicator={false}
+          >
+            {children}
+          </ScrollView>
         </Animated.View>
       </View>
     </Modal>

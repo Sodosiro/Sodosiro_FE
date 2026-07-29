@@ -1,7 +1,8 @@
 import { CalendarMiniIcon, PinMiniIcon } from "@/assets/svgs";
 import CustomText from "@/components/common/CustomText";
-import TimelineBadge from "@/components/timeline/TimelineBadge";
+
 import { View } from "react-native";
+import ActionBadge from "../badge/ActionBadge";
 
 type UpcomingTripCardProps = {
   trip: UpcomingTripCardType;
@@ -22,7 +23,7 @@ export default function UpcomingTripCard({ trip, onPress }: UpcomingTripCardProp
   return (
     <View className="rounded-2xl border border-[#E5E5E5] bg-white px-5 py-4 mb-5">
       {/* D-Day Badge 적용 */}
-      <TimelineBadge isOngoing text={`D-${trip.dDay}`} onPress={() => {}} onLayout={() => {}} />
+      <ActionBadge isOngoing text={`D-${trip.dDay}`} onPress={() => {}} onLayout={() => {}} />
 
       {/* 제목 */}
       <View className="flex-row items-center mt-2">
@@ -56,7 +57,7 @@ export default function UpcomingTripCard({ trip, onPress }: UpcomingTripCardProp
 
       {/* Button */}
       <View>
-        <TimelineBadge
+        <ActionBadge
           bgWhite
           text={`여행 보기`}
           onPress={() => onPress?.(trip.id)}

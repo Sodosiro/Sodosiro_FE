@@ -12,16 +12,21 @@ import {
   TitleTightClass,
 } from "@/styles/Typography";
 import type { TextProps } from "react-native";
-import { Text } from "react-native";
+import Animated from "react-native-reanimated";
+import { AnimatedStyleHandle } from "react-native-reanimated/lib/typescript/hook/commonTypes";
 
 interface Props extends TextProps {
   font: TypoType;
+  animatedStyle?: AnimatedStyleHandle<{
+    color: string;
+  }>;
 }
 
 export default function CustomText({
   className,
   children,
   font,
+  animatedStyle,
   ...props
 }: Props) {
   const ClassMap = {
@@ -39,11 +44,12 @@ export default function CustomText({
   };
 
   return (
-    <Text
+    <Animated.Text
       className={`${className} ${ClassMap[font]} text-[#1A1A1A]`}
+      style={animatedStyle || undefined}
       {...props}
     >
       {children}
-    </Text>
+    </Animated.Text>
   );
 }

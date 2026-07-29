@@ -1,7 +1,7 @@
 import { Categories } from "@/constants/Category";
+import type { Dispatch, SetStateAction } from "react";
 import { ScrollView } from "react-native";
 import CategoryBadge from "./CategoryBadge";
-import type { Dispatch, SetStateAction } from "react";
 
 type Props = {
   selectedCategory: CategoryType;
@@ -24,7 +24,7 @@ export default function CategoryList({
         <CategoryBadge
           key={category}
           category={category}
-          selected={selectedCategory === category}
+          isSelected={selectedCategory === category}
           onPress={async () => setSelectedCategory(category)}
         />
       ))}

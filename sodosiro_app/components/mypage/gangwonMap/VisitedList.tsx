@@ -1,4 +1,5 @@
-import { DownIcon, PinMiniIcon } from "@/assets/svgs";
+import { PinMiniIcon } from "@/assets/svgs";
+import { AnimatedDownIcon } from "@/components/common/Animated";
 import CustomText from "@/components/common/CustomText";
 import { useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
@@ -7,8 +8,6 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-
-const AnimatedDownIcon = Animated.createAnimatedComponent(DownIcon);
 
 export default function VisitedList({
   visitedRegions,

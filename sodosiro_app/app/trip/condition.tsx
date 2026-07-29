@@ -160,7 +160,7 @@ export default function TripScreen() {
                   <CategoryBadge
                     key={category}
                     category={category}
-                    selected={isSelected}
+                    isSelected={isSelected}
                     disabled={selectedCategories.length >= 2 && !isSelected}
                     onPress={async () => handleSelectCategory(category)}
                   />

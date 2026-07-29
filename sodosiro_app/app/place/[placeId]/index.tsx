@@ -10,10 +10,14 @@ import PlaceInfoSection from "@/components/placeDetail/section/PlaceInfoSection"
 import RecommedSection from "@/components/placeDetail/section/RecommendSection";
 import ReviewSection from "@/components/placeDetail/section/ReviewSection";
 import { usePlaceDetailTab } from "@/hooks/usePlaceDetailTab";
+import useSelectedAnimation from "@/hooks/useSelcetedAnimation";
 import { PLACE_DETAIL } from "@/mocks/places";
 import { useState } from "react";
 import { ScrollView } from "react-native";
+import Animated from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
+
+const AnimatedHeartIcon = Animated.createAnimatedComponent(PlaceHeartIcon);
 
 export default function PlaceDetailScreen() {
   const {
@@ -27,7 +31,11 @@ export default function PlaceDetailScreen() {
     handleOnLayout,
   } = usePlaceDetailTab();
 
-  const [heart, setHeart] = useState(PLACE_DETAIL.heart);
+  const [isFavorite, setIsFavorite] = useState(PLACE_DETAIL.heart);
+
+  const { animatedProps } = useSelectedAnimation(isFavorite, {
+    color: ["#f5f5f5", "#C4D96A"],
+  });
 
   return (
     <SafeAreaView
@@ -95,12 +103,9 @@ export default function PlaceDetailScreen() {
             type="tertiary"
             title="좋아요"
             Icon={
-              <PlaceHeartIcon
-                height={14}
-                color={heart ? "#C4D96A" : "#f5f5f5"}
-              />
+              <AnimatedHeartIcon height={14} animatedProps={animatedProps} />
             }
-            onPress={() => setHeart(!heart)}
+            onPress={() => setIsFavorite(!isFavorite)}
           />
           <CustomButton
             stretch

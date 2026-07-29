@@ -7,16 +7,17 @@ import {
   RestaurantIcon,
   ShoppingIcon,
 } from "@/assets/svgs";
+import Animated from "react-native-reanimated";
 
 export const CategoryIconMap = {
   all: undefined,
-  activity: ActivityIcon,
-  attraction: AttractionIcon,
-  cafe: CafeIcon,
-  nature: NatureIcon,
-  restaurant: RestaurantIcon,
-  shopping: ShoppingIcon,
-  culture: CultureIcon,
+  activity: Animated.createAnimatedComponent(ActivityIcon),
+  attraction: Animated.createAnimatedComponent(AttractionIcon),
+  cafe: Animated.createAnimatedComponent(CafeIcon),
+  nature: Animated.createAnimatedComponent(NatureIcon),
+  restaurant: Animated.createAnimatedComponent(RestaurantIcon),
+  shopping: Animated.createAnimatedComponent(ShoppingIcon),
+  culture: Animated.createAnimatedComponent(CultureIcon),
 } satisfies Record<CategoryType, React.ComponentType | undefined>;
 
 export const CategoryMap = {

@@ -1,7 +1,12 @@
 import { CameraMiniIcon } from "@/assets/svgs";
 import CustomText from "@/components/common/CustomText";
-import { Dispatch, SetStateAction } from "react";
+import useSelectedAnimation from "@/hooks/useSelcetedAnimation";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { Pressable } from "react-native";
+import Animated, { useSharedValue, withTiming } from "react-native-reanimated";
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+const AnimatedCameraIcon = Animated.createAnimatedComponent(CameraMiniIcon);
 
 export default function PhotoReviewBadge({
   isSelected,
@@ -10,18 +15,33 @@ export default function PhotoReviewBadge({
   isSelected: boolean;
   setIsSelected: Dispatch<SetStateAction<boolean>>;
 }) {
+  const progress = useSharedValue(isSelected ? 1 : 0);
+
+  useEffect(() => {
+    progress.value = withTiming(isSelected ? 1 : 0, {
+      duration: 150,
+    });
+  }, [isSelected, progress]);
+
+  const { containerStyle, animatedProps, textStyle } = useSelectedAnimation(
+    isSelected,
+    {
+      background: ["#FFFFFF", "#1A1A1A"],
+      color: ["#1A1A1A", "#FFFFFF"],
+    },
+  );
+
   return (
-    <Pressable
-      className={`px-4 py-2.5 rounded-full self-start flex-row gap-1 border border-border ${isSelected ? `bg-text-primary` : `bg-bg`}`}
-      onPress={() => setIsSelected(!isSelected)}
+    <AnimatedPressable
+      style={containerStyle}
+      className="px-4 py-2.5 rounded-full self-start flex-row items-center gap-1 border border-border"
+      onPress={() => setIsSelected((prev) => !prev)}
     >
-      <CameraMiniIcon color={isSelected ? "#ffffff" : "#1a1a1a"} />
-      <CustomText
-        font="body3 tight"
-        className={`${isSelected ? `text-btn-secondary-text` : `text-text-primary`}`}
-      >
+      <AnimatedCameraIcon animatedProps={animatedProps} />
+
+      <CustomText font="body3 tight" animatedStyle={textStyle}>
         포토 리뷰
       </CustomText>
-    </Pressable>
+    </AnimatedPressable>
   );
 }

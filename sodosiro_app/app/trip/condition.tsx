@@ -57,7 +57,9 @@ export default function TripScreen() {
   ] as const;
 
   // 선택된 카테고리 목록 상태 (최대 2개)
-  const [selectedCategories, setSelectedCategories] = useState<CategoryType[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<CategoryType[]>(
+    [],
+  );
 
   // 뱃지 토글 및 2개 제한 처리 함수
   const handleSelectCategory = (category: CategoryType) => {
@@ -91,7 +93,10 @@ export default function TripScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white" edges={["top", "bottom"]}>
+    <SafeAreaView
+      style={{ flex: 1, backgroundColor: "white" }}
+      edges={["top", "bottom"]}
+    >
       <Stack.Screen options={{ headerShown: false }} />
       <Header title="여행 조건 설정" />
       <ScrollView
@@ -109,7 +114,10 @@ export default function TripScreen() {
               }}
             />
             {showCalendar && (
-              <BottomSheet visible={showCalendar} onClose={() => setShowCalendar(false)}>
+              <BottomSheet
+                visible={showCalendar}
+                onClose={() => setShowCalendar(false)}
+              >
                 <DatePickerSheet
                   initialStartDate={dateRange.startDate ?? undefined}
                   initialEndDate={dateRange.endDate ?? undefined}
@@ -153,6 +161,7 @@ export default function TripScreen() {
                     key={category}
                     category={category}
                     selected={isSelected}
+                    disabled={selectedCategories.length >= 2 && !isSelected}
                     onPress={async () => handleSelectCategory(category)}
                   />
                 );
@@ -160,14 +169,20 @@ export default function TripScreen() {
             </View>
           </View>
           <View className="gap-3">
-            <Subtitle title="꼭 가고 싶은 곳이 있으신가요?" description="선택사항" />
+            <Subtitle
+              title="꼭 가고 싶은 곳이 있으신가요?"
+              description="선택사항"
+            />
             <View className="flex-row gap-3">
               <LocationPickerButton
                 locationName={"죽도해변"}
                 onPress={() => setShowLocation(true)}
               />
               {showLocation && (
-                <BottomSheet visible={showLocation} onClose={() => setShowLocation(false)}>
+                <BottomSheet
+                  visible={showLocation}
+                  onClose={() => setShowLocation(false)}
+                >
                   <PopularPlacesSection />
                   <View className="pt-5"></View>
                 </BottomSheet>

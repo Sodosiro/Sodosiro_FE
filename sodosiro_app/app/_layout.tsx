@@ -2,7 +2,10 @@ import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
-import { configureReanimatedLogger, ReanimatedLogLevel } from "react-native-reanimated";
+import {
+  configureReanimatedLogger,
+  ReanimatedLogLevel,
+} from "react-native-reanimated";
 import "../global.css";
 
 export const unstable_settings = {
@@ -46,7 +49,15 @@ LocaleConfig.locales.kr = {
     "11월",
     "12월",
   ],
-  dayNames: ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"],
+  dayNames: [
+    "일요일",
+    "월요일",
+    "화요일",
+    "수요일",
+    "목요일",
+    "금요일",
+    "토요일",
+  ],
   dayNamesShort: ["일", "월", "화", "수", "목", "금", "토"],
   today: "오늘",
 };
@@ -98,6 +109,14 @@ export default function RootLayout() {
           />
           <Stack.Screen
             name="mypage"
+            options={{
+              presentation: "modal",
+              animation: "fade",
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="trip"
             options={{
               presentation: "modal",
               animation: "fade",

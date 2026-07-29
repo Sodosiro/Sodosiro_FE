@@ -1,4 +1,4 @@
-import { InfoMiniIcon, WhiteBigCheckIcon, XIcon } from "@/assets/svgs";
+import { InfoMiniIcon, WhiteBigCheckIcon, XMiniIcon } from "@/assets/svgs";
 import { useEffect, useRef, useState } from "react";
 import {
   Animated,
@@ -12,7 +12,7 @@ import CustomText from "../common/CustomText";
 
 const PADDING_RIGHT_DEFAULT = 16; // px-4
 const PADDING_RIGHT_REMOVABLE = 12; // pr-3
-const ICON_SIZE = 24; // XIcon 실제 크기에 맞춰 조정
+const ICON_SIZE = 16; // XIcon 실제 크기에 맞춰 조정
 const TRANSITION_DURATION = 260;
 
 const TOOLTIP_OPEN_DURATION = 220;
@@ -128,7 +128,7 @@ export default function TimelineBadge({
 
   return (
     <AnimatedPressable
-      className={`${isOngoing ? `bg-[#c4d96a]` : selected ? `bg-[#1A1A1A]` : disabled ? `bg-btn-disabled` : bgWhite || isEditButton ? `bg-white` : `bg-bg-muted`} flex-row items-center self-start pl-4 py-1.5 h-9 gap-1 rounded-full border border-border`}
+      className={`${isOngoing ? `bg-primary` : selected ? `bg-text-primary` : disabled ? `bg-btn-disabled` : bgWhite || isEditButton ? `bg-white` : `bg-bg-muted`} flex-row items-center self-start pl-4 py-1.5 h-9 gap-1 rounded-full border border-border`}
       style={{ paddingRight }}
       disabled={disabled}
       onPress={onPress}
@@ -157,7 +157,7 @@ export default function TimelineBadge({
               onDelete?.();
             }}
           >
-            <XIcon />
+            <XMiniIcon />
           </Pressable>
         </Animated.View>
       )}

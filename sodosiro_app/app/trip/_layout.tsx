@@ -7,6 +7,10 @@ export default function TripLayout() {
         headerShown: false,
         animation: "fade",
       }}
-    ></Stack>
+    >
+      <Stack.Screen name="index" options={{ headerShown: false }} />
+      <Stack.Screen name="condition" options={{ headerShown: false }} />
+      <Stack.Screen name="timeline" options={{ headerShown: false }} />
+    </Stack>
   );
 }

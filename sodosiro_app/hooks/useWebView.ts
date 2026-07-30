@@ -1,5 +1,6 @@
 import { PLACES } from "@/mocks/places";
 import { ROUTE_INFO } from "@/mocks/route";
+import { useLocationStore } from "@/stores/useLocationStore";
 import type { RefObject } from "react";
 import { useCallback } from "react";
 import type { WebView, WebViewMessageEvent } from "react-native-webview";
@@ -13,6 +14,8 @@ export function useWebView({
   mode: "marker" | "navigation";
   setIsLoading: (value: boolean) => void;
 }) {
+  const { setIsTracking } = useLocationStore();
+
   const sendLocation = useCallback(
     (
       location: { latitude: number; longitude: number; initial?: boolean },
@@ -40,6 +43,7 @@ export function useWebView({
     const data = JSON.parse(event.nativeEvent.data);
 
     console.log(data.type);
+
     switch (data.type) {
       case "LOCATION_READY":
         setIsLoading(false);
@@ -54,7 +58,6 @@ export function useWebView({
             }),
           );
         }
-
         if (mode === "navigation") {
           webViewRef.current?.postMessage(
             JSON.stringify({
@@ -63,8 +66,10 @@ export function useWebView({
             }),
           );
         }
-
         break;
+
+      case "STOP_TRACKING":
+        setIsTracking(false);
     }
   };
 

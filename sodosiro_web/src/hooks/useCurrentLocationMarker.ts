@@ -27,7 +27,7 @@ export function useCurrentLocationMarker(
         position,
         image: new kakao.maps.MarkerImage(
           CurrentLocation,
-          new kakao.maps.Size(28, 28),
+          new kakao.maps.Size(40, 40),
         ),
       });
     } else {
@@ -51,6 +51,12 @@ export function useCurrentLocationMarker(
 
   const stopTracking = () => {
     isTrackingRef.current = false;
+
+    window.ReactNativeWebView?.postMessage(
+      JSON.stringify({
+        type: "STOP_TRACKING",
+      }),
+    );
   };
 
   return {

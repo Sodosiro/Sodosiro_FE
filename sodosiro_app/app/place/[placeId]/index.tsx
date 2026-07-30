@@ -1,8 +1,9 @@
-import { NavigationIcon, PlaceHeartIcon } from "@/assets/svgs";
+import { NavigationIcon } from "@/assets/svgs";
 import BottomActionBar from "@/components/common/BottomActionBar";
 import CustomButton from "@/components/common/CustomButton";
 import CustomCarousel from "@/components/common/CustomCarousel";
 import Header from "@/components/common/Header";
+import FavoriteIcon from "@/components/icon/FavoriteIcon";
 import AIRecommend from "@/components/placeDetail/placeOverview/AIRecommend";
 import PlaceInfo from "@/components/placeDetail/placeOverview/PlaceInfo";
 import PlaceTabBar from "@/components/placeDetail/PlaceTabBar";
@@ -14,10 +15,7 @@ import useSelectedAnimation from "@/hooks/useSelcetedAnimation";
 import { PLACE_DETAIL } from "@/mocks/places";
 import { useState } from "react";
 import { ScrollView } from "react-native";
-import Animated from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
-
-const AnimatedHeartIcon = Animated.createAnimatedComponent(PlaceHeartIcon);
 
 export default function PlaceDetailScreen() {
   const {
@@ -33,8 +31,8 @@ export default function PlaceDetailScreen() {
 
   const [isFavorite, setIsFavorite] = useState(PLACE_DETAIL.heart);
 
-  const { strokeStyle: animatedProps } = useSelectedAnimation(isFavorite, {
-    color: ["#f5f5f5", "#C4D96A"],
+  const { fillStyle } = useSelectedAnimation(isFavorite, {
+    fill: ["transparent", "#C4D96A"],
   });
 
   return (
@@ -102,9 +100,7 @@ export default function PlaceDetailScreen() {
           <CustomButton
             type="tertiary"
             title="좋아요"
-            Icon={
-              <AnimatedHeartIcon height={14} animatedProps={animatedProps} />
-            }
+            Icon={<FavoriteIcon height={14} animatedFill={fillStyle} />}
             onPress={() => setIsFavorite(!isFavorite)}
           />
           <CustomButton

@@ -10,6 +10,7 @@ import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import WebView from "react-native-webview";
 import CategoryList from "../../common/CategoryList";
 import ClearSearchButton from "./ClearSearchButton";
+import GpsButton from "./GpsButton";
 import PlaceLegend from "./PlaceLegend";
 import SearchBar from "./SearchBar";
 
@@ -28,7 +29,7 @@ export default function MapOverlay({
 }) {
   const { keyword, clearResult } = useSearchStore();
 
-  const { isDenied } = useLocationStore();
+  const { isDenied, setIsTracking } = useLocationStore();
 
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>("all");
 
@@ -72,15 +73,18 @@ export default function MapOverlay({
         <PlaceLegend className={`left-5`} />
         {!isDenied && (
           <Pressable
-            className={`absolute w-14 h-14 rounded-full bg-bg right-6 bottom-0 border border-border`}
+            className={`absolute w-12 h-12 justify-center items-center rounded-full bg-bg right-6 bottom-0 border border-border`}
             onPress={() => {
+              setIsTracking(true);
               webViewRef.current?.postMessage(
                 JSON.stringify({
                   type: "START_TRACKING",
                 }),
               );
             }}
-          />
+          >
+            <GpsButton />
+          </Pressable>
         )}
         {keyword && (
           <ClearSearchButton

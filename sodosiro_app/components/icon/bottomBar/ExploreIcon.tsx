@@ -1,19 +1,19 @@
 import { AnimatedPath } from "@/components/common/Animated";
 import Svg from "react-native-svg";
 
-export default function ExploreIcon({ animatedProps }: AnimatedIconProps) {
+export default function ExploreIcon({ animatedStroke }: AnimatedIconProps) {
   return (
     <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
       <AnimatedPath
         d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
-        animatedProps={animatedProps}
+        animatedProps={animatedStroke}
         strokeWidth={2}
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <AnimatedPath
         d="M16.2398 7.75977L14.4358 13.1708C14.3376 13.4653 14.1722 13.733 13.9526 13.9526C13.733 14.1722 13.4653 14.3376 13.1708 14.4358L7.75977 16.2398L9.56377 10.8288C9.66195 10.5342 9.82737 10.2665 10.0469 10.0469C10.2665 9.82737 10.5342 9.66195 10.8288 9.56377L16.2398 7.75977Z"
-        animatedProps={animatedProps}
+        animatedProps={animatedStroke}
         strokeWidth={2}
         strokeLinecap="round"
         strokeLinejoin="round"

@@ -23,14 +23,14 @@ export default function PhotoReviewBadge({
     });
   }, [isSelected, progress]);
 
-  const {
-    containerStyle,
-    strokeStyle: animatedProps,
-    textStyle,
-  } = useSelectedAnimation(isSelected, {
-    background: ["#FFFFFF", "#1A1A1A"],
-    color: ["#1A1A1A", "#FFFFFF"],
-  });
+  const { containerStyle, strokeStyle, textStyle } = useSelectedAnimation(
+    isSelected,
+    {
+      background: ["#FFFFFF", "#1A1A1A"],
+      color: ["#1A1A1A", "#FFFFFF"],
+      stroke: ["#1A1A1A", "#FFFFFF"],
+    },
+  );
 
   return (
     <AnimatedPressable
@@ -38,7 +38,7 @@ export default function PhotoReviewBadge({
       className="px-4 py-2.5 rounded-full self-start flex-row items-center gap-1 border border-border"
       onPress={() => setIsSelected((prev) => !prev)}
     >
-      <AnimatedCameraIcon animatedProps={animatedProps} />
+      <AnimatedCameraIcon animatedProps={strokeStyle} />
 
       <CustomText font="body3 tight" animatedStyle={textStyle}>
         포토 리뷰

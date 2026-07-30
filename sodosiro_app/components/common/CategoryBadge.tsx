@@ -28,6 +28,7 @@ export default React.memo(function CategoryBadge({
     {
       background: BACKGROUND,
       color: COLOR,
+      stroke: COLOR,
     },
   );
 
@@ -38,7 +39,7 @@ export default React.memo(function CategoryBadge({
       disabled={disabled}
       onPress={onPress}
     >
-      {Icon && <Icon animatedProps={strokeStyle} />}
+      {Icon && <Icon animatedStroke={strokeStyle} />}
 
       <CustomText
         font="body3 tight"

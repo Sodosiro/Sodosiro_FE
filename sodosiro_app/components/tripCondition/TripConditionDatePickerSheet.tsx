@@ -58,25 +58,26 @@ export default function DatePickerSheet({
   const handleDayPress = useCallback(
     (day: DateData) => {
       const dateString = day.dateString;
-      if (dateString < today) return; // 과거 날짜 방어
 
-      // 선택 없음 or 이미 구간 완성됨 -> 새로 시작
-      if (!startDate || (startDate && endDate)) {
+      if (dateString < today) return;
+
+      // 첫 선택
+      if (!startDate) {
         setStartDate(dateString);
-        setEndDate(null);
-        return;
-      }
-
-      // 시작일을 다시 탭 -> 당일치기 확정
-      if (dateString === startDate) {
         setEndDate(dateString);
         return;
       }
 
-      // 시작일보다 이전 날짜 선택 -> 시작일 갱신
+      // 같은 날짜 클릭
+      if (dateString === startDate) {
+        setEndDate(startDate);
+        return;
+      }
+
+      // 이전 날짜 선택
       if (dateString < startDate) {
         setStartDate(dateString);
-        setEndDate(null);
+        setEndDate(dateString);
         return;
       }
 
@@ -84,16 +85,16 @@ export default function DatePickerSheet({
         (new Date(dateString).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24) +
         1;
 
-      // 7일 초과 시 새로 시작
       if (diffDays > MAX_RANGE_DAYS) {
         setStartDate(dateString);
-        setEndDate(null);
+        setEndDate(dateString);
         return;
       }
 
+      // 범위 선택
       setEndDate(dateString);
     },
-    [startDate, endDate, today],
+    [startDate, today],
   );
 
   // 시트가 열리고 애니메이션이 끝난 뒤에 초기값 세팅 + 스크롤 실행

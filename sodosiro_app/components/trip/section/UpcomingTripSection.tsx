@@ -1,5 +1,5 @@
 import BottomSheet from "@/components/common/BottomSheet";
-import DayBadgeBar from "@/components/timeline/section/TimelineDayBadgeSection";
+import TimelineDayBadgeSection from "@/components/timeline/section/TimelineDayBadgeSection";
 import TimelineDaySection from "@/components/timeline/section/TimelineDaySection";
 import { useExpandedItems } from "@/hooks/useExpandedItems";
 import { useTimelineScrollSpy } from "@/hooks/useTimelineScrollSpy";
@@ -61,18 +61,18 @@ export default function UpcomingTripSection({}: UpcomingTripSectionProps) {
             {showBottomSheet && (
               <BottomSheet visible={showBottomSheet} onClose={() => setShowBottomSheet(false)}>
                 <>
-                  <DayBadgeBar
+                  <TimelineDayBadgeSection
                     dayIndices={visiblePlan.map(({ index }) => index)}
                     activeIndex={activeIndex}
                     isEditing={isEditing}
-                    editButtonWidth={0}
-                    badgeScrollRef={badgeScrollRef}
+                    // editButtonWidth={0}
+                    // badgeScrollRef={badgeScrollRef}
                     showEditButton={false}
                     onPressDayBadge={handlePressDayBadge}
                     onLayoutDayBadge={handleBadgeLayout}
                     onRequestDeleteDay={requestDeleteDay}
                     onPressEditButton={pressEditButton}
-                    onLayoutEditButton={() => {}}
+                    // onLayoutEditButton={() => {}}
                   />
 
                   {/* 일정 리스트 */}

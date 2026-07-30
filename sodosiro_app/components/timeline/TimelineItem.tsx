@@ -1,10 +1,10 @@
 import { StarIcon } from "@/assets/svgs";
 import CustomText from "@/components/common/CustomText";
 import Dropdown from "@/components/common/Dropdown";
-import TimelineBadge from "@/components/timeline/TimelineBadge";
 import { useToast } from "@/contexts/ToastProvider";
 import { CategoryMap } from "@/util/place/category";
 import { View } from "react-native";
+import ActionBadge from "../trip/badge/ActionBadge";
 
 type TimelineItemProps = {
   place: PlaceType;
@@ -80,8 +80,7 @@ export default function TimelineItem({
           )}
 
           <View className="flex-row gap-2 mt-3" style={{ alignSelf: "flex-end" }}>
-            <TimelineBadge
-              onLayout={() => {}}
+            <ActionBadge
               onPress={() => {
                 // TODO: 장소 상세보기
               }}
@@ -91,8 +90,7 @@ export default function TimelineItem({
             />
             {isOngoing ? (
               isAuthCompleted ? (
-                <TimelineBadge
-                  onLayout={() => {}}
+                <ActionBadge
                   onPress={() => {
                     // TODO: 방문 인증하기
                   }}
@@ -102,8 +100,7 @@ export default function TimelineItem({
                   isAuthCompleted={true}
                 />
               ) : (
-                <TimelineBadge
-                  onLayout={() => {}}
+                <ActionBadge
                   onPress={() => {
                     showToast("300m 이내에서 인증할 수 있어요");
                   }}
@@ -116,8 +113,7 @@ export default function TimelineItem({
                 />
               )
             ) : (
-              <TimelineBadge
-                onLayout={() => {}}
+              <ActionBadge
                 onPress={() => {
                   // TODO: 다른 곳으로 변경하기
                 }}

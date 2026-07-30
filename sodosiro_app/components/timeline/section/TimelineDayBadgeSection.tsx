@@ -1,62 +1,72 @@
-import TimelineBadge from "@/components/timeline/TimelineBadge";
-import { RefObject } from "react";
-import { LayoutChangeEvent, ScrollView, View } from "react-native";
+import DayBadge from "@/components/trip/badge/DayBadge";
+import EditToggleBadge from "@/components/trip/badge/EditToggleBadge";
+import { LayoutChangeEvent, View } from "react-native";
+import DraggableFlatList, {
+  RenderItemParams,
+  ScaleDecorator,
+} from "react-native-draggable-flatlist";
 
-const FADE_WIDTH = 16;
+const FADE_WIDTH = 20;
 const FADE_STEPS = 16;
+const EDIT_BUTTON_RESERVED_WIDTH = 100;
 
-type DayBadgeBarProps = {
+type TimelineDayBadgeSectionProps = {
   dayIndices: number[];
   activeIndex: number;
   isEditing: boolean;
-  editButtonWidth: number;
-  badgeScrollRef: RefObject<ScrollView | null>;
   showEditButton: boolean;
   onPressDayBadge: (index: number) => void;
   onLayoutDayBadge: (index: number, e: LayoutChangeEvent) => void;
   onRequestDeleteDay: (index: number) => void;
   onPressEditButton: () => void;
-  onLayoutEditButton: (e: LayoutChangeEvent) => void;
+  onReorderDays?: (newData: number[]) => void; // 👈 순서 변경 이벤트 핸들러
 };
 
-// 상단 "N일차" 뱃지 가로 스크롤 바 + 오른쪽 페이드 효과 + 수정하기/확인 버튼
-export default function DayBadgeBar({
+export default function TimelineDayBadgeSection({
   dayIndices,
   activeIndex,
   isEditing,
-  editButtonWidth,
-  badgeScrollRef,
   showEditButton,
   onPressDayBadge,
   onLayoutDayBadge,
   onRequestDeleteDay,
   onPressEditButton,
-  onLayoutEditButton,
-}: DayBadgeBarProps) {
+  onReorderDays,
+}: TimelineDayBadgeSectionProps) {
+  // 드래그 아이템 렌더링
+  const renderItem = ({ item: index, drag, isActive }: RenderItemParams<number>) => {
+    return (
+      <ScaleDecorator>
+        <DayBadge
+          onLayout={(e) => onLayoutDayBadge(index, e)}
+          onPress={() => onPressDayBadge(index)}
+          onLongPress={isEditing ? drag : undefined} // 💡 수정 모드일 때 롱터치 시 드래그 시작
+          disabled={isActive}
+          text={`${index + 1}일차`}
+          selected={index === activeIndex}
+          removable={isEditing && dayIndices.length > 1}
+          onDelete={() => onRequestDeleteDay(index)}
+        />
+      </ScaleDecorator>
+    );
+  };
+
   return (
     <View className="relative py-3" style={{ zIndex: 20 }}>
-      <ScrollView
-        ref={badgeScrollRef}
-        horizontal
+      <DraggableFlatList
+        data={dayIndices}
+        onDragEnd={({ data }) => onReorderDays?.(data)}
+        keyExtractor={(item) => `day-badge-${item}`}
+        renderItem={renderItem}
+        horizontal={true}
+        activationDistance={5}
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{
           paddingLeft: 20,
-          paddingRight: showEditButton ? editButtonWidth + 12 : 0,
+          paddingRight: showEditButton ? EDIT_BUTTON_RESERVED_WIDTH : 20,
           gap: 8,
         }}
-      >
-        {dayIndices.map((index) => (
-          <TimelineBadge
-            key={index}
-            onLayout={(e) => onLayoutDayBadge(index, e)}
-            onPress={() => onPressDayBadge(index)}
-            text={`${index + 1}일차`}
-            selected={index === activeIndex}
-            removable={isEditing}
-            onDelete={() => onRequestDeleteDay(index)}
-          />
-        ))}
-      </ScrollView>
+      />
 
       {showEditButton && (
         <>
@@ -65,7 +75,7 @@ export default function DayBadgeBar({
             pointerEvents="none"
             className="absolute top-0 bottom-0 flex-row"
             style={{
-              right: editButtonWidth,
+              right: EDIT_BUTTON_RESERVED_WIDTH - 12,
               width: FADE_WIDTH,
             }}
           >
@@ -75,15 +85,11 @@ export default function DayBadgeBar({
           </View>
 
           {/* 수정하기 / 확인 버튼 */}
-          <View className="absolute top-0 bottom-0 right-0 justify-center items-end bg-white pr-5">
-            <TimelineBadge
-              onLayout={onLayoutEditButton}
-              onPress={onPressEditButton}
-              text={isEditing ? "확인" : "수정하기"}
-              selected={false}
-              isEditButton={true}
-              isEditing={isEditing}
-            />
+          <View
+            className="absolute top-0 bottom-0 right-0 justify-center items-end bg-white pr-5"
+            style={{ zIndex: 30 }}
+          >
+            <EditToggleBadge onPress={onPressEditButton} isEditing={isEditing} />
           </View>
         </>
       )}

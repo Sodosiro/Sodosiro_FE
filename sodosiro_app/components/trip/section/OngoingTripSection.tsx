@@ -1,4 +1,4 @@
-import DayBadgeBar from "@/components/timeline/section/TimelineDayBadgeSection";
+import TimelineDayBadgeSection from "@/components/timeline/section/TimelineDayBadgeSection";
 
 import TimelineDaySection from "@/components/timeline/section/TimelineDaySection";
 import { useExpandedItems } from "@/hooks/useExpandedItems";
@@ -61,18 +61,18 @@ export default function OngoingTripSection({}: OngoingTripSectionProps) {
             resizeMode="cover"
             style={{ width: `100%` }}
           />
-          <DayBadgeBar
+          <TimelineDayBadgeSection
             dayIndices={visiblePlan.map(({ index }) => index)}
             activeIndex={activeIndex}
             isEditing={isEditing}
-            editButtonWidth={editButtonWidth}
-            badgeScrollRef={badgeScrollRef}
+            // editButtonWidth={editButtonWidth}
+            // badgeScrollRef={badgeScrollRef}
             showEditButton={false}
             onPressDayBadge={handlePressDayBadge}
             onLayoutDayBadge={handleBadgeLayout}
             onRequestDeleteDay={requestDeleteDay}
             onPressEditButton={pressEditButton}
-            onLayoutEditButton={handleEditButtonLayout}
+            // onLayoutEditButton={handleEditButtonLayout}
           />
 
           {/* 일정 리스트 */}

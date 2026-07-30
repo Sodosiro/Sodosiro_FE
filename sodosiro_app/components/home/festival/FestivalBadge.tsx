@@ -14,7 +14,9 @@ export default function FestivalBadge({ className, startDate }: Props) {
 
   return (
     <View className={`${className} bg-white px-3 py-2 rounded-full self-start`}>
-      <CustomText font="body3 tight">{dDayText}</CustomText>
+      <CustomText font="body3 tight" className={`px-px`}>
+        {dDayText}
+      </CustomText>
     </View>
   );
 }

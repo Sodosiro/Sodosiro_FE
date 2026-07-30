@@ -34,8 +34,8 @@ export default function useSelectedAnimation(
     backgroundColor: interpolateColor(progress.value, [0, 1], background),
   }));
 
-  const animatedProps = useAnimatedProps(() => ({
-    color: interpolateColor(progress.value, [0, 1], color),
+  const strokeStyle = useAnimatedProps(() => ({
+    stroke: interpolateColor(progress.value, [0, 1], color),
   }));
 
   const textStyle = useAnimatedStyle(() => ({
@@ -44,7 +44,7 @@ export default function useSelectedAnimation(
 
   return {
     containerStyle,
-    animatedProps,
+    strokeStyle,
     textStyle,
   };
 }

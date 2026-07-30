@@ -33,7 +33,7 @@ export default function PlaceDetailScreen() {
 
   const [isFavorite, setIsFavorite] = useState(PLACE_DETAIL.heart);
 
-  const { animatedProps } = useSelectedAnimation(isFavorite, {
+  const { strokeStyle: animatedProps } = useSelectedAnimation(isFavorite, {
     color: ["#f5f5f5", "#C4D96A"],
   });
 

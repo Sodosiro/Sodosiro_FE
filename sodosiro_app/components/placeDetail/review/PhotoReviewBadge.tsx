@@ -23,13 +23,14 @@ export default function PhotoReviewBadge({
     });
   }, [isSelected, progress]);
 
-  const { containerStyle, animatedProps, textStyle } = useSelectedAnimation(
-    isSelected,
-    {
-      background: ["#FFFFFF", "#1A1A1A"],
-      color: ["#1A1A1A", "#FFFFFF"],
-    },
-  );
+  const {
+    containerStyle,
+    strokeStyle: animatedProps,
+    textStyle,
+  } = useSelectedAnimation(isSelected, {
+    background: ["#FFFFFF", "#1A1A1A"],
+    color: ["#1A1A1A", "#FFFFFF"],
+  });
 
   return (
     <AnimatedPressable

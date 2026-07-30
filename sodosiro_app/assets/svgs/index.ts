@@ -64,12 +64,3 @@ export { default as RateIcon } from "./36px/rate.svg";
 
 // 10px
 export { default as DotIcon } from "./10px/dot.svg";
-
-// category
-export { default as ActivityIcon } from "./category/activity.svg";
-export { default as AttractionIcon } from "./category/attraction.svg";
-export { default as CafeIcon } from "./category/cafe.svg";
-export { default as CultureIcon } from "./category/culture.svg";
-export { default as NatureIcon } from "./category/nature.svg";
-export { default as RestaurantIcon } from "./category/restaurant.svg";
-export { default as ShoppingIcon } from "./category/shopping.svg";

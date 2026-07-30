@@ -45,8 +45,8 @@ export default function CustomText({
 
   return (
     <Animated.Text
-      className={`${className} ${ClassMap[font]} text-[#1A1A1A]`}
-      style={animatedStyle || undefined}
+      className={`${className} ${ClassMap[font]} ${!animatedStyle && `text-[#1A1A1A]`}`}
+      style={animatedStyle}
       {...props}
     >
       {children}

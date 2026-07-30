@@ -1,24 +1,24 @@
-import {
-  ActivityIcon,
-  AttractionIcon,
-  CafeIcon,
-  CultureIcon,
-  NatureIcon,
-  RestaurantIcon,
-  ShoppingIcon,
-} from "@/assets/svgs";
-import Animated from "react-native-reanimated";
+import ActivityIcon from "@/components/icon/category/ActivityIcon";
+import AttractionIcon from "@/components/icon/category/AttractionIcon";
+import CafeIcon from "@/components/icon/category/CafeIcon";
+import CultureIcon from "@/components/icon/category/CultureIcon";
+import NatureIcon from "@/components/icon/category/NatureIcon";
+import RestaurantIcon from "@/components/icon/category/RestaurantIcon";
+import ShoppingIcon from "@/components/icon/category/ShoppingIcon";
 
 export const CategoryIconMap = {
   all: undefined,
-  activity: Animated.createAnimatedComponent(ActivityIcon),
-  attraction: Animated.createAnimatedComponent(AttractionIcon),
-  cafe: Animated.createAnimatedComponent(CafeIcon),
-  nature: Animated.createAnimatedComponent(NatureIcon),
-  restaurant: Animated.createAnimatedComponent(RestaurantIcon),
-  shopping: Animated.createAnimatedComponent(ShoppingIcon),
-  culture: Animated.createAnimatedComponent(CultureIcon),
-} satisfies Record<CategoryType, React.ComponentType | undefined>;
+  activity: ActivityIcon,
+  attraction: AttractionIcon,
+  cafe: CafeIcon,
+  nature: NatureIcon,
+  restaurant: RestaurantIcon,
+  shopping: ShoppingIcon,
+  culture: CultureIcon,
+} satisfies Record<
+  CategoryType,
+  React.ComponentType<AnimatedIconProps> | undefined
+>;
 
 export const CategoryMap = {
   all: "전체",

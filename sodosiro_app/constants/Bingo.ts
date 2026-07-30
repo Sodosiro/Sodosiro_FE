@@ -20,3 +20,13 @@ export const ADVANTAGES = [
     reward: "빙고 완성 뱃지 획득",
   },
 ];
+
+export const BINGO_IMAGES: Record<CategoryTypeWithoutAll, number> = {
+  activity: require("@/assets/images/bingo/activity_bingo.png"),
+  attraction: require("@/assets/images/bingo/attraction_bingo.png"),
+  cafe: require("@/assets/images/bingo/cafe_bingo.png"),
+  nature: require("@/assets/images/bingo/nature_bingo.png"),
+  restaurant: require("@/assets/images/bingo/restaurant_bingo.png"),
+  shopping: require("@/assets/images/bingo/shopping_bingo.png"),
+  culture: require("@/assets/images/bingo/culture_bingo.png"),
+};

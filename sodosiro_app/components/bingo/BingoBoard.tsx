@@ -1,28 +1,25 @@
-import { useState } from "react";
+import { useToast } from "@/contexts/ToastProvider";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { useRef, useState } from "react";
 import { LayoutChangeEvent, View } from "react-native";
 import CustomText from "../common/CustomText";
+import VerificationBottomSheet from "../verification/VerificationBottomSheet";
 import BingoCell from "./BingoCell";
 import BingoLine from "./BingoLine";
-
-type Bingo =
-  | {
-      region: string;
-      bingoItems: {
-        position: number;
-        title: string;
-        completed: boolean;
-      }[];
-    }
-  | undefined;
 
 export default function BingoBoard({
   bingo,
   bingoResult,
 }: {
-  bingo: Bingo;
+  bingo: BingoList;
   bingoResult: BingoResult | null;
 }) {
   const [boardSize, setBoardSize] = useState(0);
+
+  const [selectedItem, setSelectedItem] = useState<BingoItem | null>(null);
+  const bottomSheetRef = useRef<BottomSheetModal>(null);
+
+  const { showToast } = useToast();
 
   const handleLayout = (e: LayoutChangeEvent) => {
     const { width } = e.nativeEvent.layout;
@@ -49,9 +46,23 @@ export default function BingoBoard({
           />
         )}
         {bingo?.bingoItems.map((item, index) => (
-          <BingoCell key={index} bingoItem={item} />
+          <BingoCell
+            key={index}
+            bingoItem={item}
+            onPress={() => {
+              setSelectedItem(item);
+              bottomSheetRef.current?.present();
+              console.log(item);
+            }}
+          />
         ))}
       </View>
+      <VerificationBottomSheet
+        ref={bottomSheetRef}
+        selectedItem={selectedItem}
+        showToast={showToast}
+        onClose={() => bottomSheetRef?.current?.close()}
+      />
     </View>
   );
 }

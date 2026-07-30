@@ -113,7 +113,7 @@ const LocationMap = ({ address }: LocationMapProps) => {
       />
       <View className={`p-4 gap-1`}>
         <View className={`flex-row gap-1 items-center`}>
-          <PinMiniIcon height={14} />
+          <PinMiniIcon color={"#444444"} height={14} />
           <CustomText font="body2">{address}</CustomText>
         </View>
         <View className={`flex-row items-center`}>

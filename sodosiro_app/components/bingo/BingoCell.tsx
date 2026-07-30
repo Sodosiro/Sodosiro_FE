@@ -1,19 +1,18 @@
 import { BigCheckIcon, LockIcon } from "@/assets/svgs";
 import { CELL_SIZE } from "@/constants/Bingo";
-import { View } from "react-native";
+import { Pressable, PressableProps, View } from "react-native";
 import CustomText from "../common/CustomText";
 
-type BingoItem = {
-  position: number;
-  title: string;
-  completed: boolean;
-};
+interface Props extends PressableProps {
+  bingoItem: BingoItem;
+}
 
-export default function BingoCell({ bingoItem }: { bingoItem: BingoItem }) {
+export default function BingoCell({ bingoItem, onPress }: Props) {
   return (
-    <View
+    <Pressable
       style={{ width: CELL_SIZE, height: CELL_SIZE }}
       className={`px-2 gap-1 items-center justify-center rounded-xl border-2 ${bingoItem.completed ? `border-primary-dark bg-[#D4E393]` : `bg-bg-subtle border-bg-subtle`} `}
+      onPress={onPress}
     >
       {bingoItem.completed ? (
         <BigCheckIcon width={24} height={24} />
@@ -25,6 +24,6 @@ export default function BingoCell({ bingoItem }: { bingoItem: BingoItem }) {
           {bingoItem.title}
         </CustomText>
       </View>
-    </View>
+    </Pressable>
   );
 }

@@ -18,11 +18,19 @@ export type UpcomingTripCardType = {
   locationText: string;
 };
 
-export default function UpcomingTripCard({ trip, onPress }: UpcomingTripCardProps) {
+export default function UpcomingTripCard({
+  trip,
+  onPress,
+}: UpcomingTripCardProps) {
   return (
     <View className="rounded-2xl border border-[#E5E5E5] bg-white px-5 py-4 mb-5">
       {/* D-Day Badge 적용 */}
-      <TimelineBadge isOngoing text={`D-${trip.dDay}`} onPress={() => {}} onLayout={() => {}} />
+      <TimelineBadge
+        isOngoing
+        text={`D-${trip.dDay}`}
+        onPress={() => {}}
+        onLayout={() => {}}
+      />
 
       {/* 제목 */}
       <View className="flex-row items-center mt-2">
@@ -44,7 +52,7 @@ export default function UpcomingTripCard({ trip, onPress }: UpcomingTripCardProp
 
       {/* 장소 */}
       <View className="flex-row items-center mt-2">
-        <PinMiniIcon />
+        <PinMiniIcon color={"#444444"} />
 
         <CustomText font="body2" className="ml-2">
           {trip.locationText}

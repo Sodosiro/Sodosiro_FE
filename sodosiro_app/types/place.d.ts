@@ -8,6 +8,8 @@ type CategoryType =
   | "shopping"
   | "culture";
 
+type CategoryTypeWithoutAll = Exclude<CategoryType, "all">;
+
 type PlaceType = {
   id: number;
   title?: string;

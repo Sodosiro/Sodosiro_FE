@@ -42,13 +42,13 @@ export default function CustomButton({
     size === "large"
       ? "h-13"
       : size === "medium"
-        ? "w-[235px] h-13"
+        ? "self-start px-5 h-13"
         : "self-start px-5 h-11";
   const secondaryButtonSize = `self-start px-5 ${size === "small" ? `h-11` : `h-13`}`;
   const tertiaryButtonSize = `self-start px-5 ${size === "small" ? `h-11` : `h-13`}`;
 
   const textSize =
-    type === "primary" && size !== "small" ? TitleTightClass : Body3TightClass;
+    type === "primary" && size === "large" ? TitleTightClass : Body3TightClass;
 
   const textClass = disabled
     ? "text-text-muted"

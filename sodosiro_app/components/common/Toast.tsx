@@ -51,7 +51,7 @@ export default function Toast({
       className="flex-row items-center gap-2 rounded-2xl px-4 py-3.5"
     >
       {icon}
-      <CustomText font="body2" className="text-white flex-shrink">
+      <CustomText font="body2" className="text-white shrink">
         {message}
       </CustomText>
     </Animated.View>

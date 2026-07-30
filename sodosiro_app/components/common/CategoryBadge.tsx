@@ -11,9 +11,6 @@ type Props = {
   onPress: () => void;
 };
 
-const BACKGROUND: [string, string] = ["#FFFFFF", "#1A1A1A"];
-const COLOR: [string, string] = ["#1A1A1A", "#FFFFFF"];
-
 export default React.memo(function CategoryBadge({
   disabled = false,
   isSelected = false,
@@ -23,12 +20,16 @@ export default React.memo(function CategoryBadge({
   const Icon = CategoryIconMap[category];
   const text = CategoryMap[category];
 
+  const color: [string, string] = disabled
+    ? ["#888888", "#888888"]
+    : ["#1A1A1A", "#FFFFFF"];
+
   const { containerStyle, strokeStyle, textStyle } = useSelectedAnimation(
     isSelected,
     {
-      background: BACKGROUND,
-      color: COLOR,
-      stroke: COLOR,
+      background: ["#FFFFFF", "#1A1A1A"],
+      color: color,
+      stroke: color,
     },
   );
 

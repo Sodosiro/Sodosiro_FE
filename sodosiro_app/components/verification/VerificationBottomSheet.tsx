@@ -8,7 +8,7 @@ import {
 } from "@gorhom/bottom-sheet";
 import * as Location from "expo-location";
 import { forwardRef, useState } from "react";
-import { Image, View } from "react-native";
+import { Image, Linking, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomButton from "../common/CustomButton";
 import CustomText from "../common/CustomText";
@@ -32,7 +32,8 @@ const VerificationBottomSheet = forwardRef<BottomSheetModal, Props>(
         const { status } = await Location.requestForegroundPermissionsAsync();
 
         if (status !== "granted") {
-          showToast("위치 권한이 필요해요.");
+          onClose();
+          Linking.openSettings();
           return;
         }
 
@@ -59,7 +60,7 @@ const VerificationBottomSheet = forwardRef<BottomSheetModal, Props>(
           }
         }, 300);
       } catch {
-        showToast("위치를 확인할 수 없어요.");
+        showToast("현재 위치를 확인할 수 없어요.");
       } finally {
         setIsLoading(false);
       }

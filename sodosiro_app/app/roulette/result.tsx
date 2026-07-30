@@ -11,6 +11,7 @@ import RegionInfoSection from "@/components/region/section/RegionInfoSection";
 import TopAttractionSection from "@/components/region/section/TopAttractionSection";
 import TopFoodSection from "@/components/region/section/TopFoodSection";
 import { REGION } from "@/mocks/region";
+import { router } from "expo-router";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -61,6 +62,7 @@ export default function RouletteResultScreen() {
           type="primary"
           size="medium"
           title={`${REGION.title} 여행 일정 짜기`}
+          onPress={() => router.push("/trip/condition")}
         />
       </BottomActionBar>
     </SafeAreaView>

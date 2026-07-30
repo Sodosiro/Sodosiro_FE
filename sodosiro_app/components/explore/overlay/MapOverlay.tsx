@@ -2,9 +2,10 @@ import { BottomSheetSnapPoints } from "@/constants/BottomSheet";
 import { useLocationStore } from "@/stores/useLocationStore";
 import { useSearchStore } from "@/stores/useSearchStore";
 import type BottomSheet from "@gorhom/bottom-sheet";
+import * as Location from "expo-location";
 import type { RefObject } from "react";
 import { useState } from "react";
-import { Dimensions, Pressable, View } from "react-native";
+import { Dimensions, Linking, Pressable, View } from "react-native";
 import type { SharedValue } from "react-native-reanimated";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import WebView from "react-native-webview";
@@ -28,11 +29,8 @@ export default function MapOverlay({
   animatedIndex: SharedValue<number>;
 }) {
   const { keyword, clearResult } = useSearchStore();
-
-  const { isDenied, setIsTracking } = useLocationStore();
-
+  const { setIsDenied, setIsTracking } = useLocationStore();
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>("all");
-
   const screenHeight = Dimensions.get("window").height;
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -51,6 +49,37 @@ export default function MapOverlay({
       ),
     };
   });
+
+  const handleTrackingButton = async () => {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+
+    if (status !== "granted") {
+      Linking.openSettings();
+      return;
+    }
+
+    setIsDenied(false);
+    setIsTracking(true);
+
+    webViewRef.current?.postMessage(
+      JSON.stringify({
+        type: "START_TRACKING",
+      }),
+    );
+
+    const location = await Location.getCurrentPositionAsync({
+      accuracy: Location.Accuracy.High,
+    });
+
+    webViewRef.current?.postMessage(
+      JSON.stringify({
+        type: "UPDATE_LOCATION",
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        initial: false,
+      }),
+    );
+  };
 
   return (
     <View className={`flex-1`}>
@@ -71,21 +100,14 @@ export default function MapOverlay({
         pointerEvents="box-none"
       >
         <PlaceLegend className={`left-5`} />
-        {!isDenied && (
-          <Pressable
-            className={`absolute w-12 h-12 justify-center items-center rounded-full bg-bg right-6 bottom-0 border border-border`}
-            onPress={() => {
-              setIsTracking(true);
-              webViewRef.current?.postMessage(
-                JSON.stringify({
-                  type: "START_TRACKING",
-                }),
-              );
-            }}
-          >
-            <GpsButton />
-          </Pressable>
-        )}
+
+        <Pressable
+          className={`absolute w-12 h-12 justify-center items-center rounded-full bg-bg right-6 bottom-0 border border-border`}
+          onPress={handleTrackingButton}
+        >
+          <GpsButton />
+        </Pressable>
+
         {keyword && (
           <ClearSearchButton
             className={`absolute self-center left-1/2 -translate-x-1/2 top-6`}

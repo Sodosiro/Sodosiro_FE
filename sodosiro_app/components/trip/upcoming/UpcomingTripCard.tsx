@@ -44,7 +44,7 @@ export default function UpcomingTripCard({
 
       {/* 날짜 */}
       <View className="flex-row items-center mt-2">
-        <CalendarMiniIcon />
+        <CalendarMiniIcon color={"#1A1A1A"} />
 
         <CustomText font="body2" className="ml-2">
           {trip.startDate} · 무박 {trip.nights}일

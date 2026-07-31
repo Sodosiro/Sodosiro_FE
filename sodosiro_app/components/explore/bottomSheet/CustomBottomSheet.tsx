@@ -8,7 +8,7 @@ import BottomSheet, {
 import { useEffect, useState, type RefObject } from "react";
 import { View } from "react-native";
 import type { SharedValue } from "react-native-reanimated";
-import Place from "./Place";
+import PlaceItem from "./PlaceItem";
 
 export default function CustomBottomSheet({
   animatedPosition,
@@ -71,7 +71,7 @@ export default function CustomBottomSheet({
         }}
         renderItem={({ item, index }) => (
           <View key={index}>
-            <Place place={item} />
+            <PlaceItem place={item} />
             {index !== PLACE_LIST.length - 1 && (
               <View className="h-px bg-bg-subtle mx-5" />
             )}

@@ -1,7 +1,7 @@
-export const REGION = {
+export const REGION: RegionType = {
   title: "양양",
   desc: "서핑과 자연이 공존하는 동해안 소도시",
-  tags: ["서핑", "해변", "감성 카페"],
+  keywords: ["서핑", "해변", "감성 카페"],
   images: [
     "https://conlab.visitkorea.or.kr/api/depot/public/depot-flow/query/download-image/abedf24e-06d9-4c50-90f8-f22eb9fc8dc5/it11",
     "https://conlab.visitkorea.or.kr/api/depot/public/depot-flow/query/download-image/46929c8f-c64c-465e-9f36-6dc92d5f0787/it11",

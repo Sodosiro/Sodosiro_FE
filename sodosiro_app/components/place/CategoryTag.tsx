@@ -1,6 +1,6 @@
 import { CategoryMap } from "@/util/place/category";
 import { View } from "react-native";
-import CustomText from "../CustomText";
+import CustomText from "../common/CustomText";
 
 export default function CategoryTag({ category }: { category: CategoryType }) {
   return (

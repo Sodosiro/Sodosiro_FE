@@ -1,4 +1,4 @@
-import PlaceMini from "@/components/common/place/PlaceMini";
+import PlaceMini from "@/components/place/PlaceMini";
 import { View } from "react-native";
 import RegionSectionContainer from "./RegionSectionContainer";
 

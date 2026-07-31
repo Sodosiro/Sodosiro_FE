@@ -7,14 +7,16 @@ type Props = {
   startDate: Date;
 };
 
-export default function FestivalBadge({ className, startDate }: Props) {
+export default function DdayBadge({ className, startDate }: Props) {
   const today = new Date();
   const dDay = differenceInCalendarDays(startDate, today);
   const dDayText = dDay > 0 ? `D-${dDay}` : "D-Day";
 
   return (
-    <View className={`${className} bg-white px-3 py-2 rounded-full self-start`}>
-      <CustomText font="body3 tight" className={`px-px`}>
+    <View
+      className={`${className} bg-white px-2.5 py-2 rounded-full self-start`}
+    >
+      <CustomText font="body3 tight" className={`px-0.5`}>
         {dDayText}
       </CustomText>
     </View>

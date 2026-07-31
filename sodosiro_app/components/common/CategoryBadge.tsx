@@ -1,4 +1,5 @@
 import useSelectedAnimation from "@/hooks/useSelcetedAnimation";
+import { badgeStyle } from "@/styles/Badge";
 import { CategoryIconMap, CategoryMap } from "@/util/place/category";
 import React from "react";
 import { AnimatedPressable } from "./Animated";
@@ -36,7 +37,7 @@ export default React.memo(function CategoryBadge({
   return (
     <AnimatedPressable
       style={containerStyle}
-      className={`${Icon ? `px-4` : `px-3`} flex-row items-center self-start py-2.5 rounded-full border border-border`}
+      className={`${Icon ? `px-4` : `px-3`} py-2.5 ${badgeStyle}`}
       disabled={disabled}
       onPress={onPress}
     >
@@ -45,7 +46,6 @@ export default React.memo(function CategoryBadge({
       <CustomText
         font="body3 tight"
         animatedStyle={textStyle}
-        // 텍스트 짤림 방지
         className={`${Icon ? `pl-1` : `px-1`}`}
       >
         {text}

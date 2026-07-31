@@ -1,6 +1,6 @@
 import CategoryList from "@/components/common/CategoryList";
 import SortBadge from "@/components/common/sort/SortBadge";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { View } from "react-native";
 
 export default function FavoriteFilter({
@@ -14,15 +14,9 @@ export default function FavoriteFilter({
   selectedCategory: CategoryType;
   setSelectedCategory: Dispatch<SetStateAction<CategoryType>>;
 }) {
-  const [isSortModalVisible, setIsSortModalVisible] = useState(false);
   return (
     <View className="flex-row pl-5">
-      <SortBadge
-        isSortModalVisible={isSortModalVisible}
-        setIsSortModalVisible={setIsSortModalVisible}
-        sortOption={sortOption}
-        setSortOption={setSortOption}
-      />
+      <SortBadge sortOption={sortOption} setSortOption={setSortOption} />
 
       <View className="ml-2 w-px bg-border" />
 

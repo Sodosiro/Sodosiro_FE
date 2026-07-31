@@ -1,12 +1,12 @@
 import { HeartCircle, HeartCircleStroke } from "@/assets/svgs";
 import CustomText from "@/components/common/CustomText";
-import CategoryTag from "@/components/common/place/CategoryTag";
-import Rate from "@/components/common/place/Rate";
+import CategoryTag from "@/components/place/CategoryTag";
+import RateChip from "@/components/place/RateChip";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Image, View } from "react-native";
 
-export default function Place({ place }: { place: PlaceType }) {
+export default function PlaceItem({ place }: { place: PlaceType }) {
   const [isFavorite, setIsFavorite] = useState(false);
 
   return (
@@ -34,7 +34,7 @@ export default function Place({ place }: { place: PlaceType }) {
             <CustomText font="body3" className={`text-text-secondary`}>
               영업 중
             </CustomText>
-            <Rate rate={place.rate} reviewCount={place.reviewCount} />
+            <RateChip rate={place.rate} reviewCount={place.reviewCount} />
           </View>
         </View>
         <CustomText

@@ -1,15 +1,15 @@
-import { ScrollView, View } from "react-native";
+import KeywordBadgeList from "@/components/common/keywordBadge/KeywordBadgeList";
+import { View } from "react-native";
 import CustomText from "../../common/CustomText";
-import RegionKeywordBadge from "../RegionKeywordBadge";
 
 export default function RegionInfoSection({
   title,
   desc,
-  tags,
+  keywords,
 }: {
   title: string;
   desc: string;
-  tags: string[];
+  keywords: string[];
 }) {
   return (
     <View className={`gap-2 pt-5`}>
@@ -17,15 +17,7 @@ export default function RegionInfoSection({
       <CustomText font="body3" className={`text-text-muted`}>
         {desc}
       </CustomText>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ gap: 4 }}
-      >
-        {tags.map((tag, index) => (
-          <RegionKeywordBadge key={index} title={tag} />
-        ))}
-      </ScrollView>
+      <KeywordBadgeList keywords={keywords} />
     </View>
   );
 }

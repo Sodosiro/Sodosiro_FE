@@ -32,3 +32,14 @@ type ReviewType = {
   comment: string;
   createdAt: Date;
 };
+
+type PopularPlaceType = {
+  id: number;
+  imageSource: any;
+  title: string;
+  region: string;
+  rate: number;
+  reviewCount: number;
+  desc: string;
+  keywords: string[];
+};

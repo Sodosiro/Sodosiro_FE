@@ -1,8 +1,8 @@
 import { StarIcon } from "@/assets/svgs";
 import { View } from "react-native";
-import CustomText from "../CustomText";
+import CustomText from "../common/CustomText";
 
-export default function Rate({
+export default function RateChip({
   rate,
   reviewCount,
 }: {

@@ -77,7 +77,7 @@ export default function RoulleteContent({
               <CustomButton
                 type="primary"
                 title={result?.region + " 둘러보기"}
-                onPress={() => router.replace("/roulette/result")}
+                onPress={() => router.push("/roulette/result")}
               />
               <CustomText
                 font="title tight"

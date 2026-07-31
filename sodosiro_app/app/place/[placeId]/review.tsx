@@ -10,7 +10,6 @@ import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ReviewScreen() {
-  const [isSortModalVisible, setIsSortModalVisible] = useState(false);
   const [sortOption, setSortOption] = useState("최신순");
   const [onlyPhotoReview, setOnlyPhotoReview] = useState(false);
 
@@ -36,8 +35,6 @@ export default function ReviewScreen() {
         </View>
 
         <ReviewFilter
-          isSortModalVisible={isSortModalVisible}
-          setIsSortModalVisible={setIsSortModalVisible}
           sortOption={sortOption}
           setSortOption={setSortOption}
           onlyPhotoReview={onlyPhotoReview}

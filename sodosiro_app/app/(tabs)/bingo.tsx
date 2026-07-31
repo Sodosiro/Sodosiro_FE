@@ -37,7 +37,7 @@ export default function BingoScreen() {
             contentContainerClassName={`gap-6 py-3 px-5 justify-start`}
           >
             <BingoTitle selectedRegion={selectedRegion} />
-            <BingoBoard bingo={bingo} bingoResult={bingoResult} />
+            <BingoBoard bingo={bingo as BingoList} bingoResult={bingoResult} />
             <BingoAdvantage />
           </ScrollView>
         </>

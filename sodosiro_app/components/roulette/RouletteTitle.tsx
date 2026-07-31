@@ -36,10 +36,10 @@ export default function RouletteTitle({
           : FadeIn.duration(300).delay(200)
       }
       exiting={FadeOut.duration(300)}
-      className={` items-center`}
+      className={`items-center px-10`}
     >
       <CustomText font="display">{title}</CustomText>
-      <CustomText font="body3" className={`text-text-secondary`}>
+      <CustomText font="body3" className={`text-text-secondary text-center`}>
         {comment}
       </CustomText>
     </Animated.View>

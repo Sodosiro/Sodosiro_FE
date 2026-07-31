@@ -18,7 +18,7 @@ export default function PlaceLegend({ className }: { className?: string }) {
       className={`${className} bg-white px-3 py-2.5 gap-2 rounded-xl self-start border border-border`}
     >
       {List.map((item, index) => (
-        <View key={index} className={`flex-row gap-2`}>
+        <View key={index} className={`flex-row gap-2 items-center`}>
           <View
             className={`w-5 h-5 rounded-full`}
             style={{ backgroundColor: item.color }}

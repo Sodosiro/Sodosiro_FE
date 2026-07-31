@@ -19,9 +19,11 @@ export default function PopularPlaceItem({
         source={imageSource}
         className={`rounded-xl aspect-square overflow-hidden`}
       />
-      <View className={`flex-1 justify-between`}>
+      <View className={`flex-1 justify-between gap-1`}>
         <View className={`gap-1.5`}>
-          <CustomText font="title">{title}</CustomText>
+          <CustomText font="title" numberOfLines={1}>
+            {title}
+          </CustomText>
           <InfoChip
             icon={<PinMiniIcon width={14} color={"#888888"} />}
             text={region}

@@ -28,7 +28,8 @@ export default function SearchBar({
     >
       <CustomText
         font="body1"
-        className={`${keyword ? `text-text-primary` : `text-text-secondary`} flex-1 h-5`}
+        className={`${keyword ? `text-text-primary` : `text-text-secondary`} flex-1 min-h-5`}
+        numberOfLines={1}
       >
         {keyword?.trim() ? keyword : "가고 싶은 여행지를 검색해보세요"}
       </CustomText>

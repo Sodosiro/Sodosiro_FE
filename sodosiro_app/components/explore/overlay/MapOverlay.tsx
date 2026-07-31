@@ -36,17 +36,14 @@ export default function MapOverlay({
   const animatedStyle = useAnimatedStyle(() => {
     if (animatedIndex.value === -1) {
       return {
-        bottom: -BOTTOM_OFFSET,
+        bottom: 0,
       };
     }
 
-    const sheetHeight = screenHeight - animatedPosition.value - 40;
+    const sheetHeight = screenHeight - animatedPosition.value - 98;
 
     return {
-      bottom: Math.min(
-        sheetHeight,
-        (BottomSheetSnapPoints[1] as number) - BOTTOM_OFFSET,
-      ),
+      bottom: Math.min(sheetHeight, BottomSheetSnapPoints[1] as number),
     };
   });
 
@@ -95,7 +92,7 @@ export default function MapOverlay({
       </View>
 
       <Animated.View
-        className={`w-screen flex-row absolute`}
+        className={`w-screen flex-row absolute bottom-0`}
         style={animatedStyle}
         pointerEvents="box-none"
       >
@@ -110,7 +107,7 @@ export default function MapOverlay({
 
         {keyword && (
           <ClearSearchButton
-            className={`absolute self-center left-1/2 -translate-x-1/2 top-6`}
+            className={`absolute self-center left-1/2 -translate-x-1/2 bottom-0`}
             onPress={() => {
               clearResult();
             }}

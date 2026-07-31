@@ -1,1 +1,1 @@
-export const badgeStyle = `flex-row items-center justify-center self-start rounded-full border border-border h-10`;
+export const badgeStyle = `flex-row items-center justify-center self-start rounded-full border border-border min-h-10`;

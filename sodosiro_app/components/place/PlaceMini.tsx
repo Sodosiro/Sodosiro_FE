@@ -2,7 +2,7 @@ import { RightIcon } from "@/assets/svgs";
 import { router } from "expo-router";
 import type { ImageSourcePropType } from "react-native";
 import { Image, Pressable, View } from "react-native";
-import CustomText from "../CustomText";
+import CustomText from "../common/CustomText";
 
 type Props = {
   id: number;

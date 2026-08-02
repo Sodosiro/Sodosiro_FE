@@ -8,7 +8,7 @@ export { default as OnAirIcon } from "./10px/on-air.svg";
 export { default as StarIcon } from "./14px/star.svg";
 
 // 16px
-export { default as CalendarMiniIcon } from "./16px/calendar-mini.svg";
+export { default as CalendarMiniIcon } from "./16px/calendar_mini.svg";
 export { default as CallMiniIcon } from "./16px/call_mini.svg";
 export { default as CameraMiniIcon } from "./16px/camera_mini.svg";
 export { default as ClockMiniIcon } from "./16px/clock_mini.svg";
@@ -21,7 +21,7 @@ export { default as RefreshMiniIcon } from "./16px/refresh_mini.svg";
 export { default as RemoveMiniIcon } from "./16px/remove_mini.svg";
 export { default as ShareMiniIcon } from "./16px/share_mini.svg";
 export { default as SortMiniIcon } from "./16px/sort_mini.svg";
-export { default as XMiniIcon } from "./16px/x-mini.svg";
+export { default as XMiniIcon } from "./16px/x_mini.svg";
 
 // 20px
 export { default as PencilIcon } from "./20px/pencil.svg";

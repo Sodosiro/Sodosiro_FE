@@ -1,6 +1,6 @@
 import CustomText from "@/components/common/CustomText";
-import RecentSearch from "./RecentSearch";
 import { ScrollView, View } from "react-native";
+import RecentSearch from "./RecentSearch";
 
 export default function RecentSearchList({
   recentSearchList,
@@ -15,7 +15,7 @@ export default function RecentSearchList({
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={{ gap: 4 }}
       keyboardShouldPersistTaps="handled"
-      className={`h-10`}
+      className={`min-h-10`}
     >
       {recentSearchList.map((recentSearch: string) => (
         <RecentSearch

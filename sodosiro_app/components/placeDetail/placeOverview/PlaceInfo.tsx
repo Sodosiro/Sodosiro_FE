@@ -1,6 +1,6 @@
 import CustomText from "@/components/common/CustomText";
-import CategoryTag from "@/components/common/place/CategoryTag";
-import Rate from "@/components/common/place/Rate";
+import CategoryTag from "@/components/place/CategoryTag";
+import RateChip from "@/components/place/RateChip";
 import { View } from "react-native";
 
 export default function PlaceInfo({
@@ -28,7 +28,7 @@ export default function PlaceInfo({
         >
           {desc}
         </CustomText>
-        <Rate rate={rate} reviewCount={reviewCount} />
+        <RateChip rate={rate} reviewCount={reviewCount} />
       </View>
     </View>
   );

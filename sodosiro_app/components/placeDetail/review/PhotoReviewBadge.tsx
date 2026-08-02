@@ -1,12 +1,9 @@
-import { CameraMiniIcon } from "@/assets/svgs";
+import { AnimatedPressable } from "@/components/common/Animated";
 import CustomText from "@/components/common/CustomText";
+import CameraIcon from "@/components/icon/CameraIcon";
 import useSelectedAnimation from "@/hooks/useSelcetedAnimation";
 import { Dispatch, SetStateAction, useEffect } from "react";
-import { Pressable } from "react-native";
-import Animated, { useSharedValue, withTiming } from "react-native-reanimated";
-
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
-const AnimatedCameraIcon = Animated.createAnimatedComponent(CameraMiniIcon);
+import { useSharedValue, withTiming } from "react-native-reanimated";
 
 export default function PhotoReviewBadge({
   isSelected,
@@ -38,8 +35,7 @@ export default function PhotoReviewBadge({
       className="px-4 py-2.5 rounded-full self-start flex-row items-center gap-1 border border-border"
       onPress={() => setIsSelected((prev) => !prev)}
     >
-      <AnimatedCameraIcon animatedProps={strokeStyle} />
-
+      <CameraIcon animatedStroke={strokeStyle} />
       <CustomText font="body3 tight" animatedStyle={textStyle}>
         포토 리뷰
       </CustomText>

@@ -1,85 +1,91 @@
 import { SortMiniIcon } from "@/assets/svgs";
-import { Portal } from "@gorhom/portal";
-import { Dispatch, SetStateAction } from "react";
-import { Pressable, View } from "react-native";
-import Animated, {
-  FadeIn,
-  FadeOut,
-  SlideInDown,
-  SlideOutDown,
-} from "react-native-reanimated";
-import { AnimatedPressable } from "../Animated";
+import {
+  BottomSheetBackdrop,
+  BottomSheetModal,
+  BottomSheetView,
+} from "@gorhom/bottom-sheet";
+import { Dispatch, SetStateAction, useRef } from "react";
+import { Pressable } from "react-native";
 import CustomText from "../CustomText";
 
 const SORT_OPTIONS = ["최신순", "오래된순", "오름차순", "내림차순"];
 
 export default function SortBadge({
-  isSortModalVisible,
-  setIsSortModalVisible,
   sortOption,
   setSortOption,
 }: {
-  isSortModalVisible: boolean;
-  setIsSortModalVisible: Dispatch<SetStateAction<boolean>>;
   sortOption: string;
   setSortOption: Dispatch<SetStateAction<string>>;
 }) {
+  const bottomSheetRef = useRef<BottomSheetModal>(null);
+
+  const openSheet = () => {
+    bottomSheetRef.current?.present();
+  };
+
+  const closeSheet = () => {
+    bottomSheetRef.current?.dismiss();
+  };
+
   return (
     <>
       <Pressable
-        className="flex-row gap-1 rounded-full border border-border px-4 py-2.5 self-start"
-        onPress={() => setIsSortModalVisible(true)}
+        className="flex-row gap-1 rounded-full border border-border px-4 py-2.5 self-start items-center"
+        onPress={openSheet}
       >
         <SortMiniIcon />
         <CustomText font="body3 tight">{sortOption}</CustomText>
       </Pressable>
 
-      <Portal>
-        {isSortModalVisible && (
-          <View className="absolute inset-0 flex-1 justify-end">
-            <AnimatedPressable
-              entering={FadeIn.duration(250)}
-              exiting={FadeOut.duration(250)}
-              className="absolute inset-0 bg-black/50"
-              style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
-              onPress={() => setIsSortModalVisible(false)}
-            />
-
-            {/* 아래에서 올라오는 모달 */}
-            <Animated.View
-              entering={SlideInDown.duration(250)}
-              exiting={SlideOutDown.duration(250)}
-              className="rounded-t-3xl bg-white px-5 pb-8 pt-6"
-            >
-              <CustomText font="heading2" className="mb-5">
-                정렬
-              </CustomText>
-
-              {SORT_OPTIONS.map((option) => (
-                <Pressable
-                  key={option}
-                  className="py-4"
-                  onPress={() => {
-                    setSortOption(option);
-                    setIsSortModalVisible(false);
-                  }}
-                >
-                  <CustomText
-                    font="body1"
-                    className={
-                      option === sortOption
-                        ? "text-primary-dark"
-                        : "text-text-primary"
-                    }
-                  >
-                    {option}
-                  </CustomText>
-                </Pressable>
-              ))}
-            </Animated.View>
-          </View>
+      <BottomSheetModal
+        ref={bottomSheetRef}
+        index={0}
+        enablePanDownToClose
+        backdropComponent={(props) => (
+          <BottomSheetBackdrop
+            {...props}
+            appearsOnIndex={0}
+            disappearsOnIndex={-1}
+            opacity={0.5}
+            pressBehavior="close"
+          />
         )}
-      </Portal>
+        handleIndicatorStyle={{
+          backgroundColor: "#E6E6E6",
+        }}
+        backgroundStyle={{
+          borderTopLeftRadius: 24,
+          borderTopRightRadius: 24,
+        }}
+      >
+        <BottomSheetView className="px-5 pb-8 pt-6">
+          <CustomText font="heading2" className="mb-5">
+            정렬
+          </CustomText>
+
+          {SORT_OPTIONS.map((option) => (
+            <Pressable
+              key={option}
+              className="py-4"
+              onPress={() => {
+                setSortOption(option);
+                closeSheet();
+              }}
+            >
+              <CustomText
+                font="body1"
+                className={
+                  option === sortOption
+                    ? "text-primary-dark"
+                    : "text-text-primary"
+                }
+              >
+                {option}
+              </CustomText>
+            </Pressable>
+          ))}
+        </BottomSheetView>
+      </BottomSheetModal>
     </>
   );
 }

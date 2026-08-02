@@ -17,7 +17,7 @@ export default function RegionTag({ animateKey, x, y, mapSize }: Props) {
       key={animateKey}
       entering={tagEntering}
       exiting={tagExiting}
-      className="absolute rounded-full border border-primary bg-bg px-2.5 py-1.5 w-11.5"
+      className="absolute rounded-full border border-primary bg-bg px-2.5 py-1.5 min-w-11.5"
       style={{
         left: (x / 800) * mapSize.width - 20,
         top: (y / 699) * mapSize.height - 24 - 28,

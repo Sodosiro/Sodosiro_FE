@@ -87,6 +87,14 @@ export default function RootLayout() {
                 }}
               />
               <Stack.Screen
+                name="(home)"
+                options={{
+                  presentation: "modal",
+                  animation: "fade",
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
                 name="explore/search"
                 options={{
                   presentation: "modal",

@@ -1,7 +1,7 @@
 import type { RefObject } from "react";
 import type { ViewProps } from "react-native";
 import { View } from "react-native";
-import PlaceMini from "../../common/place/PlaceMini";
+import PlaceMini from "../../place/PlaceMini";
 import PlaceDetailSectionContainer from "./PlaceDetailSectionContainer";
 
 type recommendPlaces = {

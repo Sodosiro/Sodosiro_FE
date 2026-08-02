@@ -1,4 +1,5 @@
 import useSelectedAnimation from "@/hooks/useSelcetedAnimation";
+import { badgeStyle } from "@/styles/Badge";
 import type { PressableProps } from "react-native";
 import { AnimatedPressable } from "./Animated";
 import CustomText from "./CustomText";
@@ -23,7 +24,7 @@ export default function AnimatedBadge({
   return (
     <AnimatedPressable
       style={containerStyle}
-      className={`${className} px-4 py-2.5 self-start rounded-full border border-border`}
+      className={`${className} px-4 py-2.5 ${badgeStyle}`}
       disabled={disabled}
       {...props}
     >

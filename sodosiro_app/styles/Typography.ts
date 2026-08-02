@@ -1,11 +1,13 @@
-export const DisplayClass = `text-[24px] font-pretendard-bold leading-8`;
-export const Heading1Class = `text-[20px] font-pretendard-semibold leading-6.5`;
-export const Heading2Class = `text-[18px] font-pretendard-semibold leading-6`;
-export const TitleClass = `text-[16px] font-pretendard-semibold leading-5`;
-export const TitleTightClass = `text-[16px] font-pretendard-semibold leading-none`;
-export const Body1Class = `text-[16px] font-pretendard-medium leading-5`;
-export const Body2Class = `text-[14px] font-pretendard-semibold leading-4.5`;
-export const Body2TightClass = `text-[14px] font-pretendard-semibold leading-none`;
-export const Body3Class = `text-[14px] font-pretendard-medium leading-4.5`;
-export const Body3Review = `text-[14px] font-pretendard-medium leading-6`;
-export const Body3TightClass = `text-[14px] font-pretendard-medium leading-none`;
+// 추후 삭제 예정
+
+export const DisplayClass = `display`;
+export const Heading1Class = `heading1`;
+export const Heading2Class = `heading2`;
+export const TitleClass = `title`;
+export const TitleTightClass = `title-tight`;
+export const Body1Class = `body1`;
+export const Body2Class = `body2`;
+export const Body2TightClass = `body2-tight`;
+export const Body3Class = `body3`;
+export const Body3Review = `body3-review`;
+export const Body3TightClass = `body3-tight`;

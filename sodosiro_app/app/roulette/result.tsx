@@ -37,7 +37,7 @@ export default function RouletteResultScreen() {
           <RegionInfoSection
             title={REGION.title}
             desc={REGION.desc}
-            tags={REGION.tags}
+            keywords={REGION.keywords}
           />
           <RecommendReasonSection reasons={REGION.reasons} />
           <TopAttractionSection
@@ -53,6 +53,7 @@ export default function RouletteResultScreen() {
         <AnimatedButton
           className={`flex-row items-center justify-center px-4 gap-1 rounded-full`}
           backgroundColor={["#FFFFFF", "#F5F5F5"]}
+          onPress={() => router.back()}
         >
           <RefreshIcon width={16} />
           <CustomText font="body1">다시 돌리기</CustomText>

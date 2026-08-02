@@ -1,31 +1,20 @@
 import CustomText from "@/components/common/CustomText";
 import { format } from "date-fns";
-import type { ImageSourcePropType } from "react-native";
 import { Image, View } from "react-native";
-import FestivalBadge from "./FestivalBadge";
+import DdayBadge from "./DdayBadge";
 
-type Props = {
-  id: number;
-  imageSource: ImageSourcePropType;
-  region: string;
-  title: string;
-  startDate: Date;
-  endDate: Date;
-};
+export default function FestivalPrevItem({
+  festival,
+}: {
+  festival: FestivalType;
+}) {
+  const { imageSource, region, title, startDate, endDate } = festival;
 
-export default function Festival({
-  id,
-  imageSource,
-  region,
-  title,
-  startDate,
-  endDate,
-}: Props) {
   return (
     <View className={`gap-3`}>
       <View>
-        <Image source={imageSource} className={`aspect-3/4 rounded-xl`} />
-        <FestivalBadge
+        <Image source={imageSource} className={`h-50 aspect-3/4 rounded-xl`} />
+        <DdayBadge
           className={`absolute bottom-3 left-3`}
           startDate={startDate}
         />

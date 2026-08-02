@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
 import CategoryList from "../../common/CategoryList";
@@ -9,7 +10,12 @@ export default function PopularPlacesSection() {
 
   return (
     <View className={`flex-col px-5 gap-3`}>
-      <SectionTitle title={"지금 많이 찾는 장소"} onPress={() => {}} />
+      <SectionTitle
+        title={"지금 많이 찾는 장소"}
+        onPress={() => {
+          router.push("/(home)/popular");
+        }}
+      />
       <CategoryList
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}

@@ -11,7 +11,6 @@ import { INITIAL_PLAN } from "@/mocks/trip";
 import { Stack } from "expo-router";
 import { useCallback, useState } from "react";
 import { LayoutChangeEvent, ScrollView, View } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const DEFAULT_BUTTON_WIDTH = 96;
@@ -54,66 +53,64 @@ export default function TimelineScreen() {
   }, []);
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaView style={{ flex: 1, backgroundColor: "white" }} edges={["top", "bottom"]}>
-        <Stack.Screen options={{ headerShown: false }} />
-        <Header title={tripTitle} showPencil onTitleChange={(newTitle) => setTripTitle(newTitle)} />
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }} edges={["top", "bottom"]}>
+      <Stack.Screen options={{ headerShown: false }} />
+      <Header title={tripTitle} showPencil onTitleChange={(newTitle) => setTripTitle(newTitle)} />
 
-        <View className="flex-1">
-          <TimelineDayBadgeSection
-            dayIndices={visiblePlan.map(({ index }) => index)}
-            activeIndex={activeIndex}
-            isEditing={isEditing}
-            // editButtonWidth={editButtonWidth}
-            // badgeScrollRef={badgeScrollRef}
-            showEditButton={true}
-            onPressDayBadge={handlePressDayBadge}
-            onLayoutDayBadge={handleBadgeLayout}
-            onRequestDeleteDay={requestDeleteDay}
-            onPressEditButton={pressEditButton}
-            // onLayoutEditButton={handleEditButtonLayout}
-          />
-
-          {/* 일정 리스트 */}
-          <ScrollView
-            ref={mainScrollRef}
-            className="flex-1"
-            contentContainerStyle={{
-              paddingHorizontal: 20,
-              paddingTop: 8,
-              paddingBottom: 24,
-            }}
-            onScroll={handleMainScroll}
-            scrollEventThrottle={16}
-            showsVerticalScrollIndicator={false}
-          >
-            {visiblePlan.map(({ dayPlan, index }) => (
-              <TimelineDaySection
-                key={index}
-                dayPlan={dayPlan}
-                dayOrder={index + 1}
-                expandedIds={expandedIds}
-                onToggleItem={toggleExpand}
-                isOngoing={false}
-                isUpcoming={false}
-                onLayout={(e) => handleSectionLayout(index, e)}
-              />
-            ))}
-          </ScrollView>
-
-          <TimelineExportFooter />
-        </View>
-
-        {/* 저장 확인 컨펌 모달 */}
-        <ConfirmDialog
-          visible={isConfirmOpen}
-          title="이 일정을 저장할까요?"
-          cancelText="취소"
-          confirmText="저장하기"
-          onClose={cancelEdit}
-          onConfirm={confirmSave}
+      <View className="flex-1">
+        <TimelineDayBadgeSection
+          dayIndices={visiblePlan.map(({ index }) => index)}
+          activeIndex={activeIndex}
+          isEditing={isEditing}
+          // editButtonWidth={editButtonWidth}
+          // badgeScrollRef={badgeScrollRef}
+          showEditButton={true}
+          onPressDayBadge={handlePressDayBadge}
+          onLayoutDayBadge={handleBadgeLayout}
+          onRequestDeleteDay={requestDeleteDay}
+          onPressEditButton={pressEditButton}
+          // onLayoutEditButton={handleEditButtonLayout}
         />
-      </SafeAreaView>
-    </GestureHandlerRootView>
+
+        {/* 일정 리스트 */}
+        <ScrollView
+          ref={mainScrollRef}
+          className="flex-1"
+          contentContainerStyle={{
+            paddingHorizontal: 20,
+            paddingTop: 8,
+            paddingBottom: 24,
+          }}
+          onScroll={handleMainScroll}
+          scrollEventThrottle={16}
+          showsVerticalScrollIndicator={false}
+        >
+          {visiblePlan.map(({ dayPlan, index }) => (
+            <TimelineDaySection
+              key={index}
+              dayPlan={dayPlan}
+              dayOrder={index + 1}
+              expandedIds={expandedIds}
+              onToggleItem={toggleExpand}
+              isOngoing={false}
+              isUpcoming={false}
+              onLayout={(e) => handleSectionLayout(index, e)}
+            />
+          ))}
+        </ScrollView>
+
+        <TimelineExportFooter />
+      </View>
+
+      {/* 저장 확인 컨펌 모달 */}
+      <ConfirmDialog
+        visible={isConfirmOpen}
+        title="이 일정을 저장할까요?"
+        cancelText="취소"
+        confirmText="저장하기"
+        onClose={cancelEdit}
+        onConfirm={confirmSave}
+      />
+    </SafeAreaView>
   );
 }

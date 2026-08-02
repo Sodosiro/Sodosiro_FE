@@ -51,6 +51,16 @@ export const INITIAL_PLAN: DayPlan[] = [
   },
 ];
 
+type UpcomingTripCardType = {
+  id: string;
+  dDay: number;
+  title: string;
+  region: string;
+  startDate: string;
+  nights: number;
+  locationText: string;
+};
+
 export const UPCOMING_TRIPS: UpcomingTripCardType[] = [
   {
     id: "trip-001",

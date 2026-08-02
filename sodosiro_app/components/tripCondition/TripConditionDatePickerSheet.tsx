@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Dimensions, InteractionManager, Pressable, ScrollView, View } from "react-native";
+import { Dimensions, Pressable, ScrollView, View } from "react-native";
 import { Calendar, DateData } from "react-native-calendars";
 import BottomActionFooter from "../common/BottomActionFooter";
 import CustomButton from "../common/CustomButton";
@@ -46,6 +46,7 @@ export default function DatePickerSheet({
 
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-01`;
   });
+  const uniqueMonths = [...new Set(months)];
   const today = getTodayString();
 
   const [startDate, setStartDate] = useState<string | null>(null);
@@ -108,12 +109,8 @@ export default function DatePickerSheet({
     const monthKey = `${startStr.slice(0, 7)}-01`;
     pendingScrollMonth.current = monthKey;
 
-    const task = InteractionManager.runAfterInteractions(() => {
-      setStartDate(startStr);
-      setEndDate(endStr);
-    });
-
-    return () => task.cancel();
+    setStartDate(startStr);
+    setEndDate(endStr);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialStartDate, initialEndDate]);
 
@@ -147,7 +144,7 @@ export default function DatePickerSheet({
           최대 7일까지 선택할 수 있어요.
         </CustomText>
         <ScrollView ref={scrollRef} className="h-[380px]" showsVerticalScrollIndicator={false}>
-          {months.map((month) => (
+          {uniqueMonths.map((month) => (
             <View
               key={month}
               className={`mt-8`}

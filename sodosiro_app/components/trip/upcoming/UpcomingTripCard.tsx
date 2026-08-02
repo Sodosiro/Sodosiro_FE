@@ -9,7 +9,7 @@ type UpcomingTripCardProps = {
   onPress?: (tripId: string) => void;
 };
 
-export type UpcomingTripCardType = {
+type UpcomingTripCardType = {
   id: string;
   dDay: number;
   title: string;
@@ -19,19 +19,11 @@ export type UpcomingTripCardType = {
   locationText: string;
 };
 
-export default function UpcomingTripCard({
-  trip,
-  onPress,
-}: UpcomingTripCardProps) {
+export default function UpcomingTripCard({ trip, onPress }: UpcomingTripCardProps) {
   return (
     <View className="rounded-2xl border border-[#E5E5E5] bg-white px-5 py-4 mb-5">
       {/* D-Day Badge 적용 */}
-      <ActionBadge
-        isOngoing
-        text={`D-${trip.dDay}`}
-        onPress={() => {}}
-        onLayout={() => {}}
-      />
+      <ActionBadge isOngoing text={`D-${trip.dDay}`} onPress={() => {}} onLayout={() => {}} />
 
       {/* 제목 */}
       <View className="flex-row items-center mt-2">

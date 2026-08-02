@@ -41,7 +41,7 @@ export default function TimelineDayBadgeSection({
           onLayout={(e) => onLayoutDayBadge(index, e)}
           onPress={() => onPressDayBadge(index)}
           onLongPress={isEditing ? drag : undefined} // 💡 수정 모드일 때 롱터치 시 드래그 시작
-          disabled={isActive}
+          disabled={isEditing ? isActive : undefined}
           text={`${index + 1}일차`}
           selected={index === activeIndex}
           removable={isEditing && dayIndices.length > 1}

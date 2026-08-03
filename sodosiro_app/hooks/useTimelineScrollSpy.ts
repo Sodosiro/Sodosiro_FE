@@ -6,8 +6,12 @@ import {
   ScrollView,
 } from "react-native";
 
-const SCROLL_SPY_OFFSET = 80;
-const PROGRAMMATIC_SCROLL_LOCK_MS = 400;
+const PROGRAMMATIC_SCROLL_LOCK_MS = 700;
+
+type SectionPosition = {
+  start: number;
+  end: number;
+};
 
 // 메인 리스트 스크롤과 상단 일차 뱃지 바를 서로 동기화하는 훅
 // - 뱃지를 누르면 리스트가 해당 위치로 스크롤됨
@@ -19,6 +23,7 @@ export function useTimelineScrollSpy() {
   const badgeScrollRef = useRef<ScrollView>(null);
 
   const sectionOffsets = useRef<Record<number, number>>({});
+  const sectionPositions = useRef<Record<number, SectionPosition>>({});
   const badgeLayouts = useRef<Record<number, { x: number; width: number }>>({});
 
   const isProgrammaticScroll = useRef(false);
@@ -33,7 +38,10 @@ export function useTimelineScrollSpy() {
 
   const handlePressDayBadge = useCallback(
     (index: number) => {
-      const offsetY = sectionOffsets.current[index];
+      const position = sectionPositions.current[index];
+      if (!position) return;
+
+      const offsetY = position.start;
       if (offsetY === undefined) return;
 
       isProgrammaticScroll.current = true;
@@ -54,20 +62,28 @@ export function useTimelineScrollSpy() {
     (e: NativeSyntheticEvent<NativeScrollEvent>) => {
       if (isProgrammaticScroll.current) return;
 
-      const y = e.nativeEvent.contentOffset.y;
-      const entries = Object.entries(sectionOffsets.current) as unknown as [string, number][];
+      const scrollY = e.nativeEvent.contentOffset.y;
+      const screenBottom = scrollY + e.nativeEvent.layoutMeasurement.height;
+
+      const entries = Object.entries(sectionPositions.current) as [string, SectionPosition][];
+
       if (entries.length === 0) return;
 
-      let current = entries[0][0];
-      let currentOffset = -Infinity;
-      for (const [indexKey, offsetY] of entries) {
-        if (offsetY - SCROLL_SPY_OFFSET <= y && offsetY > currentOffset) {
-          current = indexKey;
-          currentOffset = offsetY;
+      let currentIndex = 0;
+
+      // 스크롤이 최상단이면 첫 번째 요소 활성화
+      if (scrollY <= 0) {
+        currentIndex = 0;
+      } else {
+        for (const [indexKey, position] of entries) {
+          if (screenBottom >= position.end) {
+            currentIndex = Number(indexKey);
+          } else {
+            break;
+          }
         }
       }
 
-      const currentIndex = Number(current);
       setActiveIndex((prev) => {
         if (prev !== currentIndex) {
           scrollBadgeIntoView(currentIndex);
@@ -80,7 +96,12 @@ export function useTimelineScrollSpy() {
   );
 
   const handleSectionLayout = useCallback((index: number, e: LayoutChangeEvent) => {
-    sectionOffsets.current[index] = e.nativeEvent.layout.y;
+    const { y, height } = e.nativeEvent.layout;
+
+    sectionPositions.current[index] = {
+      start: y,
+      end: y + height,
+    };
   }, []);
 
   const handleBadgeLayout = useCallback((index: number, e: LayoutChangeEvent) => {

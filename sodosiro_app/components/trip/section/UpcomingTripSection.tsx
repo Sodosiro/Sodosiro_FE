@@ -65,14 +65,11 @@ export default function UpcomingTripSection({}: UpcomingTripSectionProps) {
                     dayIndices={visiblePlan.map(({ index }) => index)}
                     activeIndex={activeIndex}
                     isEditing={isEditing}
-                    // editButtonWidth={0}
-                    // badgeScrollRef={badgeScrollRef}
                     showEditButton={false}
                     onPressDayBadge={handlePressDayBadge}
                     onLayoutDayBadge={handleBadgeLayout}
                     onRequestDeleteDay={requestDeleteDay}
                     onPressEditButton={pressEditButton}
-                    // onLayoutEditButton={() => {}}
                   />
 
                   {/* 일정 리스트 */}

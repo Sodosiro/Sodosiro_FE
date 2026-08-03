@@ -8,14 +8,31 @@ export function useExpandedItems(initialIds: string[] = []) {
   const toggleExpand = useCallback((id: string) => {
     setExpandedIds((prev) => {
       const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
+
+      const [dayId] = id.split("-");
+
+      // 같은 날짜의 열린 항목 제거
+      Array.from(next).forEach((key) => {
+        if (key.startsWith(`${dayId}-`)) {
+          next.delete(key);
+        }
+      });
+
+      // 기존 열린 항목이면 닫기
+      if (prev.has(id)) {
+        return next;
       }
+
+      // 새 항목 열기
+      next.add(id);
+
       return next;
     });
   }, []);
 
-  return { expandedIds, toggleExpand };
+  const closeAll = useCallback(() => {
+    setExpandedIds(new Set());
+  }, []);
+
+  return { expandedIds, toggleExpand, closeAll };
 }

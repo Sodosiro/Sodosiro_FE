@@ -21,7 +21,10 @@ export default function ConfirmDialog({
   return (
     <Modal transparent visible={visible} animationType="fade" onRequestClose={onClose}>
       {/* Dimmed Backdrop */}
-      <View className="flex-1 justify-center items-center bg-black/40 px-6">
+      <View
+        className="flex-1 justify-center items-center px-6"
+        style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
+      >
         {/* Modal Box */}
         <View className="w-full max-w-xs bg-white rounded-2xl p-6 shadow-lg">
           {/* Title */}

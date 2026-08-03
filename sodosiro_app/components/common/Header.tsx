@@ -66,9 +66,7 @@ export default function Header({
   };
 
   return (
-    <View
-      className={`h-16 flex-row items-center px-5 ${isBgWhite && `bg-white`}`}
-    >
+    <View className={`h-16 flex-row items-center px-5 ${isBgWhite && `bg-white`}`}>
       {showBackButton ? (
         <Pressable onPress={handleBack} hitSlop={12} className="mr-2">
           <LeftIcon color="#1A1A1A" />

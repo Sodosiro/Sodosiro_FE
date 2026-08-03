@@ -6,13 +6,13 @@ import { Image } from "react-native";
 
 type TimelineExportFooterProps = {
   onPressExport?: () => void;
-  onPressStart?: () => void;
+  onConfirm?: () => void;
 };
 
 // 타임라인 화면 하단 고정 액션 영역: 카카오맵 내보내기 + 여행 시작하기
 export default function TimelineExportFooter({
   onPressExport,
-  onPressStart,
+  onConfirm,
 }: TimelineExportFooterProps) {
   return (
     <BottomActionFooter>
@@ -36,7 +36,7 @@ export default function TimelineExportFooter({
         title="이 일정대로 여행하기"
         stretch
         size="medium"
-        onPress={onPressStart}
+        onPress={onConfirm}
       />
     </BottomActionFooter>
   );

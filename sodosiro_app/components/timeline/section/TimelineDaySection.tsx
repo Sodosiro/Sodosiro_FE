@@ -4,7 +4,6 @@ import TimelineItem from "../TimelineItem";
 
 type TimelineDaySectionProps = {
   dayPlan: DayPlan;
-  /** 몇 번째 일차인지 (뱃지 번호로 사용) */
   dayOrder: number;
   isOngoing: boolean;
   isUpcoming: boolean;
@@ -13,7 +12,6 @@ type TimelineDaySectionProps = {
   onLayout: (e: LayoutChangeEvent) => void;
 };
 
-// 하루치 일정 카드: 날짜 라벨 + 해당 날짜의 TimelineItem 목록
 export default function TimelineDaySection({
   dayPlan,
   dayOrder,
@@ -28,10 +26,8 @@ export default function TimelineDaySection({
       <CustomText font="title" className="text-primary-dark px-3 pt-3">
         {dayPlan.dateLabel}
       </CustomText>
-
       {dayPlan.places.map((place, placeIndex) => {
         const expandKey = `${dayPlan.id}-${place.id}`;
-
         return (
           <TimelineItem
             key={expandKey}

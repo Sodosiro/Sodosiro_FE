@@ -17,10 +17,7 @@ export function useWebView({
   const { setIsTracking } = useLocationStore();
 
   const sendLocation = useCallback(
-    (
-      location: { latitude: number; longitude: number; initial?: boolean },
-      denied = false,
-    ) => {
+    (location: { latitude: number; longitude: number; initial?: boolean }, denied = false) => {
       if (!denied) {
         webViewRef.current?.postMessage(
           JSON.stringify({

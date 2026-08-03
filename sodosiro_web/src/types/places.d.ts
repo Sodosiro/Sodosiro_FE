@@ -8,6 +8,7 @@ type CategoryType =
   | "culture";
 
 type PlaceType = {
+  id: number;
   title: string;
   lat: number;
   lng: number;

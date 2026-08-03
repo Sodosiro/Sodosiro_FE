@@ -11,10 +11,12 @@ type SendLocation = (
   denied?: boolean,
 ) => void;
 
-export function useLocation(sendLocation: SendLocation) {
+export function useLocation(sendLocation: SendLocation, isMapReady: boolean) {
   const { setIsDenied } = useLocationStore();
 
   useEffect(() => {
+    if (!isMapReady) return;
+
     let subscription: Location.LocationSubscription | undefined;
 
     const start = async () => {
@@ -64,5 +66,5 @@ export function useLocation(sendLocation: SendLocation) {
     return () => {
       subscription?.remove();
     };
-  }, []);
+  }, [isMapReady]);
 }

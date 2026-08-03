@@ -23,5 +23,12 @@ export function registerMapClick({
     }
 
     selectedMarkerRef.current = null;
+
+    window.ReactNativeWebView?.postMessage(
+      JSON.stringify({
+        type: "MARKER_SELECTED",
+        place: null,
+      }),
+    );
   });
 }

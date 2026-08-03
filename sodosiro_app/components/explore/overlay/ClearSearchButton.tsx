@@ -1,6 +1,6 @@
 import { RefreshMiniIcon } from "@/assets/svgs";
-import CustomText from "../../common/CustomText";
 import AnimatedButton from "../../common/AnimatedButton";
+import CustomText from "../../common/CustomText";
 
 export default function ClearSearchButton({
   className,

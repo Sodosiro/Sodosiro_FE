@@ -1,6 +1,7 @@
 import { BottomSheetSnapPoints } from "@/constants/BottomSheet";
 import { useLocationStore } from "@/stores/useLocationStore";
 import { useSearchStore } from "@/stores/useSearchStore";
+import { useSelectedPlaceStore } from "@/stores/useSelectedPlaceStore";
 import type BottomSheet from "@gorhom/bottom-sheet";
 import * as Location from "expo-location";
 import type { RefObject } from "react";
@@ -29,6 +30,7 @@ export default function MapOverlay({
   animatedIndex: SharedValue<number>;
 }) {
   const { keyword, clearResult } = useSearchStore();
+  const { setSelectedPlace } = useSelectedPlaceStore();
   const { setIsDenied, setIsTracking } = useLocationStore();
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>("all");
   const screenHeight = Dimensions.get("window").height;
@@ -82,7 +84,7 @@ export default function MapOverlay({
     <View className={`flex-1`}>
       <View>
         <View className={`px-5 py-3`}>
-          <SearchBar keyword={keyword} bottomSheetRef={bottomSheetRef} />
+          <SearchBar keyword={keyword} />
         </View>
         <CategoryList
           selectedCategory={selectedCategory}
@@ -110,6 +112,7 @@ export default function MapOverlay({
             className={`absolute self-center left-1/2 -translate-x-1/2 bottom-0`}
             onPress={() => {
               clearResult();
+              setSelectedPlace(null);
             }}
           />
         )}

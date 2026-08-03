@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 interface SearchStore {
   keyword: string;
-  result: PlaceType[];
+  result: PlaceType[] | null;
 
   setKeyword: (keyword: string) => void;
   setResult: (results: PlaceType[]) => void;
@@ -11,9 +11,9 @@ interface SearchStore {
 
 export const useSearchStore = create<SearchStore>((set) => ({
   keyword: "",
-  result: [],
+  result: null,
 
   setKeyword: (keyword) => set({ keyword }),
   setResult: (results) => set({ result: results }),
-  clearResult: () => set({ keyword: "", result: [] }),
+  clearResult: () => set({ keyword: "", result: null }),
 }));

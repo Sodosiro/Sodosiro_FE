@@ -47,9 +47,24 @@ export const INITIAL_PLAN: DayPlan[] = [
   {
     id: "4",
     dateLabel: "10/8 (화)",
-    places: [{ id: 1, title: "정동진", category: "attraction" }],
+    places: [
+      { id: 1, title: "정동진1", category: "attraction" },
+      { id: 2, title: "정동진2", category: "attraction" },
+      { id: 3, title: "정동진3", category: "attraction" },
+      { id: 4, title: "정동진4", category: "attraction" },
+    ],
   },
 ];
+
+type UpcomingTripCardType = {
+  id: string;
+  dDay: number;
+  title: string;
+  region: string;
+  startDate: string;
+  nights: number;
+  locationText: string;
+};
 
 export const UPCOMING_TRIPS: UpcomingTripCardType[] = [
   {

@@ -105,10 +105,7 @@ export function useWebView({
   );
 
   const sendLocation = useCallback(
-    (
-      location: { latitude: number; longitude: number; initial?: boolean },
-      denied = false,
-    ) => {
+    (location: { latitude: number; longitude: number; initial?: boolean }, denied = false) => {
       if (!denied) {
         postMessage({ type: "UPDATE_LOCATION", ...location });
       } else {

@@ -4,6 +4,10 @@ export function useClusterer() {
   const clustererRef = useRef<kakao.maps.MarkerClusterer | null>(null);
 
   const create = (map: kakao.maps.Map) => {
+    if (clustererRef.current) {
+      clustererRef.current.clear();
+    }
+
     clustererRef.current = new kakao.maps.MarkerClusterer({
       map,
       averageCenter: true,

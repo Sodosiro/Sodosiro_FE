@@ -18,37 +18,44 @@ export default function KakaoMap() {
 
   const {
     create: createMarkers,
+    selectMarkerByPlaceId,
+    clearSelectedMarker,
     selectedMarkerRef,
     markerImageMapRef,
     overlayRef,
-  } = useMarkers();
+  } = useMarkers(mapRef);
 
   const { create: createCluster, setMarkers } = useClusterer();
-
   const { create: createMarker } = useMarker();
   const { drawRoute } = useRoute();
 
   const { updateLocation, startTracking, stopTracking, denyLocation } =
     useCurrentLocationMarker(mapRef);
 
-  const renderPlaces = (places: PlaceType[]) => {
+  const renderPlaces = (places: PlaceType[], isPanTo = false) => {
+    clearSelectedMarker();
     const markers = createMarkers(places);
     setMarkers(markers);
+    if (places.length > 0 && isPanTo) {
+      selectMarkerByPlaceId(places[0].id);
+    }
   };
 
   useWebViewMessage({
     mapRef,
-    createCluster: () => createCluster(mapRef.current!),
     renderPlaces,
     createMarker,
     drawRoute,
     updateLocation,
     startTracking,
     denyLocation,
+    selectMarkerByPlaceId,
   });
 
   const handleCreate = (map: kakao.maps.Map) => {
     mapRef.current = map;
+
+    createCluster(map);
 
     registerMapClick({
       map,

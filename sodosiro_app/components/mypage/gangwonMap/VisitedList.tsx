@@ -1,5 +1,5 @@
 import { PinMiniIcon } from "@/assets/svgs";
-import { AnimatedDownIcon } from "@/components/common/Animated";
+import { AnimatedDownIcon } from "@/components/common/animated/Animated";
 import CustomText from "@/components/common/CustomText";
 import { useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";

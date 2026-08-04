@@ -6,7 +6,7 @@ import ActionBadge from "../badge/ActionBadge";
 
 type UpcomingTripCardProps = {
   trip: UpcomingTripCardType;
-  onPress?: (tripId: string) => void;
+  onPress: () => void;
 };
 
 type UpcomingTripCardType = {
@@ -19,11 +19,18 @@ type UpcomingTripCardType = {
   locationText: string;
 };
 
-export default function UpcomingTripCard({ trip, onPress }: UpcomingTripCardProps) {
+export default function UpcomingTripCard({
+  trip,
+  onPress,
+}: UpcomingTripCardProps) {
   return (
     <View className="rounded-2xl border border-[#E5E5E5] bg-white px-5 py-4 mb-5">
       {/* D-Day Badge 적용 */}
-      <ActionBadge isOngoing text={`D-${trip.dDay}`} onPress={() => {}} onLayout={() => {}} />
+      <View
+        className={`flex-row items-center self-start px-3.5 py-1.5 min-h-9 rounded-full bg-primary`}
+      >
+        <CustomText font="body3 tight">D-{trip.dDay}</CustomText>
+      </View>
 
       {/* 제목 */}
       <View className="flex-row items-center mt-2">
@@ -60,7 +67,7 @@ export default function UpcomingTripCard({ trip, onPress }: UpcomingTripCardProp
         <ActionBadge
           bgWhite
           text={`여행 보기`}
-          onPress={() => onPress?.(trip.id)}
+          onPress={() => onPress()}
           onLayout={() => {}}
         />
       </View>

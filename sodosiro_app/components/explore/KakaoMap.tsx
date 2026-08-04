@@ -5,6 +5,7 @@ import { WebView } from "react-native-webview";
 
 import { useLocation } from "@/hooks/useLocation";
 import { useWebView } from "@/hooks/useWebView";
+import { useExploreStore } from "@/stores/useExploreStore";
 import { useLocationStore } from "@/stores/useLocationStore";
 import { useWebViewStore } from "@/stores/useWebViewStore";
 
@@ -12,20 +13,25 @@ export default function KakaoMap({
   webViewRef,
   mode,
   animatedPosition,
+  initialData,
 }: {
   webViewRef: RefObject<WebView<unknown> | null>;
   mode: "marker" | "navigation";
   animatedPosition: SharedValue<number>;
+  initialData: any;
 }) {
   const { isLoading, setIsLoading } = useWebViewStore();
 
-  const { sendLocation, handleMessage } = useWebView({
+  const { result, selectedCategory } = useExploreStore();
+
+  const { isMapReady, sendLocation, handleMessage, updateData } = useWebView({
     webViewRef,
     mode,
     setIsLoading,
+    initialData,
   });
 
-  useLocation(sendLocation);
+  useLocation(sendLocation, isMapReady);
 
   const { location, isDenied } = useLocationStore();
 
@@ -37,6 +43,21 @@ export default function KakaoMap({
     if (!location) return;
     sendLocation(location, isDenied);
   }, [location]);
+
+  useEffect(() => {
+    if (mode !== "marker") return;
+
+    const data = result ?? initialData;
+
+    const filtered =
+      selectedCategory === "all"
+        ? data
+        : data.filter(
+            (place: PlaceType) => place.category === selectedCategory,
+          );
+
+    updateData(filtered, !!result);
+  }, [result, selectedCategory, initialData]);
 
   return (
     <Animated.View

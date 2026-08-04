@@ -1,5 +1,5 @@
-import AnimatedButton from "@/components/common/AnimatedButton";
-import BottomActionFooter from "@/components/common/BottomActionFooter";
+import AnimatedButton from "@/components/common/animated/AnimatedButton";
+import BottomActionBar from "@/components/common/BottomActionBar";
 import CustomButton from "@/components/common/CustomButton";
 import CustomText from "@/components/common/CustomText";
 import { Image } from "react-native";
@@ -15,7 +15,7 @@ export default function TimelineExportFooter({
   onConfirm,
 }: TimelineExportFooterProps) {
   return (
-    <BottomActionFooter>
+    <BottomActionBar>
       <AnimatedButton
         className="flex-row items-center justify-center px-4 gap-1 rounded-full"
         backgroundColor={["#FFFFFF", "#F5F5F5"]}
@@ -38,6 +38,6 @@ export default function TimelineExportFooter({
         size="medium"
         onPress={onConfirm}
       />
-    </BottomActionFooter>
+    </BottomActionBar>
   );
 }

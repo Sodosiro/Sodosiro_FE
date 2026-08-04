@@ -1,13 +1,13 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import {
+  Accommodation,
+  AccommodationMarker,
   Activity,
   ActivityMarker,
   Attraction,
   AttractionMarker,
   Cafe,
   CafeMarker,
-  Culture,
-  CultureMarker,
   Nature,
   NatureMarker,
   Restaurant,
@@ -30,7 +30,7 @@ export function getMarkerIcon(
     nature: Nature,
     restaurant: Restaurant,
     shopping: Shopping,
-    culture: Culture,
+    accommodation: Accommodation,
   } satisfies Record<CategoryType, React.ComponentType<{ color: string }>>;
 
   const Icon = IconMap[category];
@@ -56,7 +56,7 @@ export function getSelectedMarkerIcon(
     nature: NatureMarker,
     restaurant: RestaurantMarker,
     shopping: ShoppingMarker,
-    culture: CultureMarker,
+    accommodation: AccommodationMarker,
   } satisfies Record<CategoryType, React.ComponentType<{ color: string }>>;
 
   const Icon = IconMap[category];

@@ -38,6 +38,7 @@ export { default as LeftIcon } from "./24px/chevron-left.svg";
 export { default as RightIcon } from "./24px/chevron-right.svg";
 export { default as ChipIcon } from "./24px/chip.svg";
 export { default as DownIcon } from "./24px/down.svg";
+export { default as EditPlanIcon } from "./24px/edit_plan.svg";
 export { default as NavigationIcon } from "./24px/navigation.svg";
 export { default as NotificationIcon } from "./24px/notification.svg";
 export { default as RefreshIcon } from "./24px/refresh.svg";
@@ -55,6 +56,7 @@ export { default as BusIcon } from "./32px/bus.svg";
 export { default as CarIcon } from "./32px/car.svg";
 export { default as HeartCircle } from "./32px/heart_circle.svg";
 export { default as HeartCircleStroke } from "./32px/heart_circle_stroke.svg";
+export { default as KeyIcon } from "./32px/key.svg";
 
 // 36px
 export { default as EmptyRateIcon } from "./36px/empty_rate.svg";

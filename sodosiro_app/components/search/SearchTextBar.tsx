@@ -1,13 +1,13 @@
 import { SearchIcon } from "@/assets/svgs";
 import CustomText from "@/components/common/CustomText";
-import { useSearchStore } from "@/stores/useSearchStore";
+import { useExploreStore } from "@/stores/useExploreStore";
 import { TitleTightClass } from "@/styles/Typography";
 import { handleSearch } from "@/util/search/search";
 import { router } from "expo-router";
 import { TextInput, View } from "react-native";
 
 export default function SearchTextBar() {
-  const { keyword, setKeyword } = useSearchStore();
+  const { keyword, setKeyword } = useExploreStore();
 
   return (
     <View className={`flex-row items-center gap-2`}>

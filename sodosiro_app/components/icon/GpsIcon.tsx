@@ -1,5 +1,5 @@
-import { AnimatedCircle, AnimatedPath } from "@/components/common/Animated";
 import Svg from "react-native-svg";
+import { AnimatedCircle, AnimatedPath } from "../common/animated/Animated";
 
 export default function GpsIcon({
   animatedStroke,

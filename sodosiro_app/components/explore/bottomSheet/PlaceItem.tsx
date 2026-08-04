@@ -4,15 +4,28 @@ import CategoryTag from "@/components/place/CategoryTag";
 import RateChip from "@/components/place/RateChip";
 import { router } from "expo-router";
 import { useState } from "react";
-import { Image, View } from "react-native";
+import { Image, Pressable, View } from "react-native";
 
-export default function PlaceItem({ place }: { place: PlaceType }) {
+export default function PlaceItem({
+  place,
+  onPress = () => {},
+}: {
+  place: PlaceType;
+  onPress?: (placeId: number) => void;
+}) {
   const [isFavorite, setIsFavorite] = useState(false);
 
   return (
-    <View className={`px-5 py-3 gap-3 flex-row`}>
+    <Pressable
+      className={`px-5 py-3 gap-3 flex-row`}
+      onPress={() => onPress(place.id)}
+    >
       <Image
-        source={place.imageSource}
+        source={
+          typeof place.imageSource === "string"
+            ? { uri: place.imageSource }
+            : place.imageSource
+        }
         className={`w-22.5 aspect-square rounded-xl`}
       />
       <View className={`gap-1 flex-1 justify-center`}>
@@ -55,6 +68,6 @@ export default function PlaceItem({ place }: { place: PlaceType }) {
       ) : (
         <HeartCircleStroke onPress={() => setIsFavorite(!isFavorite)} />
       )}
-    </View>
+    </Pressable>
   );
 }

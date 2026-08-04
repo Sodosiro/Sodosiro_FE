@@ -1,7 +1,7 @@
 import { router } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
-import CategoryList from "../../common/CategoryList";
+import CategoryList from "../../common/category/CategoryList";
 import SectionTitle from "../SectionTitle";
 import PopularPlacesList from "./PopularPlacesList";
 

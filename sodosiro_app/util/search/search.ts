@@ -1,5 +1,6 @@
 import { PLACE_LIST } from "@/mocks/places";
-import { useSearchStore } from "@/stores/useSearchStore";
+import { useExploreStore } from "@/stores/useExploreStore";
+import { useSelectedPlaceStore } from "@/stores/useSelectedPlaceStore";
 import { router } from "expo-router";
 import { addSearchHistory } from "./searchHistory";
 
@@ -10,8 +11,9 @@ export const handleSearch = async (keyword: string) => {
 
   await addSearchHistory(keyword);
 
-  useSearchStore.getState().setResult(result);
-  useSearchStore.getState().setKeyword(keyword);
+  useExploreStore.getState().setResult(result);
+  useExploreStore.getState().setKeyword(keyword);
+  useSelectedPlaceStore.getState().setSelectedPlace(null);
 
   router.back();
 };

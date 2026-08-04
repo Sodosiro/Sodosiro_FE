@@ -1,7 +1,7 @@
+import AccommodationIcon from "@/components/icon/category/AccommodationIcon";
 import ActivityIcon from "@/components/icon/category/ActivityIcon";
 import AttractionIcon from "@/components/icon/category/AttractionIcon";
 import CafeIcon from "@/components/icon/category/CafeIcon";
-import CultureIcon from "@/components/icon/category/CultureIcon";
 import NatureIcon from "@/components/icon/category/NatureIcon";
 import RestaurantIcon from "@/components/icon/category/RestaurantIcon";
 import ShoppingIcon from "@/components/icon/category/ShoppingIcon";
@@ -14,7 +14,7 @@ export const CategoryIconMap = {
   nature: NatureIcon,
   restaurant: RestaurantIcon,
   shopping: ShoppingIcon,
-  culture: CultureIcon,
+  accommodation: AccommodationIcon,
 } satisfies Record<
   CategoryType,
   React.ComponentType<AnimatedIconProps> | undefined
@@ -28,5 +28,5 @@ export const CategoryMap = {
   nature: "자연",
   restaurant: "식당",
   shopping: "쇼핑",
-  culture: "문화",
+  accommodation: "숙박",
 };

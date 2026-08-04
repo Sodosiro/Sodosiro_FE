@@ -6,5 +6,5 @@ export const Categories: CategoryType[] = [
   "nature",
   "restaurant",
   "shopping",
-  "culture",
+  "accommodation",
 ];

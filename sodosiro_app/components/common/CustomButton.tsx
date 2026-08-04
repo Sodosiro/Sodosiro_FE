@@ -1,8 +1,8 @@
 import { BigCheckIcon } from "@/assets/svgs";
 import { Body3TightClass, TitleTightClass } from "@/styles/Typography";
 import { Text, View } from "react-native";
-import AnimatedButton from "./AnimatedButton";
 import Spinner from "./Spinner";
+import AnimatedButton from "./animated/AnimatedButton";
 
 type ButtonProps = {
   type: "primary" | "secondary" | "tertiary";

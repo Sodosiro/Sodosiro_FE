@@ -1,19 +1,13 @@
 import { RemoveIcon, SearchIcon } from "@/assets/svgs";
-import { useSearchStore } from "@/stores/useSearchStore";
-import type BottomSheet from "@gorhom/bottom-sheet";
+import { useExploreStore } from "@/stores/useExploreStore";
+import { useSelectedPlaceStore } from "@/stores/useSelectedPlaceStore";
 import { router } from "expo-router";
-import type { RefObject } from "react";
 import { Pressable } from "react-native";
 import CustomText from "../../common/CustomText";
 
-export default function SearchBar({
-  keyword,
-  bottomSheetRef,
-}: {
-  keyword?: string;
-  bottomSheetRef: RefObject<BottomSheet | null>;
-}) {
-  const { clearResult } = useSearchStore();
+export default function SearchBar({ keyword }: { keyword?: string }) {
+  const { clearResult } = useExploreStore();
+  const { setSelectedPlace } = useSelectedPlaceStore();
   return (
     <Pressable
       className={`flex-row justify-between items-center border border-border bg-white w-full px-6 h-15 rounded-full`}
@@ -38,6 +32,7 @@ export default function SearchBar({
           color={"#888888"}
           onPress={() => {
             clearResult();
+            setSelectedPlace(null);
             router.push("/explore/search");
           }}
         />

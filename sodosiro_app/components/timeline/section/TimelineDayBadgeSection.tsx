@@ -1,43 +1,41 @@
 import DayBadge from "@/components/trip/badge/DayBadge";
-import EditableDayBadge from "@/components/trip/badge/EditableDayBadge";
 import EditToggleBadge from "@/components/trip/badge/EditToggleBadge";
-import { useEffect, useRef } from "react";
+import { LinearGradient } from "expo-linear-gradient";
+import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import { LayoutChangeEvent, ScrollView, View } from "react-native";
 import DraggableFlatList, {
+  OpacityDecorator,
   RenderItemParams,
-  ScaleDecorator,
 } from "react-native-draggable-flatlist";
 
-const FADE_WIDTH = 20;
-const FADE_STEPS = 16;
-const EDIT_BUTTON_RESERVED_WIDTH = 100;
-
 type TimelineDayBadgeSectionProps = {
-  dayIndices: number[]; // 조회 모드 배지 순서 (삭제만 반영, 재정렬 X)
-  badgeOrder?: number[]; // 수정 모드 배지 순서 (삭제 + 드래그 재정렬 반영)
-  activeIndex?: number;
-  isEditing: boolean;
+  badgeOrder: number[];
+  isEditing?: boolean;
+  setIsEditing?: Dispatch<SetStateAction<boolean>>;
   showEditButton: boolean;
   className?: string;
+  setPlan?: Dispatch<SetStateAction<DayPlan[]>>;
+  handleConfirmOpen?: () => void;
   onPressDayBadge?: (index: number) => void;
   onLayoutDayBadge?: (index: number, e: LayoutChangeEvent) => void;
-  onRequestDeleteDay?: (index: number) => void;
-  onPressEditButton: () => void;
-  onReorderDays?: (newData: number[]) => void;
+  activeIndex: number;
+  setActiveIndex: Dispatch<SetStateAction<number>>;
+  paddingHorizontal?: number;
 };
 
 export default function TimelineDayBadgeSection({
-  dayIndices,
   badgeOrder,
-  activeIndex,
-  isEditing,
+  isEditing = false,
+  setIsEditing,
   showEditButton,
   className,
+  setPlan,
+  handleConfirmOpen,
   onPressDayBadge,
   onLayoutDayBadge,
-  onRequestDeleteDay,
-  onPressEditButton,
-  onReorderDays,
+  activeIndex,
+  setActiveIndex,
+  paddingHorizontal = 20,
 }: TimelineDayBadgeSectionProps) {
   const viewScrollRef = useRef<ScrollView>(null);
   const dragListRef = useRef<any>(null);
@@ -51,77 +49,96 @@ export default function TimelineDayBadgeSection({
     }
   }, [isEditing]);
 
-  const renderEditableItem = ({ item: index, drag, isActive }: RenderItemParams<number>) => (
-    <ScaleDecorator>
-      <EditableDayBadge
-        text={`${index + 1}일차`}
-        isActive={isActive}
-        onLongPress={drag}
-        onDelete={() => onRequestDeleteDay && onRequestDeleteDay(index)}
-      />
-    </ScaleDecorator>
-  );
+  const renderEditableItem = ({ getIndex, drag }: RenderItemParams<number>) => {
+    const index = getIndex() ?? 0;
+    const dayId = badgeOrder[index];
+
+    return (
+      <OpacityDecorator>
+        <View className={`px-1`}>
+          <DayBadge
+            text={`${index + 1}일차`}
+            selected={!isEditing && index === activeIndex}
+            onPress={
+              !isEditing
+                ? () => {
+                    setActiveIndex(index);
+                    onPressDayBadge && onPressDayBadge(index);
+                  }
+                : undefined
+            }
+            onLongPress={isEditing ? drag : undefined}
+            isEditing={isEditing}
+            onLayout={(e) => onLayoutDayBadge && onLayoutDayBadge(index, e)}
+            onDelete={() => {
+              if (!setPlan) return;
+
+              setPlan((prev) => {
+                const next = prev.filter((day) => day.id !== dayId);
+
+                setActiveIndex((current) => Math.min(current, next.length - 1));
+
+                return next;
+              });
+            }}
+          />
+        </View>
+      </OpacityDecorator>
+    );
+  };
 
   return (
-    <View className={className ? className : "relative py-3"} style={{ zIndex: 20 }}>
-      {isEditing ? (
+    <View
+      className={`${className} relative py-3 flex-row items-center`}
+      style={{ zIndex: 20 }}
+    >
+      <View className="flex-1">
         <DraggableFlatList
           ref={dragListRef}
           data={badgeOrder ?? []}
-          onDragEnd={({ data }) => onReorderDays && onReorderDays(data)}
+          onDragEnd={
+            setPlan
+              ? ({ data: ids }) => {
+                  setPlan((prev) =>
+                    ids
+                      .map((id) => prev.find((day) => day.id === id))
+                      .filter((day): day is DayPlan => day !== undefined),
+                  );
+                }
+              : undefined
+          }
           keyExtractor={(item) => `day-badge-${item}`}
           renderItem={renderEditableItem}
           horizontal
-          activationDistance={5}
+          activationDistance={10}
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{
-            paddingLeft: 20,
-            paddingRight: showEditButton ? EDIT_BUTTON_RESERVED_WIDTH : 20,
-            gap: 8,
+            paddingHorizontal: paddingHorizontal,
           }}
         />
-      ) : (
-        <ScrollView
-          ref={viewScrollRef}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{
-            paddingLeft: 20,
-            paddingRight: showEditButton ? EDIT_BUTTON_RESERVED_WIDTH : 20,
-            gap: 8,
-          }}
-        >
-          {(dayIndices ?? []).map((index) => (
-            <DayBadge
-              key={index}
-              text={`${index + 1}일차`}
-              selected={index === activeIndex}
-              onPress={() => onPressDayBadge && onPressDayBadge(index)}
-              onLayout={(e) => onLayoutDayBadge && onLayoutDayBadge(index, e)}
-            />
-          ))}
-        </ScrollView>
-      )}
+      </View>
 
-      {showEditButton && (
-        <>
-          <View
+      {showEditButton && setIsEditing && (
+        <View className="pr-5 relative">
+          <LinearGradient
             pointerEvents="none"
-            className="absolute top-0 bottom-0 flex-row"
-            style={{ right: EDIT_BUTTON_RESERVED_WIDTH - 12, width: FADE_WIDTH }}
-          >
-            {Array.from({ length: FADE_STEPS }).map((_, i) => (
-              <View key={i} className="flex-1 bg-white" style={{ opacity: (i + 1) / FADE_STEPS }} />
-            ))}
-          </View>
-
-          <View
-            className="absolute top-0 bottom-0 right-0 justify-center items-end bg-white pr-5"
-            style={{ zIndex: 30 }}
-          >
-            <EditToggleBadge onPress={onPressEditButton} isEditing={isEditing} />
-          </View>
-        </>
+            colors={["transparent", "rgba(255,255,255,0.8)", "white"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={{
+              position: "absolute",
+              left: -20,
+              top: 0,
+              bottom: 0,
+              width: 20,
+              zIndex: 10,
+            }}
+          />
+          <EditToggleBadge
+            onPress={isEditing ? handleConfirmOpen : () => setIsEditing(true)}
+            isEditing={isEditing}
+          />
+        </View>
       )}
     </View>
   );

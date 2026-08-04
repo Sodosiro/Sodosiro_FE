@@ -1,7 +1,9 @@
-import { Pressable, Text } from 'react-native';
+import useSelectedAnimation from "@/hooks/useSelcetedAnimation";
+import CustomText from "../common/CustomText";
+import { AnimatedPressable } from "../common/animated/Animated";
 
 type Props = {
-  icon: React.ComponentType<{ color?: string }>;
+  icon: React.ComponentType<AnimatedIconProps>;
   title: string;
   description: string;
   selected?: boolean;
@@ -9,9 +11,25 @@ type Props = {
   onPress?: () => void;
 };
 
-export default function TransportCard({ icon: Icon, title, description, selected = false, disabled = false, onPress }: Props) {
+export default function TransportCard({
+  icon: Icon,
+  title,
+  description,
+  selected = false,
+  disabled = false,
+  onPress,
+}: Props) {
+  const { borderStyle, textStyle, strokeStyle } = useSelectedAnimation(
+    selected,
+    {
+      border: ["#d9d9d9", "#1a1a1a"],
+      color: ["#888888", "#1a1a1a"],
+      stroke: ["#888888", "#1a1a1a"],
+    },
+  );
+
   return (
-    <Pressable
+    <AnimatedPressable
       disabled={disabled}
       onPress={onPress}
       className={`
@@ -24,15 +42,19 @@ export default function TransportCard({ icon: Icon, title, description, selected
         px-4
         gap-1
         bg-white
-        ${selected ? 'border-[#1A1A1A]' : 'border-border'}
-        ${disabled ? 'opacity-40' : ''}
+        ${disabled ? "opacity-40" : ""}
       `}
+      style={borderStyle}
     >
-      <Icon color="#1A1A1A" />
+      <Icon animatedStroke={strokeStyle} />
 
-      <Text className="text-base font-semibold text-[#1A1A1A]">{title}</Text>
+      <CustomText font="title" animatedStyle={textStyle}>
+        {title}
+      </CustomText>
 
-      <Text className="text-xs text-[#1A1A1A] text-center">{description}</Text>
-    </Pressable>
+      <CustomText font="body3" animatedStyle={textStyle}>
+        {description}
+      </CustomText>
+    </AnimatedPressable>
   );
 }

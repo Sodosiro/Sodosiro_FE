@@ -1,4 +1,4 @@
-import { AnimatedPressable } from "@/components/common/Animated";
+import { AnimatedPressable } from "@/components/common/animated/Animated";
 import { Dispatch, SetStateAction, useState } from "react";
 import { Image, Modal, Pressable } from "react-native";
 import { FadeIn, FadeOut } from "react-native-reanimated";

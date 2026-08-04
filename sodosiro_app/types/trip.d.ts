@@ -1,5 +1,5 @@
 type DayPlan = {
-  id: string;
+  id: number;
   dateLabel: string;
   places: PlaceType[];
 };

@@ -6,7 +6,7 @@ type CategoryType =
   | "nature"
   | "restaurant"
   | "shopping"
-  | "culture";
+  | "accommodation";
 
 type CategoryTypeWithoutAll = Exclude<CategoryType, "all">;
 

@@ -1,4 +1,4 @@
-import { BigCheckIcon, LockIcon } from "@/assets/svgs";
+import { BigCheckIcon, KeyIcon } from "@/assets/svgs";
 import { CELL_SIZE } from "@/constants/Bingo";
 import { Pressable, PressableProps, View } from "react-native";
 import CustomText from "../common/CustomText";
@@ -17,7 +17,7 @@ export default function BingoCell({ bingoItem, onPress }: Props) {
       {bingoItem.completed ? (
         <BigCheckIcon width={24} height={24} />
       ) : (
-        <LockIcon width={24} height={24} />
+        <KeyIcon width={24} height={24} />
       )}
       <View className={`h-10 justify-center`}>
         <CustomText font="body3" className={`text-center`} numberOfLines={2}>

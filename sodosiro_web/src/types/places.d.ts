@@ -5,9 +5,10 @@ type CategoryType =
   | "nature"
   | "restaurant"
   | "shopping"
-  | "culture";
+  | "accommodation";
 
 type PlaceType = {
+  id: number;
   title: string;
   lat: number;
   lng: number;

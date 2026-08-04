@@ -1,4 +1,4 @@
-import AnimatedBadge from "@/components/common/AnimatedBadge";
+import AnimatedBadge from "@/components/common/animated/AnimatedBadge";
 import Header from "@/components/common/Header";
 import FestivalItem from "@/components/home/festival/FestivalItem";
 import { FESTIVALS } from "@/mocks/places";

@@ -6,17 +6,26 @@ const EXPAND_DURATION_MS = 250;
 
 type DropdownProps = {
   isExpanded: boolean;
-  onToggle: () => void;
+  onToggle: (() => void) | undefined;
   /** 접었을 때도 항상 보이는 헤더 영역 (화살표 아이콘은 자동으로 오른쪽에 붙습니다) */
   header: ReactNode;
   /** 펼쳤을 때만 보이는 본문 영역 */
   children: ReactNode;
+  disabled?: boolean;
 };
 
 // 헤더를 누르면 본문이 펼쳐지고 화살표가 회전하는 범용 드롭다운(아코디언) 컴포넌트
-export default function Dropdown({ isExpanded, onToggle, header, children }: DropdownProps) {
+export default function Dropdown({
+  isExpanded,
+  onToggle,
+  header,
+  children,
+  disabled = false,
+}: DropdownProps) {
   const [contentHeight, setContentHeight] = useState(0);
-  const animatedController = useRef(new Animated.Value(isExpanded ? 1 : 0)).current;
+  const animatedController = useRef(
+    new Animated.Value(isExpanded ? 1 : 0),
+  ).current;
 
   useEffect(() => {
     Animated.timing(animatedController, {
@@ -45,11 +54,16 @@ export default function Dropdown({ isExpanded, onToggle, header, children }: Dro
 
   return (
     <View>
-      <Pressable onPress={onToggle} className="flex-row items-center">
+      <View className={`flex-row items-center`}>
         {header}
         <View className="flex-1" />
-        <RotatingArrowIcon isExpanded={isExpanded} />
-      </Pressable>
+        <Pressable
+          onPress={onToggle}
+          className={`${disabled && `pointer-events-none`}`}
+        >
+          <RotatingArrowIcon isExpanded={isExpanded} />
+        </Pressable>
+      </View>
 
       <Animated.View style={{ height: bodyHeight, overflow: "hidden" }}>
         <Animated.View

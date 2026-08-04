@@ -1,5 +1,5 @@
 import { RefreshIcon } from "@/assets/svgs";
-import AnimatedButton from "@/components/common/AnimatedButton";
+import AnimatedButton from "@/components/common/animated/AnimatedButton";
 import BottomActionBar from "@/components/common/BottomActionBar";
 import CustomButton from "@/components/common/CustomButton";
 import CustomCarousel from "@/components/common/CustomCarousel";

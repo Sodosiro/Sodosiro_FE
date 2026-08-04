@@ -1,4 +1,4 @@
-import AnimatedButton from "@/components/common/AnimatedButton";
+import AnimatedButton from "@/components/common/animated/AnimatedButton";
 import CustomText from "@/components/common/CustomText";
 import { router } from "expo-router";
 import { useLocalSearchParams } from "expo-router/build/hooks";

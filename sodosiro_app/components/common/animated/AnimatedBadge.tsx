@@ -1,12 +1,14 @@
 import useSelectedAnimation from "@/hooks/useSelcetedAnimation";
 import { badgeStyle } from "@/styles/Badge";
 import type { PressableProps } from "react-native";
+import CustomText from "../CustomText";
 import { AnimatedPressable } from "./Animated";
-import CustomText from "./CustomText";
 
 interface Props extends PressableProps {
   title: string;
   isSelected: boolean;
+  backgroundColor?: [string, string];
+  color?: [string, string];
 }
 
 export default function AnimatedBadge({
@@ -14,11 +16,13 @@ export default function AnimatedBadge({
   title,
   disabled,
   isSelected,
+  backgroundColor = ["#FFFFFF", "#1A1A1A"],
+  color = ["#1A1A1A", "#FFFFFF"],
   ...props
 }: Props) {
   const { containerStyle, textStyle } = useSelectedAnimation(isSelected, {
-    background: ["#FFFFFF", "#1A1A1A"],
-    color: ["#1A1A1A", "#FFFFFF"],
+    background: backgroundColor,
+    color: color,
   });
 
   return (

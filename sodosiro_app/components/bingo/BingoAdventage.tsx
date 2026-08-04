@@ -8,7 +8,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { SvgProps } from "react-native-svg";
-import { AnimatedDownIcon } from "../common/Animated";
+import { AnimatedDownIcon } from "../common/animated/Animated";
 
 export default function BingoAdvantage() {
   const [isOpen, setIsOpen] = useState(false);

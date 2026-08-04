@@ -1,4 +1,4 @@
-import CategoryList from "@/components/common/CategoryList";
+import CategoryList from "@/components/common/category/CategoryList";
 import CustomText from "@/components/common/CustomText";
 import Header from "@/components/common/Header";
 import PopularPlaceItem from "@/components/home/popularPlace/PopularPlaceItem";

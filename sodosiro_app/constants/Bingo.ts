@@ -28,5 +28,5 @@ export const BINGO_IMAGES: Record<CategoryTypeWithoutAll, number> = {
   nature: require("@/assets/images/default/nature_bingo.png"),
   restaurant: require("@/assets/images/default/restaurant_bingo.png"),
   shopping: require("@/assets/images/default/shopping_bingo.png"),
-  culture: require("@/assets/images/default/culture_bingo.png"),
+  accommodation: require("@/assets/images/default/culture_bingo.png"),
 };

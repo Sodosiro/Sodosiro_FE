@@ -104,14 +104,14 @@ const VerificationBottomSheet = forwardRef<BottomSheetModal, Props>(
               <CustomText font="body1" className={`text-text-secondary`}>
                 현재 위치를 확인하여 방문을 인증할게요.
               </CustomText>
-              <View className={`p-3 gap-2 rounded-xl bg-primary-light`}>
+              <View className={`p-4 gap-2 rounded-xl bg-primary-light`}>
                 <CustomText
                   font="body2 tight"
                   className={`text-text-secondary`}
                 >
                   방문을 인증하면
                 </CustomText>
-                <View className={`gap-1`}>
+                <View className={`gap-1.5`}>
                   <CustomText
                     font="body2 tight"
                     className={`text-text-secondary`}

@@ -1,6 +1,6 @@
 import { BottomSheetSnapPoints } from "@/constants/BottomSheet";
 import { PLACE_LIST } from "@/mocks/places";
-import { useSearchStore } from "@/stores/useSearchStore";
+import { useExploreStore } from "@/stores/useExploreStore";
 import { useSelectedPlaceStore } from "@/stores/useSelectedPlaceStore";
 import BottomSheet, {
   BottomSheetFlatList,
@@ -31,7 +31,7 @@ export default function PlaceListBottomSheet({
 
   const flatListRef = useRef<BottomSheetFlatListMethods | null>(null);
   const [isClosing, setIsClosing] = useState(false);
-  const { result, keyword } = useSearchStore();
+  const { result, keyword } = useExploreStore();
   const { selectedPlace } = useSelectedPlaceStore();
 
   useEffect(() => {

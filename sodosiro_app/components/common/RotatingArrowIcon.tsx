@@ -9,7 +9,9 @@ type RotatingArrowIconProps = {
 };
 
 // 펼침/접힘 상태에 따라 180도 회전하는 화살표 아이콘
-export default function RotatingArrowIcon({ isExpanded }: RotatingArrowIconProps) {
+export default function RotatingArrowIcon({
+  isExpanded,
+}: RotatingArrowIconProps) {
   const rotateAnim = useRef(new Animated.Value(isExpanded ? 1 : 0)).current;
 
   useEffect(() => {
@@ -22,7 +24,7 @@ export default function RotatingArrowIcon({ isExpanded }: RotatingArrowIconProps
 
   const spin = rotateAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ["0deg", "180deg"],
+    outputRange: ["0deg", "-180deg"],
   });
 
   return (

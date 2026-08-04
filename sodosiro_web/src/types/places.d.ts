@@ -5,7 +5,7 @@ type CategoryType =
   | "nature"
   | "restaurant"
   | "shopping"
-  | "culture";
+  | "accommodation";
 
 type PlaceType = {
   id: number;

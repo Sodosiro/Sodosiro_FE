@@ -1,4 +1,4 @@
-import { AnimatedPath } from "@/components/common/Animated";
+import { AnimatedPath } from "@/components/common/animated/Animated";
 import Svg from "react-native-svg";
 
 export default function NatureIcon({ animatedStroke }: AnimatedIconProps) {

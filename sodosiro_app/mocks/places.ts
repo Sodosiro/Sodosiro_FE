@@ -209,6 +209,7 @@ const CATEGORIES: CategoryType[] = [
   "nature",
   "restaurant",
   "shopping",
+  "accommodation",
 ];
 
 const center = {

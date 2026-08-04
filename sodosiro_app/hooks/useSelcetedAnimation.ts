@@ -12,6 +12,7 @@ type ColorConfig = {
   color?: [string, string];
   stroke?: [string, string];
   fill?: [string, string];
+  border?: [string, string];
 };
 
 export default function useSelectedAnimation(
@@ -21,6 +22,7 @@ export default function useSelectedAnimation(
     color = ["#1A1A1A", "#FFFFFF"],
     stroke = ["#1A1A1A", "#FFFFFF"],
     fill = ["#1A1A1A", "#FFFFFF"],
+    border = ["#1A1A1A", "#FFFFFF"],
     duration = 150,
   }: ColorConfig & {
     duration?: number;
@@ -50,10 +52,15 @@ export default function useSelectedAnimation(
     color: interpolateColor(progress.value, [0, 1], color),
   }));
 
+  const borderStyle = useAnimatedStyle(() => ({
+    borderColor: interpolateColor(progress.value, [0, 1], border),
+  }));
+
   return {
     containerStyle,
     strokeStyle,
     fillStyle,
     textStyle,
+    borderStyle,
   };
 }

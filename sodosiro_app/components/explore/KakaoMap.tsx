@@ -5,8 +5,8 @@ import { WebView } from "react-native-webview";
 
 import { useLocation } from "@/hooks/useLocation";
 import { useWebView } from "@/hooks/useWebView";
+import { useExploreStore } from "@/stores/useExploreStore";
 import { useLocationStore } from "@/stores/useLocationStore";
-import { useSearchStore } from "@/stores/useSearchStore";
 import { useWebViewStore } from "@/stores/useWebViewStore";
 
 export default function KakaoMap({
@@ -22,7 +22,7 @@ export default function KakaoMap({
 }) {
   const { isLoading, setIsLoading } = useWebViewStore();
 
-  const { result } = useSearchStore();
+  const { result, selectedCategory } = useExploreStore();
 
   const { isMapReady, sendLocation, handleMessage, updateData } = useWebView({
     webViewRef,
@@ -45,11 +45,19 @@ export default function KakaoMap({
   }, [location]);
 
   useEffect(() => {
-    if (mode === "marker") {
-      if (result) updateData(result, true);
-      else updateData(initialData);
-    }
-  }, [result]);
+    if (mode !== "marker") return;
+
+    const data = result ?? initialData;
+
+    const filtered =
+      selectedCategory === "all"
+        ? data
+        : data.filter(
+            (place: PlaceType) => place.category === selectedCategory,
+          );
+
+    updateData(filtered, !!result);
+  }, [result, selectedCategory, initialData]);
 
   return (
     <Animated.View

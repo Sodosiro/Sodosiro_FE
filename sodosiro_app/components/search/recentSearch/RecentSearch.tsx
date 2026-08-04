@@ -1,5 +1,5 @@
 import { RemoveMiniIcon } from "@/assets/svgs";
-import AnimatedButton from "@/components/common/AnimatedButton";
+import AnimatedButton from "@/components/common/animated/AnimatedButton";
 import CustomText from "@/components/common/CustomText";
 import { handleSearch } from "@/util/search/search";
 

@@ -2,18 +2,19 @@ import { useState } from "react";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { BusIcon, CarIcon } from "@/assets/svgs";
 import BottomSheet from "@/components/common/BottomSheet";
-import CategoryBadge from "@/components/common/CategoryBadge";
+import CategoryBadge from "@/components/common/category/CategoryBadge";
 import Header from "@/components/common/Header";
 import Subtitle from "@/components/common/Subtitle";
 import PopularPlacesSection from "@/components/home/popularPlace/PoplularPlacesSection";
+import BusIcon from "@/components/icon/transport/BusIcon";
+import CarIcon from "@/components/icon/transport/CarIcon";
 import TripConditionDatePickerButton from "@/components/tripCondition/TripConditionDatePickerButton";
 import DatePickerSheet from "@/components/tripCondition/TripConditionDatePickerSheet";
 import TripConditionFooter from "@/components/tripCondition/TripConditionFooter";
 import LocationPickerButton from "@/components/tripCondition/TripConditionLocationButton";
 import TransportCard from "@/components/tripCondition/TripConditionTransportCard";
-import { Stack } from "expo-router";
+import { router, Stack } from "expo-router";
 
 type TransportType = "car" | "bus" | "";
 type DateRange = {
@@ -29,7 +30,7 @@ const CATEGORIES: CategoryType[] = [
   "attraction",
   "nature",
   "activity",
-  "culture",
+  "accommodation",
 ];
 
 export default function TripScreen() {
@@ -88,8 +89,7 @@ export default function TripScreen() {
 
   // 일정 짜기 제출 처리
   const handleSubmit = () => {
-    console.log("일정 짜기 생성 시작");
-    // router.push('/trip/create/loading'); 또는 결과 페이지로 이동
+    router.push("/trip/timeline");
   };
 
   return (
@@ -153,7 +153,9 @@ export default function TripScreen() {
           <View className="gap-3">
             <Subtitle title="여행 스타일" description="최대 2개 선택" />
             <View className="flex-row flex-wrap gap-2.5">
-              {CATEGORIES.map((category) => {
+              {CATEGORIES.filter(
+                (category) => category !== "accommodation",
+              ).map((category) => {
                 const isSelected = selectedCategories.includes(category);
 
                 return (

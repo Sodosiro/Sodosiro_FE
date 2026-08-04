@@ -1,5 +1,5 @@
 import { CheckOffIcon, CheckOnIcon, TrashIcon } from "@/assets/svgs";
-import AnimatedButton from "@/components/common/AnimatedButton";
+import AnimatedButton from "@/components/common/animated/AnimatedButton";
 import CustomText from "@/components/common/CustomText";
 import PlaceMini from "@/components/place/PlaceMini";
 import { useFavoriteStore } from "@/stores/useFavoriteStore";

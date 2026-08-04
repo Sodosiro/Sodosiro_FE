@@ -1,4 +1,4 @@
-import { AnimatedPressable } from "@/components/common/Animated";
+import { AnimatedPressable } from "@/components/common/animated/Animated";
 import CustomText from "@/components/common/CustomText";
 import CameraIcon from "@/components/icon/CameraIcon";
 import useSelectedAnimation from "@/hooks/useSelcetedAnimation";

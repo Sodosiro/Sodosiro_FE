@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Dimensions, Pressable, ScrollView, View } from "react-native";
 import { Calendar, DateData } from "react-native-calendars";
-import BottomActionFooter from "../common/BottomActionFooter";
+import BottomActionBar from "../common/BottomActionBar";
 import CustomButton from "../common/CustomButton";
 import CustomText from "../common/CustomText";
 import Subtitle from "../common/Subtitle";
@@ -83,7 +83,8 @@ export default function DatePickerSheet({
       }
 
       const diffDays =
-        (new Date(dateString).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24) +
+        (new Date(dateString).getTime() - new Date(startDate).getTime()) /
+          (1000 * 60 * 60 * 24) +
         1;
 
       if (diffDays > MAX_RANGE_DAYS) {
@@ -143,7 +144,11 @@ export default function DatePickerSheet({
         <CustomText font="body3 tight" className="text-text-muted mt-2 mb-3">
           최대 7일까지 선택할 수 있어요.
         </CustomText>
-        <ScrollView ref={scrollRef} className="h-[380px]" showsVerticalScrollIndicator={false}>
+        <ScrollView
+          ref={scrollRef}
+          className="h-[380px]"
+          showsVerticalScrollIndicator={false}
+        >
           {uniqueMonths.map((month) => (
             <View
               key={month}
@@ -210,7 +215,7 @@ export default function DatePickerSheet({
         </ScrollView>
       </View>
 
-      <BottomActionFooter>
+      <BottomActionBar>
         <CustomButton
           type="primary"
           title={buttonTitle}
@@ -219,7 +224,7 @@ export default function DatePickerSheet({
           disabled={disabled || !startDate || !endDate}
           onPress={() => startDate && endDate && onConfirm(startDate, endDate)}
         />
-      </BottomActionFooter>
+      </BottomActionBar>
     </View>
   );
 }
@@ -248,7 +253,13 @@ function DayCell({ date, state, startDate, endDate, onPress }: DayCellProps) {
 
   const cellWidth = width / 7;
 
-  const textColor = isDisabled ? "#C9C9C9" : isEdge ? "#FFFFFF" : isWeekend ? "#E0483C" : "#1A1A1A";
+  const textColor = isDisabled
+    ? "#C9C9C9"
+    : isEdge
+      ? "#FFFFFF"
+      : isWeekend
+        ? "#E0483C"
+        : "#1A1A1A";
 
   return (
     <Pressable
@@ -295,7 +306,10 @@ function DayCell({ date, state, startDate, endDate, onPress }: DayCellProps) {
         >
           <CustomText
             font="body2"
-            style={{ fontWeight: "500", color: isToday && !isEdge ? "#A3BE3B" : textColor }}
+            style={{
+              fontWeight: "500",
+              color: isToday && !isEdge ? "#A3BE3B" : textColor,
+            }}
           >
             {date.day}
           </CustomText>
@@ -303,7 +317,12 @@ function DayCell({ date, state, startDate, endDate, onPress }: DayCellProps) {
         {isToday && !isEdge && (
           <CustomText
             font="body2"
-            style={{ color: "#A3BE3B", position: "absolute", bottom: -5, opacity: isToday ? 1 : 0 }}
+            style={{
+              color: "#A3BE3B",
+              position: "absolute",
+              bottom: -5,
+              opacity: isToday ? 1 : 0,
+            }}
           >
             오늘
           </CustomText>

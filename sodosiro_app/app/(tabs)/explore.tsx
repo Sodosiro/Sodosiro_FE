@@ -42,7 +42,6 @@ export default function ExploreScreen() {
         <>
           <MapOverlay
             webViewRef={webViewRef}
-            bottomSheetRef={bottomSheetRef}
             animatedPosition={animatedPosition}
             animatedIndex={animatedIndex}
           />

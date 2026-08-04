@@ -1,5 +1,5 @@
 import { WhiteBigCheckIcon } from "@/assets/svgs";
-import { AnimatedPressable } from "@/components/common/Animated";
+import { AnimatedPressable } from "@/components/common/animated/Animated";
 import CustomText from "@/components/common/CustomText";
 import { BADGE_BASE_CLASS } from "@/components/trip/badge/badgeStyles";
 import { LayoutChangeEvent } from "react-native";

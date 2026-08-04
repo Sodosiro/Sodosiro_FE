@@ -1,4 +1,4 @@
-import { AnimatedPath } from "@/components/common/Animated";
+import { AnimatedPath } from "@/components/common/animated/Animated";
 import Svg, { ClipPath, Defs, G, Rect } from "react-native-svg";
 
 export default function ShoppingIcon({ animatedStroke }: AnimatedIconProps) {

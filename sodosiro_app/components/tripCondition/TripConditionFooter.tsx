@@ -1,8 +1,8 @@
 import { RefreshIcon } from "@/assets/svgs"; // 재설정 아이콘 경로 확인 필요
 import CustomButton from "@/components/common/CustomButton"; // 경로 확인 필요
-import AnimatedButton from "../common/AnimatedButton";
-import BottomActionFooter from "../common/BottomActionFooter";
+import BottomActionBar from "../common/BottomActionBar";
 import CustomText from "../common/CustomText";
+import AnimatedButton from "../common/animated/AnimatedButton";
 
 type Props = {
   onReset: () => void;
@@ -10,9 +10,13 @@ type Props = {
   disabled?: boolean;
 };
 
-export default function TripConditionFooter({ onReset, onSubmit, disabled = false }: Props) {
+export default function TripConditionFooter({
+  onReset,
+  onSubmit,
+  disabled = false,
+}: Props) {
   return (
-    <BottomActionFooter>
+    <BottomActionBar>
       <AnimatedButton
         className={`flex-row items-center justify-center px-4 gap-1 rounded-full`}
         backgroundColor={["#FFFFFF", "#F5F5F5"]}
@@ -28,6 +32,6 @@ export default function TripConditionFooter({ onReset, onSubmit, disabled = fals
         disabled={disabled}
         onPress={onSubmit}
       />
-    </BottomActionFooter>
+    </BottomActionBar>
   );
 }

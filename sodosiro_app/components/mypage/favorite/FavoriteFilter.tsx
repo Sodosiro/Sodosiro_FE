@@ -1,4 +1,4 @@
-import CategoryList from "@/components/common/CategoryList";
+import CategoryList from "@/components/common/category/CategoryList";
 import SortBadge from "@/components/common/sort/SortBadge";
 import { Dispatch, SetStateAction } from "react";
 import { View } from "react-native";

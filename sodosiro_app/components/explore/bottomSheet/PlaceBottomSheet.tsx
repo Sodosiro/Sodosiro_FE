@@ -1,4 +1,4 @@
-import { useSearchStore } from "@/stores/useSearchStore";
+import { useExploreStore } from "@/stores/useExploreStore";
 import { useSelectedPlaceStore } from "@/stores/useSelectedPlaceStore";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { useEffect, useRef } from "react";
@@ -11,7 +11,7 @@ export default function PlaceBottomSheet({
 }) {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const { selectedPlace } = useSelectedPlaceStore();
-  const { keyword } = useSearchStore();
+  const { keyword } = useExploreStore();
 
   useEffect(() => {
     if (selectedPlace && keyword === "") {

@@ -3,7 +3,7 @@ import { router } from "expo-router";
 import { Dispatch, SetStateAction, useRef, useState } from "react";
 import { Image, Modal, View } from "react-native";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
-import { AnimatedPressable } from "../common/Animated";
+import { AnimatedPressable } from "../common/animated/Animated";
 import CustomButton from "../common/CustomButton";
 import CustomText from "../common/CustomText";
 import RoulettePicker, { RoulettePickerHandle } from "./RoulettePicker";

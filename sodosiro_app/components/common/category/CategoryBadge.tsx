@@ -2,8 +2,8 @@ import useSelectedAnimation from "@/hooks/useSelcetedAnimation";
 import { badgeStyle } from "@/styles/Badge";
 import { CategoryIconMap, CategoryMap } from "@/util/place/category";
 import React from "react";
-import { AnimatedPressable } from "./Animated";
-import CustomText from "./CustomText";
+import CustomText from "../CustomText";
+import { AnimatedPressable } from "../animated/Animated";
 
 type Props = {
   disabled?: boolean;
@@ -37,7 +37,7 @@ export default React.memo(function CategoryBadge({
   return (
     <AnimatedPressable
       style={containerStyle}
-      className={`${Icon ? `px-4` : `px-3`} py-2.5 ${badgeStyle}`}
+      className={`px-3 py-2.5 ${badgeStyle}`}
       disabled={disabled}
       onPress={onPress}
     >

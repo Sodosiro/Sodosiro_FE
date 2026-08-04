@@ -2,6 +2,7 @@ import { StarIcon } from "@/assets/svgs";
 import CustomText from "@/components/common/CustomText";
 import Dropdown from "@/components/common/Dropdown";
 import { useToast } from "@/contexts/ToastProvider";
+import { memo } from "react";
 import { Pressable, View } from "react-native";
 import CategoryTag from "../place/CategoryTag";
 import ActionBadge from "../trip/badge/ActionBadge";
@@ -19,7 +20,7 @@ type TimelineItemProps = {
 
 // 일정 하나(장소)를 나타내는 항목. 헤더(순서/제목/카테고리)는 항상 보이고,
 // 본문(설명/평점/액션 버튼)은 Dropdown을 통해 펼침/접힘 됩니다.
-export default function TimelineItem({
+function TimelineItem({
   place,
   isExpanded,
   onToggle,
@@ -125,3 +126,6 @@ export default function TimelineItem({
     </Pressable>
   );
 }
+
+export default memo(TimelineItem);
+

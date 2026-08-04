@@ -4,7 +4,7 @@ import TimelineDaySection from "@/components/timeline/section/TimelineDaySection
 import { useTimelineScrollSpy } from "@/hooks/useTimelineScrollSpy";
 import { INITIAL_PLAN } from "@/mocks/trip";
 import { router } from "expo-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Image, ScrollView, View } from "react-native";
 import EmptyState from "../EmptyState";
 import OnAirBanner from "../OnAirBanner";
@@ -18,13 +18,16 @@ export default function OngoingTripSection({}: OngoingTripSectionProps) {
     activeIndex,
     setActiveIndex,
     mainScrollRef,
+    badgeScrollRef,
     moveToSection,
     handleScroll,
-    handleSectionLayout,
     handleBadgeLayout,
+    handleBadgeContainerLayout,
+    getSectionLayoutHandler,
   } = useTimelineScrollSpy();
 
   const [plan] = useState(INITIAL_PLAN);
+  const badgeOrder = useMemo(() => plan.map(({ id }) => id), [plan]);
 
   return (
     <View className="flex-1">
@@ -45,12 +48,14 @@ export default function OngoingTripSection({}: OngoingTripSectionProps) {
             style={{ width: `100%` }}
           />
           <TimelineDayBadgeSection
-            badgeOrder={plan.map(({ id }) => id)}
+            badgeOrder={badgeOrder}
             showEditButton={false}
             onPressDayBadge={moveToSection}
             onLayoutDayBadge={handleBadgeLayout}
+            onBadgeContainerLayout={handleBadgeContainerLayout}
             activeIndex={activeIndex}
             setActiveIndex={setActiveIndex}
+            badgeScrollRef={badgeScrollRef}
           />
 
           {/* 일정 리스트 */}
@@ -64,10 +69,10 @@ export default function OngoingTripSection({}: OngoingTripSectionProps) {
           >
             {plan.map((dayPlan, index) => (
               <TimelineDaySection
-                key={index}
+                key={dayPlan.id}
                 dayPlan={dayPlan}
                 mode="isOngoing"
-                onLayout={(e) => handleSectionLayout(index, e)}
+                onLayout={getSectionLayoutHandler(index)}
                 dayIndex={index}
               />
             ))}
@@ -77,3 +82,4 @@ export default function OngoingTripSection({}: OngoingTripSectionProps) {
     </View>
   );
 }
+

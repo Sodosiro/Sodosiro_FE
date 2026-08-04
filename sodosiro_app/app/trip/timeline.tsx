@@ -8,7 +8,7 @@ import TripPlanConfirmModal from "@/components/timeline/TripPlanConfirmModal";
 import { useTimelineScrollSpy } from "@/hooks/useTimelineScrollSpy";
 import { INITIAL_PLAN } from "@/mocks/trip";
 import { Stack } from "expo-router";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -20,10 +20,12 @@ export default function TimelineScreen() {
     activeIndex,
     setActiveIndex,
     mainScrollRef,
+    badgeScrollRef,
     moveToSection,
     handleScroll,
-    handleSectionLayout,
     handleBadgeLayout,
+    handleBadgeContainerLayout,
+    getSectionLayoutHandler,
   } = useTimelineScrollSpy();
 
   const [isEditing, setIsEditing] = useState(false);
@@ -33,10 +35,12 @@ export default function TimelineScreen() {
   const [temp, setTemp] = useState(INITIAL_PLAN);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
-  const handleConfirmOpen = () => {
+  const handleConfirmOpen = useCallback(() => {
     if (plan === temp) setIsEditing(false);
     else setIsConfirmOpen(true);
-  };
+  }, [plan, temp]);
+
+  const badgeOrder = useMemo(() => temp.map(({ id }) => id), [temp]);
 
   return (
     <SafeAreaView
@@ -52,7 +56,7 @@ export default function TimelineScreen() {
 
       <View className="flex-1">
         <TimelineDayBadgeSection
-          badgeOrder={temp.map(({ id }) => id)}
+          badgeOrder={badgeOrder}
           isEditing={isEditing}
           setIsEditing={setIsEditing}
           showEditButton={true}
@@ -60,8 +64,10 @@ export default function TimelineScreen() {
           onPressDayBadge={moveToSection}
           handleConfirmOpen={handleConfirmOpen}
           onLayoutDayBadge={handleBadgeLayout}
+          onBadgeContainerLayout={handleBadgeContainerLayout}
           activeIndex={activeIndex}
           setActiveIndex={setActiveIndex}
+          badgeScrollRef={badgeScrollRef}
         />
 
         <ScrollView
@@ -85,7 +91,7 @@ export default function TimelineScreen() {
               isEditing={isEditing}
               dayIndex={index}
               setPlan={setTemp}
-              onLayout={(e) => handleSectionLayout(index, e)}
+              onLayout={getSectionLayoutHandler(index)}
             />
           ))}
         </ScrollView>
@@ -118,7 +124,6 @@ export default function TimelineScreen() {
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
         onConfirm={(selectedDay) => {
-          console.log("선택된 일차:", selectedDay);
           setModalVisible(false);
         }}
       />

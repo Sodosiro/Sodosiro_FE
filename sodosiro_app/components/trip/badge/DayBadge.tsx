@@ -3,6 +3,7 @@ import { AnimatedPressable } from "@/components/common/animated/Animated";
 import CustomText from "@/components/common/CustomText";
 import { BADGE_BASE_CLASS } from "@/components/trip/badge/badgeStyles";
 import useSelectedAnimation from "@/hooks/useSelcetedAnimation";
+import { memo } from "react";
 import { LayoutChangeEvent } from "react-native";
 
 type DayBadgeProps = {
@@ -11,12 +12,12 @@ type DayBadgeProps = {
   onPress?: () => void;
   onLongPress?: () => void;
   isEditing?: boolean;
-  onLayout: (e: LayoutChangeEvent) => void;
+  onLayout?: (e: LayoutChangeEvent) => void;
   onDelete?: () => void;
 };
 
 // 상단 "N일차" 탭 뱃지 (조회 모드 전용 - 스크롤 동기화 및 탭 이동만 담당)
-export default function DayBadge({
+function DayBadge({
   text,
   selected = false,
   onPress,
@@ -46,3 +47,6 @@ export default function DayBadge({
     </AnimatedPressable>
   );
 }
+
+export default memo(DayBadge);
+

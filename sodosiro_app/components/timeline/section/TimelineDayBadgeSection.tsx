@@ -1,8 +1,9 @@
 import DayBadge from "@/components/trip/badge/DayBadge";
 import EditToggleBadge from "@/components/trip/badge/EditToggleBadge";
 import { LinearGradient } from "expo-linear-gradient";
-import { Dispatch, SetStateAction, useEffect, useRef } from "react";
-import { LayoutChangeEvent, ScrollView, View } from "react-native";
+import { Dispatch, SetStateAction, useEffect, useRef, useCallback, memo } from "react";
+import { LayoutChangeEvent, View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 import DraggableFlatList, {
   OpacityDecorator,
   RenderItemParams,
@@ -18,12 +19,14 @@ type TimelineDayBadgeSectionProps = {
   handleConfirmOpen?: () => void;
   onPressDayBadge?: (index: number) => void;
   onLayoutDayBadge?: (index: number, e: LayoutChangeEvent) => void;
+  onBadgeContainerLayout?: (e: LayoutChangeEvent) => void;
   activeIndex: number;
   setActiveIndex: Dispatch<SetStateAction<number>>;
   paddingHorizontal?: number;
+  badgeScrollRef?: React.RefObject<ScrollView | null>;
 };
 
-export default function TimelineDayBadgeSection({
+function TimelineDayBadgeSection({
   badgeOrder,
   isEditing = false,
   setIsEditing,
@@ -33,89 +36,130 @@ export default function TimelineDayBadgeSection({
   handleConfirmOpen,
   onPressDayBadge,
   onLayoutDayBadge,
+  onBadgeContainerLayout,
   activeIndex,
   setActiveIndex,
   paddingHorizontal = 20,
+  badgeScrollRef,
 }: TimelineDayBadgeSectionProps) {
-  const viewScrollRef = useRef<ScrollView>(null);
+  const localScrollRef = useRef<ScrollView>(null);
   const dragListRef = useRef<any>(null);
+
+  const targetScrollRef = badgeScrollRef || localScrollRef;
 
   // isEditing 전환 시 -> 배지 스크롤을 가장 왼쪽으로 리셋
   useEffect(() => {
     if (isEditing) {
       dragListRef.current?.scrollToOffset?.({ offset: 0, animated: false });
     } else {
-      viewScrollRef.current?.scrollTo({ x: 0, animated: false });
+      targetScrollRef.current?.scrollTo({ x: 0, animated: false });
     }
-  }, [isEditing]);
+  }, [isEditing, targetScrollRef]);
 
-  const renderEditableItem = ({ getIndex, drag }: RenderItemParams<number>) => {
-    const index = getIndex() ?? 0;
-    const dayId = badgeOrder[index];
+  const handleBadgePress = useCallback(
+    (index: number) => {
+      setActiveIndex(index);
+      onPressDayBadge?.(index);
+    },
+    [setActiveIndex, onPressDayBadge],
+  );
 
-    return (
-      <OpacityDecorator>
-        <View className={`px-1`}>
-          <DayBadge
-            text={`${index + 1}일차`}
-            selected={!isEditing && index === activeIndex}
-            onPress={
-              !isEditing
-                ? () => {
-                    setActiveIndex(index);
-                    onPressDayBadge && onPressDayBadge(index);
-                  }
-                : undefined
-            }
-            onLongPress={isEditing ? drag : undefined}
-            isEditing={isEditing}
+  const handleBadgeDelete = useCallback(
+    (dayId: number) => {
+      if (!setPlan) return;
+      setPlan((prev) => {
+        const next = prev.filter((day) => day.id !== dayId);
+        setActiveIndex((current) => Math.min(current, next.length - 1));
+        return next;
+      });
+    },
+    [setPlan, setActiveIndex],
+  );
+
+  const renderEditableItem = useCallback(
+    ({ getIndex, drag }: RenderItemParams<number>) => {
+      const index = getIndex() ?? 0;
+      const dayId = badgeOrder[index];
+
+      return (
+        <OpacityDecorator>
+          <View
+            className="px-1"
             onLayout={(e) => onLayoutDayBadge && onLayoutDayBadge(index, e)}
-            onDelete={() => {
-              if (!setPlan) return;
+          >
+            <DayBadge
+              text={`${index + 1}일차`}
+              selected={!isEditing && index === activeIndex}
+              onPress={!isEditing ? () => handleBadgePress(index) : undefined}
+              onLongPress={isEditing ? drag : undefined}
+              isEditing={isEditing}
+              onDelete={() => handleBadgeDelete(dayId)}
+            />
+          </View>
+        </OpacityDecorator>
+      );
+    },
+    [badgeOrder, isEditing, activeIndex, handleBadgePress, onLayoutDayBadge, handleBadgeDelete],
+  );
 
-              setPlan((prev) => {
-                const next = prev.filter((day) => day.id !== dayId);
-
-                setActiveIndex((current) => Math.min(current, next.length - 1));
-
-                return next;
-              });
-            }}
-          />
-        </View>
-      </OpacityDecorator>
-    );
-  };
+  const handleDragEnd = useCallback(
+    ({ data: ids }: { data: number[] }) => {
+      if (!setPlan) return;
+      setPlan((prev) =>
+        ids
+          .map((id) => prev.find((day) => day.id === id))
+          .filter((day): day is DayPlan => day !== undefined),
+      );
+    },
+    [setPlan],
+  );
 
   return (
     <View
-      className={`${className} relative py-3 flex-row items-center`}
+      className={`${className ?? ""} relative py-3 flex-row items-center`}
       style={{ zIndex: 20 }}
     >
       <View className="flex-1">
-        <DraggableFlatList
-          ref={dragListRef}
-          data={badgeOrder ?? []}
-          onDragEnd={
-            setPlan
-              ? ({ data: ids }) => {
-                  setPlan((prev) =>
-                    ids
-                      .map((id) => prev.find((day) => day.id === id))
-                      .filter((day): day is DayPlan => day !== undefined),
-                  );
-                }
-              : undefined
-          }
-          keyExtractor={(item) => `day-badge-${item}`}
-          renderItem={renderEditableItem}
-          horizontal
-          activationDistance={10}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{
-            paddingHorizontal: paddingHorizontal,
-          }}
-        />
+        {isEditing ? (
+          <DraggableFlatList
+            ref={dragListRef}
+            data={badgeOrder ?? []}
+            onDragEnd={setPlan ? handleDragEnd : undefined}
+            keyExtractor={(item) => `day-badge-${item}`}
+            renderItem={renderEditableItem}
+            horizontal
+            activationDistance={10}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{
+              paddingHorizontal: paddingHorizontal,
+            }}
+          />
+        ) : (
+          <ScrollView
+            ref={targetScrollRef as React.RefObject<ScrollView>}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            onLayout={onBadgeContainerLayout}
+            contentContainerStyle={{
+              paddingHorizontal: paddingHorizontal,
+            }}
+          >
+            {badgeOrder.map((dayId, index) => (
+              <View
+                key={`day-badge-${dayId}`}
+                className="px-1"
+                onLayout={(e) => onLayoutDayBadge && onLayoutDayBadge(index, e)}
+              >
+                <DayBadge
+                  text={`${index + 1}일차`}
+                  selected={index === activeIndex}
+                  onPress={() => handleBadgePress(index)}
+                  isEditing={false}
+                />
+              </View>
+            ))}
+          </ScrollView>
+        )}
       </View>
 
       {showEditButton && setIsEditing && (
@@ -143,3 +187,6 @@ export default function TimelineDayBadgeSection({
     </View>
   );
 }
+
+export default memo(TimelineDayBadgeSection);
+

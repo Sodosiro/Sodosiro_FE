@@ -1,6 +1,6 @@
 import { CalendarMiniIcon, PinMiniIcon } from "@/assets/svgs";
 import CustomText from "@/components/common/CustomText";
-
+import { memo } from "react";
 import { View } from "react-native";
 import ActionBadge from "../badge/ActionBadge";
 
@@ -19,7 +19,7 @@ type UpcomingTripCardType = {
   locationText: string;
 };
 
-export default function UpcomingTripCard({
+function UpcomingTripCard({
   trip,
   onPress,
 }: UpcomingTripCardProps) {
@@ -74,3 +74,5 @@ export default function UpcomingTripCard({
     </View>
   );
 }
+
+export default memo(UpcomingTripCard);

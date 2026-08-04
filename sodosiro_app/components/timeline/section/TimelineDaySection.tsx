@@ -1,5 +1,5 @@
 import CustomText from "@/components/common/CustomText";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useState, useCallback, memo } from "react";
 import { LayoutChangeEvent, View } from "react-native";
 import DraggableFlatList, {
   OpacityDecorator,
@@ -17,7 +17,7 @@ type TimelineDaySectionProps = {
   onLayout: (e: LayoutChangeEvent) => void;
 };
 
-export default function TimelineDaySection({
+function TimelineDaySection({
   dayPlan,
   dayIndex,
   mode,
@@ -30,29 +30,51 @@ export default function TimelineDaySection({
     dayPlan.places[0]?.id,
   );
 
-  const renderEditableItem = ({
-    item,
-    getIndex,
-    drag,
-  }: RenderItemParams<PlaceType>) => {
-    const index = getIndex() ?? 0;
+  const handleToggle = useCallback((placeId: number) => {
+    setSelectedId((prev) => (prev === placeId ? null : placeId));
+  }, []);
 
-    return (
-      <OpacityDecorator>
-        <TimelineItem
-          place={item}
-          isExpanded={item.id === selectedId && !isEditing}
-          isEditing={isEditing}
-          onToggle={() => {
-            setSelectedId(item.id === selectedId ? null : item.id);
-          }}
-          order={index + 1}
-          mode={mode}
-          onLongPress={isEditing ? drag : undefined}
-        />
-      </OpacityDecorator>
-    );
-  };
+  const renderEditableItem = useCallback(
+    ({ item, getIndex, drag }: RenderItemParams<PlaceType>) => {
+      const index = getIndex() ?? 0;
+
+      return (
+        <OpacityDecorator>
+          <TimelineItem
+            place={item}
+            isExpanded={item.id === selectedId && !isEditing}
+            isEditing={isEditing}
+            onToggle={() => handleToggle(item.id)}
+            order={index + 1}
+            mode={mode}
+            onLongPress={isEditing ? drag : undefined}
+          />
+        </OpacityDecorator>
+      );
+    },
+    [selectedId, isEditing, handleToggle, mode],
+  );
+
+  const handleDragBegin = useCallback(() => {
+    setOnDrag?.(true);
+  }, [setOnDrag]);
+
+  const handleDragEnd = useCallback(
+    ({ data }: { data: PlaceType[] }) => {
+      setOnDrag?.(false);
+      setPlan?.((prev) =>
+        prev.map((day) =>
+          day.id === dayPlan.id
+            ? {
+                ...day,
+                places: data,
+              }
+            : day,
+        ),
+      );
+    },
+    [setOnDrag, setPlan, dayPlan.id],
+  );
 
   return (
     <View
@@ -63,32 +85,35 @@ export default function TimelineDaySection({
         {dayPlan.dateLabel}
       </CustomText>
 
-      <DraggableFlatList
-        onDragBegin={setOnDrag ? () => setOnDrag(true) : undefined}
-        data={dayPlan.places ?? []}
-        onDragEnd={
-          setOnDrag && setPlan
-            ? ({ data }) => {
-                setOnDrag(false);
-                setPlan((prev) =>
-                  prev.map((day) =>
-                    day.id === dayPlan.id
-                      ? {
-                          ...day,
-                          places: data,
-                        }
-                      : day,
-                  ),
-                );
-              }
-            : undefined
-        }
-        activationDistance={10}
-        scrollEnabled={false}
-        keyExtractor={(item) => `place-${item.id}`}
-        renderItem={renderEditableItem}
-        showsVerticalScrollIndicator={false}
-      />
+      {isEditing ? (
+        <DraggableFlatList
+          onDragBegin={setOnDrag ? handleDragBegin : undefined}
+          data={dayPlan.places ?? []}
+          onDragEnd={setOnDrag && setPlan ? handleDragEnd : undefined}
+          activationDistance={10}
+          scrollEnabled={false}
+          keyExtractor={(item) => `place-${item.id}`}
+          renderItem={renderEditableItem}
+          showsVerticalScrollIndicator={false}
+        />
+      ) : (
+        <View>
+          {dayPlan.places?.map((place, index) => (
+            <TimelineItem
+              key={`place-${place.id}`}
+              place={place}
+              isExpanded={place.id === selectedId}
+              isEditing={false}
+              onToggle={() => handleToggle(place.id)}
+              order={index + 1}
+              mode={mode}
+            />
+          ))}
+        </View>
+      )}
     </View>
   );
 }
+
+export default memo(TimelineDaySection);
+

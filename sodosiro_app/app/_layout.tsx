@@ -17,8 +17,12 @@ configureReanimatedLogger({
   strict: false,
 });
 
+import { getMeApi } from "@/api/user";
 import { ToastProvider } from "@/contexts/ToastProvider";
+import { useAuthStore } from "@/stores/useAuthStore";
+import { useUserStore } from "@/stores/useUserStore";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { useEffect } from "react";
 import { LocaleConfig } from "react-native-calendars";
 
 LocaleConfig.locales.kr = {
@@ -72,12 +76,39 @@ export default function RootLayout() {
     PretendardMedium: require("../assets/fonts/Pretendard-Medium.otf"),
   });
 
+  const initialize = useAuthStore((state) => state.initialize);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const setUser = useUserStore((state) => state.setUser);
+
+  useEffect(() => {
+    initialize();
+  }, [initialize]);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const user = await getMeApi();
+      setUser(user);
+    };
+
+    if (isAuthenticated) {
+      fetchUser();
+    }
+  }, [isAuthenticated]);
+
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={{ flex: 1, backgroundColor: "white" }}>
       <ToastProvider>
         <PortalProvider>
           <BottomSheetModalProvider>
             <Stack>
+              <Stack.Screen
+                name="index"
+                options={{
+                  presentation: "modal",
+                  animation: "fade",
+                  headerShown: false,
+                }}
+              />
               <Stack.Screen
                 name="(tabs)"
                 options={{
@@ -128,6 +159,14 @@ export default function RootLayout() {
               />
               <Stack.Screen
                 name="trip"
+                options={{
+                  presentation: "modal",
+                  animation: "fade",
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="login"
                 options={{
                   presentation: "modal",
                   animation: "fade",

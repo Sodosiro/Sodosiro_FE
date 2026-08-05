@@ -21,8 +21,10 @@ export function useWebView({
   setIsLoading: (value: boolean) => void;
   initialData: any;
 }) {
-  const { setIsTracking } = useLocationStore();
-  const { setSelectedPlace } = useSelectedPlaceStore();
+  const setIsTracking = useLocationStore((state) => state.setIsTracking);
+  const setSelectedPlace = useSelectedPlaceStore(
+    (state) => state.setSelectedPlace,
+  );
 
   const [isMapReady, setIsMapReady] = useState(false);
 
@@ -105,7 +107,10 @@ export function useWebView({
   );
 
   const sendLocation = useCallback(
-    (location: { latitude: number; longitude: number; initial?: boolean }, denied = false) => {
+    (
+      location: { latitude: number; longitude: number; initial?: boolean },
+      denied = false,
+    ) => {
       if (!denied) {
         postMessage({ type: "UPDATE_LOCATION", ...location });
       } else {

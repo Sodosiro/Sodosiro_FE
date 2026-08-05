@@ -13,7 +13,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import WebView from "react-native-webview";
 
 export default function ExploreScreen() {
-  const { isLoading } = useWebViewStore();
+  const isLoading = useWebViewStore((state) => state.isLoading);
   const bottomSheetRef = useRef<BottomSheet>(null);
   const screenHeight = Dimensions.get("window").height;
   const animatedPosition = useSharedValue(screenHeight);

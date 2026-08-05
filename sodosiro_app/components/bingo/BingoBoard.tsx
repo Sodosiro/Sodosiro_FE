@@ -52,7 +52,6 @@ export default function BingoBoard({
             onPress={() => {
               setSelectedItem(item);
               bottomSheetRef.current?.present();
-              console.log(item);
             }}
           />
         ))}

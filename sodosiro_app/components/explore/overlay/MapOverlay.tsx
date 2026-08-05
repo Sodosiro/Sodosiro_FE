@@ -8,6 +8,7 @@ import { Dimensions, Linking, Pressable, View } from "react-native";
 import type { SharedValue } from "react-native-reanimated";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import WebView from "react-native-webview";
+import { useShallow } from "zustand/react/shallow";
 import CategoryList from "../../common/category/CategoryList";
 import ClearSearchButton from "./ClearSearchButton";
 import GpsButton from "./GpsButton";
@@ -24,9 +25,20 @@ export default function MapOverlay({
   animatedIndex: SharedValue<number>;
 }) {
   const { keyword, clearResult, selectedCategory, setSelectedCategory } =
-    useExploreStore();
-  const { setSelectedPlace } = useSelectedPlaceStore();
-  const { setIsDenied, setIsTracking } = useLocationStore();
+    useExploreStore(
+      useShallow((state) => ({
+        keyword: state.keyword,
+        clearResult: state.clearResult,
+        selectedCategory: state.selectedCategory,
+        setSelectedCategory: state.setSelectedCategory,
+      })),
+    );
+  const setSelectedPlace = useSelectedPlaceStore(
+    (state) => state.setSelectedPlace,
+  );
+  const setIsDenied = useLocationStore((state) => state.setIsDenied);
+  const setIsTracking = useLocationStore((state) => state.setIsTracking);
+
   const screenHeight = Dimensions.get("window").height;
 
   const animatedStyle = useAnimatedStyle(() => {

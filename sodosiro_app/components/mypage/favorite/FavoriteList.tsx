@@ -7,7 +7,8 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { Modal, Pressable, ScrollView, View } from "react-native";
 
 export default function FavoriteList() {
-  const { favoritePlaces, removeFavorites } = useFavoriteStore();
+  const favoritePlaces = useFavoriteStore((state) => state.favoritePlaces);
+  const removeFavorites = useFavoriteStore((state) => state.removeFavorites);
 
   const [isEditing, setIsEditing] = useState(false);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);

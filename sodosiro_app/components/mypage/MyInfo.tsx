@@ -6,7 +6,7 @@ import { Image, Pressable, View } from "react-native";
 import CustomText from "../common/CustomText";
 
 export default function MyInfo() {
-  const { nickname, introduce, imageSource } = useUserStore();
+  const user = useUserStore((state) => state.user);
 
   return (
     <View>
@@ -40,18 +40,21 @@ export default function MyInfo() {
               className={`w-15 h-15 rounded-full`}
               resizeMode="cover"
               source={
-                imageSource === null
-                  ? require("@/assets/images/profile_default.png")
-                  : typeof imageSource === "string"
-                    ? { uri: imageSource }
-                    : imageSource
+                user?.profileImage
+                  ? {
+                      uri:
+                        typeof user.profileImage === "string"
+                          ? user.profileImage
+                          : user.profileImage.uri,
+                    }
+                  : require("@/assets/images/profile_default.png")
               }
             />
             <View className={`gap-2`}>
               <View className={`gap-1`}>
-                <CustomText font="heading2">{nickname}</CustomText>
+                <CustomText font="heading2">{user?.nickName}</CustomText>
                 <CustomText font="body3" className={`text-text-secondary`}>
-                  {introduce}
+                  {user?.introduction}
                 </CustomText>
               </View>
               <Pressable

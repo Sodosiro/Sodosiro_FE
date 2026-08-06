@@ -6,8 +6,10 @@ import { Pressable } from "react-native";
 import CustomText from "../../common/CustomText";
 
 export default function SearchBar({ keyword }: { keyword?: string }) {
-  const { clearResult } = useExploreStore();
-  const { setSelectedPlace } = useSelectedPlaceStore();
+  const clearResult = useExploreStore((state) => state.clearResult);
+  const setSelectedPlace = useSelectedPlaceStore(
+    (state) => state.setSelectedPlace,
+  );
   return (
     <Pressable
       className={`flex-row justify-between items-center border border-border bg-white w-full px-6 h-15 rounded-full`}

@@ -10,8 +10,8 @@ export default function PlaceBottomSheet({
   handlePlaceItemPress: (placeId: number) => void;
 }) {
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const { selectedPlace } = useSelectedPlaceStore();
-  const { keyword } = useExploreStore();
+  const selectedPlace = useSelectedPlaceStore((state) => state.selectedPlace);
+  const keyword = useExploreStore((state) => state.keyword);
 
   useEffect(() => {
     if (selectedPlace && keyword === "") {

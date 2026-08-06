@@ -31,8 +31,9 @@ export default function PlaceListBottomSheet({
 
   const flatListRef = useRef<BottomSheetFlatListMethods | null>(null);
   const [isClosing, setIsClosing] = useState(false);
-  const { result, keyword } = useExploreStore();
-  const { selectedPlace } = useSelectedPlaceStore();
+  const result = useExploreStore((state) => state.result);
+  const keyword = useExploreStore((state) => state.keyword);
+  const selectedPlace = useSelectedPlaceStore((state) => state.selectedPlace);
 
   useEffect(() => {
     if (result && result.length > 0) bottomSheetRef.current?.snapToIndex(1);

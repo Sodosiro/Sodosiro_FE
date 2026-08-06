@@ -1,15 +1,15 @@
 import CustomText from "@/components/common/CustomText";
 import * as ImagePicker from "expo-image-picker";
 import { Dispatch, SetStateAction, useState } from "react";
-import { Image, ImageURISource, Modal, Pressable } from "react-native";
+import { Image, Modal, Pressable } from "react-native";
 
-export default function EditProfile({
-  imageSourceTemp,
-  setImageSourceTemp,
+export default function EditProfileImage({
+  profileImageTemp,
+  setProfileImageTemp,
 }: {
-  imageSourceTemp: string | number | ImageURISource | ImageURISource[] | null;
-  setImageSourceTemp: Dispatch<
-    SetStateAction<string | number | ImageURISource | ImageURISource[] | null>
+  profileImageTemp: string | ImagePicker.ImagePickerAsset | null;
+  setProfileImageTemp: Dispatch<
+    SetStateAction<string | ImagePicker.ImagePickerAsset | null>
   >;
 }) {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -21,16 +21,16 @@ export default function EditProfile({
       mediaTypes: ["images"],
       allowsEditing: true,
       aspect: [1, 1],
-      quality: 0.8,
+      quality: 0.5,
     });
 
     if (!result.canceled) {
-      setImageSourceTemp(result.assets[0].uri);
+      setProfileImageTemp(result.assets[0]);
     }
   };
 
   const handleResetProfileImage = () => {
-    setImageSourceTemp(null);
+    setProfileImageTemp(null);
     setIsModalVisible(false);
   };
 
@@ -44,11 +44,14 @@ export default function EditProfile({
           className="h-25 w-25 rounded-full"
           resizeMode="cover"
           source={
-            imageSourceTemp === null
-              ? require("@/assets/images/profile_default.png")
-              : typeof imageSourceTemp === "string"
-                ? { uri: imageSourceTemp }
-                : imageSourceTemp
+            profileImageTemp
+              ? {
+                  uri:
+                    typeof profileImageTemp === "string"
+                      ? profileImageTemp
+                      : profileImageTemp.uri,
+                }
+              : require("@/assets/images/profile_default.png")
           }
         />
 

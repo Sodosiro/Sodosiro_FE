@@ -12,7 +12,7 @@ type SendLocation = (
 ) => void;
 
 export function useLocation(sendLocation: SendLocation, isMapReady: boolean) {
-  const { setIsDenied } = useLocationStore();
+  const setIsDenied = useLocationStore((state) => state.setIsDenied);
 
   useEffect(() => {
     if (!isMapReady) return;

@@ -1,5 +1,5 @@
 import CustomText from "@/components/common/CustomText";
-import { Dispatch, SetStateAction, useState, useCallback, memo } from "react";
+import { Dispatch, memo, SetStateAction, useCallback, useState } from "react";
 import { LayoutChangeEvent, View } from "react-native";
 import DraggableFlatList, {
   OpacityDecorator,
@@ -116,4 +116,3 @@ function TimelineDaySection({
 }
 
 export default memo(TimelineDaySection);
-

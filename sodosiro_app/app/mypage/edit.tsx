@@ -1,32 +1,49 @@
+import { patchMeApi } from "@/api/user";
 import CustomButton from "@/components/common/CustomButton";
 import Header from "@/components/common/Header";
-import EditProfile from "@/components/mypage/edit/EditProfile";
+import EditProfileImage from "@/components/mypage/edit/EditProfileImage";
 import EditText from "@/components/mypage/edit/EditText";
 import { useUserStore } from "@/stores/useUserStore";
+import { ImagePickerAsset } from "expo-image-picker";
 import { router } from "expo-router";
 import { useState } from "react";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ProfileEditScreen() {
-  const {
-    nickname,
-    introduce,
-    imageSource,
-    setNickname,
-    setIntroduce,
-    setImageSource,
-  } = useUserStore();
+  const { user, setUser } = useUserStore();
 
-  const [imageSourceTemp, setImageSourceTemp] = useState(imageSource);
-  const [nicknameTemp, setNicknameTemp] = useState(nickname);
-  const [introduceTemp, setIntroduceTemp] = useState(introduce);
+  const [profileImageTemp, setProfileImageTemp] = useState<
+    string | ImagePickerAsset | null
+  >(user?.profileImage as string | ImagePickerAsset | null);
+  const [nickNameTemp, setNickNameTemp] = useState<string>(
+    user?.nickName ?? "",
+  );
+  const [introductionTemp, setIntroductionTemp] = useState<string>(
+    user?.introduction || "",
+  );
 
-  const handleSave = () => {
-    setNickname(nicknameTemp);
-    setIntroduce(introduceTemp);
-    setImageSource(imageSourceTemp);
-    router.back();
+  const [isPending, setIsPending] = useState(false);
+
+  const handleSave = async () => {
+    if (nickNameTemp && nickNameTemp.length > 1 && nickNameTemp.length < 20) {
+      setIsPending(true);
+      try {
+        const updatedUser = await patchMeApi({
+          nickName: nickNameTemp,
+          introduction: introductionTemp,
+          profileImage: profileImageTemp,
+        });
+        setUser(updatedUser);
+        router.back();
+      } catch (error: any) {
+        console.log("유저 정보 수정 에러", error);
+        console.log(error.response?.status);
+        console.log(error.response?.data);
+      } finally {
+        setIsPending(false);
+      }
+    }
   };
 
   return (
@@ -40,22 +57,24 @@ export default function ProfileEditScreen() {
         }}
         showsHorizontalScrollIndicator={false}
       >
-        <EditProfile
-          imageSourceTemp={imageSourceTemp}
-          setImageSourceTemp={setImageSourceTemp}
+        <EditProfileImage
+          profileImageTemp={profileImageTemp}
+          setProfileImageTemp={setProfileImageTemp}
         />
         <View className={`gap-6 w-full`}>
           <EditText
             title={"닉네임"}
-            text={nicknameTemp}
-            setText={setNicknameTemp}
-            placeholder={nickname}
+            text={nickNameTemp}
+            setText={setNickNameTemp}
+            placeholder={user?.nickName || "닉네임을 정해보세요"}
           />
           <EditText
             title={"한 줄 소개"}
-            text={introduceTemp}
-            setText={setIntroduceTemp}
-            placeholder={introduce}
+            text={introductionTemp}
+            setText={setIntroductionTemp}
+            placeholder={
+              user?.introduction || "강원도의 숨은 소도시를 탐험 중이에요!"
+            }
           />
         </View>
       </ScrollView>
@@ -64,11 +83,17 @@ export default function ProfileEditScreen() {
           type="primary"
           title={"저장"}
           disabled={
-            nickname === nicknameTemp &&
-            introduce === introduceTemp &&
-            imageSource === imageSourceTemp
+            nickNameTemp.trim().length < 2 ||
+            nickNameTemp.trim().length > 10 ||
+            (introductionTemp.trim().length > 0 &&
+              (introductionTemp.trim().length < 2 ||
+                introductionTemp.trim().length > 20)) ||
+            (user?.nickName === nickNameTemp &&
+              user?.introduction === introductionTemp &&
+              user?.profileImage === profileImageTemp)
           }
           onPress={handleSave}
+          loading={isPending}
         />
       </View>
     </SafeAreaView>

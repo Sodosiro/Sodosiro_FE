@@ -1,5 +1,5 @@
 import CustomText from "@/components/common/CustomText";
-import { Body3TightClass } from "@/styles/Typography";
+import { Body3Class } from "@/styles/Typography";
 import { Dispatch, SetStateAction } from "react";
 import { TextInput, View } from "react-native";
 
@@ -8,11 +8,13 @@ export default function EditText({
   placeholder,
   text,
   setText,
+  maxLength,
 }: {
   title: string;
   placeholder: string;
   text: string;
   setText: Dispatch<SetStateAction<string>>;
+  maxLength?: number;
 }) {
   return (
     <View className={`gap-2`}>
@@ -23,7 +25,8 @@ export default function EditText({
         returnKeyType="search"
         placeholder={placeholder}
         placeholderTextColor={"#888888"}
-        className={`${Body3TightClass} text-text-secondary w-full p-4 border border-border rounded-xl`}
+        className={`${Body3Class} text-text-secondary w-full p-4 border border-border rounded-xl`}
+        maxLength={maxLength}
       />
     </View>
   );

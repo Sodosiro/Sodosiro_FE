@@ -3,7 +3,7 @@ import useSelectedAnimation from "@/hooks/useSelcetedAnimation";
 import { useLocationStore } from "@/stores/useLocationStore";
 
 export default function GpsButton({}) {
-  const { isTracking } = useLocationStore();
+  const isTracking = useLocationStore((state) => state.isTracking);
 
   const { strokeStyle, fillStyle } = useSelectedAnimation(isTracking, {
     stroke: ["#1a1a1a", "#0066FF"],

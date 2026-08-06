@@ -21,8 +21,8 @@ export default function KakaoMap({
   initialData: any;
 }) {
   const { isLoading, setIsLoading } = useWebViewStore();
-
-  const { result, selectedCategory } = useExploreStore();
+  const result = useExploreStore((state) => state.result);
+  const selectedCategory = useExploreStore((state) => state.selectedCategory);
 
   const { isMapReady, sendLocation, handleMessage, updateData } = useWebView({
     webViewRef,

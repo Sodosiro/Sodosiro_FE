@@ -68,3 +68,5 @@ export { default as RateIcon } from "./36px/rate.svg";
 export { default as DotIcon } from "./10px/dot.svg";
 
 export { default as GpsIcon } from "./gps.svg";
+
+export { default as KakaoLogo } from "./kakao_logo.svg";

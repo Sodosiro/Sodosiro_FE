@@ -7,7 +7,8 @@ import { router } from "expo-router";
 import { TextInput, View } from "react-native";
 
 export default function SearchTextBar() {
-  const { keyword, setKeyword } = useExploreStore();
+  const keyword = useExploreStore((state) => state.keyword);
+  const setKeyword = useExploreStore((state) => state.setKeyword);
 
   return (
     <View className={`flex-row items-center gap-2`}>

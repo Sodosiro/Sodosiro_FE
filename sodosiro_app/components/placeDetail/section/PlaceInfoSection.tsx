@@ -84,8 +84,6 @@ const LocationMap = ({ address }: LocationMapProps) => {
   const handleMessage = (event: WebViewMessageEvent) => {
     const data = JSON.parse(event.nativeEvent.data);
 
-    console.log(data.type, data.data);
-
     if (data.type === "MAP_READY") {
       webViewRef.current?.postMessage(
         JSON.stringify({

@@ -13,11 +13,11 @@ export async function patchMeApi(user: User) {
     string: JSON.stringify({
       nickName: user.nickName,
       introduction: user.introduction ?? "",
+      removeImage: !image,
     }),
     type: "application/json",
   } as any);
 
-  // 기본 이미지로 변경 로직 백엔드 논의 후 수정 필요
   if (image !== null && typeof image !== "string") {
     formData.append("image", {
       uri: image.uri,

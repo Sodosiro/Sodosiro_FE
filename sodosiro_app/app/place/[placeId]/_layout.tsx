@@ -10,6 +10,7 @@ export default function PlaceLayout() {
     >
       <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen name="review" options={{ headerShown: false }} />
+      <Stack.Screen name="photo" options={{ headerShown: false }} />
       <Stack.Screen name="reviewWrite" options={{ headerShown: false }} />
     </Stack>
   );

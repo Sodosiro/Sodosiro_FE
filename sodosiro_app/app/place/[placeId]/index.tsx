@@ -62,7 +62,7 @@ export default function PlaceDetailScreen() {
         <PlaceInfo
           category={PLACE_DETAIL.category}
           title={PLACE_DETAIL.title}
-          desc={PLACE_DETAIL.desc}
+          desc={PLACE_DETAIL.overview}
           rate={PLACE_DETAIL.rate}
           reviewCount={PLACE_DETAIL.reviewCount}
         />
@@ -73,7 +73,7 @@ export default function PlaceDetailScreen() {
         {/* 이용 정보 */}
         <PlaceInfoSection
           ref={infoRef}
-          address={PLACE_DETAIL.address}
+          address={PLACE_DETAIL.addr1}
           info={PLACE_DETAIL.info}
           onLayout={(e) => handleOnLayout(e, "이용 정보")}
         />

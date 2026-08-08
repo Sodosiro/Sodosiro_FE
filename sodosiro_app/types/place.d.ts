@@ -27,10 +27,11 @@ type PlaceType = {
 type ReviewType = {
   id: number;
   nickname: string;
-  imageSource: string | null;
+  images: { imageUrl: string; displayOrder: number }[] | null;
   rate: number;
   comment: string;
   createdAt: Date;
+  gpsVerified: boolean;
 };
 
 type PopularPlaceType = {
@@ -42,4 +43,40 @@ type PopularPlaceType = {
   reviewCount: number;
   desc: string;
   keywords: string[];
+};
+
+type PlaceDetailType = {
+  contentId: number;
+  title: string;
+  category: CategoryType;
+  addr1: string;
+  lat: number;
+  lng: number;
+  overview: string;
+  heart: boolean;
+  images: string[];
+  reason: string;
+  rate: number;
+  reviewCount: number;
+  info: {
+    opening: string;
+    phoneNumber: string;
+    parking: boolean;
+    pet: boolean;
+  };
+  reviews: {
+    id: number;
+    nickname: string;
+    images: { imageUrl: string; displayOrder: number }[] | null;
+    rate: number;
+    comment: string;
+    createdAt: Date;
+    gpsVerified: boolean;
+  }[];
+  recommendPlaces: {
+    id: number;
+    imageSource: any;
+    title: string;
+    desc: string;
+  }[];
 };

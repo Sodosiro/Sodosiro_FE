@@ -1,17 +1,20 @@
 import { StarIcon } from "@/assets/svgs";
 import CustomText from "@/components/common/CustomText";
-import { Image, Pressable, View } from "react-native";
+import { Image, Pressable, ScrollView, View } from "react-native";
+import VerifiedTag from "./VerifiedTag";
 
 export default function Review({
   review,
   isLast = false,
   prev = false,
+  inPhotoModal = false,
   handleImageClick,
 }: {
   review: ReviewType;
   isLast?: boolean;
   prev?: boolean;
-  handleImageClick: (imageSource: string) => void;
+  inPhotoModal?: boolean;
+  handleImageClick: (images: string[], index: number) => void;
 }) {
   const date = review.createdAt;
   const formattedDate = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
@@ -28,36 +31,68 @@ export default function Review({
           </View>
           <CustomText
             font="body3"
-            className={`text-text-muted flex-1`}
+            className={`text-text-muted`}
             numberOfLines={1}
           >
             {review.nickname}
           </CustomText>
+          {review.gpsVerified && <VerifiedTag />}
         </View>
         <CustomText font="body3" className={`text-text-muted`}>
           {formattedDate}
         </CustomText>
       </View>
 
-      <View className={`${prev ? `flex-row` : ``} gap-3`}>
-        <CustomText
-          font="body3 review"
-          className={`text-text-secondary ${prev && `flex-1`}`}
-          numberOfLines={prev ? 2 : undefined}
-        >
-          {review.comment}
-        </CustomText>
-        {review.imageSource && (
-          <Pressable
-            onPress={() => handleImageClick(review.imageSource as string)}
+      {inPhotoModal ? (
+        <ScrollView>
+          <CustomText font="body3 review" className={`text-text-secondary`}>
+            {review.comment}
+          </CustomText>
+        </ScrollView>
+      ) : (
+        <View className={`${prev ? `flex-row` : ``} gap-3`}>
+          <CustomText
+            font="body3 review"
+            className={`text-text-secondary ${prev && `flex-1`}`}
+            numberOfLines={prev ? 2 : undefined}
           >
-            <Image
-              source={{ uri: review.imageSource }}
-              className={`${prev ? `w-13 h-13` : `w-20 h-20`} rounded-xl`}
-            />
-          </Pressable>
-        )}
-      </View>
+            {review.comment}
+          </CustomText>
+
+          {review.images &&
+            (prev ? (
+              <Image
+                source={{ uri: review.images?.[0].imageUrl }}
+                className={`${prev ? "w-13 h-13" : "w-25 h-25"} rounded-xl`}
+              />
+            ) : (
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerClassName="flex-row gap-1.5"
+              >
+                {review.images.map((image, index) => (
+                  <Pressable
+                    key={image.imageUrl + index}
+                    onPress={() =>
+                      handleImageClick(
+                        review.images?.flatMap(
+                          (image) => image.imageUrl,
+                        ) as string[],
+                        index,
+                      )
+                    }
+                  >
+                    <Image
+                      source={{ uri: image.imageUrl }}
+                      className={`${prev ? "w-13 h-13" : "w-25 h-25"} rounded-xl`}
+                    />
+                  </Pressable>
+                ))}
+              </ScrollView>
+            ))}
+        </View>
+      )}
     </View>
   );
 }

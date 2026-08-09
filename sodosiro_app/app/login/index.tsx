@@ -1,5 +1,7 @@
+import { loginWithKakaoApi } from "@/api/auth";
 import { KakaoLogo } from "@/assets/svgs";
 import CustomText from "@/components/common/CustomText";
+import { signInWithKakao } from "@/lib/kakao";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { router } from "expo-router";
 import { Pressable, View } from "react-native";
@@ -9,30 +11,29 @@ export default function LoginScreen() {
   const login = useAuthStore((state) => state.login);
 
   const handleKakaoLogin = async () => {
-    router.replace("/(tabs)");
-    // const result = await signInWithKakao();
+    const result = await signInWithKakao();
 
-    // if (result.type === "cancel") {
-    //   return;
-    // }
+    if (result.type === "cancel") {
+      return;
+    }
 
-    // if (result.type === "error") {
-    //   console.error(result.message);
-    //   return;
-    // }
+    if (result.type === "error") {
+      console.error(result.message);
+      return;
+    }
 
-    // try {
-    //   const data = await loginWithKakaoApi(result.token.idToken);
+    try {
+      const data = await loginWithKakaoApi(result.token.idToken);
 
-    //   await login(data.accessToken, data.refreshToken);
+      await login(data.accessToken, data.refreshToken);
 
-    //   router.dismissAll();
-    //   router.replace("/(tabs)");
-    // } catch (error: any) {
-    //   console.log("로그인 에러", error);
-    //   console.log(error.response?.status);
-    //   console.log(error.response?.data);
-    // }
+      router.dismissAll();
+      router.replace("/(tabs)");
+    } catch (error: any) {
+      console.log("로그인 에러", error);
+      console.log(error.response?.status);
+      console.log(error.response?.data);
+    }
   };
 
   return (

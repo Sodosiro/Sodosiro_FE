@@ -12,16 +12,20 @@ type CategoryTypeWithoutAll = Exclude<CategoryType, "all">;
 
 type PlaceType = {
   id: number;
-  title?: string;
-  imageSource?: any;
   desc?: string;
   rate?: number;
   reviewCount?: number;
-  category: CategoryType;
-  lat?: number;
-  lng?: number;
   favorite?: boolean;
   popular?: boolean;
+  position: number;
+  title: string;
+  category: CategoryTypeWithoutAll;
+  completed: boolean;
+  latlng: {
+    lat: number;
+    lng: number;
+  };
+  imageSource?: string;
 };
 
 type ReviewType = {

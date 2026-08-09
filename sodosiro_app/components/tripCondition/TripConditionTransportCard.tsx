@@ -19,14 +19,11 @@ export default function TransportCard({
   disabled = false,
   onPress,
 }: Props) {
-  const { borderStyle, textStyle, strokeStyle } = useSelectedAnimation(
-    selected,
-    {
-      border: ["#d9d9d9", "#1a1a1a"],
-      color: ["#888888", "#1a1a1a"],
-      stroke: ["#888888", "#1a1a1a"],
-    },
-  );
+  const { borderStyle, textStyle, strokeStyle } = useSelectedAnimation(selected, {
+    border: ["#d9d9d9", "#1a1a1a"],
+    color: ["#888888", "#1a1a1a"],
+    stroke: ["#888888", "#1a1a1a"],
+  });
 
   return (
     <AnimatedPressable

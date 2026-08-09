@@ -19,10 +19,7 @@ type UpcomingTripCardType = {
   locationText: string;
 };
 
-function UpcomingTripCard({
-  trip,
-  onPress,
-}: UpcomingTripCardProps) {
+function UpcomingTripCard({ trip, onPress }: UpcomingTripCardProps) {
   return (
     <View className="rounded-2xl border border-[#E5E5E5] bg-white px-5 py-4 mb-5">
       {/* D-Day Badge 적용 */}
@@ -63,13 +60,8 @@ function UpcomingTripCard({
       <View className="h-px bg-[#E5E5E5] my-3" />
 
       {/* Button */}
-      <View>
-        <ActionBadge
-          bgWhite
-          text={`여행 보기`}
-          onPress={() => onPress()}
-          onLayout={() => {}}
-        />
+      <View className="flex-row flex-1">
+        <ActionBadge text={`여행 보기`} onPress={() => onPress()} onLayout={() => {}} />
       </View>
     </View>
   );

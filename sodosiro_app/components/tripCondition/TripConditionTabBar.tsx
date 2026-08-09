@@ -4,26 +4,18 @@ import { View } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import CustomText from "../common/CustomText";
 
-type TabType = "예정" | "진행 중" | "완료";
+type TabType = "지금 많이 찾는 장소" | "좋아요한 장소";
 
-type TripTabBarProps = {
+type TripConditionTabBarProps = {
   currentTab: TabType;
   moveToSection: (tab: TabType) => void;
-  counts?: {
-    upcoming: number;
-    completed: number;
-  };
 };
 
-export default function TripTabBar({
+export default function TripConditionTabBar({
   currentTab,
   moveToSection,
-  counts = {
-    upcoming: 0,
-    completed: 0,
-  },
-}: TripTabBarProps) {
-  const tabs: TabType[] = ["예정", "진행 중", "완료"];
+}: TripConditionTabBarProps) {
+  const tabs: TabType[] = ["지금 많이 찾는 장소", "좋아요한 장소"];
 
   const [tabWidth, setTabWidth] = useState(0);
   const currentIndex = tabs.indexOf(currentTab);
@@ -60,12 +52,12 @@ export default function TripTabBar({
   };
 
   const getTabLabel = (tab: TabType) => {
-    if (tab === "예정") {
-      return `${tab} ${counts.upcoming}`;
+    if (tab === "지금 많이 찾는 장소") {
+      return `${tab}`;
     }
 
-    if (tab === "완료") {
-      return `${tab} ${counts.completed}`;
+    if (tab === "좋아요한 장소") {
+      return `${tab}`;
     }
 
     return tab;

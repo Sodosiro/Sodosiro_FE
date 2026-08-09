@@ -23,9 +23,7 @@ export default function Dropdown({
   disabled = false,
 }: DropdownProps) {
   const [contentHeight, setContentHeight] = useState(0);
-  const animatedController = useRef(
-    new Animated.Value(isExpanded ? 1 : 0),
-  ).current;
+  const animatedController = useRef(new Animated.Value(isExpanded ? 1 : 0)).current;
 
   useEffect(() => {
     Animated.timing(animatedController, {
@@ -54,13 +52,9 @@ export default function Dropdown({
 
   return (
     <View>
-      <View className={`flex-row items-center`}>
+      <View className={`flex-row items-center flex-1`}>
         {header}
-        <View className="flex-1" />
-        <Pressable
-          onPress={onToggle}
-          className={`${disabled && `pointer-events-none`}`}
-        >
+        <Pressable onPress={onToggle} className={`${disabled && `pointer-events-none`}`}>
           <RotatingArrowIcon isExpanded={isExpanded} />
         </Pressable>
       </View>

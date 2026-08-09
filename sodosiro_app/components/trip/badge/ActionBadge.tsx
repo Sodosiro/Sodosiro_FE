@@ -1,7 +1,7 @@
 import { WhiteBigCheckIcon } from "@/assets/svgs";
 import { AnimatedPressable } from "@/components/common/animated/Animated";
 import CustomText from "@/components/common/CustomText";
-import { BADGE_BASE_CLASS } from "@/components/trip/badge/badgeStyles";
+import { ACTION_BADGE_CLASS } from "@/components/trip/badge/badgeStyles";
 import { LayoutChangeEvent } from "react-native";
 
 type ActionBadgeProps = {
@@ -34,9 +34,7 @@ export default function ActionBadge({
       ? "bg-text-primary"
       : disabled
         ? "bg-btn-disabled"
-        : bgWhite
-          ? "bg-white"
-          : "bg-bg-muted";
+        : "bg-bg-soft";
 
   const textClass = isOngoing
     ? "text-text-primary"
@@ -48,7 +46,7 @@ export default function ActionBadge({
 
   return (
     <AnimatedPressable
-      className={`${bgClass} ${BADGE_BASE_CLASS}`}
+      className={`${bgClass} ${ACTION_BADGE_CLASS}`}
       disabled={disabled}
       onPress={onPress}
       onLayout={onLayout}

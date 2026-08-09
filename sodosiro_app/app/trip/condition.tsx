@@ -1,19 +1,19 @@
 import { useState } from "react";
-import { ScrollView, View } from "react-native";
+import { ScrollView, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import BottomSheet from "@/components/common/BottomSheet";
 import CategoryBadge from "@/components/common/category/CategoryBadge";
 import Header from "@/components/common/Header";
 import Subtitle from "@/components/common/Subtitle";
-import PopularPlacesSection from "@/components/home/popularPlace/PoplularPlacesSection";
-import BusIcon from "@/components/icon/transport/BusIcon";
+import BigBusIcon from "@/components/icon/transport/BusIcon";
 import CarIcon from "@/components/icon/transport/CarIcon";
 import TripConditionDatePickerButton from "@/components/tripCondition/TripConditionDatePickerButton";
 import DatePickerSheet from "@/components/tripCondition/TripConditionDatePickerSheet";
 import TripConditionFooter from "@/components/tripCondition/TripConditionFooter";
 import LocationPickerButton from "@/components/tripCondition/TripConditionLocationButton";
 import TransportCard from "@/components/tripCondition/TripConditionTransportCard";
+import TripPlacesSection from "@/components/tripCondition/TripPlacesSection";
 import { router, Stack } from "expo-router";
 
 type TransportType = "car" | "bus" | "";
@@ -41,6 +41,7 @@ export default function TripScreen() {
     startDate: null,
     endDate: null,
   });
+  const [selectedPlace, setSelectedPlace] = useState<PopularPlaceType | null>(null);
 
   const transportList = [
     {
@@ -51,16 +52,14 @@ export default function TripScreen() {
     },
     {
       key: "bus",
-      icon: BusIcon,
+      icon: BigBusIcon,
       title: "대중교통",
       description: "버스 · 도보 중심",
     },
   ] as const;
 
   // 선택된 카테고리 목록 상태 (최대 2개)
-  const [selectedCategories, setSelectedCategories] = useState<CategoryType[]>(
-    [],
-  );
+  const [selectedCategories, setSelectedCategories] = useState<CategoryType[]>([]);
 
   // 뱃지 토글 및 2개 제한 처리 함수
   const handleSelectCategory = (category: CategoryType) => {
@@ -92,11 +91,16 @@ export default function TripScreen() {
     router.push("/trip/timeline");
   };
 
+  // 장소 선택
+  const handleSelectPlace = (place: PopularPlaceType) => {
+    setSelectedPlace(place);
+
+    // BottomSheet 닫기
+    setShowLocation(false);
+  };
+
   return (
-    <SafeAreaView
-      style={{ flex: 1, backgroundColor: "white" }}
-      edges={["top", "bottom"]}
-    >
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }} edges={["top", "bottom"]}>
       <Stack.Screen options={{ headerShown: false }} />
       <Header title="여행 조건 설정" />
       <ScrollView
@@ -114,10 +118,7 @@ export default function TripScreen() {
               }}
             />
             {showCalendar && (
-              <BottomSheet
-                visible={showCalendar}
-                onClose={() => setShowCalendar(false)}
-              >
+              <BottomSheet visible={showCalendar} onClose={() => setShowCalendar(false)}>
                 <DatePickerSheet
                   initialStartDate={dateRange.startDate ?? undefined}
                   initialEndDate={dateRange.endDate ?? undefined}
@@ -153,9 +154,7 @@ export default function TripScreen() {
           <View className="gap-3">
             <Subtitle title="여행 스타일" description="최대 2개 선택" />
             <View className="flex-row flex-wrap gap-2.5">
-              {CATEGORIES.filter(
-                (category) => category !== "accommodation",
-              ).map((category) => {
+              {CATEGORIES.filter((category) => category !== "accommodation").map((category) => {
                 const isSelected = selectedCategories.includes(category);
 
                 return (
@@ -171,24 +170,30 @@ export default function TripScreen() {
             </View>
           </View>
           <View className="gap-3">
-            <Subtitle
-              title="꼭 가고 싶은 곳이 있으신가요?"
-              description="선택사항"
-            />
+            <Subtitle title="꼭 가고 싶은 곳이 있으신가요?" description="선택사항" />
             <View className="flex-row gap-3">
               <LocationPickerButton
-                locationName={"죽도해변"}
+                locationName={selectedPlace?.title}
                 onPress={() => setShowLocation(true)}
               />
               {showLocation && (
-                <BottomSheet
-                  visible={showLocation}
-                  onClose={() => setShowLocation(false)}
-                >
-                  <PopularPlacesSection />
+                <BottomSheet visible={showLocation} onClose={() => setShowLocation(false)}>
+                  <TripPlacesSection onSelectPlace={handleSelectPlace} />
                   <View className="pt-5"></View>
                 </BottomSheet>
               )}
+            </View>
+          </View>
+          <View className="gap-3">
+            <Subtitle title="AI가 참고할 내용을 입력해주세요" description="선택사항" />
+            <View className="flex-row gap-3">
+              <TextInput
+                multiline
+                placeholder="내용을 입력하세요."
+                placeholderTextColor="#999999"
+                textAlignVertical="top"
+                className="min-h-[94px] flex-1 rounded-[12px] border border-[#D9D9D9] bg-white p-3 text-base text-[#1A1A1A]"
+              />
             </View>
           </View>
         </View>

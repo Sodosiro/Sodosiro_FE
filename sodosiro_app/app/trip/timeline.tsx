@@ -43,16 +43,9 @@ export default function TimelineScreen() {
   const badgeOrder = useMemo(() => temp.map(({ id }) => id), [temp]);
 
   return (
-    <SafeAreaView
-      style={{ flex: 1, backgroundColor: "white" }}
-      edges={["top", "bottom"]}
-    >
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }} edges={["top", "bottom"]}>
       <Stack.Screen options={{ headerShown: false }} />
-      <Header
-        title={tripTitle}
-        showPencil
-        onTitleChange={(newTitle) => setTripTitle(newTitle)}
-      />
+      <Header title={tripTitle} showPencil onTitleChange={(newTitle) => setTripTitle(newTitle)} />
 
       <View className="flex-1">
         <TimelineDayBadgeSection

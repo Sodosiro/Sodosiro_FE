@@ -25,11 +25,13 @@ export { default as XMiniIcon } from "./16px/x_mini.svg";
 
 // 20px
 export { default as PencilIcon } from "./20px/pencil.svg";
+export { default as PlusIcon } from "./20px/plus.svg";
 
 // 24px
 export { default as AwardIcon } from "./24px/award.svg";
 export { default as WhiteBigCheckIcon } from "./24px/big-check-white.svg";
 export { default as BigCheckIcon } from "./24px/big-check.svg";
+export { default as BusIcon } from "./24px/bus.svg";
 export { default as CalendarIcon } from "./24px/calendar.svg";
 export { default as CheckIcon } from "./24px/check.svg";
 export { default as CheckOffIcon } from "./24px/check_off.svg";
@@ -44,15 +46,17 @@ export { default as NotificationIcon } from "./24px/notification.svg";
 export { default as RefreshIcon } from "./24px/refresh.svg";
 export { default as RemoveIcon } from "./24px/remove.svg";
 export { default as SearchIcon } from "./24px/search.svg";
+export { default as SwapIcon } from "./24px/swap.svg";
 export { default as TrashIcon } from "./24px/trash.svg";
 export { default as UpIcon } from "./24px/up.svg";
+export { default as WalkIcon } from "./24px/walk.svg";
 export { default as XIcon } from "./24px/x.svg";
 
 export { default as SpinnerIcon } from "./24px/spinner.svg";
 
 // 32px
 export { default as BigXIcon } from "./32px/big_x.svg";
-export { default as BusIcon } from "./32px/bus.svg";
+export { default as BigBusIcon } from "./32px/bus.svg";
 export { default as CarIcon } from "./32px/car.svg";
 export { default as HeartCircle } from "./32px/heart_circle.svg";
 export { default as HeartCircleStroke } from "./32px/heart_circle_stroke.svg";
@@ -70,3 +74,4 @@ export { default as DotIcon } from "./10px/dot.svg";
 export { default as GpsIcon } from "./gps.svg";
 
 export { default as KakaoLogo } from "./kakao_logo.svg";
+

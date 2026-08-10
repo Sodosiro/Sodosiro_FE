@@ -1,7 +1,7 @@
 import { AnimatedPath } from "@/components/common/animated/Animated";
 import Svg from "react-native-svg";
 
-export default function BusIcon({ animatedStroke }: AnimatedIconProps) {
+export default function BigBusIcon({ animatedStroke }: AnimatedIconProps) {
   return (
     <Svg width="28" height="28" viewBox="0 0 28 28" fill="none">
       <AnimatedPath

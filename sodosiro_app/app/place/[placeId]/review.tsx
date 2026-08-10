@@ -6,7 +6,7 @@ import Header from "@/components/common/Header";
 import PhotoPreview from "@/components/placeDetail/review/PhotoPreview";
 import ReviewFilter from "@/components/placeDetail/review/ReviewFilter";
 import ReviewList from "@/components/placeDetail/review/ReviewList";
-import { REVIEW_LIST } from "@/mocks/places";
+import { useReviewsQuery } from "@/hooks/query/useReviewsQuery";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { ScrollView, View } from "react-native";
@@ -21,7 +21,9 @@ export default function ReviewScreen() {
     placeId: string;
   }>();
 
-  const images = REVIEW_LIST.reviews.flatMap((review) => review.images ?? []);
+  const { data, isPending } = useReviewsQuery(Number(placeId));
+
+  const reviews = data?.pages.flatMap((page) => page.data.reivews) ?? [];
 
   return (
     <SafeAreaView
@@ -34,9 +36,11 @@ export default function ReviewScreen() {
       <View className={`gap-3 px-5`}>
         <View className={`flex-row gap-1 items-center`}>
           <StarIcon />
-          <CustomText font="heading2">{REVIEW_LIST.rate}</CustomText>
+          <CustomText font="heading2">
+            {data?.pages[0].data.avgRating}
+          </CustomText>
           <CustomText font="body3" className={`text-text-muted`}>
-            {"(" + REVIEW_LIST.reviewCount + ")"}
+            {"(" + data?.pages[0].data.totalCount + ")"}
           </CustomText>
         </View>
 
@@ -50,7 +54,10 @@ export default function ReviewScreen() {
       <ScrollView contentContainerClassName="pb-8 px-5">
         <PhotoPreview />
         <CustomText font="heading2">리뷰</CustomText>
-        <ReviewList title={title} reviews={REVIEW_LIST.reviews} />
+        <ReviewList
+          title={title}
+          reviews={data?.pages.flatMap((page) => page.data.reviews) ?? []}
+        />
       </ScrollView>
       <BottomActionBar>
         <CustomButton

@@ -1,4 +1,5 @@
 import CustomText from "@/components/common/CustomText";
+import { ImagePickerAsset } from "expo-image-picker";
 import { Dispatch, SetStateAction } from "react";
 import { TextInput, View } from "react-native";
 import ReviewImagePicker from "./ReviewImagePicker";
@@ -6,15 +7,22 @@ import ReviewImagePicker from "./ReviewImagePicker";
 type Props = {
   content: string;
   setContent: Dispatch<SetStateAction<string>>;
-  imageSource: string | null;
-  setImageSource: Dispatch<SetStateAction<string | null>>;
+  imageSources: ImagePickerAsset[];
+  setImageSources: Dispatch<SetStateAction<ImagePickerAsset[]>>;
+
+  isPending: boolean;
+  isPicking: boolean;
+  setIsPicking: Dispatch<SetStateAction<boolean>>;
 };
 
 export default function ReviewForm({
   content,
   setContent,
-  imageSource,
-  setImageSource,
+  imageSources,
+  setImageSources,
+  isPending,
+  isPicking,
+  setIsPicking,
 }: Props) {
   return (
     <View className={`gap-3`}>
@@ -30,6 +38,7 @@ export default function ReviewForm({
             scrollEnabled={false}
             maxLength={300}
             textAlignVertical="top"
+            editable={!isPending}
           />
           <CustomText
             font="body3"
@@ -39,8 +48,11 @@ export default function ReviewForm({
           </CustomText>
         </View>
         <ReviewImagePicker
-          imageSource={imageSource}
-          setImageSource={setImageSource}
+          imageSources={imageSources}
+          setImageSources={setImageSources}
+          isPending={isPending}
+          isPicking={isPicking}
+          setIsPicking={setIsPicking}
         />
       </View>
     </View>

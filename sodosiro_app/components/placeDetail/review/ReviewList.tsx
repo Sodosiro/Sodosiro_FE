@@ -28,9 +28,9 @@ export default function ReviewList({
   return (
     <>
       {reviews?.length > 0 ? (
-        reviews.map((review, index) => (
+        reviews?.map((review, index) => (
           <Review
-            key={review.reviewId}
+            key={review?.reviewId}
             review={review}
             isLast={reviews.length - 1 === index}
             prev={prev}

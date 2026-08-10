@@ -16,8 +16,8 @@ export default function Review({
   inPhotoModal?: boolean;
   handleImageClick: (images: string[], index: number) => void;
 }) {
-  const date = review.createdAt;
-  const formattedDate = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+  const date = new Date(review?.createdAt);
+  const formattedDate = `${date?.getFullYear()}/${date?.getMonth() + 1}/${date?.getDate()}`;
 
   return (
     <View
@@ -27,16 +27,16 @@ export default function Review({
         <View className={`flex-row gap-1.5 items-center flex-1`}>
           <View className={`flex-row gap-0.5 items-center`}>
             <StarIcon />
-            <CustomText font="body2">{review.rating}</CustomText>
+            <CustomText font="body2">{review?.rating}</CustomText>
           </View>
           <CustomText
             font="body3"
             className={`text-text-muted`}
             numberOfLines={1}
           >
-            {review.author.displayName}
+            {review?.author.displayName}
           </CustomText>
-          {review.gpsVerified && <VerifiedTag />}
+          {review?.gpsVerified && <VerifiedTag />}
         </View>
         <CustomText font="body3" className={`text-text-muted`}>
           {formattedDate}
@@ -46,7 +46,7 @@ export default function Review({
       {inPhotoModal ? (
         <ScrollView>
           <CustomText font="body3 review" className={`text-text-secondary`}>
-            {review.body}
+            {review?.body}
           </CustomText>
         </ScrollView>
       ) : (
@@ -56,13 +56,13 @@ export default function Review({
             className={`text-text-secondary ${prev && `flex-1`}`}
             numberOfLines={prev ? 2 : undefined}
           >
-            {review.body}
+            {review?.body}
           </CustomText>
 
-          {review.images &&
+          {review?.images &&
             (prev ? (
               <Image
-                source={{ uri: review.images?.[0].imageUrl }}
+                source={{ uri: review?.images?.[0]?.imageUrl }}
                 className={`${prev ? "w-13 h-13" : "w-25 h-25"} rounded-xl`}
               />
             ) : (
@@ -71,7 +71,7 @@ export default function Review({
                 showsHorizontalScrollIndicator={false}
                 contentContainerClassName="flex-row gap-1.5"
               >
-                {review.images.map((image, index) => (
+                {review?.images.map((image, index) => (
                   <Pressable
                     key={image.imageUrl + index}
                     onPress={() =>
@@ -84,7 +84,7 @@ export default function Review({
                     }
                   >
                     <Image
-                      source={{ uri: image.imageUrl }}
+                      source={{ uri: image?.imageUrl }}
                       className={`${prev ? "w-13 h-13" : "w-25 h-25"} rounded-xl`}
                     />
                   </Pressable>

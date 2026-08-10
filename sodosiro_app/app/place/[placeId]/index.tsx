@@ -51,7 +51,6 @@ export default function PlaceDetailScreen() {
     popularity,
   } = placeDetail ?? {};
 
-  console.log(popularity);
   if (isPending || !placeDetail) {
     return (
       <SafeAreaView
@@ -116,6 +115,7 @@ export default function PlaceDetailScreen() {
         {/* 리뷰 */}
         <ReviewSection
           ref={reviewRef}
+          contentId={contentId}
           title={title}
           reviews={latestReviews}
           onLayout={(e) => handleOnLayout(e, "리뷰")}

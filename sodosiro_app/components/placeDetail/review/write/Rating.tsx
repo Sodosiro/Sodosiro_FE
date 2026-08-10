@@ -4,9 +4,10 @@ import { Pressable, View } from "react-native";
 interface Props {
   rate: number;
   setRate: (value: number) => void;
+  isPending: boolean;
 }
 
-export default function Rating({ rate, setRate }: Props) {
+export default function Rating({ rate, setRate, isPending }: Props) {
   return (
     <View className="flex-row">
       {Array.from({ length: 5 }).map((_, index) => {
@@ -34,6 +35,7 @@ export default function Rating({ rate, setRate }: Props) {
                 height: "100%",
               }}
               onPress={() => setRate(score - 0.5)}
+              disabled={isPending}
             />
 
             {/* 오른쪽 절반 */}
@@ -46,6 +48,7 @@ export default function Rating({ rate, setRate }: Props) {
                 height: "100%",
               }}
               onPress={() => setRate(score)}
+              disabled={isPending}
             />
           </View>
         );

@@ -8,12 +8,14 @@ import ReviewList from "../review/ReviewList";
 import PlaceDetailSectionContainer from "./PlaceDetailSectionContainer";
 
 interface Props extends ViewProps {
+  contentId: number;
   title: string;
   reviews: ReviewType[];
   ref: RefObject<View | null>;
 }
 
 export default function ReviewSection({
+  contentId,
   title,
   reviews,
   ref,
@@ -32,7 +34,7 @@ export default function ReviewSection({
               router.push({
                 pathname: "/place/[placeId]/review",
                 params: {
-                  placeId: "123",
+                  placeId: contentId,
                   title: title,
                 },
               })

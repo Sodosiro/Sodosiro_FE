@@ -1,6 +1,7 @@
 import { AnimatedPressable } from "@/components/common/animated/Animated";
+import CustomCarousel from "@/components/common/CustomCarousel";
 import { Dispatch, SetStateAction, useState } from "react";
-import { Image, Modal, Pressable } from "react-native";
+import { Modal, View } from "react-native";
 import { FadeIn, FadeOut } from "react-native-reanimated";
 import Review from "./Review";
 import EmptyReview from "./ReviewEmpty";
@@ -15,10 +16,13 @@ export default function ReviewList({
   prev?: boolean;
 }) {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedImages, setSelectedImages] = useState<string[] | null>(null);
+  const [carouselIndex, setCarouselIndex] = useState(0);
 
-  const handleImageClick = (imageSource: string) => {
-    setSelectedImage(imageSource);
+  const handleImageClick = (images: string[], index: number) => {
+    console.log(index);
+    setSelectedImages(images);
+    setCarouselIndex(index);
     setIsModalVisible(true);
   };
 
@@ -35,12 +39,13 @@ export default function ReviewList({
           />
         ))
       ) : (
-        <EmptyReview title={title} />
+        <EmptyReview title={title} showWriteButton={prev} />
       )}
       <ReviewImageModal
         isModalVisible={isModalVisible}
         setIsModalVisible={setIsModalVisible}
-        imageSource={selectedImage as string}
+        images={selectedImages as string[]}
+        defaultIndex={carouselIndex}
       />
     </>
   );
@@ -49,11 +54,13 @@ export default function ReviewList({
 const ReviewImageModal = ({
   isModalVisible,
   setIsModalVisible,
-  imageSource,
+  images,
+  defaultIndex,
 }: {
   isModalVisible: boolean;
   setIsModalVisible: Dispatch<SetStateAction<boolean>>;
-  imageSource: string;
+  images: string[];
+  defaultIndex: number;
 }) => {
   return (
     <Modal
@@ -62,24 +69,23 @@ const ReviewImageModal = ({
       animationType="fade"
       statusBarTranslucent
       onRequestClose={() => setIsModalVisible(false)}
-      className={`items-center`}
     >
-      <AnimatedPressable
-        entering={FadeIn.duration(250)}
-        exiting={FadeOut.duration(250)}
-        className="absolute inset-0 bg-black/50"
-        style={{ backgroundColor: "rgba(0,0,0,0.7)" }}
-        onPress={() => setIsModalVisible(false)}
-      />
-      <Pressable
-        className={`flex-1 w-full items-center justify-center`}
-        onPress={() => setIsModalVisible(false)}
-      >
-        <Image
-          className={`w-[80%] aspect-square rounded-xl`}
-          source={{ uri: imageSource }}
+      <View className={`flex-1 items-center justify-center`}>
+        <AnimatedPressable
+          entering={FadeIn.duration(250)}
+          exiting={FadeOut.duration(250)}
+          className="absolute inset-0 bg-black/50"
+          style={{ backgroundColor: "rgba(0,0,0,0.7)" }}
+          onPress={() => setIsModalVisible(false)}
         />
-      </Pressable>
+        <CustomCarousel
+          images={images}
+          autoPlay={false}
+          defaultIndex={defaultIndex}
+          aspect={1}
+          resizeMode="contain"
+        />
+      </View>
     </Modal>
   );
 };

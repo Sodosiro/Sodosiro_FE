@@ -1,8 +1,20 @@
-import { Dimensions, Image, View } from "react-native";
+import { Dimensions, Image, ImageResizeMode, View } from "react-native";
 import { useSharedValue } from "react-native-reanimated";
 import Carousel, { Pagination } from "react-native-reanimated-carousel";
 
-export default function CustomCarousel({ images }: { images: string[] }) {
+export default function CustomCarousel({
+  images,
+  autoPlay = true,
+  defaultIndex = 0,
+  aspect = 3 / 4,
+  resizeMode = "cover",
+}: {
+  images: string[];
+  autoPlay?: boolean;
+  defaultIndex?: number;
+  aspect?: number;
+  resizeMode?: ImageResizeMode;
+}) {
   const width = Dimensions.get("window").width;
 
   const progress = useSharedValue(0);
@@ -12,17 +24,18 @@ export default function CustomCarousel({ images }: { images: string[] }) {
       {images.length > 1 ? (
         <>
           <Carousel
-            autoPlay
+            defaultIndex={defaultIndex}
+            autoPlay={autoPlay}
             autoPlayInterval={3000}
             width={width}
-            height={(width / 4) * 3}
+            height={width * aspect}
             data={images}
             onProgressChange={progress}
             renderItem={({ item }) => (
               <Image
                 source={{ uri: item }}
-                style={{ width: "100%", aspectRatio: 4 / 3 }}
-                resizeMode="cover"
+                style={{ width: "100%", aspectRatio: 1 / aspect }}
+                resizeMode={resizeMode}
               />
             )}
           />
@@ -38,7 +51,6 @@ export default function CustomCarousel({ images }: { images: string[] }) {
             activeDotStyle={{
               backgroundColor: "#1A1A1A",
             }}
-
             containerStyle={{
               gap: 6,
               position: "absolute",

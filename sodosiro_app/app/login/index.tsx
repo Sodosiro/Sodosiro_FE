@@ -4,7 +4,7 @@ import CustomText from "@/components/common/CustomText";
 import { signInWithKakao } from "@/lib/kakao";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { router } from "expo-router";
-import { Pressable, View } from "react-native";
+import { Image, Pressable, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function LoginScreen() {
@@ -38,12 +38,21 @@ export default function LoginScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-      <View className={`px-5 py-3`}>
+      <View className={`px-5 py-3 h-16 justify-center`}>
         <CustomText font="heading1">소도시로</CustomText>
       </View>
-      <View className={`px-5 flex-1 justify-evenly`}>
+      <View className={`w-screen aspect-square`}>
+        <Image
+          source={require("@/assets/images/login_hero.png")}
+          className={`w-full h-full`}
+          resizeMode="contain"
+        />
+      </View>
+      <View className={`px-5 py-8 flex-1 justify-between`}>
         <View className={`gap-6`}>
-          <CustomText font="display">나만의 강원도 여행{"\n"}AI와 시작해 보세요.</CustomText>
+          <CustomText font="display">
+            강원도 숨은 명소로{"\n"}여행을 떠나요!
+          </CustomText>
           <CustomText font="body1" className={`text-text-muted`}>
             소도시부터 숨은 명소까지{"\n"}내 취향에 맞는 여행지를 추천해드려요.
           </CustomText>

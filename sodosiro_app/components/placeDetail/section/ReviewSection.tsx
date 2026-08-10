@@ -33,7 +33,7 @@ export default function ReviewSection({
                 pathname: "/place/[placeId]/review",
                 params: {
                   placeId: "123",
-                  placeTitle: title,
+                  title: title,
                 },
               })
             }

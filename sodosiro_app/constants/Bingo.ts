@@ -21,12 +21,12 @@ export const ADVANTAGES = [
   },
 ];
 
-export const BINGO_IMAGES: Record<CategoryTypeWithoutAll, number> = {
-  activity: require("@/assets/images/default/activity_bingo.png"),
-  attraction: require("@/assets/images/default/attraction_bingo.png"),
-  cafe: require("@/assets/images/default/cafe_bingo.png"),
-  nature: require("@/assets/images/default/nature_bingo.png"),
-  restaurant: require("@/assets/images/default/restaurant_bingo.png"),
-  shopping: require("@/assets/images/default/shopping_bingo.png"),
-  accommodation: require("@/assets/images/default/accommodation_bingo.png"),
+export const DEFAULT_IMAGES: Record<CategoryTypeWithoutAll, number> = {
+  activity: require("@/assets/images/default/activity.png"),
+  attraction: require("@/assets/images/default/attraction.png"),
+  cafe: require("@/assets/images/default/cafe.png"),
+  nature: require("@/assets/images/default/nature.png"),
+  restaurant: require("@/assets/images/default/restaurant.png"),
+  shopping: require("@/assets/images/default/shopping.png"),
+  accommodation: require("@/assets/images/default/accommodation.png"),
 };

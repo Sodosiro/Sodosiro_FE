@@ -1,5 +1,5 @@
+import { useExploreStore } from "@/stores/useExploreStore";
 import { useLocationStore } from "@/stores/useLocationStore";
-import { useSelectedPlaceStore } from "@/stores/useSelectedPlaceStore";
 import type { RefObject } from "react";
 import { useCallback, useMemo, useState } from "react";
 import type { WebView, WebViewMessageEvent } from "react-native-webview";
@@ -22,9 +22,7 @@ export function useWebView({
   initialData: any;
 }) {
   const setIsTracking = useLocationStore((state) => state.setIsTracking);
-  const setSelectedPlace = useSelectedPlaceStore(
-    (state) => state.setSelectedPlace,
-  );
+  const setSelectedPlace = useExploreStore((state) => state.setSelectedPlace);
 
   const [isMapReady, setIsMapReady] = useState(false);
 
@@ -38,12 +36,13 @@ export function useWebView({
   // mode에 따른 초기 데이터 전송 로직.
   // MAP_READY 최초 1회 + 이후 필요할 때(예: 새로고침) 재사용 가능하도록 분리
   const updateData = useCallback(
-    (data?: any, isPanTo?: boolean) => {
+    (data?: any, isPanTo?: boolean, showAll?: boolean) => {
       if (mode === "marker") {
         postMessage({
           type: "SET_PLACES",
           places: data ?? initialData,
           isPanTo: isPanTo ?? false,
+          showAll: showAll ?? false,
         });
       }
       if (mode === "navigation") {
@@ -94,7 +93,7 @@ export function useWebView({
       }
 
       if (__DEV__) {
-        console.log("[useWebView]", data.type);
+        console.log("[useWebView]", data);
       }
 
       const handler = messageHandlers[data.type] as

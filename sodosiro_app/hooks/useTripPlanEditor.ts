@@ -24,8 +24,12 @@ export function useTripPlanEditor({
 }: UseTripPlanEditorParams) {
   const [plan, setPlan] = useState<DayPlan[]>(initialPlan);
   const [isEditing, setIsEditing] = useState(false);
-  const [pendingDeleteIndices, setPendingDeleteIndices] = useState<Set<number>>(new Set());
-  const [reorderedIndices, setReorderedIndices] = useState<number[] | null>(null);
+  const [pendingDeleteIndices, setPendingDeleteIndices] = useState<Set<number>>(
+    new Set(),
+  );
+  const [reorderedIndices, setReorderedIndices] = useState<number[] | null>(
+    null,
+  );
   // 일차별 장소 재정렬 draft (원본 day index -> 재정렬된 places)
   const [placeDraft, setPlaceDraft] = useState<Record<number, PlaceType[]>>({});
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -41,7 +45,10 @@ export function useTripPlanEditor({
   );
 
   const badgeOrder = useMemo(
-    () => (reorderedIndices ?? baseOrder).filter((i) => !pendingDeleteIndices.has(i)),
+    () =>
+      (reorderedIndices ?? baseOrder).filter(
+        (i) => !pendingDeleteIndices.has(i),
+      ),
     [reorderedIndices, baseOrder, pendingDeleteIndices],
   );
 
@@ -60,9 +67,12 @@ export function useTripPlanEditor({
   }, []);
 
   // 일차 하나의 장소 순서가 바뀔 때
-  const handleReorderPlaces = useCallback((dayIndex: number, newPlaces: PlaceType[]) => {
-    setPlaceDraft((prev) => ({ ...prev, [dayIndex]: newPlaces }));
-  }, []);
+  const handleReorderPlaces = useCallback(
+    (dayIndex: number, newPlaces: PlaceType[]) => {
+      setPlaceDraft((prev) => ({ ...prev, [dayIndex]: newPlaces }));
+    },
+    [],
+  );
 
   const pressEditButton = useCallback(() => {
     if (!isEditing) {

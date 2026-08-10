@@ -5,7 +5,7 @@ export const INITIAL_PLAN: DayPlan[] = [
     dateLabel: "10/5 (토)",
     places: [
       {
-        id: 1,
+        contentId: 1,
         position: 1,
         title: "낙산사",
         category: "attraction",
@@ -16,7 +16,7 @@ export const INITIAL_PLAN: DayPlan[] = [
         latlng: { lat: 38.1196, lng: 128.6285 },
       },
       {
-        id: 2,
+        contentId: 2,
         position: 2,
         title: "초당순두부마을",
         category: "restaurant",
@@ -27,7 +27,7 @@ export const INITIAL_PLAN: DayPlan[] = [
         latlng: { lat: 37.7916, lng: 128.9187 },
       },
       {
-        id: 3,
+        contentId: 3,
         position: 3,
         title: "안목해변 커피거리",
         category: "cafe",
@@ -38,7 +38,7 @@ export const INITIAL_PLAN: DayPlan[] = [
         latlng: { lat: 37.7715, lng: 128.9486 },
       },
       {
-        id: 4,
+        contentId: 4,
         position: 4,
         title: "오죽헌",
         category: "attraction",
@@ -49,7 +49,7 @@ export const INITIAL_PLAN: DayPlan[] = [
         latlng: { lat: 37.7782, lng: 128.8789 },
       },
       {
-        id: 5,
+        contentId: 5,
         position: 5,
         title: "초당순두부마을초당순두부순두부순두부순두부순두부순두부",
         category: "restaurant",
@@ -66,7 +66,7 @@ export const INITIAL_PLAN: DayPlan[] = [
     dateLabel: "10/6 (일)",
     places: [
       {
-        id: 1,
+        contentId: 1,
         position: 1,
         title: "낙산사",
         category: "attraction",
@@ -77,7 +77,7 @@ export const INITIAL_PLAN: DayPlan[] = [
         latlng: { lat: 38.1196, lng: 128.6285 },
       },
       {
-        id: 2,
+        contentId: 2,
         position: 2,
         title: "초당순두부마을",
         category: "restaurant",
@@ -88,7 +88,7 @@ export const INITIAL_PLAN: DayPlan[] = [
         latlng: { lat: 37.7916, lng: 128.9187 },
       },
       {
-        id: 3,
+        contentId: 3,
         position: 3,
         title: "안목해변 커피거리",
         category: "cafe",
@@ -99,7 +99,7 @@ export const INITIAL_PLAN: DayPlan[] = [
         latlng: { lat: 37.7715, lng: 128.9486 },
       },
       {
-        id: 4,
+        contentId: 4,
         position: 4,
         title: "오죽헌",
         category: "attraction",
@@ -110,7 +110,7 @@ export const INITIAL_PLAN: DayPlan[] = [
         latlng: { lat: 37.7782, lng: 128.8789 },
       },
       {
-        id: 6,
+        contentId: 6,
         position: 5,
         title: "초당순두부마을초당순두부",
         category: "restaurant",
@@ -127,7 +127,7 @@ export const INITIAL_PLAN: DayPlan[] = [
     dateLabel: "10/7 (월)",
     places: [
       {
-        id: 7,
+        contentId: 7,
         position: 1,
         title: "경포호",
         category: "attraction",
@@ -138,7 +138,7 @@ export const INITIAL_PLAN: DayPlan[] = [
         latlng: { lat: 37.7951, lng: 128.8958 },
       },
       {
-        id: 8,
+        contentId: 8,
         position: 2,
         title: "강릉 중앙시장",
         category: "restaurant",
@@ -155,7 +155,7 @@ export const INITIAL_PLAN: DayPlan[] = [
     dateLabel: "10/8 (화)",
     places: [
       {
-        id: 9,
+        contentId: 9,
         position: 1,
         title: "정동진1",
         category: "attraction",
@@ -166,7 +166,7 @@ export const INITIAL_PLAN: DayPlan[] = [
         latlng: { lat: 37.6918, lng: 129.0328 },
       },
       {
-        id: 10,
+        contentId: 10,
         position: 2,
         title: "정동진2",
         category: "attraction",
@@ -177,7 +177,7 @@ export const INITIAL_PLAN: DayPlan[] = [
         latlng: { lat: 37.6925, lng: 129.0335 },
       },
       {
-        id: 11,
+        contentId: 11,
         position: 3,
         title: "정동진3",
         category: "attraction",
@@ -188,7 +188,7 @@ export const INITIAL_PLAN: DayPlan[] = [
         latlng: { lat: 37.693, lng: 129.034 },
       },
       {
-        id: 12,
+        contentId: 12,
         position: 4,
         title: "정동진4",
         category: "attraction",
@@ -205,7 +205,7 @@ export const INITIAL_PLAN: DayPlan[] = [
     dateLabel: "10/9 (수)",
     places: [
       {
-        id: 9,
+        contentId: 9,
         position: 1,
         title: "정동진1",
         category: "attraction",
@@ -216,7 +216,7 @@ export const INITIAL_PLAN: DayPlan[] = [
         latlng: { lat: 37.6918, lng: 129.0328 },
       },
       {
-        id: 10,
+        contentId: 10,
         position: 2,
         title: "정동진2",
         category: "attraction",
@@ -227,7 +227,7 @@ export const INITIAL_PLAN: DayPlan[] = [
         latlng: { lat: 37.6925, lng: 129.0335 },
       },
       {
-        id: 11,
+        contentId: 11,
         position: 3,
         title: "정동진3",
         category: "attraction",
@@ -238,7 +238,7 @@ export const INITIAL_PLAN: DayPlan[] = [
         latlng: { lat: 37.693, lng: 129.034 },
       },
       {
-        id: 12,
+        contentId: 12,
         position: 4,
         title: "정동진4",
         category: "attraction",
@@ -255,7 +255,7 @@ export const INITIAL_PLAN: DayPlan[] = [
     dateLabel: "10/10 (목)",
     places: [
       {
-        id: 9,
+        contentId: 9,
         position: 1,
         title: "정동진1",
         category: "attraction",
@@ -266,7 +266,7 @@ export const INITIAL_PLAN: DayPlan[] = [
         latlng: { lat: 37.6918, lng: 129.0328 },
       },
       {
-        id: 10,
+        contentId: 10,
         position: 2,
         title: "정동진2",
         category: "attraction",
@@ -277,7 +277,7 @@ export const INITIAL_PLAN: DayPlan[] = [
         latlng: { lat: 37.6925, lng: 129.0335 },
       },
       {
-        id: 11,
+        contentId: 11,
         position: 3,
         title: "정동진3",
         category: "attraction",
@@ -288,7 +288,7 @@ export const INITIAL_PLAN: DayPlan[] = [
         latlng: { lat: 37.693, lng: 129.034 },
       },
       {
-        id: 12,
+        contentId: 12,
         position: 4,
         title: "정동진4",
         category: "attraction",
@@ -305,7 +305,7 @@ export const INITIAL_PLAN: DayPlan[] = [
     dateLabel: "10/11 (금)",
     places: [
       {
-        id: 9,
+        contentId: 9,
         position: 1,
         title: "정동진1",
         category: "attraction",
@@ -316,7 +316,7 @@ export const INITIAL_PLAN: DayPlan[] = [
         latlng: { lat: 37.6918, lng: 129.0328 },
       },
       {
-        id: 10,
+        contentId: 10,
         position: 2,
         title: "정동진2",
         category: "attraction",
@@ -327,7 +327,7 @@ export const INITIAL_PLAN: DayPlan[] = [
         latlng: { lat: 37.6925, lng: 129.0335 },
       },
       {
-        id: 11,
+        contentId: 11,
         position: 3,
         title: "정동진3",
         category: "attraction",
@@ -338,7 +338,7 @@ export const INITIAL_PLAN: DayPlan[] = [
         latlng: { lat: 37.693, lng: 129.034 },
       },
       {
-        id: 12,
+        contentId: 12,
         position: 4,
         title: "정동진4",
         category: "attraction",

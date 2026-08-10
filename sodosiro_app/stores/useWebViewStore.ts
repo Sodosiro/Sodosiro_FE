@@ -6,7 +6,7 @@ interface WebViewState {
 }
 
 export const useWebViewStore = create<WebViewState>((set) => ({
-  isLoading: false,
+  isLoading: true,
   setIsLoading: (value) =>
     set({
       isLoading: value,

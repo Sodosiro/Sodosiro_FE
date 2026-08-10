@@ -6,12 +6,14 @@ type Props = {
   selectedCategory: CategoryType;
   setSelectedCategory: (category: CategoryType) => void;
   paddingHorizontal?: number;
+  onCategoryPress?: () => void;
 };
 
 export default function CategoryList({
   selectedCategory,
   setSelectedCategory,
   paddingHorizontal = 0,
+  onCategoryPress,
 }: Props) {
   return (
     <ScrollView
@@ -24,7 +26,10 @@ export default function CategoryList({
           key={category}
           category={category}
           isSelected={selectedCategory === category}
-          onPress={async () => setSelectedCategory(category)}
+          onPress={async () => {
+            setSelectedCategory(category);
+            onCategoryPress?.();
+          }}
         />
       ))}
     </ScrollView>

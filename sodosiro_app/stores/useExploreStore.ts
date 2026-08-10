@@ -2,22 +2,32 @@ import { create } from "zustand";
 
 interface ExploreStore {
   keyword: string;
-  result: PlaceType[] | null;
+  searchResult: PlaceType[] | null;
   selectedCategory: CategoryType;
+  allPlaces: PlaceType[] | null;
+
+  selectedPlace: PlaceType | null;
+  setSelectedPlace: (place: PlaceType | null) => void;
 
   setKeyword: (keyword: string) => void;
-  setResult: (results: PlaceType[]) => void;
+  setSearchResult: (results: PlaceType[]) => void;
   setSelectedCategory: (category: CategoryType) => void;
-  clearResult: () => void;
+  clearSearchResult: () => void;
+  setAllPlaces: (places: PlaceType[] | null) => void;
 }
 
 export const useExploreStore = create<ExploreStore>((set) => ({
   keyword: "",
-  result: null,
+  searchResult: null,
   selectedCategory: "all",
+  allPlaces: null,
 
   setKeyword: (keyword) => set({ keyword }),
-  setResult: (results) => set({ result: results }),
+  setSearchResult: (results) => set({ searchResult: results }),
   setSelectedCategory: (category) => set({ selectedCategory: category }),
-  clearResult: () => set({ keyword: "", result: null }),
+  clearSearchResult: () => set({ keyword: "", searchResult: null }),
+  setAllPlaces: (places: PlaceType[] | null) => set({ allPlaces: places }),
+
+  selectedPlace: null,
+  setSelectedPlace: (place) => set({ selectedPlace: place }),
 }));

@@ -1,5 +1,4 @@
 import { useExploreStore } from "@/stores/useExploreStore";
-import { useSelectedPlaceStore } from "@/stores/useSelectedPlaceStore";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { useEffect, useRef } from "react";
 import PlaceItem from "./PlaceItem";
@@ -10,7 +9,7 @@ export default function PlaceBottomSheet({
   handlePlaceItemPress: (placeId: number) => void;
 }) {
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const selectedPlace = useSelectedPlaceStore((state) => state.selectedPlace);
+  const selectedPlace = useExploreStore((state) => state.selectedPlace);
   const keyword = useExploreStore((state) => state.keyword);
 
   useEffect(() => {

@@ -4,11 +4,12 @@ import { useExploreStore } from "@/stores/useExploreStore";
 import { TitleTightClass } from "@/styles/Typography";
 import { handleSearch } from "@/util/search/search";
 import { router } from "expo-router";
+import { useState } from "react";
 import { TextInput, View } from "react-native";
 
 export default function SearchTextBar() {
   const keyword = useExploreStore((state) => state.keyword);
-  const setKeyword = useExploreStore((state) => state.setKeyword);
+  const [keywordTemp, setKeywordTemp] = useState(keyword);
 
   return (
     <View className={`flex-row items-center gap-2`}>
@@ -17,9 +18,9 @@ export default function SearchTextBar() {
       >
         <TextInput
           autoFocus
-          value={keyword}
-          onChangeText={setKeyword}
-          onSubmitEditing={() => handleSearch(keyword)}
+          value={keywordTemp}
+          onChangeText={setKeywordTemp}
+          onSubmitEditing={() => handleSearch(keywordTemp)}
           returnKeyType="search"
           placeholder="가고 싶은 여행지를 검색해보세요"
           placeholderTextColor={"#888888"}

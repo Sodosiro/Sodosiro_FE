@@ -94,7 +94,7 @@ export default function TripPlanConfirmModal({
               contentContainerClassName="gap-2"
             >
               {currentPlaces.map((place) => (
-                <View key={place.id} className="flex-row gap-2">
+                <View key={place.contentId} className="flex-row gap-2">
                   <View className="w-1 h-1 rounded-full bg-gray-800 mt-1.5" />
                   <CustomText font="body2" className={`flex-1`}>
                     {place.title}

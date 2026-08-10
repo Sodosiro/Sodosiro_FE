@@ -1,7 +1,6 @@
+import CustomText from "@/components/common/CustomText";
 import { BottomSheetSnapPoints } from "@/constants/BottomSheet";
-import { PLACE_LIST } from "@/mocks/places";
 import { useExploreStore } from "@/stores/useExploreStore";
-import { useSelectedPlaceStore } from "@/stores/useSelectedPlaceStore";
 import BottomSheet, {
   BottomSheetFlatList,
   BottomSheetFlatListMethods,
@@ -31,18 +30,20 @@ export default function PlaceListBottomSheet({
 
   const flatListRef = useRef<BottomSheetFlatListMethods | null>(null);
   const [isClosing, setIsClosing] = useState(false);
-  const result = useExploreStore((state) => state.result);
+  const searchResult = useExploreStore((state) => state.searchResult);
   const keyword = useExploreStore((state) => state.keyword);
-  const selectedPlace = useSelectedPlaceStore((state) => state.selectedPlace);
+  const selectedPlace = useExploreStore((state) => state.selectedPlace);
 
   useEffect(() => {
-    if (result && result.length > 0) bottomSheetRef.current?.snapToIndex(1);
+    if (searchResult) bottomSheetRef.current?.snapToIndex(1);
     else bottomSheetRef.current?.close();
-  }, [result, keyword]);
+  }, [searchResult, keyword]);
 
   useEffect(() => {
-    if (!selectedPlace || !result) return;
-    const index = result.findIndex((place) => place.id === selectedPlace.id);
+    if (!selectedPlace || !searchResult) return;
+    const index = searchResult.findIndex(
+      (place) => place.contentId === selectedPlace.contentId,
+    );
 
     if (index === -1) return;
 
@@ -52,7 +53,7 @@ export default function PlaceListBottomSheet({
       animated: true,
       viewPosition: 0,
     });
-  }, [selectedPlace, result]);
+  }, [selectedPlace, searchResult]);
 
   return (
     <BottomSheet
@@ -83,28 +84,36 @@ export default function PlaceListBottomSheet({
       enableHandlePanningGesture={!isClosing}
       animationConfigs={animationConfigs}
     >
-      <BottomSheetFlatList
-        ref={flatListRef}
-        data={result}
-        nestedScrollEnabled
-        keyExtractor={(item) => String(item.id)}
-        contentContainerStyle={{
-          paddingBottom: 10,
-        }}
-        getItemLayout={(_, index) => ({
-          length: 100,
-          offset: 100 * index,
-          index,
-        })}
-        renderItem={({ item, index }) => (
-          <View key={index} className={`h-[100px]`}>
-            <PlaceItem place={item} onPress={handlePlaceItemPress} />
-            {index !== PLACE_LIST.length - 1 && (
-              <View className="h-px bg-bg-subtle mx-5" />
-            )}
-          </View>
-        )}
-      ></BottomSheetFlatList>
+      {!!searchResult?.length ? (
+        <BottomSheetFlatList
+          ref={flatListRef}
+          data={searchResult}
+          nestedScrollEnabled
+          keyExtractor={(item) => String(item.contentId)}
+          contentContainerStyle={{
+            paddingBottom: 10,
+          }}
+          getItemLayout={(_, index) => ({
+            length: 100,
+            offset: 100 * index,
+            index,
+          })}
+          renderItem={({ item, index }) => (
+            <View key={index} className={`h-[100px]`}>
+              <PlaceItem place={item} onPress={handlePlaceItemPress} />
+              {index !== (searchResult as PlaceType[]).length - 1 && (
+                <View className="h-px bg-bg-subtle mx-5" />
+              )}
+            </View>
+          )}
+        />
+      ) : (
+        <View className={`w-full h-full items-center justify-center`}>
+          <CustomText font="body1" className={`text-text-muted`}>
+            검색 결과가 없습니다.
+          </CustomText>
+        </View>
+      )}
     </BottomSheet>
   );
 }

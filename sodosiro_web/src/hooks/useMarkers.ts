@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import getLabel from "../components/Marker";
+import { NumberToCategory } from "../util/category";
 import { getMarkerIcon, getSelectedMarkerIcon } from "../util/getMarkerIcon";
 
 export function useMarkers(mapRef: React.RefObject<kakao.maps.Map | null>) {
@@ -60,27 +61,33 @@ export function useMarkers(mapRef: React.RefObject<kakao.maps.Map | null>) {
     markerPlaceMapRef.current.clear();
 
     return places.map((place) => {
-      if (!imageCacheRef.current.has(place.category)) {
-        imageCacheRef.current.set(place.category, {
+      if (!imageCacheRef.current.has(NumberToCategory[place.category])) {
+        imageCacheRef.current.set(NumberToCategory[place.category], {
           normal: new kakao.maps.MarkerImage(
-            getMarkerIcon(place.category, place.favorite, place.popular),
+            getMarkerIcon(
+              NumberToCategory[place.category],
+              place.liked,
+              place.isPopular,
+            ),
             new kakao.maps.Size(24, 24),
           ),
           selected: new kakao.maps.MarkerImage(
             getSelectedMarkerIcon(
-              place.category,
-              place.favorite,
-              place.popular,
+              NumberToCategory[place.category],
+              place.liked,
+              place.isPopular,
             ),
             new kakao.maps.Size(60, 60),
           ),
         });
       }
 
-      const images = imageCacheRef.current.get(place.category)!;
+      const images = imageCacheRef.current.get(
+        NumberToCategory[place.category],
+      )!;
 
       const marker = new kakao.maps.Marker({
-        position: new kakao.maps.LatLng(place.lat, place.lng),
+        position: new kakao.maps.LatLng(place.mapY, place.mapX),
         image: images.normal,
         zIndex: 0,
       });
@@ -109,7 +116,7 @@ export function useMarkers(mapRef: React.RefObject<kakao.maps.Map | null>) {
   const selectMarkerByPlaceId = (placeId: number) => {
     const target = [...markerPlaceMapRef.current.entries()]
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      .find(([_, place]) => place.id === placeId);
+      .find(([_, place]) => place.contentId === placeId);
 
     if (!target) return null;
 

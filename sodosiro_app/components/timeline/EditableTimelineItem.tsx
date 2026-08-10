@@ -38,7 +38,12 @@ export default function EditableTimelineItem({
       style={{
         opacity: Animated.multiply(mountAnim, isActive ? 0.85 : 1),
         transform: [
-          { scale: mountAnim.interpolate({ inputRange: [0, 1], outputRange: [0.9, 1] }) },
+          {
+            scale: mountAnim.interpolate({
+              inputRange: [0, 1],
+              outputRange: [0.9, 1],
+            }),
+          },
         ],
       }}
     >
@@ -54,7 +59,9 @@ export default function EditableTimelineItem({
         </CustomText>
 
         <View className="ml-1.5 px-1.5 py-1.5 rounded-md bg-bg-subtle">
-          <CustomText font="body2 tight">{CategoryMap[place.category]}</CustomText>
+          <CustomText font="body2 tight">
+            {CategoryMap[place.category]}
+          </CustomText>
         </View>
         <View className="flex-1" />
       </Pressable>

@@ -4,7 +4,14 @@ import TripPlacesSection from "@/components/tripCondition/TripPlacesSection";
 import VerificationBottomSheet from "@/components/verification/VerificationBottomSheet";
 import { useToast } from "@/contexts/ToastProvider";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import { Dispatch, memo, SetStateAction, useCallback, useRef, useState } from "react";
+import {
+  Dispatch,
+  memo,
+  SetStateAction,
+  useCallback,
+  useRef,
+  useState,
+} from "react";
 import { LayoutChangeEvent, View } from "react-native";
 import DraggableFlatList, {
   OpacityDecorator,
@@ -32,7 +39,9 @@ function TimelineDaySection({
   onLayout,
 }: TimelineDaySectionProps) {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
-  const [selectedId, setSelectedId] = useState<number | null>(dayPlan.places[0]?.id);
+  const [selectedId, setSelectedId] = useState<number | null>(
+    dayPlan.places[0]?.contentId,
+  );
   const [showLocation, setShowLocation] = useState(false);
   const [changeTargetId, setChangeTargetId] = useState<number | null>(null);
   const [selectedItem, setSelectedItem] = useState<PlaceType | null>(null);
@@ -50,9 +59,9 @@ function TimelineDaySection({
         <OpacityDecorator>
           <TimelineItem
             place={item}
-            isExpanded={item.id === selectedId && !isEditing}
+            isExpanded={item.contentId === selectedId && !isEditing}
             isEditing={isEditing}
-            onToggle={() => handleToggle(item.id)}
+            onToggle={() => handleToggle(item.contentId)}
             order={index + 1}
             mode={mode}
             onLongPress={isEditing ? drag : undefined}
@@ -99,7 +108,9 @@ function TimelineDaySection({
 
       // 현재 변경하려는 장소가 이미 같은 일차에 존재하는 경우
       const isDuplicatePlace = dayPlan.places.some(
-        (item) => item.id === selectedPlace.id && item.id !== changeTargetId,
+        (item) =>
+          item.contentId === selectedPlace.id &&
+          item.contentId !== changeTargetId,
       );
 
       if (isDuplicatePlace) {
@@ -117,7 +128,7 @@ function TimelineDaySection({
           return {
             ...day,
             places: day.places.map((place) =>
-              place.id === changeTargetId
+              place.contentId === changeTargetId
                 ? {
                     ...place,
                     ...selectedPlace,
@@ -156,7 +167,7 @@ function TimelineDaySection({
           onDragEnd={setOnDrag && setPlan ? handleDragEnd : undefined}
           activationDistance={10}
           scrollEnabled={false}
-          keyExtractor={(item) => `place-${item.id}`}
+          keyExtractor={(item) => `place-${item.contentId}`}
           renderItem={renderEditableItem}
           showsVerticalScrollIndicator={false}
         />
@@ -164,16 +175,16 @@ function TimelineDaySection({
         <View>
           {dayPlan.places?.map((place, index) => (
             <TimelineItem
-              key={`place-${place.id}`}
+              key={`place-${place.contentId}`}
               place={place}
-              isExpanded={place.id === selectedId}
+              isExpanded={place.contentId === selectedId}
               isEditing={false}
-              onToggle={() => handleToggle(place.id)}
+              onToggle={() => handleToggle(place.contentId)}
               order={index + 1}
               mode={mode}
               isFirstIndex={index == 0}
               onChangePlace={() => {
-                handleChangePlace(place.id);
+                handleChangePlace(place.contentId);
                 setShowLocation(true);
               }}
               onVerificationPlace={() => {
@@ -183,7 +194,10 @@ function TimelineDaySection({
             />
           ))}
           {showLocation && (
-            <BottomSheet visible={showLocation} onClose={() => setShowLocation(false)}>
+            <BottomSheet
+              visible={showLocation}
+              onClose={() => setShowLocation(false)}
+            >
               <TripPlacesSection onSelectPlace={handleSelectPlace} />
               <View className="pt-5"></View>
             </BottomSheet>

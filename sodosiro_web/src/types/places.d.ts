@@ -8,11 +8,11 @@ type CategoryType =
   | "accommodation";
 
 type PlaceType = {
-  id: number;
+  contentId: number;
   title: string;
-  lat: number;
-  lng: number;
-  category: CategoryType;
-  favorite: boolean;
-  popular: boolean;
+  mapY: number;
+  mapX: number;
+  category: 1 | 2 | 3 | 4 | 5 | 6 | 7;
+  liked: boolean;
+  isPopular: boolean;
 };

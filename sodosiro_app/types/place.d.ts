@@ -11,21 +11,26 @@ type CategoryType =
 type CategoryTypeWithoutAll = Exclude<CategoryType, "all">;
 
 type PlaceType = {
-  id: number;
-  desc?: string;
-  rate?: number;
-  reviewCount?: number;
-  favorite?: boolean;
-  popular?: boolean;
-  position: number;
+  contentId: number;
   title: string;
-  category: CategoryTypeWithoutAll;
-  completed: boolean;
-  latlng: {
-    lat: number;
-    lng: number;
+  category: 1 | 2 | 3 | 4 | 5 | 6 | 7;
+  addr1: string;
+  overview: string;
+  restdate: string;
+  firstImage: string;
+  mapX: number;
+  mapY: number;
+  likeCount: number;
+  avgRating: number;
+  reviewCount: number;
+  liked: boolean;
+  isPopular: boolean;
+  popularity: {
+    score: number;
+    categoryRank: number;
+    rankTag: string;
+    calculatedAt: Date;
   };
-  imageSource?: string;
 };
 
 type ReviewType = {

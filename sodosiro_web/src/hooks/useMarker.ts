@@ -4,7 +4,7 @@ import { getSelectedMarkerIcon } from "../util/getMarkerIcon";
 export function useMarker() {
   const create = (map: kakao.maps.Map, place: PlaceType) => {
     const marker = new kakao.maps.Marker({
-      position: new kakao.maps.LatLng(place.lat, place.lng),
+      position: new kakao.maps.LatLng(place.mapY, place.mapX),
       image: new kakao.maps.MarkerImage(
         getSelectedMarkerIcon(place.category),
         new kakao.maps.Size(40, 40),
@@ -22,7 +22,7 @@ export function useMarker() {
 
     overlay.setMap(map);
 
-    map.setCenter(new kakao.maps.LatLng(place.lat, place.lng));
+    map.setCenter(new kakao.maps.LatLng(place.mapY, place.mapX));
     map.setDraggable(false);
     map.setZoomable(false);
 

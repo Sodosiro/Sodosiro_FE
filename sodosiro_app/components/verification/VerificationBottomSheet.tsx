@@ -1,5 +1,5 @@
 import { PinMiniIcon } from "@/assets/svgs";
-import { BINGO_IMAGES } from "@/constants/Bingo";
+import { DEFAULT_IMAGES } from "@/constants/Bingo";
 import { getDistance } from "@/util/location/distance";
 import {
   BottomSheetBackdrop,
@@ -87,7 +87,7 @@ const VerificationBottomSheet = forwardRef<BottomSheetModal, Props>(
                   source={
                     selectedItem.imageSource
                       ? { uri: selectedItem.imageSource }
-                      : BINGO_IMAGES[selectedItem.category]
+                      : DEFAULT_IMAGES[selectedItem.category]
                   }
                   className={`w-25 h-25 rounded-xl`}
                 />

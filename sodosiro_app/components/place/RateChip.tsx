@@ -11,17 +11,13 @@ export default function RateChip({
 }) {
   return (
     <View className={`flex-row items-center gap-0.5`}>
-      {reviewCount && (
-        <>
-          <StarIcon />
-          <CustomText font="body2">{rate}</CustomText>
-          <CustomText font="body3" className={`text-[#666666]`}>
-            {"("}
-            {reviewCount}
-            {")"}
-          </CustomText>
-        </>
-      )}
+      <StarIcon />
+      <CustomText font="body2">{rate}</CustomText>
+      <CustomText font="body3" className={`text-[#666666]`}>
+        {"("}
+        {reviewCount}
+        {")"}
+      </CustomText>
     </View>
   );
 }

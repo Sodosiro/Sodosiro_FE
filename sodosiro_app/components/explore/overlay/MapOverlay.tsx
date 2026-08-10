@@ -1,9 +1,8 @@
 import { BottomSheetSnapPoints } from "@/constants/BottomSheet";
 import { useExploreStore } from "@/stores/useExploreStore";
 import { useLocationStore } from "@/stores/useLocationStore";
-import { useSelectedPlaceStore } from "@/stores/useSelectedPlaceStore";
 import * as Location from "expo-location";
-import type { RefObject } from "react";
+import { type RefObject } from "react";
 import { Dimensions, Linking, Pressable, View } from "react-native";
 import type { SharedValue } from "react-native-reanimated";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
@@ -24,18 +23,22 @@ export default function MapOverlay({
   animatedPosition: SharedValue<number>;
   animatedIndex: SharedValue<number>;
 }) {
-  const { keyword, clearResult, selectedCategory, setSelectedCategory } =
-    useExploreStore(
-      useShallow((state) => ({
-        keyword: state.keyword,
-        clearResult: state.clearResult,
-        selectedCategory: state.selectedCategory,
-        setSelectedCategory: state.setSelectedCategory,
-      })),
-    );
-  const setSelectedPlace = useSelectedPlaceStore(
-    (state) => state.setSelectedPlace,
+  const {
+    keyword,
+    clearResult,
+    selectedCategory,
+    setSelectedCategory,
+    setSelectedPlace,
+  } = useExploreStore(
+    useShallow((state) => ({
+      keyword: state.keyword,
+      clearResult: state.clearSearchResult,
+      selectedCategory: state.selectedCategory,
+      setSelectedCategory: state.setSelectedCategory,
+      setSelectedPlace: state.setSelectedPlace,
+    })),
   );
+
   const setIsDenied = useLocationStore((state) => state.setIsDenied);
   const setIsTracking = useLocationStore((state) => state.setIsTracking);
 
@@ -96,6 +99,7 @@ export default function MapOverlay({
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}
           paddingHorizontal={20}
+          onCategoryPress={() => setSelectedPlace(null)}
         />
       </View>
 

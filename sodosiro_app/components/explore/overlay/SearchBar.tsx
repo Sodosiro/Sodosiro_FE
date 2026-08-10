@@ -1,15 +1,12 @@
 import { RemoveIcon, SearchIcon } from "@/assets/svgs";
 import { useExploreStore } from "@/stores/useExploreStore";
-import { useSelectedPlaceStore } from "@/stores/useSelectedPlaceStore";
 import { router } from "expo-router";
 import { Pressable } from "react-native";
 import CustomText from "../../common/CustomText";
 
 export default function SearchBar({ keyword }: { keyword?: string }) {
-  const clearResult = useExploreStore((state) => state.clearResult);
-  const setSelectedPlace = useSelectedPlaceStore(
-    (state) => state.setSelectedPlace,
-  );
+  const clearResult = useExploreStore((state) => state.clearSearchResult);
+  const setSelectedPlace = useExploreStore((state) => state.setSelectedPlace);
   return (
     <Pressable
       className={`flex-row justify-between items-center border border-border bg-white w-full px-6 h-15 rounded-full`}

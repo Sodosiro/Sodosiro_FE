@@ -8,32 +8,32 @@ import { useWebView } from "@/hooks/useWebView";
 import { useExploreStore } from "@/stores/useExploreStore";
 import { useLocationStore } from "@/stores/useLocationStore";
 import { useWebViewStore } from "@/stores/useWebViewStore";
+import { NumberToCategory } from "@/util/place/category";
 
 export default function KakaoMap({
   webViewRef,
   mode,
   animatedPosition,
-  initialData,
 }: {
   webViewRef: RefObject<WebView<unknown> | null>;
   mode: "marker" | "navigation";
   animatedPosition: SharedValue<number>;
-  initialData: any;
 }) {
   const { isLoading, setIsLoading } = useWebViewStore();
-  const result = useExploreStore((state) => state.result);
+  const searchResult = useExploreStore((state) => state.searchResult);
+  const allPlaces = useExploreStore((state) => state.allPlaces);
   const selectedCategory = useExploreStore((state) => state.selectedCategory);
+  const location = useLocationStore((state) => state.location);
+  const isDenied = useLocationStore((state) => state.isDenied);
 
   const { isMapReady, sendLocation, handleMessage, updateData } = useWebView({
     webViewRef,
     mode,
     setIsLoading,
-    initialData,
+    initialData: allPlaces,
   });
 
   useLocation(sendLocation, isMapReady);
-
-  const { location, isDenied } = useLocationStore();
 
   const animatedStyle = useAnimatedStyle(() => ({
     height: animatedPosition.value + 8,
@@ -47,17 +47,17 @@ export default function KakaoMap({
   useEffect(() => {
     if (mode !== "marker") return;
 
-    const data = result ?? initialData;
+    const data = searchResult ?? (allPlaces as PlaceType[]);
 
     const filtered =
       selectedCategory === "all"
         ? data
         : data.filter(
-            (place: PlaceType) => place.category === selectedCategory,
+            (place: PlaceType) =>
+              NumberToCategory[place.category] === selectedCategory,
           );
-
-    updateData(filtered, !!result);
-  }, [result, selectedCategory, initialData]);
+    updateData(filtered, !!searchResult);
+  }, [searchResult, selectedCategory]);
 
   return (
     <Animated.View

@@ -37,7 +37,7 @@ export default function KakaoMap() {
     const markers = createMarkers(places);
     setMarkers(markers);
     if (places.length > 0 && isPanTo) {
-      selectMarkerByPlaceId(places[0].id);
+      selectMarkerByPlaceId(places[0].contentId);
     }
   };
 

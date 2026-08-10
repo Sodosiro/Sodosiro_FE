@@ -42,12 +42,19 @@ function TimelineItem({
     <>
       <View className="flex-row">
         <View className="w-[24px] mr-[10px] h-3"></View>
-        {isFirstIndex ? undefined : <View className="h-3 flex-1 border-t border-[#D9D9D9]" />}
+        {isFirstIndex ? undefined : (
+          <View className="h-3 flex-1 border-t border-[#D9D9D9]" />
+        )}
       </View>
-      <Pressable className={`pb-3 bg-bg`} onLongPress={isEditing ? onLongPress : undefined}>
+      <Pressable
+        className={`pb-3 bg-bg`}
+        onLongPress={isEditing ? onLongPress : undefined}
+      >
         <Dropdown
           isExpanded={isExpanded}
-          onToggle={!isEditing ? () => onToggle(`${place.id}`) : undefined}
+          onToggle={
+            !isEditing ? () => onToggle(`${place.contentId}`) : undefined
+          }
           disabled={isEditing}
           header={
             <View className={`flex-row flex-1 items-center`}>
@@ -96,7 +103,7 @@ function TimelineItem({
                   onPress={() => {
                     router.push({
                       pathname: "/place/[placeId]",
-                      params: { placeId: place.id },
+                      params: { placeId: place.contentId },
                     });
                   }}
                   text="장소 상세보기"

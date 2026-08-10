@@ -33,13 +33,23 @@ export default function TimelineEditableList({
         label: dayPlan.dateLabel,
       });
       getDisplayPlaces(index).forEach((place) => {
-        rows.push({ key: `place-${index}-${place.id}`, type: "place", dayIndex: index, place });
+        rows.push({
+          key: `place-${index}-${place.contentId}`,
+          type: "place",
+          dayIndex: index,
+          place,
+        });
       });
     });
     return rows;
   }, [days, getDisplayPlaces]);
 
-  const renderItem = ({ item, getIndex, drag, isActive }: RenderItemParams<FlatRow>) => {
+  const renderItem = ({
+    item,
+    getIndex,
+    drag,
+    isActive,
+  }: RenderItemParams<FlatRow>) => {
     if (item.type === "header") {
       return (
         <View className="px-4 pt-4 pb-1 bg-white">

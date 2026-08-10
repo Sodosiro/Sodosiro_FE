@@ -17,7 +17,12 @@ export default function DayTimelineList({
   places,
   onReorderPlaces,
 }: DayTimelineListProps) {
-  const renderItem = ({ item, getIndex, drag, isActive }: RenderItemParams<PlaceType>) => {
+  const renderItem = ({
+    item,
+    getIndex,
+    drag,
+    isActive,
+  }: RenderItemParams<PlaceType>) => {
     const index = getIndex() ?? 0;
 
     return (
@@ -41,7 +46,7 @@ export default function DayTimelineList({
   return (
     <DraggableFlatList
       data={places}
-      keyExtractor={(place) => `${dayIndex}-${place.id}`}
+      keyExtractor={(place) => `${dayIndex}-${place.contentId}`}
       renderItem={renderItem}
       onDragEnd={handleDragEnd}
       activationDistance={10} // 수평 스와이프와의 충돌 방지를 위해 적절한 값 설정

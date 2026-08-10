@@ -1,12 +1,14 @@
+import { getPlacesApi } from "@/api/place";
 import Spinner from "@/components/common/Spinner";
 import PlaceBottomSheet from "@/components/explore/bottomSheet/PlaceBottomSheet";
 import PlaceListBottomSheet from "@/components/explore/bottomSheet/PlaceListBottomSheet";
 import KakaoMap from "@/components/explore/KakaoMap";
 import MapOverlay from "@/components/explore/overlay/MapOverlay";
-import { PLACES } from "@/mocks/places";
+import { usePlacesQuery } from "@/hooks/usePlacesQuery";
+import { useExploreStore } from "@/stores/useExploreStore";
 import { useWebViewStore } from "@/stores/useWebViewStore";
 import type BottomSheet from "@gorhom/bottom-sheet";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Dimensions, View } from "react-native";
 import { useSharedValue } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -30,15 +32,47 @@ export default function ExploreScreen() {
     );
   };
 
+  const [isPlacesPending, setisPlacesPending] = useState(true);
+
+  const setAllPlaces = useExploreStore((state) => state.setAllPlaces);
+  const setSearchResult = useExploreStore((state) => state.setSearchResult);
+
+  useEffect(() => {
+    const getPlace = async () => {
+      const response = await getPlacesApi({ size: 10000 });
+
+      const places = response?.data.items;
+
+      if (places) {
+        setAllPlaces(places);
+      }
+      setisPlacesPending(false);
+    };
+
+    getPlace();
+  }, []);
+
+  const { data, isPending: isSearchPending } = usePlacesQuery();
+
+  useEffect(() => {
+    const places = data?.data.items;
+
+    if (places) {
+      setSearchResult(places);
+    }
+  }, [data]);
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <KakaoMap
-        webViewRef={webViewRef}
-        mode="marker"
-        animatedPosition={animatedPosition}
-        initialData={PLACES}
-      />
-      {!isLoading ? (
+      {!isPlacesPending && (
+        <KakaoMap
+          webViewRef={webViewRef}
+          mode="marker"
+          animatedPosition={animatedPosition}
+        />
+      )}
+
+      {!isLoading && !isPlacesPending ? (
         <>
           <MapOverlay
             webViewRef={webViewRef}

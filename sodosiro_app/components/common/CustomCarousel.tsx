@@ -9,19 +9,19 @@ export default function CustomCarousel({
   aspect = 3 / 4,
   resizeMode = "cover",
 }: {
-  images: string[];
+  images: string[] | string;
   autoPlay?: boolean;
   defaultIndex?: number;
   aspect?: number;
   resizeMode?: ImageResizeMode;
 }) {
   const width = Dimensions.get("window").width;
-
   const progress = useSharedValue(0);
+  const imageList = !images ? [] : Array.isArray(images) ? images : [images];
 
   return (
     <View>
-      {images.length > 1 ? (
+      {imageList?.length > 1 ? (
         <>
           <Carousel
             defaultIndex={defaultIndex}
@@ -29,7 +29,7 @@ export default function CustomCarousel({
             autoPlayInterval={3000}
             width={width}
             height={width * aspect}
-            data={images}
+            data={imageList}
             onProgressChange={progress}
             renderItem={({ item }) => (
               <Image
@@ -41,7 +41,7 @@ export default function CustomCarousel({
           />
           <Pagination.Custom
             progress={progress}
-            data={images}
+            data={imageList}
             dotStyle={{
               width: 6,
               height: 6,
@@ -58,8 +58,11 @@ export default function CustomCarousel({
             }}
           />
         </>
-      ) : images.length === 1 ? (
-        <Image source={{ uri: images[0] }} className={`w-screen aspect-4/3`} />
+      ) : imageList?.length === 1 ? (
+        <Image
+          source={{ uri: imageList[0] }}
+          className={`w-screen aspect-4/3`}
+        />
       ) : (
         <></>
       )}

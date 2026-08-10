@@ -25,7 +25,7 @@ export default function ReviewSection({
       title="리뷰"
       className={`pb-4`}
       rightComponent={
-        reviews.length > 0 ? (
+        reviews?.length > 0 ? (
           <Pressable
             className={`flex-row items-center`}
             onPress={() =>
@@ -47,7 +47,7 @@ export default function ReviewSection({
       }
       {...props}
     >
-      <ReviewList title={title} reviews={reviews.slice(0, 3)} prev />
+      <ReviewList title={title} reviews={reviews?.slice(0, 3)} prev />
     </PlaceDetailSectionContainer>
   );
 }

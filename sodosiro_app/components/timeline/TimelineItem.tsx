@@ -5,7 +5,7 @@ import { MOCK_TRANSPORT_ROUTE } from "@/mocks/trip";
 import { router } from "expo-router";
 import { memo } from "react";
 import { Pressable, View } from "react-native";
-import CategoryTag from "../place/CategoryTag";
+import Tag from "../place/Tag";
 import ActionBadge from "../trip/badge/ActionBadge";
 import OngoingRouteSummaryCard from "../trip/ongoing/OngoingRouteSummaryCard";
 
@@ -74,7 +74,7 @@ function TimelineItem({
                 <CustomText font="title" numberOfLines={1}>
                   {place.title}
                 </CustomText>
-                <CategoryTag category={place.category} />
+                <Tag category={place.category} />
               </View>
             </View>
           }

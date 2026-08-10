@@ -1,34 +1,35 @@
 import CustomText from "@/components/common/CustomText";
-import CategoryTag from "@/components/place/CategoryTag";
 import RateChip from "@/components/place/RateChip";
+import Tag from "@/components/place/Tag";
 import { View } from "react-native";
 
 export default function PlaceInfo({
   category,
   title,
-  desc,
-  rate,
+  rankTag,
+  overview,
+  avgRating,
   reviewCount,
 }: {
   category: CategoryType;
   title: string;
-  desc: string;
-  rate: number;
+  rankTag: string;
+  overview: string;
+  avgRating: number;
   reviewCount: number;
 }) {
   return (
     <View className="px-5 py-4 gap-1">
-      <CategoryTag category={category} />
+      <View className={`flex-row gap-1`}>
+        <Tag category={category} />
+        <Tag rankTag={"인기 5위"} />
+      </View>
       <CustomText font="heading1">{title}</CustomText>
-      <View className="flex-row">
-        <CustomText
-          font="body3"
-          className="text-text-muted flex-1"
-          numberOfLines={1}
-        >
-          {desc}
+      <View className="flex-row gap-1 items-start">
+        <CustomText font="body3" className="text-text-muted flex-1">
+          {overview}
         </CustomText>
-        <RateChip rate={rate} reviewCount={reviewCount} />
+        <RateChip rate={avgRating} reviewCount={reviewCount} />
       </View>
     </View>
   );

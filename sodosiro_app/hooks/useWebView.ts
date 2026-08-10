@@ -36,13 +36,12 @@ export function useWebView({
   // mode에 따른 초기 데이터 전송 로직.
   // MAP_READY 최초 1회 + 이후 필요할 때(예: 새로고침) 재사용 가능하도록 분리
   const updateData = useCallback(
-    (data?: any, isPanTo?: boolean, showAll?: boolean) => {
+    (data?: any, isPanTo?: boolean) => {
       if (mode === "marker") {
         postMessage({
           type: "SET_PLACES",
           places: data ?? initialData,
           isPanTo: isPanTo ?? false,
-          showAll: showAll ?? false,
         });
       }
       if (mode === "navigation") {

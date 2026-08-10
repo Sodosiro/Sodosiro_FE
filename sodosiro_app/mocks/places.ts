@@ -1,6 +1,6 @@
 export const HOME_POPULAR_PLACES = [
   {
-    id: 1,
+    id: 264370,
     imageSource: require("../assets/mocks/popular_1.png"),
     title: "거진항 백섬해상전망대",
     region: "고성군",

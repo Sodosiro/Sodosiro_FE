@@ -1,4 +1,5 @@
 import getLabel from "../components/Marker";
+import { NumberToCategory } from "../util/category";
 import { getSelectedMarkerIcon } from "../util/getMarkerIcon";
 
 export function useMarker() {
@@ -6,7 +7,7 @@ export function useMarker() {
     const marker = new kakao.maps.Marker({
       position: new kakao.maps.LatLng(place.mapY, place.mapX),
       image: new kakao.maps.MarkerImage(
-        getSelectedMarkerIcon(place.category),
+        getSelectedMarkerIcon(NumberToCategory[place.category]),
         new kakao.maps.Size(40, 40),
       ),
       zIndex: 0,

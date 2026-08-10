@@ -1,7 +1,7 @@
 import { HeartCircle, HeartCircleStroke } from "@/assets/svgs";
 import CustomText from "@/components/common/CustomText";
-import CategoryTag from "@/components/place/CategoryTag";
 import RateChip from "@/components/place/RateChip";
+import Tag from "@/components/place/Tag";
 import { DEFAULT_IMAGES } from "@/constants/Bingo";
 import { NumberToCategory } from "@/util/place/category";
 import { router } from "expo-router";
@@ -36,7 +36,7 @@ export default function PlaceItem({
             <CustomText font="title" numberOfLines={1}>
               {place.title}
             </CustomText>
-            <CategoryTag category={NumberToCategory[place.category]} />
+            <Tag category={NumberToCategory[place.category]} />
           </View>
           <CustomText
             font="body3"
@@ -55,7 +55,7 @@ export default function PlaceItem({
           onPress={() =>
             router.push({
               pathname: "/place/[placeId]",
-              params: { placeId: "1" },
+              params: { placeId: place.contentId },
             })
           }
         >

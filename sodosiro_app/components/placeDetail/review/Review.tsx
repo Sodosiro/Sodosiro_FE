@@ -27,14 +27,14 @@ export default function Review({
         <View className={`flex-row gap-1.5 items-center flex-1`}>
           <View className={`flex-row gap-0.5 items-center`}>
             <StarIcon />
-            <CustomText font="body2">{review.rate}</CustomText>
+            <CustomText font="body2">{review.rating}</CustomText>
           </View>
           <CustomText
             font="body3"
             className={`text-text-muted`}
             numberOfLines={1}
           >
-            {review.nickname}
+            {review.author.displayName}
           </CustomText>
           {review.gpsVerified && <VerifiedTag />}
         </View>
@@ -46,7 +46,7 @@ export default function Review({
       {inPhotoModal ? (
         <ScrollView>
           <CustomText font="body3 review" className={`text-text-secondary`}>
-            {review.comment}
+            {review.body}
           </CustomText>
         </ScrollView>
       ) : (
@@ -56,7 +56,7 @@ export default function Review({
             className={`text-text-secondary ${prev && `flex-1`}`}
             numberOfLines={prev ? 2 : undefined}
           >
-            {review.comment}
+            {review.body}
           </CustomText>
 
           {review.images &&

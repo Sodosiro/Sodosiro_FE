@@ -10,10 +10,12 @@ type CategoryType =
 
 type CategoryTypeWithoutAll = Exclude<CategoryType, "all">;
 
+type CategoryNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7;
+
 type PlaceType = {
   contentId: number;
   title: string;
-  category: 1 | 2 | 3 | 4 | 5 | 6 | 7;
+  category: CategoryNumber;
   addr1: string;
   overview: string;
   restdate: string;
@@ -34,13 +36,18 @@ type PlaceType = {
 };
 
 type ReviewType = {
-  id: number;
-  nickname: string;
+  reviewId: number;
+  author: {
+    userId: number;
+    displayName: string;
+    profileImageUrl: string;
+  };
+  rating: number;
+  body: string;
   images: { imageUrl: string; displayOrder: number }[] | null;
-  rate: number;
-  comment: string;
   createdAt: Date;
   gpsVerified: boolean;
+  isMyReview: boolean;
 };
 
 type PopularPlaceType = {

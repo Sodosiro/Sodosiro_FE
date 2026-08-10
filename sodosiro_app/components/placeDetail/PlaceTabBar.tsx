@@ -35,7 +35,7 @@ export default function PlaceTabBar({
 
   return (
     <View
-      className="flex-1 flex-row w-full border-b border-border bg-bg"
+      className="flex-1 flex-row w-full border-b border-border bg-bg min-h-11.5"
       onLayout={handleTabLayout}
     >
       {tabs.map((tab) => (

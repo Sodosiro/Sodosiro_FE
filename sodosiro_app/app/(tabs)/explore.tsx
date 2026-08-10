@@ -4,7 +4,7 @@ import PlaceBottomSheet from "@/components/explore/bottomSheet/PlaceBottomSheet"
 import PlaceListBottomSheet from "@/components/explore/bottomSheet/PlaceListBottomSheet";
 import KakaoMap from "@/components/explore/KakaoMap";
 import MapOverlay from "@/components/explore/overlay/MapOverlay";
-import { usePlacesQuery } from "@/hooks/usePlacesQuery";
+import { usePlacesQuery } from "@/hooks/query/usePlacesQuery";
 import { useExploreStore } from "@/stores/useExploreStore";
 import { useWebViewStore } from "@/stores/useWebViewStore";
 import type BottomSheet from "@gorhom/bottom-sheet";

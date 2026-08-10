@@ -20,7 +20,6 @@ export default function ReviewList({
   const [carouselIndex, setCarouselIndex] = useState(0);
 
   const handleImageClick = (images: string[], index: number) => {
-    console.log(index);
     setSelectedImages(images);
     setCarouselIndex(index);
     setIsModalVisible(true);
@@ -28,10 +27,10 @@ export default function ReviewList({
 
   return (
     <>
-      {reviews.length > 0 ? (
+      {reviews?.length > 0 ? (
         reviews.map((review, index) => (
           <Review
-            key={review.id}
+            key={review.reviewId}
             review={review}
             isLast={reviews.length - 1 === index}
             prev={prev}

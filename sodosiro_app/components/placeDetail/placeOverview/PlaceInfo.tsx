@@ -22,7 +22,7 @@ export default function PlaceInfo({
     <View className="px-5 py-4 gap-1">
       <View className={`flex-row gap-1`}>
         <Tag category={category} />
-        <Tag rankTag={"인기 5위"} />
+        {rankTag && <Tag rankTag={rankTag} />}
       </View>
       <CustomText font="heading1">{title}</CustomText>
       <View className="flex-row gap-1 items-start">

@@ -24,7 +24,7 @@ export default function PlaceMini({
 }: Props) {
   return (
     <Pressable
-      className={`flex-row items-center flex-1 gap-3`}
+      className={`flex-row items-center flex-1 gap-3 min-h-14`}
       onPress={onPress}
     >
       <Image

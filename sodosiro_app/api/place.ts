@@ -17,9 +17,10 @@ export async function getPlaceDetailApi(contentId: number) {
 }
 
 export async function postAiRecommendationApi(contentId: number) {
-  return axiosInstance.post(
-    `/api/v1/travel/spots/${contentId}/ai-recommendation`,
-  );
+  // return axiosInstance.post(
+  //   `/api/v1/travel/spots/${contentId}/ai-recommendation`,
+  // );
+  return null;
 }
 
 export async function postLikeApi(contentId: number) {

@@ -28,14 +28,14 @@ export default function MapOverlay({
     clearResult,
     selectedCategory,
     setSelectedCategory,
-    setSelectedPlace,
+    setSelectedPlaceId,
   } = useExploreStore(
     useShallow((state) => ({
       keyword: state.keyword,
       clearResult: state.clearSearchResult,
       selectedCategory: state.selectedCategory,
       setSelectedCategory: state.setSelectedCategory,
-      setSelectedPlace: state.setSelectedPlace,
+      setSelectedPlaceId: state.setSelectedPlaceId,
     })),
   );
 
@@ -99,7 +99,7 @@ export default function MapOverlay({
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}
           paddingHorizontal={20}
-          onCategoryPress={() => setSelectedPlace(null)}
+          onCategoryPress={() => setSelectedPlaceId(null)}
         />
       </View>
 
@@ -122,7 +122,7 @@ export default function MapOverlay({
             className={`absolute self-center left-1/2 -translate-x-1/2 bottom-0`}
             onPress={() => {
               clearResult();
-              setSelectedPlace(null);
+              setSelectedPlaceId(null);
             }}
           />
         )}

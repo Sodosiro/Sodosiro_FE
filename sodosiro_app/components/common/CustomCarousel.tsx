@@ -1,4 +1,10 @@
-import { Dimensions, Image, ImageResizeMode, View } from "react-native";
+import {
+  Dimensions,
+  Image,
+  ImageResizeMode,
+  ImageSourcePropType,
+  View,
+} from "react-native";
 import { useSharedValue } from "react-native-reanimated";
 import Carousel, { Pagination } from "react-native-reanimated-carousel";
 
@@ -9,7 +15,7 @@ export default function CustomCarousel({
   aspect = 3 / 4,
   resizeMode = "cover",
 }: {
-  images: string[] | string;
+  images: string[] | string | ImageSourcePropType;
   autoPlay?: boolean;
   defaultIndex?: number;
   aspect?: number;
@@ -18,6 +24,11 @@ export default function CustomCarousel({
   const width = Dimensions.get("window").width;
   const progress = useSharedValue(0);
   const imageList = !images ? [] : Array.isArray(images) ? images : [images];
+
+  const getImageSource = (
+    image: string | ImageSourcePropType,
+  ): ImageSourcePropType =>
+    typeof image === "string" ? { uri: image } : image;
 
   return (
     <View>
@@ -33,8 +44,11 @@ export default function CustomCarousel({
             onProgressChange={progress}
             renderItem={({ item }) => (
               <Image
-                source={{ uri: item }}
-                style={{ width: "100%", aspectRatio: 1 / aspect }}
+                source={getImageSource(item)}
+                style={{
+                  width: "100%",
+                  aspectRatio: 1 / aspect,
+                }}
                 resizeMode={resizeMode}
               />
             )}
@@ -60,8 +74,12 @@ export default function CustomCarousel({
         </>
       ) : imageList?.length === 1 ? (
         <Image
-          source={{ uri: imageList[0] }}
-          className={`w-screen aspect-4/3`}
+          source={getImageSource(imageList[0])}
+          style={{
+            width,
+            height: width * aspect,
+          }}
+          resizeMode={resizeMode}
         />
       ) : (
         <></>

@@ -1,6 +1,3 @@
-// 장소 좋아요 icon
-export { default as PlaceHeartIcon } from "./place_heart.svg";
-
 // 10px
 export { default as OnAirIcon } from "./10px/on-air.svg";
 
@@ -58,8 +55,6 @@ export { default as SpinnerIcon } from "./24px/spinner.svg";
 export { default as BigXIcon } from "./32px/big_x.svg";
 export { default as BigBusIcon } from "./32px/bus.svg";
 export { default as CarIcon } from "./32px/car.svg";
-export { default as HeartCircle } from "./32px/heart_circle.svg";
-export { default as HeartCircleStroke } from "./32px/heart_circle_stroke.svg";
 export { default as KeyIcon } from "./32px/key.svg";
 
 // 36px
@@ -74,4 +69,3 @@ export { default as DotIcon } from "./10px/dot.svg";
 export { default as GpsIcon } from "./gps.svg";
 
 export { default as KakaoLogo } from "./kakao_logo.svg";
-

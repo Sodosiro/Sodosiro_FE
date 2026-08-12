@@ -5,20 +5,23 @@ import PlaceItem from "./PlaceItem";
 
 export default function PlaceBottomSheet({
   handlePlaceItemPress,
+  handleLike,
 }: {
   handlePlaceItemPress: (placeId: number) => void;
+  handleLike: (contentId: number) => Promise<void>;
 }) {
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const selectedPlace = useExploreStore((state) => state.selectedPlace);
+  const selectedPlaceId = useExploreStore((state) => state.selectedPlaceId);
+  const findPlaceById = useExploreStore((state) => state.findPlaceById);
   const keyword = useExploreStore((state) => state.keyword);
 
   useEffect(() => {
-    if (selectedPlace && keyword === "") {
+    if (selectedPlaceId && keyword === "") {
       bottomSheetRef.current?.expand();
     } else {
       bottomSheetRef.current?.close();
     }
-  }, [selectedPlace, keyword]);
+  }, [selectedPlaceId, keyword]);
 
   return (
     <BottomSheet
@@ -36,8 +39,12 @@ export default function PlaceBottomSheet({
       }}
     >
       <BottomSheetView className={`pb-2`}>
-        {selectedPlace && (
-          <PlaceItem place={selectedPlace} onPress={handlePlaceItemPress} />
+        {selectedPlaceId && (
+          <PlaceItem
+            place={findPlaceById(selectedPlaceId) as PlaceType}
+            onPress={handlePlaceItemPress}
+            handleLike={handleLike}
+          />
         )}
       </BottomSheetView>
     </BottomSheet>

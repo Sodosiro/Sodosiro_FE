@@ -1,13 +1,15 @@
-import { getPlacesApi } from "@/api/place";
+import { getPlacesApi, postLikeApi } from "@/api/place";
 import Spinner from "@/components/common/Spinner";
 import PlaceBottomSheet from "@/components/explore/bottomSheet/PlaceBottomSheet";
 import PlaceListBottomSheet from "@/components/explore/bottomSheet/PlaceListBottomSheet";
 import KakaoMap from "@/components/explore/KakaoMap";
 import MapOverlay from "@/components/explore/overlay/MapOverlay";
-import { usePlacesQuery } from "@/hooks/query/usePlacesQuery";
+import { useSearchPlacesQuery } from "@/hooks/query/useSearchPlacesQuery";
+import { queryClient } from "@/lib/queryClient";
 import { useExploreStore } from "@/stores/useExploreStore";
 import { useWebViewStore } from "@/stores/useWebViewStore";
 import type BottomSheet from "@gorhom/bottom-sheet";
+import { useMutation } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { Dimensions, View } from "react-native";
 import { useSharedValue } from "react-native-reanimated";
@@ -34,8 +36,24 @@ export default function ExploreScreen() {
 
   const [isPlacesPending, setisPlacesPending] = useState(true);
 
-  const setAllPlaces = useExploreStore((state) => state.setAllPlaces);
-  const setSearchResult = useExploreStore((state) => state.setSearchResult);
+  const { setAllPlaces, setSearchResult, updatePlaceLike } = useExploreStore();
+
+  const { data, isPending: isSearchPending } = useSearchPlacesQuery();
+
+  const { mutate, isPending: isLikePending } = useMutation({
+    mutationFn: (contentId: number) => postLikeApi(contentId),
+    onSuccess: (response, contentId) => {
+      updatePlaceLike(contentId, response.data.liked);
+      queryClient.invalidateQueries({
+        queryKey: ["placeDetail", contentId],
+      });
+    },
+  });
+
+  const handleLike = async (contentId: number) => {
+    if (isLikePending) return;
+    mutate(contentId);
+  };
 
   useEffect(() => {
     const getPlace = async () => {
@@ -51,8 +69,6 @@ export default function ExploreScreen() {
 
     getPlace();
   }, []);
-
-  const { data, isPending: isSearchPending } = usePlacesQuery();
 
   useEffect(() => {
     const places = data?.data.items;
@@ -92,8 +108,12 @@ export default function ExploreScreen() {
         animatedPosition={animatedPosition}
         animatedIndex={animatedIndex}
         handlePlaceItemPress={handlePlaceItemPress}
+        handleLike={handleLike}
       />
-      <PlaceBottomSheet handlePlaceItemPress={handlePlaceItemPress} />
+      <PlaceBottomSheet
+        handlePlaceItemPress={handlePlaceItemPress}
+        handleLike={handleLike}
+      />
     </SafeAreaView>
   );
 }

@@ -5,12 +5,12 @@ import { useExploreStore } from "@/stores/useExploreStore";
 import { CategoryToNumber } from "@/util/place/category";
 import { useQuery } from "@tanstack/react-query";
 
-export function usePlacesQuery() {
+export function useSearchPlacesQuery() {
   const keyword = useExploreStore((state) => state.keyword);
   const selectedCategory = useExploreStore((state) => state.selectedCategory);
 
   return useQuery({
-    queryKey: ["places", keyword, selectedCategory],
+    queryKey: ["search", keyword, selectedCategory],
     queryFn: () =>
       getPlacesApi({
         keyword: keyword || undefined,

@@ -6,13 +6,18 @@ import MypageSectionContainer from "./MypageSectionContainer";
 
 const MY_HISTORY_LIST = [
   {
-    title: "알림 기록",
+    title: "소도시 빙고",
+    route: "/mypage/bingo",
+  },
+  {
+    title: "내 피드",
   },
   {
     title: "내 여행 이력",
   },
   {
     title: "내 리뷰",
+    route: "/mypage/review",
   },
   {
     title: "좋아요한 장소",

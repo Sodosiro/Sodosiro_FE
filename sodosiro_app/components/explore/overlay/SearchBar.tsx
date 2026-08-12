@@ -6,7 +6,9 @@ import CustomText from "../../common/CustomText";
 
 export default function SearchBar({ keyword }: { keyword?: string }) {
   const clearResult = useExploreStore((state) => state.clearSearchResult);
-  const setSelectedPlace = useExploreStore((state) => state.setSelectedPlace);
+  const setSelectedPlaceId = useExploreStore(
+    (state) => state.setSelectedPlaceId,
+  );
   return (
     <Pressable
       className={`flex-row justify-between items-center border border-border bg-white w-full px-6 h-15 rounded-full`}
@@ -31,7 +33,7 @@ export default function SearchBar({ keyword }: { keyword?: string }) {
           color={"#888888"}
           onPress={() => {
             clearResult();
-            setSelectedPlace(null);
+            setSelectedPlaceId(null);
             router.push("/explore/search");
           }}
         />

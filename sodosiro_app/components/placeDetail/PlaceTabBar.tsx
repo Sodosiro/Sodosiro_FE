@@ -46,7 +46,7 @@ export default function PlaceTabBar({
           }`}
           font={currentTab === tab ? "body2 tight" : "body3 tight"}
           onPress={() => {}}
-          onPressIn={() => {
+          onPressOut={() => {
             moveToSection(tab);
           }}
         >

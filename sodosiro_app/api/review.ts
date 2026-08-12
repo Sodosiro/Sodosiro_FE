@@ -8,6 +8,11 @@ export type GetReviewsParams = {
   hasImage?: boolean;
 };
 
+export type GetMyReviewsParams = {
+  cursor?: number;
+  size?: number;
+};
+
 export async function getReviewsApi(
   contentId: number,
   params?: GetReviewsParams,
@@ -47,4 +52,12 @@ export async function postReviewApi(
   });
 
   return data;
+}
+
+export async function getMyReviewsApi(params?: GetMyReviewsParams) {
+  return axiosInstance.get(`/api/v1/reviews/me`, { params });
+}
+
+export async function deleteReviewApi(reviewId: number) {
+  return axiosInstance.delete(`/api/v1/reviews/${reviewId}`);
 }

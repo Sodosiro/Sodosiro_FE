@@ -84,7 +84,13 @@ export default function PlaceDetailScreen() {
         scrollEventThrottle={16}
       >
         {/* 캐러셀 */}
-        <CustomCarousel images={images?.length > 0 ? images : firstImage} />
+        <CustomCarousel
+          images={
+            images?.length > 0
+              ? images
+              : firstImage || require("@/assets/images/no_image.png")
+          }
+        />
 
         {/* AI 추천 이유 */}
         <AIRecommend

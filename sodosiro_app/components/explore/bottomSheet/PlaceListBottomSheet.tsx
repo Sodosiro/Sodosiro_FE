@@ -16,11 +16,13 @@ export default function PlaceListBottomSheet({
   bottomSheetRef,
   animatedIndex,
   handlePlaceItemPress,
+  handleLike,
 }: {
   animatedPosition: SharedValue<number>;
   bottomSheetRef: RefObject<BottomSheet | null>;
   animatedIndex: SharedValue<number>;
   handlePlaceItemPress: (placeId: number) => void;
+  handleLike: (contentId: number) => Promise<void>;
 }) {
   const animationConfigs = useBottomSheetSpringConfigs({
     damping: 100,
@@ -32,17 +34,27 @@ export default function PlaceListBottomSheet({
   const [isClosing, setIsClosing] = useState(false);
   const searchResult = useExploreStore((state) => state.searchResult);
   const keyword = useExploreStore((state) => state.keyword);
-  const selectedPlace = useExploreStore((state) => state.selectedPlace);
+  const selectedPlaceId = useExploreStore((state) => state.selectedPlaceId);
 
   useEffect(() => {
-    if (searchResult) bottomSheetRef.current?.snapToIndex(1);
-    else bottomSheetRef.current?.close();
+    if (searchResult) {
+      bottomSheetRef.current?.snapToIndex(1);
+
+      requestAnimationFrame(() => {
+        flatListRef.current?.scrollToOffset({
+          offset: 0,
+          animated: true,
+        });
+      });
+    } else {
+      bottomSheetRef.current?.close();
+    }
   }, [searchResult, keyword]);
 
   useEffect(() => {
-    if (!selectedPlace || !searchResult) return;
+    if (!selectedPlaceId || !searchResult) return;
     const index = searchResult.findIndex(
-      (place) => place.contentId === selectedPlace.contentId,
+      (place) => place.contentId === selectedPlaceId,
     );
 
     if (index === -1) return;
@@ -53,7 +65,7 @@ export default function PlaceListBottomSheet({
       animated: true,
       viewPosition: 0,
     });
-  }, [selectedPlace, searchResult]);
+  }, [selectedPlaceId, searchResult]);
 
   return (
     <BottomSheet
@@ -100,7 +112,11 @@ export default function PlaceListBottomSheet({
           })}
           renderItem={({ item, index }) => (
             <View key={index} className={`h-[100px]`}>
-              <PlaceItem place={item} onPress={handlePlaceItemPress} />
+              <PlaceItem
+                place={item}
+                onPress={handlePlaceItemPress}
+                handleLike={handleLike}
+              />
               {index !== (searchResult as PlaceType[]).length - 1 && (
                 <View className="h-px bg-bg-subtle mx-5" />
               )}

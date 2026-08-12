@@ -1,11 +1,12 @@
 import { postLikeApi } from "@/api/place";
 import { NavigationIcon } from "@/assets/svgs";
 import useSelectedAnimation from "@/hooks/useSelcetedAnimation";
+import { queryClient } from "@/lib/queryClient";
+import { useExploreStore } from "@/stores/useExploreStore";
 import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
 import BottomActionBar from "../common/BottomActionBar";
 import CustomButton from "../common/CustomButton";
-import FavoriteIcon from "../icon/FavoriteIcon";
+import FavoriteIcon from "../icon/favorite/FavoriteIcon";
 
 export default function PlaceDetailBottomBar({
   contentId,
@@ -14,22 +15,25 @@ export default function PlaceDetailBottomBar({
   contentId: number;
   liked: boolean;
 }) {
-  const [isLiked, setIsLiked] = useState(liked);
-
-  const { fillStyle } = useSelectedAnimation(isLiked, {
+  const { fillStyle } = useSelectedAnimation(liked, {
     fill: ["transparent", "#C4D96A"],
   });
+
+  const updatePlaceLike = useExploreStore((state) => state.updatePlaceLike);
 
   const { mutate, isPending } = useMutation({
     mutationFn: () => postLikeApi(contentId),
     onSuccess: (response) => {
-      setIsLiked(response.data.liked);
+      const liked = response.data.liked;
+      updatePlaceLike(contentId, liked);
+      queryClient.invalidateQueries({
+        queryKey: ["placeDetail", contentId],
+      });
     },
   });
 
-  const handleLike = () => {
+  const handleLike = async () => {
     if (isPending) return;
-
     mutate();
   };
 

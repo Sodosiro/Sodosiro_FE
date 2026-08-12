@@ -25,7 +25,6 @@ export default function ReviewSection({
     <PlaceDetailSectionContainer
       ref={ref}
       title="리뷰"
-      className={`pb-4`}
       rightComponent={
         reviews?.length > 0 ? (
           <Pressable

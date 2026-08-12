@@ -22,7 +22,9 @@ export function useWebView({
   initialData: any;
 }) {
   const setIsTracking = useLocationStore((state) => state.setIsTracking);
-  const setSelectedPlace = useExploreStore((state) => state.setSelectedPlace);
+  const setSelectedPlaceId = useExploreStore(
+    (state) => state.setSelectedPlaceId,
+  );
 
   const [isMapReady, setIsMapReady] = useState(false);
 
@@ -66,13 +68,13 @@ export function useWebView({
       MARKER_SELECTED: (
         data: Extract<WebViewToNativeMessage, { type: "MARKER_SELECTED" }>,
       ) => {
-        setSelectedPlace(data.place);
+        setSelectedPlaceId(data?.place?.contentId || null);
       },
       STOP_TRACKING: () => {
         setIsTracking(false);
       },
     }),
-    [setIsLoading, setSelectedPlace, setIsTracking, updateData],
+    [setIsLoading, setSelectedPlaceId, setIsTracking, updateData],
   );
 
   const handleMessage = useCallback(

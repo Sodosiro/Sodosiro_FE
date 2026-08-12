@@ -9,7 +9,7 @@ export const handleSearch = async (keyword: string) => {
   await addSearchHistory(trimmed);
 
   useExploreStore.getState().setKeyword(trimmed);
-  useExploreStore.getState().setSelectedPlace(null);
+  useExploreStore.getState().setSelectedPlaceId(null);
   useExploreStore.getState().setSelectedCategory("all");
 
   router.back();

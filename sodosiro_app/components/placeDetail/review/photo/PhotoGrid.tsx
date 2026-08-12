@@ -21,8 +21,6 @@ export default function PhotoGrid({
     })),
   );
 
-  console.log(photoReviews);
-
   return (
     <ScrollView contentContainerClassName={`px-4.5 flex-row flex-wrap`}>
       {photoList.map((photo, index) => (

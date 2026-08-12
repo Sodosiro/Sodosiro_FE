@@ -1,4 +1,3 @@
-import { REVIEW_LIST } from "@/mocks/places";
 import { Image, Pressable, ScrollView } from "react-native";
 
 type PhotoItem = {
@@ -8,17 +7,21 @@ type PhotoItem = {
 };
 
 export default function PhotoGrid({
+  photoReviews,
   onSelectPhoto,
 }: {
+  photoReviews: ReviewType[];
   onSelectPhoto: (photo: PhotoItem) => void;
 }) {
-  const photoList: PhotoItem[] = REVIEW_LIST.reviews.flatMap((review) =>
+  const photoList: PhotoItem[] = photoReviews.flatMap((review) =>
     (review.images ?? []).map((image) => ({
-      reviewId: review.id,
+      reviewId: review.reviewId,
       imageUrl: image.imageUrl,
       displayOrder: image.displayOrder,
     })),
   );
+
+  console.log(photoReviews);
 
   return (
     <ScrollView contentContainerClassName={`px-4.5 flex-row flex-wrap`}>

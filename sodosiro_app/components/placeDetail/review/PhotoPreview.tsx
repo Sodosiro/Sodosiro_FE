@@ -1,10 +1,17 @@
 import CustomText from "@/components/common/CustomText";
-import { REVIEW_LIST } from "@/mocks/places";
 import { router } from "expo-router";
 import { Image, Pressable, ScrollView, View } from "react-native";
 
-export default function PhotoPreview() {
-  const images = REVIEW_LIST.reviews.flatMap((review) => review.images ?? []);
+export default function PhotoPreview({
+  placeId,
+  photoReviews,
+}: {
+  placeId: string;
+  photoReviews: ReviewType[];
+}) {
+  const images = photoReviews.flatMap((review) => review.images ?? []);
+
+  if (!images?.length) return null;
 
   return (
     <View className={`pb-8 gap-3`}>
@@ -30,7 +37,7 @@ export default function PhotoPreview() {
                   router.push({
                     pathname: "/place/[placeId]/photo",
                     params: {
-                      placeId: "123",
+                      placeId: placeId,
                     },
                   })
                 }

@@ -21,9 +21,15 @@ export default function ReviewScreen() {
     placeId: string;
   }>();
 
-  const { data, isPending } = useReviewsQuery(Number(placeId));
+  const { data: reviewsData, isPending: isReviewsPending } = useReviewsQuery(
+    Number(placeId),
+  );
 
-  const reviews = data?.pages.flatMap((page) => page.data.reivews) ?? [];
+  const { data: photoReviewsData } = useReviewsQuery(
+    Number(placeId),
+    undefined,
+    true,
+  );
 
   return (
     <SafeAreaView
@@ -37,10 +43,10 @@ export default function ReviewScreen() {
         <View className={`flex-row gap-1 items-center`}>
           <StarIcon />
           <CustomText font="heading2">
-            {data?.pages[0].data.avgRating}
+            {reviewsData?.pages[0].data.avgRating}
           </CustomText>
           <CustomText font="body3" className={`text-text-muted`}>
-            {"(" + data?.pages[0].data.totalCount + ")"}
+            {"(" + reviewsData?.pages[0].data.totalCount + ")"}
           </CustomText>
         </View>
 
@@ -52,11 +58,18 @@ export default function ReviewScreen() {
         />
       </View>
       <ScrollView contentContainerClassName="pb-8 px-5">
-        <PhotoPreview />
+        <PhotoPreview
+          placeId={placeId}
+          photoReviews={
+            photoReviewsData?.pages.flatMap((page) => page.data.reviews) ?? []
+          }
+        />
         <CustomText font="heading2">리뷰</CustomText>
         <ReviewList
           title={title}
-          reviews={data?.pages.flatMap((page) => page.data.reviews) ?? []}
+          reviews={
+            reviewsData?.pages.flatMap((page) => page.data.reviews) ?? []
+          }
         />
       </ScrollView>
       <BottomActionBar>

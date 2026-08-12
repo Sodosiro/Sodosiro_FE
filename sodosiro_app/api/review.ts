@@ -5,6 +5,7 @@ export type GetReviewsParams = {
   cursor?: number;
   size?: number;
   sort?: "RECENT" | "HIGH_RATING" | "LOW_RATING";
+  hasImage?: boolean;
 };
 
 export async function getReviewsApi(
@@ -30,8 +31,6 @@ export async function postReviewApi(
     }),
     type: "application/json",
   } as any);
-
-  console.log(rating);
 
   images.forEach((image, index) => {
     formData.append("images", {

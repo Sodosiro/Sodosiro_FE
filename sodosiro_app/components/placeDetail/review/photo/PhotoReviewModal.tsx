@@ -1,5 +1,4 @@
 import { LeftIcon } from "@/assets/svgs";
-import { REVIEW_LIST } from "@/mocks/places";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import {
   Dimensions,
@@ -19,12 +18,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Review from "../Review";
 
 export default function PhotoReviewModal({
+  photoReviews,
   visible,
   setVisible,
   initialReviewId,
   initialImageUrl,
   onClose,
 }: {
+  photoReviews: ReviewType[];
   visible: boolean;
   setVisible: Dispatch<SetStateAction<boolean>>;
   initialReviewId: number | null;
@@ -34,13 +35,15 @@ export default function PhotoReviewModal({
   const { width } = Dimensions.get("window");
 
   // FlatList가 실제로 사용하는 배열 기준으로 인덱스를 계산
-  const reviewsWithImages = REVIEW_LIST.reviews.filter(
+  const reviewsWithImages = photoReviews?.filter(
     (review) => review.images?.length,
   );
 
   const initialIndex = Math.max(
     0,
-    reviewsWithImages.findIndex((review) => review.id === initialReviewId),
+    reviewsWithImages?.findIndex(
+      (review) => review.reviewId === initialReviewId,
+    ),
   );
 
   return (
@@ -65,12 +68,12 @@ export default function PhotoReviewModal({
           })}
           showsHorizontalScrollIndicator={false}
           data={reviewsWithImages}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => item.reviewId.toString()}
           renderItem={({ item }) => (
             <PhotoReviewModalContent
               review={item}
               initialImageUrl={
-                item.id === initialReviewId ? initialImageUrl : null
+                item.reviewId === initialReviewId ? initialImageUrl : null
               }
             />
           )}

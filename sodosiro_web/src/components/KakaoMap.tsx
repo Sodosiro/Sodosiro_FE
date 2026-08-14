@@ -81,10 +81,10 @@ export default function KakaoMap() {
         <Map
           ref={mapRef}
           center={{
-            lat: 37.5665,
-            lng: 126.978,
+            lat: 37.8528,
+            lng: 128.2555,
           }}
-          level={5}
+          level={12}
           style={{
             width: "100%",
             height: "100%",

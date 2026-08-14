@@ -84,7 +84,6 @@ export default function MapOverlay({
         type: "UPDATE_LOCATION",
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
-        initial: false,
       }),
     );
   };

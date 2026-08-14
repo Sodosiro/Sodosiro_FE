@@ -42,22 +42,10 @@ export function useWebViewMessage({
 
         case "UPDATE_LOCATION":
           updateLocation(data.latitude, data.longitude);
-          if (data.initial) {
-            window.ReactNativeWebView?.postMessage(
-              JSON.stringify({
-                type: "LOCATION_READY",
-              }),
-            );
-          }
           break;
 
         case "DENY_LOCATION":
           denyLocation();
-          window.ReactNativeWebView?.postMessage(
-            JSON.stringify({
-              type: "LOCATION_READY",
-            }),
-          );
           break;
 
         case "PAN_TO": {

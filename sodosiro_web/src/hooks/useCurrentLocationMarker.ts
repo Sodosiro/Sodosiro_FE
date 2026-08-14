@@ -5,7 +5,7 @@ export function useCurrentLocationMarker(
   mapRef: React.RefObject<kakao.maps.Map | null>,
 ) {
   const markerRef = useRef<kakao.maps.Marker | null>(null);
-  const isTrackingRef = useRef(true);
+  const isTrackingRef = useRef(false);
 
   const denyLocation = () => {
     isTrackingRef.current = false;
@@ -13,7 +13,7 @@ export function useCurrentLocationMarker(
     markerRef.current?.setMap(null);
     markerRef.current = null;
 
-    mapRef.current?.setCenter(new kakao.maps.LatLng(37.5665, 126.978));
+    mapRef.current?.setCenter(new kakao.maps.LatLng(37.8528, 128.2555));
   };
 
   const updateLocation = (latitude: number, longitude: number) => {

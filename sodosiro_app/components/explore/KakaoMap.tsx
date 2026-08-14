@@ -72,6 +72,7 @@ export default function KakaoMap({
         style={{ flex: 1 }}
         onMessage={handleMessage}
         onLoadStart={() => setIsLoading(true)}
+        onLoadEnd={() => setIsLoading(false)}
       />
     </Animated.View>
   );

@@ -5,7 +5,6 @@ import { useCallback, useMemo, useState } from "react";
 import type { WebView, WebViewMessageEvent } from "react-native-webview";
 
 type WebViewToNativeMessage =
-  | { type: "LOCATION_READY" }
   | { type: "MAP_READY" }
   | { type: "MARKER_SELECTED"; place: PlaceType }
   | { type: "STOP_TRACKING" };
@@ -58,9 +57,6 @@ export function useWebView({
 
   const messageHandlers = useMemo(
     () => ({
-      LOCATION_READY: () => {
-        setIsLoading(false);
-      },
       MAP_READY: () => {
         setIsMapReady(true);
         updateData();
@@ -107,10 +103,7 @@ export function useWebView({
   );
 
   const sendLocation = useCallback(
-    (
-      location: { latitude: number; longitude: number; initial?: boolean },
-      denied = false,
-    ) => {
+    (location: { latitude: number; longitude: number }, denied = false) => {
       if (!denied) {
         postMessage({ type: "UPDATE_LOCATION", ...location });
       } else {

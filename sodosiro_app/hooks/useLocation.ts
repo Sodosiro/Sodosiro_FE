@@ -6,7 +6,6 @@ type SendLocation = (
   location: {
     latitude: number;
     longitude: number;
-    initial?: boolean;
   },
   denied?: boolean,
 ) => void;
@@ -26,9 +25,8 @@ export function useLocation(sendLocation: SendLocation, isMapReady: boolean) {
         setIsDenied(true);
         sendLocation(
           {
-            latitude: 37.5665,
-            longitude: 126.978,
-            initial: true,
+            latitude: 37.8528,
+            longitude: 128.2555,
           },
           true,
         );
@@ -43,7 +41,6 @@ export function useLocation(sendLocation: SendLocation, isMapReady: boolean) {
       sendLocation({
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
-        initial: true,
       });
 
       subscription = await Location.watchPositionAsync(

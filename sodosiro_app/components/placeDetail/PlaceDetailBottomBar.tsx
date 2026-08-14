@@ -1,9 +1,7 @@
-import { postLikeApi } from "@/api/place";
 import { NavigationIcon } from "@/assets/svgs";
+import { useLikeMutation } from "@/hooks/mutation/useLikeMutation";
 import useSelectedAnimation from "@/hooks/useSelcetedAnimation";
-import { queryClient } from "@/lib/queryClient";
-import { useExploreStore } from "@/stores/useExploreStore";
-import { useMutation } from "@tanstack/react-query";
+import { Linking } from "react-native";
 import BottomActionBar from "../common/BottomActionBar";
 import CustomButton from "../common/CustomButton";
 import LikeIcon from "../icon/like/LikeIcon";
@@ -11,30 +9,33 @@ import LikeIcon from "../icon/like/LikeIcon";
 export default function PlaceDetailBottomBar({
   contentId,
   liked,
+  title,
+  mapX,
+  mapY,
 }: {
   contentId: number;
   liked: boolean;
+  title: string;
+  mapX: number;
+  mapY: number;
 }) {
   const { fillStyle } = useSelectedAnimation(liked, {
     fill: ["transparent", "#C4D96A"],
   });
 
-  const updatePlaceLike = useExploreStore((state) => state.updatePlaceLike);
-
-  const { mutate, isPending } = useMutation({
-    mutationFn: () => postLikeApi(contentId),
-    onSuccess: (response) => {
-      const liked = response.data.liked;
-      updatePlaceLike(contentId, liked);
-      queryClient.invalidateQueries({
-        queryKey: ["placeDetail", contentId],
-      });
-    },
-  });
+  const { mutate, isPending } = useLikeMutation();
 
   const handleLike = async () => {
     if (isPending) return;
-    mutate();
+    mutate(contentId);
+  };
+
+  const openKakaoMap = () => {
+    const webUrl =
+      `https://map.kakao.com/link/to/` +
+      `${encodeURIComponent(title)},${mapY},${mapX}`;
+
+    Linking.openURL(webUrl);
   };
 
   return (
@@ -51,6 +52,7 @@ export default function PlaceDetailBottomBar({
           type="primary"
           size="medium"
           title="길찾기"
+          onPress={openKakaoMap}
           Icon={<NavigationIcon height={20} />}
         />
       </>

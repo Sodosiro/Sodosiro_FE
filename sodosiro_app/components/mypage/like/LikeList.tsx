@@ -2,14 +2,11 @@ import { CheckOffIcon, CheckOnIcon } from "@/assets/svgs";
 import CustomText from "@/components/common/CustomText";
 import DeleteModal from "@/components/common/modal/DeleteModal";
 import PlaceMini from "@/components/place/PlaceMini";
-import { useLikeStore } from "@/stores/useLikeStore";
+import { invalidateQueries } from "@/util/query/invalidateQueries";
 import { useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 
-export default function LikeList() {
-  const likePlaces = useLikeStore((state) => state.likePlaces);
-  const removeLikes = useLikeStore((state) => state.removeLikes);
-
+export default function LikeList({ places }: { places: PlacePrev[] }) {
   const [isEditing, setIsEditing] = useState(false);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
@@ -34,7 +31,10 @@ export default function LikeList() {
   };
 
   const handleConfirmDelete = () => {
-    removeLikes(selectedIds);
+    // 좋아요 토글 api 호출 추가 필요
+
+    invalidateQueries([["likePlaces"]]);
+
     setSelectedIds([]);
     setIsEditing(false);
     setIsDeleteModalVisible(false);
@@ -68,7 +68,7 @@ export default function LikeList() {
         ) : (
           <>
             <CustomText font="body3 tight" className={`text-text-secondary`}>
-              총 {likePlaces.length}개
+              총 {places.length}개
             </CustomText>
             <CustomText
               font="body3 tight"
@@ -87,22 +87,27 @@ export default function LikeList() {
           paddingBottom: 20,
         }}
       >
-        {likePlaces.map((place) => {
-          const isSelected = selectedIds.includes(place.id);
+        {places.map((place) => {
+          const isSelected = selectedIds.includes(place.contentId);
           return (
             <Pressable
-              key={place.id}
+              key={place.contentId}
               className={`flex-row gap-2 items-center`}
-              onPress={isEditing ? () => handleSelect(place.id) : undefined}
+              onPress={
+                isEditing ? () => handleSelect(place.contentId) : undefined
+              }
             >
               {isEditing && (isSelected ? <CheckOnIcon /> : <CheckOffIcon />)}
               <PlaceMini
-                id={place.id}
-                imageSource={place.imageSource}
+                id={place.contentId}
+                imageUrl={place.firstImage}
                 title={place.title}
-                desc={place.desc}
+                desc={place.title}
+                category={1}
                 icon={<></>}
-                onPress={isEditing ? () => handleSelect(place.id) : undefined}
+                onPress={
+                  isEditing ? () => handleSelect(place.contentId) : undefined
+                }
               />
             </Pressable>
           );

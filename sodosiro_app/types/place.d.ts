@@ -35,6 +35,15 @@ type PlaceType = {
   };
 };
 
+type PlacePrev = {
+  contentId: number;
+  title: string;
+  addr1: string;
+  firstImage: string;
+  likeCount: number;
+  likedAt: Date;
+};
+
 type PopularPlaceType = {
   id: number;
   imageSource: any;
@@ -51,8 +60,8 @@ type PlaceDetailType = {
   title: string;
   category: CategoryType;
   addr1: string;
-  lat: number;
-  lng: number;
+  mapY: number;
+  mapX: number;
   overview: string;
   heart: boolean;
   images: string[];

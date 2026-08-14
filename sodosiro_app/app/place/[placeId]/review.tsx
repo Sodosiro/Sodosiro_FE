@@ -3,6 +3,7 @@ import BottomActionBar from "@/components/common/BottomActionBar";
 import CustomButton from "@/components/common/CustomButton";
 import CustomText from "@/components/common/CustomText";
 import Header from "@/components/common/Header";
+import Spinner from "@/components/common/Spinner";
 import PhotoPreview from "@/components/placeDetail/review/PhotoPreview";
 import ReviewFilter from "@/components/placeDetail/review/ReviewFilter";
 import ReviewList from "@/components/placeDetail/review/ReviewList";
@@ -21,11 +22,11 @@ export default function ReviewScreen() {
     placeId: string;
   }>();
 
-  const { data: reviewsData, isPending: isReviewsPending } = useReviewsQuery(
-    Number(placeId),
-    sortOption,
-    onlyPhotoReview,
-  );
+  const {
+    data: reviewsData,
+    isPending: isReviewsPending,
+    isPlaceholderData,
+  } = useReviewsQuery(Number(placeId), sortOption, onlyPhotoReview);
 
   // 리뷰 포토 모아보기(5장)
   const { data: photoReviewsData } = useReviewsQuery(
@@ -65,21 +66,27 @@ export default function ReviewScreen() {
           setOnlyPhotoReview={setOnlyPhotoReview}
         />
       </View>
-      <ScrollView contentContainerClassName="pb-8 px-5">
-        <PhotoPreview placeId={placeId} photoReviews={photoReviews} />
-        <CustomText font="heading2">리뷰</CustomText>
-        <ReviewList
-          title={title}
-          reviews={reviews}
-          isPending={isReviewsPending}
-        />
-      </ScrollView>
+      {isReviewsPending || isPlaceholderData ? (
+        <View className={`flex-1 justify-center items-center min-h-30`}>
+          <Spinner />
+        </View>
+      ) : (
+        <ScrollView contentContainerClassName="pb-8 px-5">
+          <PhotoPreview placeId={placeId} photoReviews={photoReviews} />
+          <CustomText font="heading2">리뷰</CustomText>
+          <ReviewList
+            title={title}
+            reviews={reviews}
+            isPending={isReviewsPending}
+          />
+        </ScrollView>
+      )}
       <BottomActionBar>
         <CustomButton
           type="primary"
           title={myReviewId ? "리뷰 수정하기" : "리뷰 작성하기"}
           stretch
-          disabled={isReviewsPending}
+          loading={isReviewsPending}
           onPress={
             myReviewId
               ? () =>

@@ -87,8 +87,11 @@ export default function PlaceInfoSection({
         <Pressable onPress={usetime ? handleToggle : undefined}>
           <View className={`flex-row gap-1`}>
             <View className={`flex-row gap-2`}>
-              <ClockMiniIcon />
-              <CustomText font={usetime ? "body2" : "body3"}>
+              <ClockMiniIcon color={usetime ? `#444444` : `#888888`} />
+              <CustomText
+                font={usetime ? "body2" : "body3"}
+                className={`${!usetime && `text-text-muted`}`}
+              >
                 {usetime ? "상세 정보 확인" : "영업 정보 미등록"}
               </CustomText>
             </View>
@@ -129,8 +132,11 @@ export default function PlaceInfoSection({
           </View>
         )}
         <View className={`flex-row gap-2`}>
-          <ParkingMiniIcon />
-          <CustomText font={parking ? "body2" : "body3"}>
+          <ParkingMiniIcon color={parking ? `#444444` : `#888888`} />
+          <CustomText
+            font={parking ? "body2" : "body3"}
+            className={`${!parking && `text-text-muted`}`}
+          >
             {parking ? "주차 가능" : "주차 정보 미확인"}
           </CustomText>
         </View>

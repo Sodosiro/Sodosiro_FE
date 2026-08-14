@@ -1,15 +1,14 @@
-import { getPlacesApi, postLikeApi } from "@/api/place";
+import { getPlacesApi } from "@/api/place";
 import Spinner from "@/components/common/Spinner";
 import PlaceBottomSheet from "@/components/explore/bottomSheet/PlaceBottomSheet";
 import PlaceListBottomSheet from "@/components/explore/bottomSheet/PlaceListBottomSheet";
 import KakaoMap from "@/components/explore/KakaoMap";
 import MapOverlay from "@/components/explore/overlay/MapOverlay";
+import { useLikeMutation } from "@/hooks/mutation/useLikeMutation";
 import { useSearchPlacesQuery } from "@/hooks/query/useSearchPlacesQuery";
-import { queryClient } from "@/lib/queryClient";
 import { useExploreStore } from "@/stores/useExploreStore";
 import { useWebViewStore } from "@/stores/useWebViewStore";
 import type BottomSheet from "@gorhom/bottom-sheet";
-import { useMutation } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { Dimensions, View } from "react-native";
 import { useSharedValue } from "react-native-reanimated";
@@ -36,19 +35,11 @@ export default function ExploreScreen() {
 
   const [isPlacesPending, setisPlacesPending] = useState(true);
 
-  const { setAllPlaces, setSearchResult, updatePlaceLike } = useExploreStore();
+  const { setAllPlaces, setSearchResult } = useExploreStore();
 
   const { data, isPending: isSearchPending } = useSearchPlacesQuery();
 
-  const { mutate, isPending: isLikePending } = useMutation({
-    mutationFn: (contentId: number) => postLikeApi(contentId),
-    onSuccess: (response, contentId) => {
-      updatePlaceLike(contentId, response.data.liked);
-      queryClient.invalidateQueries({
-        queryKey: ["placeDetail", contentId],
-      });
-    },
-  });
+  const { mutate, isPending: isLikePending } = useLikeMutation();
 
   const handleLike = async (contentId: number) => {
     if (isLikePending) return;
@@ -56,7 +47,7 @@ export default function ExploreScreen() {
   };
 
   useEffect(() => {
-    const getPlace = async () => {
+    const getPlaces = async () => {
       const response = await getPlacesApi({ size: 10000 });
 
       const places = response?.data.items;
@@ -67,7 +58,7 @@ export default function ExploreScreen() {
       setisPlacesPending(false);
     };
 
-    getPlace();
+    getPlaces();
   }, []);
 
   useEffect(() => {

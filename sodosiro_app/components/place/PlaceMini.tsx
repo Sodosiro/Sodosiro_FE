@@ -1,23 +1,26 @@
 import { RightIcon } from "@/assets/svgs";
+import { DEFAULT_IMAGES } from "@/constants/Bingo";
+import { NumberToCategory } from "@/util/place/category";
 import { router } from "expo-router";
-import type { ImageSourcePropType } from "react-native";
 import { Image, Pressable, View } from "react-native";
 import CustomText from "../common/CustomText";
 
 type Props = {
   id: number;
-  imageSource: ImageSourcePropType | string;
+  imageUrl?: string | null;
   title: string;
   desc: string;
+  category: CategoryNumber;
   icon?: React.ReactNode;
   onPress?: () => void;
 };
 
 export default function PlaceMini({
   id,
-  imageSource,
+  imageUrl,
   title,
   desc,
+  category,
   icon = <RightIcon color={"#777777"} />,
   onPress = () =>
     router.push({ pathname: "/place/[placeId]", params: { placeId: id } }),
@@ -29,7 +32,9 @@ export default function PlaceMini({
     >
       <Image
         source={
-          typeof imageSource === "string" ? { uri: imageSource } : imageSource
+          imageUrl
+            ? { uri: imageUrl }
+            : DEFAULT_IMAGES[NumberToCategory[category]]
         }
         className={`rounded-xl`}
         style={{ width: 52, height: 52 }}

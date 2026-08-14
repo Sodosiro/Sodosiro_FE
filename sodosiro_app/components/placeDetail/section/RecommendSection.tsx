@@ -33,9 +33,10 @@ export default function RecommedSection({
           <PlaceMini
             key={index}
             id={attraction.id}
-            imageSource={attraction.imageSource}
+            imageUrl={null}
             title={attraction.title}
             desc={attraction.desc}
+            category={1}
           />
         ))}
       </View>

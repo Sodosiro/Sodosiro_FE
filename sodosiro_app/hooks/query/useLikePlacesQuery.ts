@@ -1,15 +1,17 @@
-import { getMyReviewsApi, GetReviewsParams } from "@/api/review";
+import { getLikePlaces } from "@/api/place";
+import { GetReviewsParams } from "@/api/review";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
-export function useMyReviewsQuery(
+export function useLikePlacesQuery(
+  sigunguCode = undefined,
   sort: GetReviewsParams["sort"] = "RECENT",
-  hasImage = false,
+  size = 20,
 ) {
   return useInfiniteQuery({
-    queryKey: ["myReviews", sort, hasImage],
+    queryKey: ["likePlaces", sigunguCode],
 
     queryFn: ({ pageParam }) =>
-      getMyReviewsApi({ cursor: pageParam, sort: sort, size: 20, hasImage }),
+      getLikePlaces({ sigunguCode, size, cursor: pageParam }),
 
     initialPageParam: undefined as number | undefined,
 

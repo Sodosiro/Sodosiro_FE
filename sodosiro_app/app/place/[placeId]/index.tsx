@@ -49,6 +49,8 @@ export default function PlaceDetailScreen() {
     latestReviews,
     liked,
     popularity,
+    mapX,
+    mapY,
   } = placeDetail ?? {};
 
   if (isPending || !placeDetail) {
@@ -137,7 +139,13 @@ export default function PlaceDetailScreen() {
       </ScrollView>
 
       {/* 하단 액션 바 */}
-      <PlaceDetailBottomBar contentId={contentId} liked={liked} />
+      <PlaceDetailBottomBar
+        contentId={contentId}
+        liked={liked}
+        title={title}
+        mapX={mapX}
+        mapY={mapY}
+      />
     </SafeAreaView>
   );
 }

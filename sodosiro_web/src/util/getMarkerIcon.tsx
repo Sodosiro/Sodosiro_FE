@@ -18,10 +18,10 @@ import {
 
 export function getMarkerIcon(
   category: CategoryType,
-  favorite = false,
+  like = false,
   popular = false,
 ) {
-  const color = favorite ? "#ECB76E" : popular ? "#6AD9CA" : "#C4D96A";
+  const color = like ? "#ECB76E" : popular ? "#6AD9CA" : "#C4D96A";
 
   const IconMap = {
     activity: Activity,
@@ -44,10 +44,10 @@ export function getMarkerIcon(
 
 export function getSelectedMarkerIcon(
   category: CategoryType,
-  favorite = false,
+  like = false,
   popular = false,
 ) {
-  const color = favorite ? "#ECB76E" : popular ? "#6AD9CA" : "#C4D96A";
+  const color = like ? "#ECB76E" : popular ? "#6AD9CA" : "#C4D96A";
 
   const IconMap = {
     activity: ActivityMarker,

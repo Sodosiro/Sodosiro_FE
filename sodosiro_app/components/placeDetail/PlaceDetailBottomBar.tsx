@@ -6,7 +6,7 @@ import { useExploreStore } from "@/stores/useExploreStore";
 import { useMutation } from "@tanstack/react-query";
 import BottomActionBar from "../common/BottomActionBar";
 import CustomButton from "../common/CustomButton";
-import FavoriteIcon from "../icon/favorite/FavoriteIcon";
+import LikeIcon from "../icon/like/LikeIcon";
 
 export default function PlaceDetailBottomBar({
   contentId,
@@ -43,7 +43,7 @@ export default function PlaceDetailBottomBar({
         <CustomButton
           type="tertiary"
           title="좋아요"
-          Icon={<FavoriteIcon height={14} animatedFill={fillStyle} />}
+          Icon={<LikeIcon height={14} animatedFill={fillStyle} />}
           onPress={handleLike}
         />
         <CustomButton

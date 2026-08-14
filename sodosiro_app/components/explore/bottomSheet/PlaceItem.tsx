@@ -1,5 +1,5 @@
 import CustomText from "@/components/common/CustomText";
-import FavoriteCircleIcon from "@/components/icon/favorite/FavoriteCircleIcon";
+import LikeCircleIcon from "@/components/icon/like/LikeCircleIcon";
 import RateChip from "@/components/place/RateChip";
 import Tag from "@/components/place/Tag";
 import { DEFAULT_IMAGES } from "@/constants/Bingo";
@@ -71,7 +71,7 @@ export default function PlaceItem({
         </CustomText>
       </View>
       <Pressable onPress={handleLikeToggle}>
-        <FavoriteCircleIcon animatedFill={fillStyle} />
+        <LikeCircleIcon animatedFill={fillStyle} />
       </Pressable>
     </Pressable>
   );

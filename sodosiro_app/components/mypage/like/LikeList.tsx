@@ -2,13 +2,13 @@ import { CheckOffIcon, CheckOnIcon } from "@/assets/svgs";
 import CustomText from "@/components/common/CustomText";
 import DeleteModal from "@/components/common/modal/DeleteModal";
 import PlaceMini from "@/components/place/PlaceMini";
-import { useFavoriteStore } from "@/stores/useFavoriteStore";
+import { useLikeStore } from "@/stores/useLikeStore";
 import { useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 
-export default function FavoriteList() {
-  const favoritePlaces = useFavoriteStore((state) => state.favoritePlaces);
-  const removeFavorites = useFavoriteStore((state) => state.removeFavorites);
+export default function LikeList() {
+  const likePlaces = useLikeStore((state) => state.likePlaces);
+  const removeLikes = useLikeStore((state) => state.removeLikes);
 
   const [isEditing, setIsEditing] = useState(false);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
@@ -34,7 +34,7 @@ export default function FavoriteList() {
   };
 
   const handleConfirmDelete = () => {
-    removeFavorites(selectedIds);
+    removeLikes(selectedIds);
     setSelectedIds([]);
     setIsEditing(false);
     setIsDeleteModalVisible(false);
@@ -68,7 +68,7 @@ export default function FavoriteList() {
         ) : (
           <>
             <CustomText font="body3 tight" className={`text-text-secondary`}>
-              총 {favoritePlaces.length}개
+              총 {likePlaces.length}개
             </CustomText>
             <CustomText
               font="body3 tight"
@@ -87,7 +87,7 @@ export default function FavoriteList() {
           paddingBottom: 20,
         }}
       >
-        {favoritePlaces.map((place) => {
+        {likePlaces.map((place) => {
           const isSelected = selectedIds.includes(place.id);
           return (
             <Pressable

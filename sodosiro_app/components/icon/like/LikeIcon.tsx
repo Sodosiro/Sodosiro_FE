@@ -1,7 +1,7 @@
 import { AnimatedPath } from "@/components/common/animated/Animated";
 import Svg from "react-native-svg";
 
-export default function FavoriteIcon({ animatedFill }: AnimatedIconProps) {
+export default function LikeIcon({ animatedFill }: AnimatedIconProps) {
   return (
     <Svg width={18} height={16} viewBox="0 0 18 16" fill="none">
       <AnimatedPath

@@ -4,7 +4,7 @@ import { SORT_OPTIONS } from "@/constants/Sort";
 import { Dispatch, SetStateAction } from "react";
 import { View } from "react-native";
 
-export default function FavoriteFilter({
+export default function LikeFilter({
   sortOption,
   setSortOption,
   selectedCategory,

@@ -9,7 +9,7 @@ export default function MypageLayout() {
       }}
     >
       <Stack.Screen name="edit" />
-      <Stack.Screen name="favorite" />
+      <Stack.Screen name="like" />
       <Stack.Screen name="review" />
     </Stack>
   );

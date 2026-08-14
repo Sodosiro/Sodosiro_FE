@@ -1,9 +1,7 @@
 import { AnimatedPath } from "@/components/common/animated/Animated";
 import Svg from "react-native-svg";
 
-export default function FavoriteCircleIcon({
-  animatedFill,
-}: AnimatedIconProps) {
+export default function LikeCircleIcon({ animatedFill }: AnimatedIconProps) {
   return (
     <Svg width={36} height={36} viewBox="0 0 36 36" fill="none">
       <AnimatedPath

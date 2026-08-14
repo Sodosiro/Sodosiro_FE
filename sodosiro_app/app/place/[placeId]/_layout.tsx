@@ -8,10 +8,11 @@ export default function PlaceLayout() {
         animation: "fade",
       }}
     >
-      <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="review" options={{ headerShown: false }} />
-      <Stack.Screen name="photo" options={{ headerShown: false }} />
-      <Stack.Screen name="reviewWrite" options={{ headerShown: false }} />
+      <Stack.Screen name="index" />
+      <Stack.Screen name="review" />
+      <Stack.Screen name="photo" />
+      <Stack.Screen name="reviewWrite" />
+      <Stack.Screen name="[reviewId]" />
     </Stack>
   );
 }

@@ -34,7 +34,20 @@ export default function MyReview({
           <RightIcon color={"#888888"} width={16} />
         </Pressable>
         <View className={`flex-row gap-3 items-center`}>
-          <CustomText font="body1" className={`text-text-muted`}>
+          <CustomText
+            font="body1"
+            className={`text-text-muted`}
+            onPress={() =>
+              router.push({
+                pathname: "/place/[placeId]/[reviewId]",
+                params: {
+                  placeId: review.spot.contentId,
+                  reviewId: review.reviewId,
+                  title: review.spot.title,
+                },
+              })
+            }
+          >
             수정
           </CustomText>
           <CustomText

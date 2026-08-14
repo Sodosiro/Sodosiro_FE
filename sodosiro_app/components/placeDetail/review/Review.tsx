@@ -22,7 +22,9 @@ export default function Review({
   const formattedDate = `${date?.getFullYear()}/${date?.getMonth() + 1}/${date?.getDate()}`;
 
   return (
-    <View className={`gap-3 py-4 ${!isLast ? `border-b border-border` : ``}`}>
+    <View
+      className={`gap-3 pb-4 ${isMyReview ? `pt-2` : `pt-4`} ${!isLast ? `border-b border-border` : ``}`}
+    >
       <View className={`flex-row gap-1 items-center`}>
         <View className={`flex-row gap-1.5 items-center flex-1`}>
           <View className={`flex-row gap-0.5 items-center`}>

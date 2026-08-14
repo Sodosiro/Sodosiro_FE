@@ -1,4 +1,5 @@
 import Header from "@/components/common/Header";
+import Spinner from "@/components/common/Spinner";
 import MyReviewList from "@/components/mypage/review/MyReviewList";
 import ReviewFilter from "@/components/placeDetail/review/ReviewFilter";
 import { useMyReviewsQuery } from "@/hooks/query/useMyReviewsQuery";
@@ -8,10 +9,10 @@ import { ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function MyReviewScreen() {
-  const [sortOption, setSortOption] = useState("최신순");
+  const [sortOption, setSortOption] = useState<SortType>("RECENT");
   const [onlyPhotoReview, setOnlyPhotoReview] = useState(false);
 
-  const { data } = useMyReviewsQuery();
+  const { data, isPending } = useMyReviewsQuery(sortOption, onlyPhotoReview);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
@@ -25,11 +26,17 @@ export default function MyReviewScreen() {
           setOnlyPhotoReview={setOnlyPhotoReview}
         />
       </View>
-      <ScrollView contentContainerClassName="pb-8 px-5">
-        <MyReviewList
-          reviews={data?.pages?.flatMap((page) => page.data.reviews) ?? []}
-        />
-      </ScrollView>
+      {isPending ? (
+        <View className={`flex-1 justify-center items-center`}>
+          <Spinner />
+        </View>
+      ) : (
+        <ScrollView contentContainerClassName="pb-8 px-5">
+          <MyReviewList
+            reviews={data?.pages?.flatMap((page) => page.data.reviews) ?? []}
+          />
+        </ScrollView>
+      )}
     </SafeAreaView>
   );
 }

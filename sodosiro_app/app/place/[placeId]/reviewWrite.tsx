@@ -4,7 +4,7 @@ import CustomText from "@/components/common/CustomText";
 import Header from "@/components/common/Header";
 import Rating from "@/components/placeDetail/review/write/Rating";
 import ReviewForm from "@/components/placeDetail/review/write/ReviewForm";
-import { queryClient } from "@/lib/queryClient";
+import { invalidateQueries } from "@/util/query/invalidateQueries";
 import { hasBatchim } from "@/util/word/word";
 import axios from "axios";
 import { ImagePickerAsset } from "expo-image-picker";
@@ -34,13 +34,10 @@ export default function ReviewWriteScreen() {
 
       await postReviewApi(Number(placeId), rate, content.trim(), imageSources);
 
-      await queryClient.invalidateQueries({
-        queryKey: ["placeDetail", Number(placeId)],
-      });
-
-      await queryClient.invalidateQueries({
-        queryKey: ["reviews", Number(placeId)],
-      });
+      await invalidateQueries([
+        ["placeDetail", Number(placeId)],
+        ["reviews", Number(placeId)],
+      ]);
 
       router.back();
     } catch (error) {

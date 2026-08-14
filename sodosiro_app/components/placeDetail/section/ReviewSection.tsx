@@ -12,6 +12,7 @@ interface Props extends ViewProps {
   title: string;
   reviews: ReviewType[];
   ref: RefObject<View | null>;
+  isPending: boolean;
 }
 
 export default function ReviewSection({
@@ -19,6 +20,7 @@ export default function ReviewSection({
   title,
   reviews,
   ref,
+  isPending,
   ...props
 }: Props) {
   return (
@@ -48,7 +50,12 @@ export default function ReviewSection({
       }
       {...props}
     >
-      <ReviewList title={title} reviews={reviews?.slice(0, 3)} prev />
+      <ReviewList
+        title={title}
+        reviews={reviews?.slice(0, 3)}
+        prev
+        isPending={isPending}
+      />
     </PlaceDetailSectionContainer>
   );
 }

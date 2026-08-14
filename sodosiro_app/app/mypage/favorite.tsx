@@ -7,7 +7,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function FavoriteListScreen() {
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>("all");
-  const [sortOption, setSortOption] = useState("최신순");
+  const [sortOption, setSortOption] = useState<SortType>("RECENT");
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>

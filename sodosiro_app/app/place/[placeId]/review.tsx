@@ -13,7 +13,7 @@ import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ReviewScreen() {
-  const [sortOption, setSortOption] = useState("최신순");
+  const [sortOption, setSortOption] = useState<SortType>("RECENT");
   const [onlyPhotoReview, setOnlyPhotoReview] = useState(false);
 
   const { title, placeId } = useLocalSearchParams<{
@@ -23,13 +23,23 @@ export default function ReviewScreen() {
 
   const { data: reviewsData, isPending: isReviewsPending } = useReviewsQuery(
     Number(placeId),
+    sortOption,
+    onlyPhotoReview,
   );
 
+  // 리뷰 포토 모아보기(5장)
   const { data: photoReviewsData } = useReviewsQuery(
     Number(placeId),
     undefined,
     true,
+    5,
   );
+
+  const { avgRating, totalCount, myReviewId } =
+    reviewsData?.pages[0].data ?? {};
+  const reviews = reviewsData?.pages.flatMap((page) => page.data.reviews) ?? [];
+  const photoReviews =
+    photoReviewsData?.pages.flatMap((page) => page.data.reviews) ?? [];
 
   return (
     <SafeAreaView
@@ -42,11 +52,9 @@ export default function ReviewScreen() {
       <View className={`gap-3 px-5`}>
         <View className={`flex-row gap-1 items-center`}>
           <StarIcon />
-          <CustomText font="heading2">
-            {reviewsData?.pages[0].data.avgRating}
-          </CustomText>
+          <CustomText font="heading2">{avgRating}</CustomText>
           <CustomText font="body3" className={`text-text-muted`}>
-            {"(" + reviewsData?.pages[0].data.totalCount + ")"}
+            {"(" + totalCount + ")"}
           </CustomText>
         </View>
 
@@ -58,30 +66,36 @@ export default function ReviewScreen() {
         />
       </View>
       <ScrollView contentContainerClassName="pb-8 px-5">
-        <PhotoPreview
-          placeId={placeId}
-          photoReviews={
-            photoReviewsData?.pages.flatMap((page) => page.data.reviews) ?? []
-          }
-        />
+        <PhotoPreview placeId={placeId} photoReviews={photoReviews} />
         <CustomText font="heading2">리뷰</CustomText>
         <ReviewList
           title={title}
-          reviews={
-            reviewsData?.pages.flatMap((page) => page.data.reviews) ?? []
-          }
+          reviews={reviews}
+          isPending={isReviewsPending}
         />
       </ScrollView>
       <BottomActionBar>
         <CustomButton
           type="primary"
-          title={"리뷰 작성하기"}
+          title={myReviewId ? "리뷰 수정하기" : "리뷰 작성하기"}
           stretch
-          onPress={() =>
-            router.push({
-              pathname: "/place/[placeId]/reviewWrite",
-              params: { placeId: placeId, title: title },
-            })
+          disabled={isReviewsPending}
+          onPress={
+            myReviewId
+              ? () =>
+                  router.push({
+                    pathname: "/place/[placeId]/[reviewId]",
+                    params: {
+                      placeId: placeId,
+                      reviewId: myReviewId,
+                      title: title,
+                    },
+                  })
+              : () =>
+                  router.push({
+                    pathname: "/place/[placeId]/reviewWrite",
+                    params: { placeId: placeId, title: title },
+                  })
           }
         />
       </BottomActionBar>

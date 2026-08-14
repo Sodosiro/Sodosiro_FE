@@ -1,4 +1,6 @@
+import Spinner from "@/components/common/Spinner";
 import { useState } from "react";
+import { View } from "react-native";
 import Review from "./Review";
 import EmptyReview from "./ReviewEmpty";
 import ReviewImageModal from "./ReviewImageModal";
@@ -7,10 +9,12 @@ export default function ReviewList({
   title,
   reviews,
   prev = false,
+  isPending,
 }: {
   title: string;
   reviews: ReviewType[];
   prev?: boolean;
+  isPending: boolean;
 }) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedImages, setSelectedImages] = useState<string[] | null>(null);
@@ -22,7 +26,11 @@ export default function ReviewList({
     setIsModalVisible(true);
   };
 
-  return (
+  return isPending ? (
+    <View className={`flex-1 justify-center items-center min-h-30`}>
+      <Spinner />
+    </View>
+  ) : (
     <>
       {reviews?.length > 0 ? (
         reviews?.map((review, index) => (

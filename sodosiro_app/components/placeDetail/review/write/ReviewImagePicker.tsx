@@ -4,6 +4,7 @@ import { Dispatch, SetStateAction } from "react";
 import { Image, Pressable, View } from "react-native";
 
 import Spinner from "@/components/common/Spinner";
+import { compressImage } from "@/util/image/compressImage";
 import * as ImagePicker from "expo-image-picker";
 
 type Props = {
@@ -18,24 +19,31 @@ export default function ReviewImagePicker({
   isPending,
   isPicking,
   setIsPicking,
-  imageSources,
+  imageSources = [],
   setImageSources,
 }: Props) {
   const handleImage = async () => {
     if (isPending || isPicking) return;
 
     setIsPicking(true);
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ["images"],
-      allowsMultipleSelection: true,
-      selectionLimit: 5,
-      quality: 0.5,
-    });
 
-    if (!result.canceled) {
-      setImageSources(result.assets);
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ["images"],
+        allowsMultipleSelection: true,
+        selectionLimit: 5,
+      });
+
+      if (result.canceled) return;
+
+      const compressedImages = await Promise.all(
+        result.assets.map((asset) => compressImage(asset)),
+      );
+
+      setImageSources(compressedImages);
+    } finally {
+      setIsPicking(false);
     }
-    setIsPicking(false);
   };
 
   const removeImage = (index: number) => {
@@ -55,7 +63,7 @@ export default function ReviewImagePicker({
           <>
             <CameraMiniIcon color={"#1a1a1a"} />
             <CustomText font="body3 tight">
-              {imageSources.length > 0 ? "사진 변경" : "사진 첨부하기"}
+              {imageSources?.length > 0 ? "사진 변경" : "사진 첨부하기"}
             </CustomText>
           </>
         )}
@@ -65,9 +73,9 @@ export default function ReviewImagePicker({
           <Spinner />
         </View>
       ) : (
-        imageSources.length > 0 && (
+        imageSources?.length > 0 && (
           <View className={`flex-row flex-wrap`}>
-            {imageSources.map((imageSource, index) => (
+            {imageSources?.map((imageSource, index) => (
               <View
                 key={index}
                 className={`relative w-1/3 p-1 overflow-hidden`}

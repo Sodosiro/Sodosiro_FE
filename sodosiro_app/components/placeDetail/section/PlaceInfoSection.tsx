@@ -134,7 +134,10 @@ export default function PlaceInfoSection({
             {parking ? "주차 가능" : "주차 정보 미확인"}
           </CustomText>
         </View>
-        <LocationMap address={`${addr1} ${addr2}`} placeDetail={placeDetail} />
+        <LocationMap
+          address={[addr1, addr2].filter(Boolean).join(" ")}
+          placeDetail={placeDetail}
+        />
         <CustomText font="body3" className={`text-text-muted`}>
           일부 정보는 제공되지 않을 수 있습니다.
         </CustomText>

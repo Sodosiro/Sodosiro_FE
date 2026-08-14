@@ -1,4 +1,5 @@
 import { SortMiniIcon } from "@/assets/svgs";
+import { SortMap } from "@/util/sort/sort";
 import {
   BottomSheetBackdrop,
   BottomSheetModal,
@@ -8,14 +9,14 @@ import { Dispatch, SetStateAction, useRef } from "react";
 import { Pressable } from "react-native";
 import CustomText from "../CustomText";
 
-const SORT_OPTIONS = ["최신순", "오래된순", "오름차순", "내림차순"];
-
 export default function SortBadge({
   sortOption,
   setSortOption,
+  sortOptions,
 }: {
-  sortOption: string;
-  setSortOption: Dispatch<SetStateAction<string>>;
+  sortOption: SortType;
+  setSortOption: Dispatch<SetStateAction<SortType>>;
+  sortOptions: SortType[];
 }) {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 
@@ -34,7 +35,7 @@ export default function SortBadge({
         onPress={openSheet}
       >
         <SortMiniIcon />
-        <CustomText font="body3 tight">{sortOption}</CustomText>
+        <CustomText font="body3 tight">{SortMap[sortOption]}</CustomText>
       </Pressable>
 
       <BottomSheetModal
@@ -59,11 +60,11 @@ export default function SortBadge({
         }}
       >
         <BottomSheetView className="px-5 pb-8 pt-6">
-          <CustomText font="heading2" className="mb-5">
+          <CustomText font="heading2" className="mb-4">
             정렬
           </CustomText>
 
-          {SORT_OPTIONS.map((option) => (
+          {sortOptions.map((option) => (
             <Pressable
               key={option}
               className="py-4"
@@ -80,7 +81,7 @@ export default function SortBadge({
                     : "text-text-primary"
                 }
               >
-                {option}
+                {SortMap[option]}
               </CustomText>
             </Pressable>
           ))}

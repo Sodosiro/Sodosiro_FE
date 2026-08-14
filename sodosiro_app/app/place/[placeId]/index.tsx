@@ -125,6 +125,7 @@ export default function PlaceDetailScreen() {
           title={title}
           reviews={latestReviews}
           onLayout={(e) => handleOnLayout(e, "리뷰")}
+          isPending={isPending}
         />
 
         {/* 함께 추천 */}

@@ -11,7 +11,6 @@ export default function MypageLayout() {
       <Stack.Screen name="edit" />
       <Stack.Screen name="favorite" />
       <Stack.Screen name="review" />
-      <Stack.Screen name="[reviewId]" />
     </Stack>
   );
 }

@@ -4,15 +4,22 @@ import { invalidateQueries } from "@/util/query/invalidateQueries";
 import { useMutation } from "@tanstack/react-query";
 
 export function useLikeMutation() {
-  const updatePlaceLike = useExploreStore((state) => state.updatePlaceLike);
+  const { updatePlaceLikeOptimistic, updatePlaceLike } = useExploreStore();
 
   const { mutate, isPending } = useMutation({
-    mutationFn: (contentId: number) => postLikeApi(contentId),
+    mutationFn: (contentIds: number[]) => postLikeApi(contentIds),
 
-    onSuccess: (response, contentId) => {
-      updatePlaceLike(contentId, response.data.liked);
+    onMutate: (contentIds) => {
+      updatePlaceLikeOptimistic(contentIds);
+    },
 
-      invalidateQueries([["placeDetail", contentId], ["likePlaces"]]);
+    onSuccess: (response, contentIds) => {
+      updatePlaceLike(response.data.items);
+
+      contentIds.forEach((contentId) => {
+        invalidateQueries([["placeDetail", contentId]]);
+      });
+      invalidateQueries([["likePlaces"]]);
     },
   });
 

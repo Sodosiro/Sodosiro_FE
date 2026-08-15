@@ -38,6 +38,7 @@ type PlaceType = {
 type PlacePrev = {
   contentId: number;
   title: string;
+  category: CategoryNumber;
   addr1: string;
   firstImage: string;
   likeCount: number;

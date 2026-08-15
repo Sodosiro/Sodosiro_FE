@@ -8,10 +8,10 @@ export function useLikePlacesQuery(
   size = 20,
 ) {
   return useInfiniteQuery({
-    queryKey: ["likePlaces", sigunguCode],
+    queryKey: ["likePlaces", sigunguCode, sort],
 
     queryFn: ({ pageParam }) =>
-      getLikePlaces({ sigunguCode, size, cursor: pageParam }),
+      getLikePlaces({ sigunguCode, size, cursor: pageParam, sort }),
 
     initialPageParam: undefined as number | undefined,
 

@@ -2,6 +2,7 @@ import { CheckOffIcon, CheckOnIcon } from "@/assets/svgs";
 import CustomText from "@/components/common/CustomText";
 import DeleteModal from "@/components/common/modal/DeleteModal";
 import PlaceMini from "@/components/place/PlaceMini";
+import { useLikeMutation } from "@/hooks/mutation/useLikeMutation";
 import { invalidateQueries } from "@/util/query/invalidateQueries";
 import { useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
@@ -10,6 +11,8 @@ export default function LikeList({ places }: { places: PlacePrev[] }) {
   const [isEditing, setIsEditing] = useState(false);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+
+  const { mutate } = useLikeMutation();
 
   const handleSelect = (id: number) => {
     setSelectedIds((prev) =>
@@ -30,8 +33,10 @@ export default function LikeList({ places }: { places: PlacePrev[] }) {
     setIsEditing(false);
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     // 좋아요 토글 api 호출 추가 필요
+
+    mutate(selectedIds);
 
     invalidateQueries([["likePlaces"]]);
 
@@ -103,7 +108,7 @@ export default function LikeList({ places }: { places: PlacePrev[] }) {
                 imageUrl={place.firstImage}
                 title={place.title}
                 desc={place.title}
-                category={1}
+                category={place.category}
                 icon={<></>}
                 onPress={
                   isEditing ? () => handleSelect(place.contentId) : undefined

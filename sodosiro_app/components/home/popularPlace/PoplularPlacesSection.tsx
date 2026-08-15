@@ -14,8 +14,6 @@ export default function PopularPlacesSection() {
 
   const places = data?.data.items;
 
-  console.log(JSON.stringify(places, null, 2));
-
   return (
     <View className={`flex-col px-5 gap-3`}>
       <SectionTitle

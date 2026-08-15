@@ -35,7 +35,5 @@ export async function postLikeApi(contentIds: number[]) {
 }
 
 export async function getLikePlaces(params?: GetLikePlacesParams) {
-  const data = axiosInstance.get(`/api/v1/spots/likes`, { params });
-  console.log(data);
-  return data;
+  return axiosInstance.get(`/api/v1/spots/likes`, { params });
 }

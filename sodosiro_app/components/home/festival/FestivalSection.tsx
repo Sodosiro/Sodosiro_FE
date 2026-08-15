@@ -1,11 +1,15 @@
-import { FESTIVALS } from "@/mocks/places";
+import { useFestivalsQuery } from "@/hooks/query/useFestivalsQuery";
 import { router } from "expo-router";
 import { View } from "react-native";
 import SectionTitle from "../SectionTitle";
 import FestivalPrevList from "./FestivalPrevList";
 
 export default function FestivalSection() {
-  const isMore = FESTIVALS.length > 0;
+  const { data } = useFestivalsQuery(undefined, "ONGOING", 5);
+
+  const festivals = data?.pages.flatMap((page) => page.data.items) ?? [];
+
+  const isMore = festivals?.length > 0;
 
   return (
     <View className={`px-5 gap-3`}>
@@ -16,7 +20,7 @@ export default function FestivalSection() {
         }}
         isMore={isMore}
       />
-      <FestivalPrevList festivals={FESTIVALS} />
+      <FestivalPrevList festivals={festivals} />
     </View>
   );
 }

@@ -5,7 +5,7 @@ import PlaceMini from "@/components/place/PlaceMini";
 import { useLikeMutation } from "@/hooks/mutation/useLikeMutation";
 import { invalidateQueries } from "@/util/query/invalidateQueries";
 import { useState } from "react";
-import { Pressable, ScrollView, View } from "react-native";
+import { FlatList, Pressable, View } from "react-native";
 
 export default function LikeList({ places }: { places: PlacePrev[] }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -33,8 +33,8 @@ export default function LikeList({ places }: { places: PlacePrev[] }) {
     setIsEditing(false);
   };
 
-  const handleConfirmDelete = async () => {
-    // 좋아요 토글 api 호출 추가 필요
+  const handleConfirmDelete = () => {
+    if (selectedIds.length === 0) return;
 
     mutate(selectedIds);
 
@@ -46,24 +46,27 @@ export default function LikeList({ places }: { places: PlacePrev[] }) {
   };
 
   return (
-    <View className={`pt-3 gap-3 flex-1`}>
-      <View className={`flex-row justify-between items-center px-5`}>
+    <View className="pt-3 flex-1">
+      {/* 상단 */}
+      <View className="flex-row justify-between items-center px-5 mb-3">
         {isEditing ? (
           <>
-            <CustomText font="body3 tight" className={`text-text-secondary`}>
+            <CustomText font="body3 tight" className="text-text-secondary">
               {selectedIds.length}개 선택됨
             </CustomText>
-            <View className={`flex-row gap-6`}>
+
+            <View className="flex-row gap-6">
               <CustomText
                 font="body3 tight"
-                className={`text-text-secondary py-2`}
+                className="text-text-secondary py-2"
                 onPress={handleCancel}
               >
                 취소
               </CustomText>
+
               <CustomText
                 font="body3 tight"
-                className={`text-text-secondary py-2`}
+                className="text-text-secondary py-2"
                 onPress={handleDelete}
               >
                 삭제
@@ -72,12 +75,13 @@ export default function LikeList({ places }: { places: PlacePrev[] }) {
           </>
         ) : (
           <>
-            <CustomText font="body3 tight" className={`text-text-secondary`}>
+            <CustomText font="body3 tight" className="text-text-secondary">
               총 {places.length}개
             </CustomText>
+
             <CustomText
               font="body3 tight"
-              className={`text-text-secondary py-2`}
+              className="text-text-secondary py-2"
               onPress={() => setIsEditing(true)}
             >
               편집
@@ -85,24 +89,24 @@ export default function LikeList({ places }: { places: PlacePrev[] }) {
           </>
         )}
       </View>
-      <ScrollView
-        contentContainerStyle={{
-          gap: 16,
-          paddingHorizontal: 20,
-          paddingBottom: 20,
-        }}
-      >
-        {places.map((place) => {
+
+      {/* 목록 */}
+      <FlatList
+        data={places}
+        keyExtractor={(item) => String(item.contentId)}
+        contentContainerClassName="px-5 pb-5 gap-4"
+        renderItem={({ item: place }) => {
           const isSelected = selectedIds.includes(place.contentId);
+
           return (
             <Pressable
-              key={place.contentId}
-              className={`flex-row gap-2 items-center`}
+              className="flex-row gap-2 items-center"
               onPress={
                 isEditing ? () => handleSelect(place.contentId) : undefined
               }
             >
               {isEditing && (isSelected ? <CheckOnIcon /> : <CheckOffIcon />)}
+
               <PlaceMini
                 id={place.contentId}
                 imageUrl={place.firstImage}
@@ -116,8 +120,9 @@ export default function LikeList({ places }: { places: PlacePrev[] }) {
               />
             </Pressable>
           );
-        })}
-      </ScrollView>
+        }}
+      />
+
       <DeleteModal
         body="선택한 장소를 삭제할까요?"
         isDeleteModalVisible={isDeleteModalVisible}

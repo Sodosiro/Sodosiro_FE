@@ -3,7 +3,7 @@ import DeleteModal from "@/components/common/modal/DeleteModal";
 import ReviewImageModal from "@/components/placeDetail/review/ReviewImageModal";
 import { queryClient } from "@/lib/queryClient";
 import { useState } from "react";
-import { View } from "react-native";
+import { FlatList, View } from "react-native";
 import MyReview from "./MyReview";
 
 export default function MyReviewList({ reviews }: { reviews: MyReviewType[] }) {
@@ -22,44 +22,52 @@ export default function MyReviewList({ reviews }: { reviews: MyReviewType[] }) {
 
   const handleConfirmDelete = async (reviewId: number) => {
     await deleteReviewApi(reviewId);
+
     await queryClient.invalidateQueries({
       queryKey: ["myReviews"],
     });
+
+    setDeleteReviewId(null);
     setIsDeleteModalVisible(false);
   };
 
   return (
     <>
-      {reviews?.length > 0 ? (
-        reviews?.map((review, index) => (
+      <FlatList
+        data={reviews}
+        keyExtractor={(item) => String(item.reviewId)}
+        className={`pb-8 px-5`}
+        renderItem={({ item, index }) => (
           <MyReview
-            key={review?.reviewId}
-            review={review}
+            review={item}
             isLast={reviews.length - 1 === index}
             handleImageClick={handleImageClick}
             setIsDeleteModalVisible={setIsDeleteModalVisible}
             setDeleteReviewId={setDeleteReviewId}
           />
-        ))
-      ) : (
-        <View className={`flex-1`}></View>
-      )}
+        )}
+        ListEmptyComponent={<View className="flex-1" />}
+      />
+
       <ReviewImageModal
         isModalVisible={isPhotoModalVisible}
         setIsModalVisible={setIsPhotoModalVisible}
-        images={selectedImages as string[]}
+        images={selectedImages ?? []}
         defaultIndex={carouselIndex}
       />
+
       <DeleteModal
-        body={"선택한 리뷰를 삭제할까요?"}
+        body="선택한 리뷰를 삭제할까요?"
         isDeleteModalVisible={isDeleteModalVisible}
         onCancel={() => {
           setDeleteReviewId(null);
           setIsDeleteModalVisible(false);
         }}
-        handleConfirmDelete={() =>
-          handleConfirmDelete(deleteReviewId as number)
-        }
+        handleConfirmDelete={() => {
+          if (deleteReviewId !== null) {
+            handleConfirmDelete(deleteReviewId);
+          }
+        }}
       />
     </>
   );

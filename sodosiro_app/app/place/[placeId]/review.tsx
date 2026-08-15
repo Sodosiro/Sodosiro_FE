@@ -5,17 +5,23 @@ import CustomText from "@/components/common/CustomText";
 import Header from "@/components/common/Header";
 import Spinner from "@/components/common/Spinner";
 import PhotoPreview from "@/components/placeDetail/review/PhotoPreview";
+import Review from "@/components/placeDetail/review/Review";
+import EmptyReview from "@/components/placeDetail/review/ReviewEmpty";
 import ReviewFilter from "@/components/placeDetail/review/ReviewFilter";
-import ReviewList from "@/components/placeDetail/review/ReviewList";
+import ReviewImageModal from "@/components/placeDetail/review/ReviewImageModal";
 import { useReviewsQuery } from "@/hooks/query/useReviewsQuery";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { ScrollView, View } from "react-native";
+import { FlatList, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ReviewScreen() {
   const [sortOption, setSortOption] = useState<SortType>("RECENT");
   const [onlyPhotoReview, setOnlyPhotoReview] = useState(false);
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedImages, setSelectedImages] = useState<string[] | null>(null);
+  const [carouselIndex, setCarouselIndex] = useState(0);
 
   const { title, placeId } = useLocalSearchParams<{
     title: string;
@@ -38,9 +44,17 @@ export default function ReviewScreen() {
 
   const { avgRating, totalCount, myReviewId } =
     reviewsData?.pages[0].data ?? {};
+
   const reviews = reviewsData?.pages.flatMap((page) => page.data.reviews) ?? [];
+
   const photoReviews =
     photoReviewsData?.pages.flatMap((page) => page.data.reviews) ?? [];
+
+  const handleImageClick = (images: string[], index: number) => {
+    setSelectedImages(images);
+    setCarouselIndex(index);
+    setIsModalVisible(true);
+  };
 
   return (
     <SafeAreaView
@@ -49,12 +63,16 @@ export default function ReviewScreen() {
         flex: 1,
       }}
     >
-      <Header title={"리뷰 전체보기"} />
-      <View className={`gap-3 px-5`}>
-        <View className={`flex-row gap-1 items-center`}>
+      <Header title="리뷰 전체보기" />
+
+      {/* 평점 + 필터 */}
+      <View className="gap-3 px-5">
+        <View className="flex-row gap-1 items-center">
           <StarIcon />
+
           <CustomText font="heading2">{avgRating}</CustomText>
-          <CustomText font="body3" className={`text-text-muted`}>
+
+          <CustomText font="body3" className="text-text-muted">
             {"(" + totalCount + ")"}
           </CustomText>
         </View>
@@ -66,21 +84,45 @@ export default function ReviewScreen() {
           setOnlyPhotoReview={setOnlyPhotoReview}
         />
       </View>
+
       {isReviewsPending || isPlaceholderData ? (
-        <View className={`flex-1 justify-center items-center min-h-30`}>
+        <View className="flex-1 justify-center items-center min-h-30">
           <Spinner />
         </View>
       ) : (
-        <ScrollView contentContainerClassName="pb-8 px-5">
-          <PhotoPreview placeId={placeId} photoReviews={photoReviews} />
-          <CustomText font="heading2">리뷰</CustomText>
-          <ReviewList
-            title={title}
-            reviews={reviews}
-            isPending={isReviewsPending}
-          />
-        </ScrollView>
+        <FlatList
+          data={reviews}
+          keyExtractor={(item) => String(item.reviewId)}
+          contentContainerClassName="px-5 pb-8"
+          ListHeaderComponent={
+            <>
+              <PhotoPreview placeId={placeId} photoReviews={photoReviews} />
+
+              <CustomText font="heading2">리뷰</CustomText>
+            </>
+          }
+          renderItem={({ item, index }) => (
+            <Review
+              review={item}
+              isLast={reviews.length - 1 === index}
+              handleImageClick={handleImageClick}
+            />
+          )}
+          ListEmptyComponent={
+            <EmptyReview title={title} showWriteButton={true} />
+          }
+        />
       )}
+
+      {/* 리뷰 이미지 모달 */}
+      <ReviewImageModal
+        isModalVisible={isModalVisible}
+        setIsModalVisible={setIsModalVisible}
+        images={selectedImages ?? []}
+        defaultIndex={carouselIndex}
+      />
+
+      {/* 리뷰 작성 */}
       <BottomActionBar>
         <CustomButton
           type="primary"
@@ -93,15 +135,18 @@ export default function ReviewScreen() {
                   router.push({
                     pathname: "/place/[placeId]/[reviewId]",
                     params: {
-                      placeId: placeId,
+                      placeId,
                       reviewId: myReviewId,
-                      title: title,
+                      title,
                     },
                   })
               : () =>
                   router.push({
                     pathname: "/place/[placeId]/reviewWrite",
-                    params: { placeId: placeId, title: title },
+                    params: {
+                      placeId,
+                      title,
+                    },
                   })
           }
         />

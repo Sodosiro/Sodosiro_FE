@@ -1,5 +1,5 @@
 import { RightIcon } from "@/assets/svgs";
-import { DEFAULT_IMAGES } from "@/constants/Bingo";
+import { DEFAULT_IMAGES } from "@/constants/Category";
 import { NumberToCategory } from "@/util/place/category";
 import { router } from "expo-router";
 import { Image, Pressable, View } from "react-native";

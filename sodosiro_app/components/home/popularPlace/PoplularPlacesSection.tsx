@@ -1,3 +1,5 @@
+import Spinner from "@/components/common/Spinner";
+import { usePlacesQuery } from "@/hooks/query/usePlacesQuery";
 import { router } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
@@ -7,6 +9,12 @@ import PopularPlacesList from "./PopularPlacesList";
 
 export default function PopularPlacesSection() {
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>("all");
+
+  const { data, isPending } = usePlacesQuery(selectedCategory, "POPULAR", 5);
+
+  const places = data?.data.items;
+
+  console.log(JSON.stringify(places, null, 2));
 
   return (
     <View className={`flex-col px-5 gap-3`}>
@@ -20,7 +28,13 @@ export default function PopularPlacesSection() {
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
       />
-      <PopularPlacesList />
+      {isPending ? (
+        <View className={`justify-center items-center h-91.5`}>
+          <Spinner />
+        </View>
+      ) : (
+        <PopularPlacesList places={places} />
+      )}
     </View>
   );
 }

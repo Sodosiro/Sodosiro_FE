@@ -1,14 +1,20 @@
 import CategoryList from "@/components/common/category/CategoryList";
 import CustomText from "@/components/common/CustomText";
 import Header from "@/components/common/Header";
+import Spinner from "@/components/common/Spinner";
 import PopularPlaceItem from "@/components/home/popularPlace/PopularPlaceItem";
-import { HOME_POPULAR_PLACES } from "@/mocks/places";
+import { usePlacesQuery } from "@/hooks/query/usePlacesQuery";
 import { useState } from "react";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function PopularPlaceScreen() {
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>("all");
+
+  const { data, isPending } = usePlacesQuery(selectedCategory, "POPULAR");
+
+  const places = data?.data.items;
+
   return (
     <SafeAreaView style={{ backgroundColor: "white", flex: 1 }}>
       <Header title="지금 많이 찾는 장소" />
@@ -19,19 +25,25 @@ export default function PopularPlaceScreen() {
             setSelectedCategory={setSelectedCategory}
           />
         </View>
-        <ScrollView contentContainerClassName="bg-bg px-5">
-          {HOME_POPULAR_PLACES.map((popularPlace, index) => (
-            <View
-              key={popularPlace.id}
-              className={`flex-row items-center py-3`}
-            >
-              <CustomText font="body3" className={`w-5 text-text-muted`}>
-                {index + 1}
-              </CustomText>
-              <PopularPlaceItem popularPlace={popularPlace} />
-            </View>
-          ))}
-        </ScrollView>
+        {isPending ? (
+          <View className={`flex-1 justify-center items-center`}>
+            <Spinner />
+          </View>
+        ) : (
+          <ScrollView contentContainerClassName="bg-bg px-5">
+            {places?.map((place: PlaceType, index: number) => (
+              <View
+                key={place.contentId}
+                className={`flex-row items-center py-3`}
+              >
+                <CustomText font="body3" className={`w-5 text-text-muted`}>
+                  {index + 1}
+                </CustomText>
+                <PopularPlaceItem popularPlace={place} />
+              </View>
+            ))}
+          </ScrollView>
+        )}
       </View>
     </SafeAreaView>
   );

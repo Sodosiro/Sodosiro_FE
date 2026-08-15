@@ -1,5 +1,3 @@
-// hooks/usePlacesQuery.ts
-
 import { getPlacesApi } from "@/api/place";
 import { useExploreStore } from "@/stores/useExploreStore";
 import { CategoryToNumber } from "@/util/place/category";

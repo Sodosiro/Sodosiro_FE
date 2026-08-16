@@ -23,6 +23,7 @@ export default function ImageCardGrid({
 
   const renderImage = (imageUrl: string, index: number, className: string) => (
     <Pressable
+      key={imageUrl}
       className={className}
       onPress={onPhotoPress ? () => onPhotoPress(imageUrl) : undefined}
     >

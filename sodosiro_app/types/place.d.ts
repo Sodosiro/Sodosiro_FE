@@ -17,6 +17,7 @@ type PlaceType = {
   title: string;
   category: CategoryNumber;
   addr1: string;
+  region: string;
   overview: string;
   restdate: string;
   firstImage: string;
@@ -32,7 +33,7 @@ type PlaceType = {
     categoryRank: number;
     rankTag: string;
     calculatedAt: Date;
-  };
+  } | null;
 };
 
 type PlacePrev = {

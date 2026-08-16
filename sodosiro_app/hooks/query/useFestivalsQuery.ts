@@ -10,7 +10,13 @@ export function useFestivalsQuery(
     queryKey: ["likePlaces", areaCode, status, size],
 
     queryFn: ({ pageParam }) =>
-      getFestivalsApi({ areaCode, size, status, cursor: pageParam }),
+      getFestivalsApi({
+        areaCode,
+        size,
+        status,
+        cursor: pageParam,
+        year: new Date().getFullYear(),
+      }),
 
     initialPageParam: undefined as number | undefined,
 

@@ -13,6 +13,7 @@ export function usePlacesQuery(
       getPlacesApi({
         size: size,
         category: category === "all" ? undefined : [CategoryToNumber[category]],
+        sort,
       }),
   });
 }

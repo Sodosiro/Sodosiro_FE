@@ -9,6 +9,7 @@ type GetPlacesParams = {
 };
 
 type GetLikePlacesParams = {
+  category?: number[];
   sigunguCode?: string;
   cursor?: number;
   size?: number;

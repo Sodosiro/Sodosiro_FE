@@ -10,4 +10,4 @@ type FestivalType = {
   keywords: string[];
 };
 
-type FestivalStatus = "ALL" | "ONGOING" | "UPCOMING" | "ENDED";
+type FestivalStatus = "ALL" | "ACTIVE" | "ONGOING" | "UPCOMING" | "ENDED";

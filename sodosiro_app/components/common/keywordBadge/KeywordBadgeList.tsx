@@ -15,7 +15,7 @@ export default function KeywordBadgeList({
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ gap: gap }}
       >
-        {keywords.map((keyword, index) => (
+        {keywords?.map((keyword, index) => (
           <KeywordBadge key={index} title={keyword} />
         ))}
       </ScrollView>

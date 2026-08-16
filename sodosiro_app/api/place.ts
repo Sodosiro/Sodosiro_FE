@@ -9,9 +9,11 @@ type GetPlacesParams = {
 };
 
 type GetLikePlacesParams = {
+  category?: number[];
   sigunguCode?: string;
   cursor?: number;
   size?: number;
+  sort?: SortType;
 };
 
 export async function getPlacesApi(params?: GetPlacesParams) {
@@ -29,10 +31,10 @@ export async function postAiRecommendationApi(contentId: number) {
   return null;
 }
 
-export async function postLikeApi(contentId: number) {
-  return axiosInstance.post(`/api/v1/spots/${contentId}/like`);
+export async function postLikeApi(contentIds: number[]) {
+  return axiosInstance.post(`/api/v1/spots/likes/toggle`, { contentIds });
 }
 
 export async function getLikePlaces(params?: GetLikePlacesParams) {
-  return axiosInstance.get(`/api/v1/likes`, { params });
+  return axiosInstance.get(`/api/v1/spots/likes`, { params });
 }

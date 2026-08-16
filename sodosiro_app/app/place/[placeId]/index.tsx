@@ -10,7 +10,6 @@ import RecommedSection from "@/components/placeDetail/section/RecommendSection";
 import ReviewSection from "@/components/placeDetail/section/ReviewSection";
 import { usePlaceDetailQuery } from "@/hooks/query/usePlaceDetailQuery";
 import { usePlaceDetailTab } from "@/hooks/usePlaceDetailTab";
-import { PLACE_DETAIL } from "@/mocks/places";
 import { NumberToCategory } from "@/util/place/category";
 import { useLocalSearchParams } from "expo-router";
 import { ScrollView } from "react-native";
@@ -51,6 +50,7 @@ export default function PlaceDetailScreen() {
     popularity,
     mapX,
     mapY,
+    relatedSpots,
   } = placeDetail ?? {};
 
   if (isPending || !placeDetail) {
@@ -133,7 +133,7 @@ export default function PlaceDetailScreen() {
         {/* 함께 추천 */}
         <RecommedSection
           ref={recommendRef}
-          recommendPlaces={PLACE_DETAIL.recommendPlaces}
+          recommendPlaces={relatedSpots}
           onLayout={(e) => handleOnLayout(e, "함께 추천")}
         />
       </ScrollView>

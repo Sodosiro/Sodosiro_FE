@@ -1,10 +1,13 @@
 type FestivalType = {
-  id: number;
-  imageSource: ImageSourcePropType;
-  region: string;
+  festivalId: number;
   title: string;
-  desc: string;
+  regionName: string;
   startDate: Date;
   endDate: Date;
+  imageUrl: string;
+  status: FestivalStatus;
+  desc: string;
   keywords: string[];
 };
+
+type FestivalStatus = "ALL" | "ACTIVE" | "ONGOING" | "UPCOMING" | "ENDED";

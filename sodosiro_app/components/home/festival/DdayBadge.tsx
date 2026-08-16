@@ -5,12 +5,17 @@ import { View } from "react-native";
 type Props = {
   className?: string;
   startDate: Date;
+  endDate: Date;
 };
 
-export default function DdayBadge({ className, startDate }: Props) {
+export default function DdayBadge({ className, startDate, endDate }: Props) {
   const today = new Date();
-  const dDay = differenceInCalendarDays(startDate, today);
-  const dDayText = dDay > 0 ? `D-${dDay}` : "D-Day";
+
+  const startDiff = differenceInCalendarDays(startDate, today);
+  const endDiff = differenceInCalendarDays(endDate, today);
+
+  const dDayText =
+    startDiff > 0 ? `D-${startDiff}` : endDiff >= 0 ? "진행 중" : "종료";
 
   return (
     <View

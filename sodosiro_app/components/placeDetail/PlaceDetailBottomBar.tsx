@@ -1,6 +1,7 @@
 import { NavigationIcon } from "@/assets/svgs";
 import { useLikeMutation } from "@/hooks/mutation/useLikeMutation";
 import useSelectedAnimation from "@/hooks/useSelcetedAnimation";
+import { useEffect, useState } from "react";
 import { Linking } from "react-native";
 import BottomActionBar from "../common/BottomActionBar";
 import CustomButton from "../common/CustomButton";
@@ -19,16 +20,29 @@ export default function PlaceDetailBottomBar({
   mapX: number;
   mapY: number;
 }) {
-  const { fillStyle } = useSelectedAnimation(liked, {
+  const [isLiked, setIsLiked] = useState(liked);
+
+  const { fillStyle } = useSelectedAnimation(isLiked, {
     fill: ["transparent", "#C4D96A"],
   });
 
   const { mutate, isPending } = useLikeMutation();
 
-  const handleLike = async () => {
+  const handleLike = () => {
     if (isPending) return;
-    mutate(contentId);
+
+    setIsLiked((prev) => !prev);
+
+    mutate([contentId], {
+      onError: () => {
+        setIsLiked((prev) => !prev);
+      },
+    });
   };
+
+  useEffect(() => {
+    setIsLiked(liked);
+  }, [liked]);
 
   const openKakaoMap = () => {
     const webUrl =

@@ -5,10 +5,12 @@ import PlaceMini from "../../place/PlaceMini";
 import PlaceDetailSectionContainer from "./PlaceDetailSectionContainer";
 
 type recommendPlaces = {
-  id: number;
-  imageSource: any;
+  contentId: number;
   title: string;
-  desc: string;
+  category: CategoryNumber;
+  addr1: string;
+  overview: string;
+  firstImage: string;
 }[];
 
 interface Props extends ViewProps {
@@ -29,14 +31,14 @@ export default function RecommedSection({
       {...props}
     >
       <View className={`flex-col flex-1 gap-4`}>
-        {recommendPlaces.map((attraction, index) => (
+        {recommendPlaces?.map((place, index) => (
           <PlaceMini
             key={index}
-            id={attraction.id}
-            imageUrl={null}
-            title={attraction.title}
-            desc={attraction.desc}
-            category={1}
+            id={place.contentId}
+            imageUrl={place.firstImage}
+            title={place.title}
+            desc={place.overview}
+            category={place.category}
           />
         ))}
       </View>

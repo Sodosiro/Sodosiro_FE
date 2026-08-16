@@ -43,7 +43,7 @@ export default function ExploreScreen() {
 
   const handleLike = async (contentId: number) => {
     if (isLikePending) return;
-    mutate(contentId);
+    mutate([contentId]);
   };
 
   useEffect(() => {

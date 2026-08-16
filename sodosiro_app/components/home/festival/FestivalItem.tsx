@@ -2,13 +2,16 @@ import { CalendarMiniIcon, PinMiniIcon } from "@/assets/svgs";
 import CustomText from "@/components/common/CustomText";
 import KeywordBadgeList from "@/components/common/keywordBadge/KeywordBadgeList";
 import InfoChip from "@/components/place/InfoChip";
-import { format } from "date-fns";
+import { getSeasonImage } from "@/util/festival/festival";
+import { formatDate } from "@/util/time/time";
 import { Image, View } from "react-native";
 import DdayBadge from "./DdayBadge";
 
 export default function FestivalItem({ festival }: { festival: FestivalType }) {
-  const { imageSource, region, title, desc, startDate, endDate, keywords } =
+  const { imageUrl, regionName, title, desc, startDate, endDate, keywords } =
     festival;
+
+  const imageSource = imageUrl ? { uri: imageUrl } : getSeasonImage(startDate);
 
   return (
     <View className={`flex-row gap-3`}>
@@ -17,6 +20,7 @@ export default function FestivalItem({ festival }: { festival: FestivalType }) {
         <DdayBadge
           className={`absolute bottom-3 left-3`}
           startDate={startDate}
+          endDate={endDate}
         />
       </View>
       <View className={`gap-3 flex-1 py-1`}>
@@ -24,11 +28,11 @@ export default function FestivalItem({ festival }: { festival: FestivalType }) {
         <View className={`gap-2`}>
           <InfoChip
             icon={<PinMiniIcon width={14} color={"#888888"} />}
-            text={region}
+            text={regionName}
           />
           <InfoChip
             icon={<CalendarMiniIcon width={14} color={"#888888"} />}
-            text={`${format(startDate, "M/d")} ~ ${format(endDate, "M/d")}`}
+            text={`${formatDate(startDate, endDate)}`}
           />
         </View>
         <View className={`flex-1 flex-row`}>

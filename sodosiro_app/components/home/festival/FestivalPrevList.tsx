@@ -13,8 +13,8 @@ export default function FestivalPrevList({
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={{ gap: 8 }}
     >
-      {festivals.slice(0, 3).map((festival) => (
-        <FestivalPrevItem key={festival.id} festival={festival} />
+      {festivals.map((festival) => (
+        <FestivalPrevItem key={festival.festivalId} festival={festival} />
       ))}
     </ScrollView>
   ) : (

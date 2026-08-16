@@ -1,4 +1,3 @@
-import { SearchIcon } from "@/assets/svgs";
 import Header from "@/components/common/Header";
 import Spinner from "@/components/common/Spinner";
 import LikeFilter from "@/components/mypage/like/LikeFilter";
@@ -12,16 +11,17 @@ export default function LikeListScreen() {
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>("all");
   const [sortOption, setSortOption] = useState<SortType>("RECENT");
 
-  const { data, isPending } = useLikePlacesQuery();
+  const { data, isPending } = useLikePlacesQuery(
+    selectedCategory,
+    undefined,
+    sortOption,
+  );
 
   const places = data?.pages.flatMap((page) => page.data.content) ?? [];
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-      <Header
-        title="좋아요한 장소"
-        rightComponent={<SearchIcon color="#1a1a1a" height={20} />}
-      />
+      <Header title="좋아요한 장소" />
       <LikeFilter
         sortOption={sortOption}
         setSortOption={setSortOption}

@@ -2,7 +2,7 @@ import CustomText from "@/components/common/CustomText";
 import LikeCircleIcon from "@/components/icon/like/LikeCircleIcon";
 import RateChip from "@/components/place/RateChip";
 import Tag from "@/components/place/Tag";
-import { DEFAULT_IMAGES } from "@/constants/Bingo";
+import { DEFAULT_IMAGES } from "@/constants/Category";
 import useSelectedAnimation from "@/hooks/useSelcetedAnimation";
 import { NumberToCategory } from "@/util/place/category";
 import { router } from "expo-router";
@@ -41,7 +41,7 @@ export default function PlaceItem({
       <View className={`gap-1.25 flex-1 justify-start py-0.5`}>
         <View className={`gap-0.5`}>
           <View className={`flex-row gap-1 items-center justify-start`}>
-            <CustomText font="title" numberOfLines={1}>
+            <CustomText font="title" numberOfLines={1} className={`shrink`}>
               {place?.title}
             </CustomText>
             <Tag category={NumberToCategory[place?.category]} />

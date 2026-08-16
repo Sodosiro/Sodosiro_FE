@@ -5,7 +5,6 @@ import ReviewFilter from "@/components/placeDetail/review/ReviewFilter";
 import { useMyReviewsQuery } from "@/hooks/query/useMyReviewsQuery";
 import { useState } from "react";
 import { View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function MyReviewScreen() {
@@ -31,11 +30,9 @@ export default function MyReviewScreen() {
           <Spinner />
         </View>
       ) : (
-        <ScrollView contentContainerClassName="pb-8 px-5">
-          <MyReviewList
-            reviews={data?.pages?.flatMap((page) => page.data.reviews) ?? []}
-          />
-        </ScrollView>
+        <MyReviewList
+          reviews={data?.pages?.flatMap((page) => page.data.reviews) ?? []}
+        />
       )}
     </SafeAreaView>
   );

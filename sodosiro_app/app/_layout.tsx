@@ -169,6 +169,14 @@ export default function RootLayout() {
                   }}
                 />
                 <Stack.Screen
+                  name="feed"
+                  options={{
+                    presentation: "modal",
+                    animation: "fade",
+                    headerShown: false,
+                  }}
+                />
+                <Stack.Screen
                   name="login"
                   options={{
                     presentation: "modal",

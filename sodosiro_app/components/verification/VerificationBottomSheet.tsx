@@ -1,5 +1,5 @@
 import { PinMiniIcon } from "@/assets/svgs";
-import { DEFAULT_IMAGES } from "@/constants/Bingo";
+import { DEFAULT_IMAGES } from "@/constants/Category";
 import { getDistance } from "@/util/location/distance";
 import {
   BottomSheetBackdrop,

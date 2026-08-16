@@ -24,7 +24,7 @@ export default function TripPlacesList({ onSelectPlace }: Props) {
             imageSource={place.imageSource}
             title={place.title}
             desc={place.desc}
-            icon={<PlusIcon />}
+            icon={<PlusIcon color={"#7E9432"} />}
             onPress={() => handleSelect(place)}
           />
         </View>

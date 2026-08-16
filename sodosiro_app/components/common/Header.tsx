@@ -13,6 +13,7 @@ type Props = {
   rightComponent?: React.ReactNode;
   onTitleChange?: (title: string) => void;
   isBgWhite?: boolean;
+  handleBack?: () => void;
 };
 
 const HEADER_HEIGHT = 64; // h-14
@@ -24,6 +25,7 @@ export default function Header({
   showPencil = false,
   onTitleChange,
   isBgWhite = true,
+  handleBack,
 }: Props) {
   const navigation = useNavigation();
   // Modal 내부에서는 SafeAreaProvider 컨텍스트가 정상 전달되지 않으므로
@@ -38,7 +40,7 @@ export default function Header({
     setDraftTitle(title);
   }, [title]);
 
-  const handleBack = () => {
+  const defaultHandleBack = () => {
     if (navigation.canGoBack()) {
       navigation.goBack();
     }
@@ -66,14 +68,23 @@ export default function Header({
   };
 
   return (
-    <View className={`h-16 flex-row items-center px-5 ${isBgWhite && `bg-white`}`}>
+    <View
+      className={`h-16 flex-row items-center px-5 ${isBgWhite && `bg-white`}`}
+    >
       {showBackButton ? (
-        <Pressable onPress={handleBack} hitSlop={12} className="mr-2">
+        <Pressable
+          onPress={handleBack ?? defaultHandleBack}
+          hitSlop={12}
+          className="mr-2"
+        >
           <LeftIcon color="#1A1A1A" />
         </Pressable>
       ) : null}
 
-      <CustomText font="heading1" className={`${Heading1Class} ${!showPencil && `flex-1`}`}>
+      <CustomText
+        font="heading1"
+        className={`${Heading1Class} ${!showPencil && `flex-1`}`}
+      >
         {title}
       </CustomText>
       {showPencil ? (
@@ -96,7 +107,10 @@ export default function Header({
           <View style={{ height: insets.top - 4 }} className="bg-white" />
 
           {/* 헤더 자리 (dimm 되지 않음, 흰 배경) */}
-          <View style={{ height: HEADER_HEIGHT }} className="flex-row items-center px-5 bg-white">
+          <View
+            style={{ height: HEADER_HEIGHT }}
+            className="flex-row items-center px-5 bg-white"
+          >
             {showBackButton ? (
               <View className="mr-2 opacity-40">
                 <LeftIcon color="#1A1A1A" />

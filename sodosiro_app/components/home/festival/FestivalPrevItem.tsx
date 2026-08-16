@@ -1,6 +1,6 @@
 import CustomText from "@/components/common/CustomText";
 import { getSeasonImage } from "@/util/festival/festival";
-import { format } from "date-fns";
+import { formatDate } from "@/util/time/time";
 import { Image, View } from "react-native";
 import DdayBadge from "./DdayBadge";
 
@@ -31,9 +31,7 @@ export default function FestivalPrevItem({
           {title}
         </CustomText>
         <CustomText font="body3" className={`text-text-muted`}>
-          {startDate === endDate
-            ? `${format(startDate, "M/d")}`
-            : `${format(startDate, "M/d")}~${format(endDate, "M/d")}`}
+          {formatDate(startDate, endDate)}
         </CustomText>
       </View>
     </View>

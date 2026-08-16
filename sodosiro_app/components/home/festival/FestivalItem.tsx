@@ -3,7 +3,7 @@ import CustomText from "@/components/common/CustomText";
 import KeywordBadgeList from "@/components/common/keywordBadge/KeywordBadgeList";
 import InfoChip from "@/components/place/InfoChip";
 import { getSeasonImage } from "@/util/festival/festival";
-import { format } from "date-fns";
+import { formatDate } from "@/util/time/time";
 import { Image, View } from "react-native";
 import DdayBadge from "./DdayBadge";
 
@@ -32,7 +32,7 @@ export default function FestivalItem({ festival }: { festival: FestivalType }) {
           />
           <InfoChip
             icon={<CalendarMiniIcon width={14} color={"#888888"} />}
-            text={`${format(startDate, "M/d")}~${format(endDate, "M/d")}`}
+            text={`${formatDate(startDate, endDate)}`}
           />
         </View>
         <View className={`flex-1 flex-row`}>

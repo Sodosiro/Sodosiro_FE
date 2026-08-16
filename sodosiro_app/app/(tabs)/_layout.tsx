@@ -15,7 +15,7 @@ export default function TabLayout() {
         <Tabs.Screen name="index" />
         <Tabs.Screen name="explore" />
         <Tabs.Screen name="trip" />
-        <Tabs.Screen name="bingo" />
+        <Tabs.Screen name="feed" />
         <Tabs.Screen name="mypage" />
       </Tabs>
     </>

@@ -1,8 +1,8 @@
 import AnimatedTabIcon from "./AnimatedTabIcon";
 import AnimatedTabLabel from "./AnimatedTabLabel";
 
-import BingoIcon from "../icon/bottomBar/BingoIcon";
 import ExploreIcon from "../icon/bottomBar/ExploreIcon";
+import FeedIcon from "../icon/bottomBar/FeedIcon";
 import HomeIcon from "../icon/bottomBar/HomeIcon";
 import MyIcon from "../icon/bottomBar/MyIcon";
 import TripIcon from "../icon/bottomBar/TripIcon";
@@ -15,7 +15,7 @@ const ICONS = {
   index: HomeIcon,
   explore: ExploreIcon,
   trip: TripIcon,
-  bingo: BingoIcon,
+  feed: FeedIcon,
   mypage: MyIcon,
 } as const;
 
@@ -23,7 +23,7 @@ const TITLES = {
   index: "홈",
   explore: "탐색",
   trip: "내 여행",
-  bingo: "빙고",
+  feed: "피드",
   mypage: "내 정보",
 } as const;
 

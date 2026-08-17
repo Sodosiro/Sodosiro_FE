@@ -19,6 +19,7 @@ configureReanimatedLogger({
 
 import { getMeApi } from "@/api/user";
 import { ToastProvider } from "@/contexts/ToastProvider";
+import { registerForPushNotificationsAsync } from "@/lib/pushNotification";
 import { queryClient } from "@/lib/queryClient";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useUserStore } from "@/stores/useUserStore";
@@ -95,6 +96,28 @@ export default function RootLayout() {
     if (isAuthenticated) {
       fetchUser();
     }
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    const registerPushToken = async () => {
+      try {
+        const token = await registerForPushNotificationsAsync();
+
+        console.log("🔥 FCM Token:", token);
+
+        // 나중에 서버 API 연결
+        // await registerDeviceTokenApi({
+        //   token,
+        //   platform: Platform.OS,
+        // });
+      } catch (error) {
+        console.error("FCM 등록 실패:", error);
+      }
+    };
+
+    registerPushToken();
   }, [isAuthenticated]);
 
   return (

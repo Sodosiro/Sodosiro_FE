@@ -6,7 +6,7 @@ type FestivalType = {
   endDate: Date;
   imageUrl: string;
   status: FestivalStatus;
-  desc: string;
+  description: string;
   keywords: string[];
 };
 

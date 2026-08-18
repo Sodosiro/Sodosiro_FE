@@ -8,8 +8,15 @@ import { Image, View } from "react-native";
 import DdayBadge from "./DdayBadge";
 
 export default function FestivalItem({ festival }: { festival: FestivalType }) {
-  const { imageUrl, regionName, title, desc, startDate, endDate, keywords } =
-    festival;
+  const {
+    imageUrl,
+    regionName,
+    title,
+    description,
+    startDate,
+    endDate,
+    keywords,
+  } = festival;
 
   const imageSource = imageUrl ? { uri: imageUrl } : getSeasonImage(startDate);
 
@@ -41,7 +48,7 @@ export default function FestivalItem({ festival }: { festival: FestivalType }) {
             className={`text-text-muted flex-1`}
             numberOfLines={2}
           >
-            {desc}
+            {description}
           </CustomText>
         </View>
         <View>

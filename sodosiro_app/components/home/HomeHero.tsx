@@ -23,7 +23,9 @@ export default function HomeHero() {
           <View
             className={`flex-row items-center justify-between opacity-70 py-3.5`}
           >
-            <Text className={`text-[18px] font-semibold leading-none`}>
+            <Text
+              className={`text-[18px] font-semibold leading-none font-gmarket-sans-medium`}
+            >
               소도시로
             </Text>
             <View className={`flex-row gap-3`}>

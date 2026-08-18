@@ -11,7 +11,7 @@ const List = [
   },
   {
     color: LIKED_COLOR,
-    title: "좋아요 한 장소",
+    title: "저장한 장소",
   },
 ];
 

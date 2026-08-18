@@ -26,9 +26,9 @@ export default function DdayBadge({ className, startDate, endDate }: Props) {
           width: 0,
           height: 4,
         },
-        shadowOpacity: 0.3,
+        shadowOpacity: 0.25,
         shadowRadius: 0,
-        elevation: 8,
+        elevation: 3,
       }}
     >
       <CustomText font="body3 tight" className="px-0.5">

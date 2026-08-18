@@ -138,7 +138,7 @@ export default function LikeList({ places }: { places: PlacePrev[] }) {
       ) : (
         <View className={`flex-1 justify-center items-center`}>
           <CustomText font="body1" className={`text-text-muted pb-10`}>
-            좋아요한 장소가 없어요.
+            저장한 장소가 없어요.
           </CustomText>
         </View>
       )}

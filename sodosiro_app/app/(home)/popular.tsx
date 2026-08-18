@@ -36,7 +36,7 @@ export default function PopularPlaceScreen() {
                 key={place.contentId}
                 className={`flex-row items-center py-3`}
               >
-                <CustomText font="body3" className={`w-5 text-text-muted`}>
+                <CustomText font="body3" className={`min-w-5 text-text-muted`}>
                   {index + 1}
                 </CustomText>
                 <PopularPlaceItem popularPlace={place} />

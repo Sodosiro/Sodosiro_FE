@@ -21,7 +21,7 @@ export default function LikeListScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-      <Header title="좋아요한 장소" />
+      <Header title="저장한 장소" />
       <LikeFilter
         sortOption={sortOption}
         setSortOption={setSortOption}

@@ -15,7 +15,7 @@ export default function SectionTitle({ title, onPress, isMore = true }: Props) {
       <Pressable className={`flex-row items-center`} onPress={onPress}>
         {isMore && (
           <>
-            <CustomText font="body1" className={`text-text-muted`}>
+            <CustomText font="body1" className={`text-text-muted px-px`}>
               더보기
             </CustomText>
             <RightIcon width={20} color={"#888888"} />

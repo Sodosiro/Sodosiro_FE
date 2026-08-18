@@ -27,7 +27,7 @@ export default function RecommedSection({
     <PlaceDetailSectionContainer
       ref={ref}
       title="함께 추천"
-      className={`pb-8 gap-3`}
+      className={`pb-6 gap-3 min-h-100`}
       {...props}
     >
       <View className={`flex-col flex-1 gap-4`}>

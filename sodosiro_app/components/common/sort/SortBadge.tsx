@@ -53,6 +53,8 @@ export default function SortBadge({
         )}
         handleIndicatorStyle={{
           backgroundColor: "#E6E6E6",
+          width: 50,
+          height: 5,
         }}
         backgroundStyle={{
           borderTopLeftRadius: 24,

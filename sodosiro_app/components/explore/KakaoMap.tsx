@@ -1,4 +1,4 @@
-import { useEffect, type RefObject } from "react";
+import { useEffect, useRef, type RefObject } from "react";
 import type { SharedValue } from "react-native-reanimated";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import { WebView } from "react-native-webview";
@@ -26,7 +26,15 @@ export default function KakaoMap({
   const location = useLocationStore((state) => state.location);
   const isDenied = useLocationStore((state) => state.isDenied);
 
-  const { isMapReady, sendLocation, handleMessage, updateData } = useWebView({
+  const previousPlacesRef = useRef<PlaceType[]>(allPlaces);
+
+  const {
+    isMapReady,
+    sendLocation,
+    handleMessage,
+    updateData,
+    sendPlaceUpdates,
+  } = useWebView({
     webViewRef,
     mode,
     setIsLoading,
@@ -43,6 +51,33 @@ export default function KakaoMap({
     if (!location) return;
     sendLocation(location, isDenied);
   }, [location]);
+
+  useEffect(() => {
+    const previousPlaces = previousPlacesRef.current;
+
+    if (mode !== "marker" || !previousPlaces || !allPlaces) return;
+
+    const previousPlaceMap = new Map(
+      previousPlaces.map((place) => [place.contentId, place]),
+    );
+
+    const changedPlaces = allPlaces.filter((place) => {
+      const previousPlace = previousPlaceMap.get(place.contentId);
+
+      if (!previousPlace) return false;
+
+      return (
+        previousPlace.liked !== place.liked ||
+        previousPlace.isPopular !== place.isPopular
+      );
+    });
+
+    if (changedPlaces.length > 0) {
+      sendPlaceUpdates(changedPlaces);
+    }
+
+    previousPlacesRef.current = allPlaces;
+  }, [allPlaces, mode]);
 
   useEffect(() => {
     if (mode !== "marker") return;

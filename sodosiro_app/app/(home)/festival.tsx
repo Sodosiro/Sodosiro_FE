@@ -1,9 +1,11 @@
 import AnimatedBadge from "@/components/common/animated/AnimatedBadge";
 import Header from "@/components/common/Header";
 import Spinner from "@/components/common/Spinner";
+import FestivalBottomSheetModal from "@/components/home/festival/FestivalBottomSheetModal";
 import FestivalItem from "@/components/home/festival/FestivalItem";
 import { useFestivalsQuery } from "@/hooks/query/useFestivalsQuery";
-import { useState } from "react";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { useEffect, useRef, useState } from "react";
 import { FlatList, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -14,14 +16,34 @@ const ScheduleMap = {
   UPCOMING: "진행 예정",
 };
 
-export default function FestivalPlaceScreen() {
+export default function FestivalScreen() {
   const [selectedSchedule, setSelectedSchedule] =
     useState<FestivalStatus>("ONGOING");
+
+  const [selectedFestival, setSelectedFestival] = useState<FestivalType | null>(
+    null,
+  );
+
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
   const { data, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useFestivalsQuery(undefined, selectedSchedule, 20);
 
   const festivals = data?.pages.flatMap((page) => page.data.items) ?? [];
+
+  const handleFestivalPress = (festival: FestivalType) => {
+    setSelectedFestival(festival);
+  };
+
+  const onClose = () => {
+    setSelectedFestival(null);
+  };
+
+  useEffect(() => {
+    if (!selectedFestival) return;
+
+    bottomSheetModalRef.current?.present();
+  }, [selectedFestival]);
 
   return (
     <SafeAreaView style={{ backgroundColor: "white", flex: 1 }}>
@@ -53,7 +75,12 @@ export default function FestivalPlaceScreen() {
           <FlatList
             data={festivals}
             keyExtractor={(item) => String(item.festivalId)}
-            renderItem={({ item }) => <FestivalItem festival={item} />}
+            renderItem={({ item }) => (
+              <FestivalItem
+                festival={item}
+                onPress={() => handleFestivalPress(item)}
+              />
+            )}
             contentContainerClassName="px-5 py-2 gap-4"
             onEndReached={() => {
               if (hasNextPage && !isFetchingNextPage) {
@@ -71,6 +98,11 @@ export default function FestivalPlaceScreen() {
           />
         )}
       </View>
+      <FestivalBottomSheetModal
+        ref={bottomSheetModalRef}
+        festival={selectedFestival}
+        onClose={onClose}
+      />
     </SafeAreaView>
   );
 }

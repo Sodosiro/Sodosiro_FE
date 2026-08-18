@@ -42,7 +42,7 @@ export default function PhotoPreview({
                   })
                 }
               >
-                <CustomText font="body2" className={`text-white`}>
+                <CustomText font="body2" className={`text-white px-px`}>
                   더보기
                 </CustomText>
               </Pressable>

@@ -1,6 +1,6 @@
 import CustomText from "@/components/common/CustomText";
 import Header from "@/components/common/Header";
-import MyFeedItem from "@/components/mypage/feed/MyFeedItem";
+import FeedItem from "@/components/feed/FeedItem";
 import { FEED } from "@/mocks/feed";
 import { useRef } from "react";
 import { FlatList, View } from "react-native";
@@ -19,7 +19,7 @@ export default function FeedScreen() {
           className={`px-5`}
           keyExtractor={(item) => String(item.feedId)}
           ItemSeparatorComponent={<View className={`w-full h-px bg-border`} />}
-          renderItem={({ item }) => <MyFeedItem feed={item} />}
+          renderItem={({ item }) => <FeedItem feed={item} myFeed />}
         />
       ) : (
         <View className={`flex-1 justify-center items-center`}>

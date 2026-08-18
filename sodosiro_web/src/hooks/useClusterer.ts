@@ -12,7 +12,7 @@ export function useClusterer() {
       map,
       averageCenter: true,
       minLevel: 5,
-      calculator: [10, 50],
+      calculator: [20, 100],
       texts: (count) => `${count}`,
       styles: ClusterStyles,
     });
@@ -38,63 +38,60 @@ export function useClusterer() {
 
 const ClusterStyles = [
   {
-    width: "32px",
-    height: "32px",
-    opacity: 0.8,
-    background: "#C4D96A",
-    borderRadius: "999px",
+    width: "48px",
+    height: "52px",
+    backgroundImage: 'url("/cluster.svg")',
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "center",
+    backgroundSize: "48px 52px",
+
     color: "#1A1A1A",
     fontSize: "14px",
     fontWeight: "bold",
+
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+
     userSelect: "none",
-    boxShadow: "0 0 0 4px #C3D96A50, 0 0 0 8px #C3D96A30",
-    textShadow: `
-      -0.5px -0.5px 0 white,
-      0.5px -0.5px 0 white,
-      -0.5px 0.5px 0 white,
-      0.5px 0.5px 0 white`,
+    opacity: 0.8,
   },
   {
-    width: "42px",
-    height: "42px",
+    width: "64px",
+    height: "70px",
+    backgroundImage: 'url("/cluster.svg")',
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "center",
+    backgroundSize: "64px 70px",
+
+    color: "#1A1A1A",
+    fontSize: "15px",
+    fontWeight: "bold",
+
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+
+    userSelect: "none",
     opacity: 0.8,
-    background: "#A9C92D",
-    borderRadius: "999px",
+  },
+  {
+    width: "80px",
+    height: "87px",
+    backgroundImage: 'url("/cluster.svg")',
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "center",
+    backgroundSize: "80px 87px",
+
     color: "#1A1A1A",
     fontSize: "16px",
     fontWeight: "bold",
+
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+
     userSelect: "none",
-    boxShadow: "0 0 0 5px #A9C92D50, 0 0 0 10px #A9C92D30",
-    textShadow: `
-      -0.5px -0.5px 0 white,
-      0.5px -0.5px 0 white,
-      -0.5px 0.5px 0 white,
-      0.5px 0.5px 0 white`,
-  },
-  {
-    width: "52px",
-    height: "52px",
     opacity: 0.8,
-    background: "#7E9432",
-    borderRadius: "999px",
-    color: "#1A1A1A",
-    fontSize: "18px",
-    fontWeight: "bold",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    userSelect: "none",
-    boxShadow: "0 0 0 6px #7E943250, 0 0 0 12px #7E943230",
-    textShadow: `
-      -1px -1px 0 white,
-      1px -1px 0 white,
-      -1px 1px 0 white,
-      1px 1px 0 white`,
   },
 ];

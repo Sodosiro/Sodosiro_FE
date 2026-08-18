@@ -6,21 +6,49 @@ import { getMarkerIcon, getSelectedMarkerIcon } from "../util/getMarkerIcon";
 export function useMarkers(mapRef: React.RefObject<kakao.maps.Map | null>) {
   const selectedMarkerRef = useRef<kakao.maps.Marker | null>(null);
   const overlayRef = useRef<kakao.maps.CustomOverlay | null>(null);
-
   const imageCacheRef = useRef(new Map<string, MarkerImages>());
-
   const markerImageMapRef = useRef(
     new WeakMap<kakao.maps.Marker, MarkerImages>(),
   );
-
   const markerPlaceMapRef = useRef(new Map<kakao.maps.Marker, PlaceType>());
+  const getImageCacheKey = (place: PlaceType) => {
+    const category = NumberToCategory[place.category];
+
+    return `${category}-${place.liked}-${place.isPopular}`;
+  };
+
+  const getMarkerImages = (place: PlaceType): MarkerImages => {
+    const category = NumberToCategory[place.category];
+    const cacheKey = getImageCacheKey(place);
+
+    const cachedImages = imageCacheRef.current.get(cacheKey);
+
+    if (cachedImages) {
+      return cachedImages;
+    }
+
+    const images: MarkerImages = {
+      normal: new kakao.maps.MarkerImage(
+        getMarkerIcon(category, place.liked, place.isPopular),
+        new kakao.maps.Size(24, 24),
+      ),
+
+      selected: new kakao.maps.MarkerImage(
+        getSelectedMarkerIcon(category, place.liked, place.isPopular),
+        new kakao.maps.Size(60, 60),
+      ),
+    };
+
+    imageCacheRef.current.set(cacheKey, images);
+
+    return images;
+  };
 
   const selectMarker = (marker: kakao.maps.Marker, place: PlaceType) => {
     if (selectedMarkerRef.current === marker) {
       return;
     }
 
-    // 이전 선택 마커 복구
     if (selectedMarkerRef.current) {
       const prevImage = markerImageMapRef.current.get(
         selectedMarkerRef.current,
@@ -28,12 +56,13 @@ export function useMarkers(mapRef: React.RefObject<kakao.maps.Map | null>) {
 
       if (prevImage) {
         selectedMarkerRef.current.setImage(prevImage.normal);
+
         selectedMarkerRef.current.setZIndex(0);
       }
     }
 
-    // 기존 overlay 제거
     overlayRef.current?.setMap(null);
+    overlayRef.current = null;
 
     const images = markerImageMapRef.current.get(marker);
 
@@ -44,7 +73,6 @@ export function useMarkers(mapRef: React.RefObject<kakao.maps.Map | null>) {
 
     selectedMarkerRef.current = marker;
 
-    // overlay 생성
     const overlay = new kakao.maps.CustomOverlay({
       position: marker.getPosition(),
       content: getLabel(place.title),
@@ -58,33 +86,14 @@ export function useMarkers(mapRef: React.RefObject<kakao.maps.Map | null>) {
 
   const create = (places: PlaceType[]) => {
     selectedMarkerRef.current = null;
+
+    overlayRef.current?.setMap(null);
+    overlayRef.current = null;
+
     markerPlaceMapRef.current.clear();
 
     return places.map((place) => {
-      if (!imageCacheRef.current.has(NumberToCategory[place.category])) {
-        imageCacheRef.current.set(NumberToCategory[place.category], {
-          normal: new kakao.maps.MarkerImage(
-            getMarkerIcon(
-              NumberToCategory[place.category],
-              place.liked,
-              place.isPopular,
-            ),
-            new kakao.maps.Size(24, 24),
-          ),
-          selected: new kakao.maps.MarkerImage(
-            getSelectedMarkerIcon(
-              NumberToCategory[place.category],
-              place.liked,
-              place.isPopular,
-            ),
-            new kakao.maps.Size(60, 60),
-          ),
-        });
-      }
-
-      const images = imageCacheRef.current.get(
-        NumberToCategory[place.category],
-      )!;
+      const images = getMarkerImages(place);
 
       const marker = new kakao.maps.Marker({
         position: new kakao.maps.LatLng(place.mapY, place.mapX),
@@ -93,7 +102,6 @@ export function useMarkers(mapRef: React.RefObject<kakao.maps.Map | null>) {
       });
 
       markerImageMapRef.current.set(marker, images);
-
       markerPlaceMapRef.current.set(marker, place);
 
       kakao.maps.event.addListener(marker, "click", () => {
@@ -104,7 +112,7 @@ export function useMarkers(mapRef: React.RefObject<kakao.maps.Map | null>) {
         window.ReactNativeWebView?.postMessage(
           JSON.stringify({
             type: "MARKER_SELECTED",
-            place: place,
+            place,
           }),
         );
       });
@@ -113,12 +121,38 @@ export function useMarkers(mapRef: React.RefObject<kakao.maps.Map | null>) {
     });
   };
 
-  const selectMarkerByPlaceId = (placeId: number) => {
-    const target = [...markerPlaceMapRef.current.entries()]
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      .find(([_, place]) => place.contentId === placeId);
+  const updateMarkers = (places: PlaceType[]) => {
+    for (const place of places) {
+      const target = [...markerPlaceMapRef.current.entries()].find(
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        ([_, markerPlace]) => markerPlace.contentId === place.contentId,
+      );
 
-    if (!target) return null;
+      if (!target) continue;
+
+      const [marker] = target;
+
+      const images = getMarkerImages(place);
+
+      markerImageMapRef.current.set(marker, images);
+      markerPlaceMapRef.current.set(marker, place);
+
+      const isSelected = selectedMarkerRef.current === marker;
+
+      marker.setImage(isSelected ? images.selected : images.normal);
+      marker.setZIndex(isSelected ? 999 : 0);
+    }
+  };
+
+  const selectMarkerByPlaceId = (placeId: number) => {
+    const target = [...markerPlaceMapRef.current.entries()].find(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      ([_, place]) => place.contentId === placeId,
+    );
+
+    if (!target) {
+      return null;
+    }
 
     const [marker, place] = target;
 
@@ -130,16 +164,31 @@ export function useMarkers(mapRef: React.RefObject<kakao.maps.Map | null>) {
   };
 
   const clearSelectedMarker = () => {
+    const selectedMarker = selectedMarkerRef.current;
+
+    if (selectedMarker) {
+      const images = markerImageMapRef.current.get(selectedMarker);
+
+      if (images) {
+        selectedMarker.setImage(images.normal);
+      }
+
+      selectedMarker.setZIndex(0);
+    }
+
     selectedMarkerRef.current = null;
+
     overlayRef.current?.setMap(null);
     overlayRef.current = null;
   };
 
   return {
     create,
+    updateMarkers,
     selectMarker,
     selectMarkerByPlaceId,
     clearSelectedMarker,
+
     selectedMarkerRef,
     markerImageMapRef,
     overlayRef,

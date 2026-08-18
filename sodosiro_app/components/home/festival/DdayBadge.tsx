@@ -2,11 +2,11 @@ import CustomText from "@/components/common/CustomText";
 import { differenceInCalendarDays } from "date-fns";
 import { View } from "react-native";
 
-type Props = {
+interface Props {
   className?: string;
   startDate: Date;
   endDate: Date;
-};
+}
 
 export default function DdayBadge({ className, startDate, endDate }: Props) {
   const today = new Date();
@@ -20,8 +20,18 @@ export default function DdayBadge({ className, startDate, endDate }: Props) {
   return (
     <View
       className={`${className} bg-white px-2.5 py-2 rounded-full self-start`}
+      style={{
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 4,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 0,
+        elevation: 3,
+      }}
     >
-      <CustomText font="body3 tight" className={`px-0.5`}>
+      <CustomText font="body3 tight" className="px-0.5">
         {dDayText}
       </CustomText>
     </View>

@@ -77,6 +77,7 @@ export default function RootLayout() {
     PretendardBold: require("../assets/fonts/Pretendard-Bold.otf"),
     PretendardSemiBold: require("../assets/fonts/Pretendard-SemiBold.otf"),
     PretendardMedium: require("../assets/fonts/Pretendard-Medium.otf"),
+    GmarketSansMedium: require("../assets/fonts/GmarketSansMedium.otf"),
   });
 
   const initialize = useAuthStore((state) => state.initialize);

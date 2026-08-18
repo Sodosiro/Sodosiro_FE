@@ -1,11 +1,11 @@
-import { NavigationIcon } from "@/assets/svgs";
+import { PinIcon } from "@/assets/svgs";
 import { useLikeMutation } from "@/hooks/mutation/useLikeMutation";
 import useSelectedAnimation from "@/hooks/useSelcetedAnimation";
 import { useEffect, useState } from "react";
-import { Linking } from "react-native";
+import { Linking, View } from "react-native";
 import BottomActionBar from "../common/BottomActionBar";
 import CustomButton from "../common/CustomButton";
-import LikeIcon from "../icon/like/LikeIcon";
+import StarIcon from "../icon/like/StarIcon";
 
 export default function PlaceDetailBottomBar({
   contentId,
@@ -23,7 +23,7 @@ export default function PlaceDetailBottomBar({
   const [isLiked, setIsLiked] = useState(liked);
 
   const { fillStyle } = useSelectedAnimation(isLiked, {
-    fill: ["transparent", "#C4D96A"],
+    fill: ["transparent", "#F8CF43"],
   });
 
   const { mutate, isPending } = useLikeMutation();
@@ -57,8 +57,8 @@ export default function PlaceDetailBottomBar({
       <>
         <CustomButton
           type="tertiary"
-          title="좋아요"
-          Icon={<LikeIcon height={14} animatedFill={fillStyle} />}
+          title="장소 저장"
+          Icon={<StarIcon animatedFill={fillStyle} />}
           onPress={handleLike}
         />
         <CustomButton
@@ -67,7 +67,11 @@ export default function PlaceDetailBottomBar({
           size="medium"
           title="길찾기"
           onPress={openKakaoMap}
-          Icon={<NavigationIcon height={20} />}
+          Icon={
+            <View className={`w-5`}>
+              <PinIcon width={18} height={18} color={"#1a1a1a"} />
+            </View>
+          }
         />
       </>
     </BottomActionBar>

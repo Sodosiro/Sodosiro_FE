@@ -1,5 +1,4 @@
 import MyInfo from "@/components/mypage/MyInfo";
-import MyBadgeSection from "@/components/mypage/section/MyBadgeSection";
 import MyHistorySection from "@/components/mypage/section/MyHistorySection";
 import MyVisitedSection from "@/components/mypage/section/MyVisitedSection";
 import { useFocusEffect } from "expo-router";
@@ -37,7 +36,6 @@ export default function MyPageScreen() {
         }}
       >
         <MyInfo />
-        <MyBadgeSection level={3} title={"소도 탐험가"} exp={4} maxExp={9} />
         <MyVisitedSection
           selectedRegion={selectedRegion}
           setSelectedRegion={setSelectedRegion}

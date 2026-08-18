@@ -18,6 +18,7 @@ export default function KakaoMap() {
 
   const {
     create: createMarkers,
+    updateMarkers,
     selectMarkerByPlaceId,
     clearSelectedMarker,
     selectedMarkerRef,
@@ -50,6 +51,7 @@ export default function KakaoMap() {
     startTracking,
     denyLocation,
     selectMarkerByPlaceId,
+    updateMarkers,
   });
 
   const handleCreate = (map: kakao.maps.Map) => {

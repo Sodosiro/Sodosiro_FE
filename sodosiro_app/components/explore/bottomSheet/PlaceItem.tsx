@@ -1,5 +1,5 @@
 import CustomText from "@/components/common/CustomText";
-import LikeCircleIcon from "@/components/icon/like/LikeCircleIcon";
+import StarIcon from "@/components/icon/like/StarIcon";
 import RateChip from "@/components/place/RateChip";
 import Tag from "@/components/place/Tag";
 import { DEFAULT_IMAGES } from "@/constants/Category";
@@ -22,7 +22,7 @@ export default function PlaceItem({
   };
 
   const { fillStyle } = useSelectedAnimation(place?.liked, {
-    fill: ["transparent", "#444444"],
+    fill: ["transparent", "#F8CF43"],
   });
 
   return (
@@ -70,8 +70,8 @@ export default function PlaceItem({
           상세보기
         </CustomText>
       </View>
-      <Pressable onPress={handleLikeToggle}>
-        <LikeCircleIcon animatedFill={fillStyle} />
+      <Pressable onPress={handleLikeToggle} className={`p-2`}>
+        <StarIcon animatedFill={fillStyle} width={20} height={20} />
       </Pressable>
     </Pressable>
   );

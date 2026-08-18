@@ -16,12 +16,16 @@ import {
   ShoppingMarker,
 } from "../assets/svgs";
 
+const LIKED_COLOR = "#F8CF43";
+const POPULAR_COLOR = "#FF7681";
+const DEFAULT_COLOR = "#C4D96A";
+
 export function getMarkerIcon(
   category: CategoryType,
-  like = false,
-  popular = false,
+  liked = false,
+  isPopular = false,
 ) {
-  const color = like ? "#ECB76E" : popular ? "#6AD9CA" : "#C4D96A";
+  const color = liked ? LIKED_COLOR : isPopular ? POPULAR_COLOR : DEFAULT_COLOR;
 
   const IconMap = {
     activity: Activity,
@@ -44,10 +48,10 @@ export function getMarkerIcon(
 
 export function getSelectedMarkerIcon(
   category: CategoryType,
-  like = false,
-  popular = false,
+  liked = false,
+  isPopular = false,
 ) {
-  const color = like ? "#ECB76E" : popular ? "#6AD9CA" : "#C4D96A";
+  const color = liked ? LIKED_COLOR : isPopular ? POPULAR_COLOR : DEFAULT_COLOR;
 
   const IconMap = {
     activity: ActivityMarker,

@@ -21,7 +21,7 @@ const MY_HISTORY_LIST = [
     route: "/mypage/review",
   },
   {
-    title: "좋아요한 장소",
+    title: "저장한 장소",
     route: "/mypage/like",
   },
 ];

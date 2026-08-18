@@ -61,7 +61,7 @@ export function usePlaceDetailTab() {
 
     const positions = sectionPositions.current;
 
-    if (screenBottom + 1 >= positions["함께 추천"].end) {
+    if (screenBottom >= positions["함께 추천"].end) {
       setCurrentTab("함께 추천");
     } else if (screenBottom >= positions["리뷰"].end) {
       setCurrentTab("리뷰");
@@ -72,6 +72,12 @@ export function usePlaceDetailTab() {
 
   const handleOnLayout = (event: LayoutChangeEvent, tab: TabType) => {
     const { y, height } = event.nativeEvent.layout;
+
+    console.log(tab, {
+      y,
+      height,
+      end: y + height,
+    });
 
     sectionPositions.current[tab] = {
       start: y,

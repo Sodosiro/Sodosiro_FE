@@ -41,6 +41,7 @@ export { default as DownIcon } from "./24px/down.svg";
 export { default as EditPlanIcon } from "./24px/edit_plan.svg";
 export { default as NavigationIcon } from "./24px/navigation.svg";
 export { default as NotificationIcon } from "./24px/notification.svg";
+export { default as PinIcon } from "./24px/pin.svg";
 export { default as RefreshIcon } from "./24px/refresh.svg";
 export { default as RemoveIcon } from "./24px/remove.svg";
 export { default as SearchIcon } from "./24px/search.svg";

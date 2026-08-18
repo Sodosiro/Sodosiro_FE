@@ -110,7 +110,7 @@ export default function MapOverlay({
         <PlaceLegend className={`left-5`} />
 
         <Pressable
-          className={`absolute w-12 h-12 justify-center items-center rounded-full bg-bg right-6 bottom-0 border border-border`}
+          className={`absolute w-12 h-12 justify-center items-center rounded-full bg-bg right-5 bottom-0 border border-border`}
           onPress={handleTrackingButton}
         >
           <GpsButton />

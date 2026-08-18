@@ -17,6 +17,12 @@ export default function KakaoMap() {
   const mapRef = useRef<kakao.maps.Map | null>(null);
 
   const {
+    create: createCluster,
+    setMarkers,
+    getClusterByMarker,
+  } = useClusterer();
+
+  const {
     create: createMarkers,
     updateMarkers,
     selectMarkerByPlaceId,
@@ -24,9 +30,8 @@ export default function KakaoMap() {
     selectedMarkerRef,
     markerImageMapRef,
     overlayRef,
-  } = useMarkers(mapRef);
+  } = useMarkers(mapRef, getClusterByMarker);
 
-  const { create: createCluster, setMarkers } = useClusterer();
   const { create: createMarker } = useMarker();
   const { drawRoute } = useRoute();
 
@@ -77,7 +82,7 @@ export default function KakaoMap() {
 
   return (
     <div
-      className={`w-screen h-screen flex flex-col justify-center items-center`}
+      className={`w-screen h-screen flex flex-col justify-center items-center mt-5`}
     >
       <div className={`w-screen min-h-250 h-screen`}>
         <Map

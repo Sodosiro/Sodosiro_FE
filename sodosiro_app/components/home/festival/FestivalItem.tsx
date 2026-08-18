@@ -4,66 +4,66 @@ import KeywordBadgeList from "@/components/common/keywordBadge/KeywordBadgeList"
 import InfoChip from "@/components/place/InfoChip";
 import { getSeasonImage } from "@/util/festival/festival";
 import { formatDate } from "@/util/time/time";
-import { useState } from "react";
-import { Image, Pressable, View, type LayoutChangeEvent } from "react-native";
+import { Image, LayoutChangeEvent, Pressable, View } from "react-native";
 import DdayBadge from "./DdayBadge";
-
 export default function FestivalItem({
   festival,
   onPress,
+  contentHeight,
+  onLayout,
 }: {
-  festival: FestivalType;
-  onPress: () => void;
+  festival?: FestivalType;
+  onPress?: () => void;
+  contentHeight?: number;
+  onLayout?: (event: LayoutChangeEvent) => void;
 }) {
   const { imageUrl, regionName, title, description, startDate, endDate, tags } =
-    festival;
-
-  const [contentHeight, setContentHeight] = useState(0);
+    festival ?? {
+      imageUrl: " ",
+      regionName: " ",
+      title: " ",
+      description: "\n",
+      startDate: new Date(),
+      endDate: new Date(),
+      tags: ["tag"],
+    };
 
   const imageSource = imageUrl ? { uri: imageUrl } : getSeasonImage(startDate);
 
-  const handleContentLayout = (event: LayoutChangeEvent) => {
-    const height = event.nativeEvent.layout.height;
-
-    if (height !== contentHeight) {
-      setContentHeight(height);
-    }
-  };
-
   return (
-    <View className="flex-row gap-3 items-stretch">
+    <View
+      className={`flex-row gap-3 items-stretch ${onLayout && `absolute opacity-0 pointer-events-none`}`}
+    >
       {/* 이미지 */}
-      <Pressable
-        onPress={onPress}
-        style={{
-          width: (contentHeight * 3) / 4 || 0,
-          height: contentHeight || 0,
-        }}
-      >
-        {contentHeight > 0 && (
+      {contentHeight && (
+        <Pressable
+          onPress={onPress}
+          style={{
+            width: (contentHeight * 3) / 4,
+            height: contentHeight,
+          }}
+        >
           <Image
             source={imageSource}
             className="w-full h-full rounded-xl"
             resizeMode="cover"
           />
-        )}
 
-        <DdayBadge
-          className="absolute bottom-3 left-3"
-          startDate={startDate}
-          endDate={endDate}
-        />
-      </Pressable>
+          <DdayBadge
+            className="absolute bottom-3 left-3"
+            startDate={startDate}
+            endDate={endDate}
+          />
+        </Pressable>
+      )}
 
       {/* 내용 */}
-      <View className="flex-1 gap-3 py-1" onLayout={handleContentLayout}>
+      <View className="flex-1 gap-3 py-1" onLayout={onLayout}>
         <Pressable onPress={onPress} className="gap-3">
-          {/* 제목 */}
           <CustomText font="title" numberOfLines={1}>
             {title}
           </CustomText>
 
-          {/* 장소 / 날짜 */}
           <View className="gap-1.5">
             <InfoChip
               icon={<PinMiniIcon width={14} color="#888888" />}
@@ -76,7 +76,6 @@ export default function FestivalItem({
             />
           </View>
 
-          {/* 설명 - 최대 2줄 */}
           <CustomText
             font="body3"
             className="text-text-muted"
@@ -86,7 +85,6 @@ export default function FestivalItem({
           </CustomText>
         </Pressable>
 
-        {/* 태그 */}
         <KeywordBadgeList keywords={tags} />
       </View>
     </View>

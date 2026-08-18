@@ -3,7 +3,12 @@ import getLabel from "../components/Marker";
 import { NumberToCategory } from "../util/category";
 import { getMarkerIcon, getSelectedMarkerIcon } from "../util/getMarkerIcon";
 
-export function useMarkers(mapRef: React.RefObject<kakao.maps.Map | null>) {
+export function useMarkers(
+  mapRef: React.RefObject<kakao.maps.Map | null>,
+  getClusterByMarker?: (
+    marker: kakao.maps.Marker,
+  ) => kakao.maps.Cluster | undefined,
+) {
   const selectedMarkerRef = useRef<kakao.maps.Marker | null>(null);
   const overlayRef = useRef<kakao.maps.CustomOverlay | null>(null);
   const imageCacheRef = useRef(new Map<string, MarkerImages>());
@@ -146,8 +151,7 @@ export function useMarkers(mapRef: React.RefObject<kakao.maps.Map | null>) {
 
   const selectMarkerByPlaceId = (placeId: number) => {
     const target = [...markerPlaceMapRef.current.entries()].find(
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      ([_, place]) => place.contentId === placeId,
+      (entry) => entry[1].contentId === placeId,
     );
 
     if (!target) {
@@ -156,9 +160,28 @@ export function useMarkers(mapRef: React.RefObject<kakao.maps.Map | null>) {
 
     const [marker, place] = target;
 
-    selectMarker(marker, place);
+    // 현재 마커가 클러스터에 포함되어 있는지 확인
+    const cluster = getClusterByMarker?.(marker);
 
-    mapRef.current?.panTo(marker.getPosition());
+    if (cluster) {
+      const map = mapRef.current;
+
+      if (map) {
+        // minLevel이 5이므로 4로 내리면 클러스터가 풀림
+        if (map.getLevel() >= 5) {
+          map.setLevel(4, {
+            anchor: marker.getPosition(),
+          });
+          map.panTo(marker.getPosition());
+        } else {
+          map.panTo(marker.getPosition());
+        }
+      }
+    } else {
+      mapRef.current?.panTo(marker.getPosition());
+    }
+
+    selectMarker(marker, place);
 
     return marker;
   };

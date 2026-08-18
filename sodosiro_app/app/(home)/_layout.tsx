@@ -1,15 +1,28 @@
 import { Stack } from "expo-router";
+import { View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function HomeLayout() {
+  const insets = useSafeAreaInsets();
+
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false,
-        animation: "fade",
+    <View
+      style={{
+        backgroundColor: "white",
+        flex: 1,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
       }}
     >
-      <Stack.Screen name="festival" />
-      <Stack.Screen name="popular" />
-    </Stack>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          animation: "fade",
+        }}
+      >
+        <Stack.Screen name="festival" />
+        <Stack.Screen name="popular" />
+      </Stack>
+    </View>
   );
 }

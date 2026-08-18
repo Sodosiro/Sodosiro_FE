@@ -56,7 +56,7 @@ export default function PlaceInfoSection({
     height.value = withTiming(isOpen ? 0 : contentHeight, {
       duration: 250,
     });
-    arrowRotation.value = withTiming(isOpen ? -180 : 0, {
+    arrowRotation.value = withTiming(isOpen ? 0 : -180, {
       duration: 250,
     });
   };
@@ -85,8 +85,8 @@ export default function PlaceInfoSection({
     >
       <View className={`gap-3`}>
         <Pressable onPress={usetime ? handleToggle : undefined}>
-          <View className={`flex-row gap-1`}>
-            <View className={`flex-row gap-2`}>
+          <View className={`flex-row gap-1 items-center`}>
+            <View className={`flex-row gap-2 items-center`}>
               <ClockMiniIcon color={usetime ? `#444444` : `#888888`} />
               <CustomText
                 font={usetime ? "body2" : "body3"}
@@ -104,7 +104,7 @@ export default function PlaceInfoSection({
           {usetime && (
             <>
               <Animated.View style={animatedStyle} className="overflow-hidden">
-                <View className="pl-6.5 py-2 gap-2">
+                <View className="pl-6.5 pt-2 gap-2">
                   <CustomText font="body2">{usetime}</CustomText>
                   {restdate && <CustomText font="body2">{restdate}</CustomText>}
                 </View>
@@ -116,7 +116,7 @@ export default function PlaceInfoSection({
                   setContentHeight(event.nativeEvent.layout.height);
                 }}
               >
-                <View className="pl-6.5 py-2 gap-3">
+                <View className="pl-6.5 pt-2 gap-3">
                   <CustomText font="body2">{usetime}</CustomText>
                   {restdate && <CustomText font="body2">{restdate}</CustomText>}
                 </View>
@@ -126,12 +126,14 @@ export default function PlaceInfoSection({
         </Pressable>
 
         {infocenter && (
-          <View className={`flex-row gap-2`}>
+          <View className={`flex-row gap-2 shrink items-center`}>
             <CallMiniIcon />
-            <CustomText font="body2">{infocenter}</CustomText>
+            <CustomText font="body2" className={`shrink`}>
+              {infocenter.replaceAll("/", " / ")}
+            </CustomText>
           </View>
         )}
-        <View className={`flex-row gap-2`}>
+        <View className={`flex-row gap-2 items-center`}>
           <ParkingMiniIcon color={parking ? `#444444` : `#888888`} />
           <CustomText
             font={parking ? "body2" : "body3"}
@@ -198,7 +200,9 @@ const LocationMap = ({ address, placeDetail }: LocationMapProps) => {
       <View className={`p-4 gap-1`}>
         <View className={`flex-row gap-1 items-center`}>
           <PinMiniIcon color={"#444444"} height={14} />
-          <CustomText font="body2">{address}</CustomText>
+          <CustomText font="body2" numberOfLines={1} className={`shrink`}>
+            {address}
+          </CustomText>
         </View>
         <View className={`flex-row items-center`}>
           <CustomText font="body3" className={`text-text-muted`}>

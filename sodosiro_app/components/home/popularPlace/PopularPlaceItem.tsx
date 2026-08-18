@@ -5,15 +5,18 @@ import Tag from "@/components/place/Tag";
 import { DEFAULT_IMAGES } from "@/constants/Category";
 import { NumberToCategory } from "@/util/place/category";
 import { router } from "expo-router";
-import { useState } from "react";
 import { Image, LayoutChangeEvent, Pressable, View } from "react-native";
 import CustomText from "../../common/CustomText";
 import RateChip from "../../place/RateChip";
 
 export default function PopularPlaceItem({
   popularPlace,
+  contentHeight,
+  onLayout,
 }: {
-  popularPlace: PlaceType;
+  popularPlace?: PlaceType;
+  contentHeight?: number;
+  onLayout?: (event: LayoutChangeEvent) => void;
 }) {
   const {
     contentId,
@@ -25,50 +28,58 @@ export default function PopularPlaceItem({
     overview,
     category,
     tags,
-  } = popularPlace;
-
-  const [contentHeight, setContentHeight] = useState(0);
+  } = popularPlace ?? {
+    title: " ",
+    region: " ",
+    avgRating: 0,
+    reviewCount: 0,
+    overview: " ",
+    category: 1,
+    tags: ["tag"],
+  };
 
   const imageSource = firstImage
     ? { uri: firstImage }
-    : DEFAULT_IMAGES[NumberToCategory[category]];
+    : DEFAULT_IMAGES[NumberToCategory[category ?? 1]];
 
   const handleRoute = () => {
-    router.push({
-      pathname: "/place/[placeId]",
-      params: { placeId: contentId },
-    });
-  };
-
-  const handleContentLayout = (event: LayoutChangeEvent) => {
-    const height = event.nativeEvent.layout.height;
-    console.log(height);
-    if (height !== contentHeight) {
-      setContentHeight(height);
-    }
+    if (contentId)
+      router.push({
+        pathname: "/place/[placeId]",
+        params: { placeId: contentId },
+      });
   };
 
   return (
-    <View className={`gap-3 flex-row items-stretch`}>
-      <Pressable
-        onPress={handleRoute}
-        className={`rounded-xl overflow-hidden`}
-        style={{ width: contentHeight, height: contentHeight }}
+    <View
+      className={`gap-3 flex-row items-stretch shrink ${onLayout && `absolute opacity-0 pointer-events-none`}`}
+    >
+      {contentHeight && (
+        <Pressable
+          onPress={handleRoute}
+          className={`rounded-xl overflow-hidden`}
+          style={{
+            width: contentHeight,
+            height: contentHeight,
+          }}
+        >
+          <Image
+            source={imageSource}
+            className={`w-full h-full`}
+            resizeMode="cover"
+          />
+        </Pressable>
+      )}
+      <View
+        className={`flex-1 gap-2`}
+        onLayout={onLayout ? onLayout : undefined}
       >
-        <Image
-          source={imageSource}
-          className={`w-full h-full`}
-          resizeMode="cover"
-        />
-      </Pressable>
-
-      <View className={`flex-1 gap-2`} onLayout={handleContentLayout}>
         <Pressable className={`gap-1`} onPress={handleRoute}>
           <View className={`flex-row gap-1 items-center`}>
             <CustomText font="title" numberOfLines={1} className={`shrink`}>
               {title}
             </CustomText>
-            <Tag category={NumberToCategory[category]} />
+            <Tag category={NumberToCategory[category ?? 1]} />
           </View>
           <View className={`gap-1.5`}>
             <View className={`flex-row gap-1`}>

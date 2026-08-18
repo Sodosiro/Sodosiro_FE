@@ -2,13 +2,14 @@ import { useRef } from "react";
 
 export function useClusterer() {
   const clustererRef = useRef<kakao.maps.MarkerClusterer | null>(null);
+  const clustersRef = useRef<kakao.maps.Cluster[]>([]);
 
   const create = (map: kakao.maps.Map) => {
     if (clustererRef.current) {
       clustererRef.current.clear();
     }
 
-    clustererRef.current = new kakao.maps.MarkerClusterer({
+    const clusterer = new kakao.maps.MarkerClusterer({
       map,
       averageCenter: true,
       minLevel: 5,
@@ -16,6 +17,16 @@ export function useClusterer() {
       texts: (count) => `${count}`,
       styles: ClusterStyles,
     });
+
+    kakao.maps.event.addListener(
+      clusterer,
+      "clustered",
+      (clusters: kakao.maps.Cluster[]) => {
+        clustersRef.current = clusters;
+      },
+    );
+
+    clustererRef.current = clusterer;
   };
 
   const setMarkers = (markers: kakao.maps.Marker[]) => {
@@ -25,13 +36,21 @@ export function useClusterer() {
     clustererRef.current.addMarkers(markers);
   };
 
+  const getClusterByMarker = (marker: kakao.maps.Marker) => {
+    return clustersRef.current.find((cluster) =>
+      cluster.getMarkers().some((clusterMarker) => clusterMarker === marker),
+    );
+  };
+
   const clear = () => {
     clustererRef.current?.clear();
+    clustersRef.current = [];
   };
 
   return {
     create,
     setMarkers,
+    getClusterByMarker,
     clear,
   };
 }

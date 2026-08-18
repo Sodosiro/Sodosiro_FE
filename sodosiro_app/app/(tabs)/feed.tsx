@@ -5,7 +5,7 @@ import FeedItem from "@/components/feed/FeedItem";
 import { FEED } from "@/mocks/feed";
 import { useRef, useState } from "react";
 import { FlatList, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function FeedScreen() {
   const flatListRef = useRef<FlatList>(null);
@@ -20,8 +20,16 @@ export default function FeedScreen() {
     });
   };
 
+  const insets = useSafeAreaInsets();
+
   return (
-    <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: "white" }}>
+    <View
+      style={{
+        backgroundColor: "white",
+        flex: 1,
+        paddingTop: insets.top,
+      }}
+    >
       <Header title="피드" showBackButton={false} />
       <FlatList
         ref={flatListRef}
@@ -49,6 +57,6 @@ export default function FeedScreen() {
         initialImageUrl={selectedImageUrl}
         onClose={() => setFeedDetailModalVisible(false)}
       />
-    </SafeAreaView>
+    </View>
   );
 }

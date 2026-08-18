@@ -21,12 +21,14 @@ export default function KakaoMap({
 }) {
   const { isLoading, setIsLoading } = useWebViewStore();
   const searchResult = useExploreStore((state) => state.searchResult);
+  const keyword = useExploreStore((state) => state.keyword);
   const allPlaces = useExploreStore((state) => state.allPlaces);
   const selectedCategory = useExploreStore((state) => state.selectedCategory);
   const location = useLocationStore((state) => state.location);
   const isDenied = useLocationStore((state) => state.isDenied);
 
   const previousPlacesRef = useRef<PlaceType[]>(allPlaces);
+  const previousKeywordRef = useRef(keyword);
 
   const {
     isMapReady,
@@ -84,6 +86,8 @@ export default function KakaoMap({
 
     const data = searchResult ?? (allPlaces as PlaceType[]);
 
+    const isKeywordChanged = previousKeywordRef.current !== keyword;
+
     const filtered =
       selectedCategory === "all"
         ? data
@@ -91,7 +95,8 @@ export default function KakaoMap({
             (place: PlaceType) =>
               NumberToCategory[place.category] === selectedCategory,
           );
-    updateData(filtered, !!searchResult);
+    updateData(filtered, !!searchResult && isKeywordChanged);
+    previousKeywordRef.current = keyword;
   }, [searchResult, selectedCategory]);
 
   return (

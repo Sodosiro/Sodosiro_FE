@@ -23,15 +23,17 @@ export default function AIRecommend({
   contentId: number;
   aiRecommendation: aiRecommendation;
 }) {
-  const { data, isPending } = useQuery({
+  const { data, isFetching } = useQuery({
     queryKey: ["aiRecommendation", contentId],
     queryFn: () => postAiRecommendationApi(contentId),
     enabled: !aiRecommendation?.available,
   });
 
-  const reason = aiRecommendation?.available
-    ? aiRecommendation.reason
-    : data?.data?.reason;
+  console.log(contentId);
+
+  const reason = (
+    aiRecommendation?.available ? aiRecommendation.reason : data?.data?.reason
+  )?.replace(/\n/g, "");
 
   return (
     <View className="flex-row px-4 py-3 gap-2 bg-primary-light">
@@ -40,8 +42,11 @@ export default function AIRecommend({
         <CustomText font="body1" className="text-primary-dark">
           AI 추천 이유
         </CustomText>
-        {isPending ? (
-          <SkeletonLine />
+        {isFetching && !aiRecommendation?.available ? (
+          <View className={`gap-1.5`}>
+            <SkeletonLine />
+            <SkeletonLine />
+          </View>
         ) : (
           <CustomText font="body2" className="text-text-secondary">
             {reason}

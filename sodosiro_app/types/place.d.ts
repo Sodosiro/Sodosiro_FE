@@ -92,3 +92,9 @@ type PlaceDetailType = {
     desc: string;
   }[];
 };
+
+type TimelinePlaceType = {
+  desc: string;
+  rate: number;
+  completed: boolean;
+} & PlaceType;

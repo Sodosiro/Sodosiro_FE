@@ -2,6 +2,7 @@ import { StarIcon, SwapIcon } from "@/assets/svgs";
 import CustomText from "@/components/common/CustomText";
 import Dropdown from "@/components/common/Dropdown";
 import { MOCK_TRANSPORT_ROUTE } from "@/mocks/trip";
+import { NumberToCategory } from "@/util/place/category";
 import { router } from "expo-router";
 import { memo } from "react";
 import { Pressable, View } from "react-native";
@@ -10,7 +11,7 @@ import ActionBadge from "../trip/badge/ActionBadge";
 import OngoingRouteSummaryCard from "../trip/ongoing/OngoingRouteSummaryCard";
 
 type TimelineItemProps = {
-  place: PlaceType;
+  place: TimelinePlaceType;
   isExpanded: boolean;
   onToggle: (key: string) => void;
   order: number;
@@ -38,23 +39,21 @@ function TimelineItem({
   isFirstIndex = false,
   onChangePlace,
 }: TimelineItemProps) {
+  console.log("place", place);
   return (
     <>
       <View className="flex-row">
         <View className="w-[24px] mr-[10px] h-3"></View>
-        {isFirstIndex ? undefined : (
-          <View className="h-3 flex-1 border-t border-[#D9D9D9]" />
-        )}
+        {isFirstIndex ? undefined : <View className="h-3 flex-1 border-t border-[#D9D9D9]" />}
       </View>
       <Pressable
         className={`pb-3 bg-bg`}
         onLongPress={isEditing ? onLongPress : undefined}
+        onPress={!isEditing ? () => onToggle(`${place.contentId}`) : undefined}
       >
         <Dropdown
           isExpanded={isExpanded}
-          onToggle={
-            !isEditing ? () => onToggle(`${place.contentId}`) : undefined
-          }
+          // onToggle={}
           disabled={isEditing}
           header={
             <View className={`flex-row flex-1 items-center`}>
@@ -74,7 +73,7 @@ function TimelineItem({
                 <CustomText font="title" numberOfLines={1}>
                   {place.title}
                 </CustomText>
-                <Tag category={place.category} />
+                <Tag category={NumberToCategory[place?.category]} />
               </View>
             </View>
           }

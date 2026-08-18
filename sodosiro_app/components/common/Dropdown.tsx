@@ -6,7 +6,7 @@ const EXPAND_DURATION_MS = 250;
 
 type DropdownProps = {
   isExpanded: boolean;
-  onToggle: (() => void) | undefined;
+  onToggle?: (() => void) | undefined;
   /** 접었을 때도 항상 보이는 헤더 영역 (화살표 아이콘은 자동으로 오른쪽에 붙습니다) */
   header: ReactNode;
   /** 펼쳤을 때만 보이는 본문 영역 */

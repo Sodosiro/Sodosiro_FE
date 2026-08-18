@@ -9,6 +9,7 @@ export function useWebViewMessage({
   startTracking,
   denyLocation,
   selectMarkerByPlaceId,
+  updateMarkers,
 }: {
   mapRef: React.RefObject<kakao.maps.Map | null>;
   renderPlaces: (places: PlaceType[], isPanTo?: boolean) => void;
@@ -18,6 +19,7 @@ export function useWebViewMessage({
   startTracking: () => void;
   denyLocation: () => void;
   selectMarkerByPlaceId: (placeId: number) => kakao.maps.Marker | null;
+  updateMarkers: (places: PlaceType[]) => void;
 }) {
   useEffect(() => {
     const receiveMessage = (event: MessageEvent) => {
@@ -25,19 +27,24 @@ export function useWebViewMessage({
         typeof event.data === "string" ? JSON.parse(event.data) : event.data;
 
       switch (data.type) {
-        case "SET_PLACES":
+        case "SET_PLACES": {
           if (!mapRef.current) return;
           renderPlaces(data.places, data.isPanTo);
           break;
-
-        case "SET_ROUTE":
+        }
+        case "UPDATE_PLACE":
           if (!mapRef.current) return;
-          drawRoute(mapRef.current, data.routeInfo);
+          updateMarkers(data.places);
           break;
 
         case "SET_PLACE":
           if (!mapRef.current) return;
           createMarker(mapRef.current, data.place);
+          break;
+
+        case "SET_ROUTE":
+          if (!mapRef.current) return;
+          drawRoute(mapRef.current, data.routeInfo);
           break;
 
         case "UPDATE_LOCATION":

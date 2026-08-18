@@ -1,14 +1,17 @@
 import { View } from "react-native";
 import CustomText from "../../common/CustomText";
 
+const POPULAR_COLOR = "#FF7681";
+const LIKED_COLOR = "#F8CF43";
+
 const List = [
   {
-    color: "#6AD9CA",
+    color: POPULAR_COLOR,
     title: "인기 지역",
   },
   {
-    color: "#ECB76E",
-    title: "즐겨 찾기",
+    color: LIKED_COLOR,
+    title: "저장한 장소",
   },
 ];
 

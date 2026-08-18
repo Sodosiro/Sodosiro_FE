@@ -1,10 +1,14 @@
 import { useState } from "react";
 import type { LayoutChangeEvent } from "react-native";
 import { View } from "react-native";
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 import CustomText from "../common/CustomText";
 
-type TabType = "지금 많이 찾는 장소" | "좋아요한 장소";
+type TabType = "지금 많이 찾는 장소" | "저장한 장소";
 
 type TripConditionTabBarProps = {
   currentTab: TabType;
@@ -15,7 +19,7 @@ export default function TripConditionTabBar({
   currentTab,
   moveToSection,
 }: TripConditionTabBarProps) {
-  const tabs: TabType[] = ["지금 많이 찾는 장소", "좋아요한 장소"];
+  const tabs: TabType[] = ["지금 많이 찾는 장소", "저장한 장소"];
 
   const [tabWidth, setTabWidth] = useState(0);
   const currentIndex = tabs.indexOf(currentTab);
@@ -56,7 +60,7 @@ export default function TripConditionTabBar({
       return `${tab}`;
     }
 
-    if (tab === "좋아요한 장소") {
+    if (tab === "저장한 장소") {
       return `${tab}`;
     }
 
@@ -64,7 +68,10 @@ export default function TripConditionTabBar({
   };
 
   return (
-    <View className="flex-row w-full border-b border-border bg-bg" onLayout={handleTabLayout}>
+    <View
+      className="flex-row w-full border-b border-border bg-bg"
+      onLayout={handleTabLayout}
+    >
       {tabs.map((tab) => (
         <CustomText
           key={tab}

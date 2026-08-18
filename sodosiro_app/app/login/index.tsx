@@ -4,7 +4,7 @@ import CustomText from "@/components/common/CustomText";
 import { signInWithKakao } from "@/lib/kakao";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { router } from "expo-router";
-import { Image, Pressable, View } from "react-native";
+import { Image, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function LoginScreen() {
@@ -39,7 +39,11 @@ export default function LoginScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <View className={`px-5 py-3 h-16 justify-center`}>
-        <CustomText font="heading1">소도시로</CustomText>
+        <Text
+          className={`font-gmarket-sans-medium text-[20px] text-text-primary`}
+        >
+          소도시로
+        </Text>
       </View>
       <View className={`w-screen aspect-square`}>
         <Image

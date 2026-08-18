@@ -5,9 +5,10 @@ type FestivalType = {
   startDate: Date;
   endDate: Date;
   imageUrl: string;
+  linkUrl: string;
   status: FestivalStatus;
-  desc: string;
-  keywords: string[];
+  description: string;
+  tags: string[];
 };
 
 type FestivalStatus = "ALL" | "ACTIVE" | "ONGOING" | "UPCOMING" | "ENDED";

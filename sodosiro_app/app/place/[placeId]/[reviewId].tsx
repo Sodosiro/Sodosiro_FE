@@ -15,6 +15,11 @@ import { useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+type ImageType = {
+  imageUrl: string;
+  displayOrder: number;
+};
+
 export default function ReviewModifyScreen() {
   const { placeId, reviewId, title } = useLocalSearchParams<{
     placeId: string;
@@ -42,11 +47,27 @@ export default function ReviewModifyScreen() {
     try {
       setIsPending(true);
 
+      const keepImageUrls = imageSources
+        .filter((image) =>
+          images?.some(
+            (existingImage: ImageType) => existingImage.imageUrl === image.uri,
+          ),
+        )
+        .map((image) => image.uri);
+
+      const newImages = imageSources.filter(
+        (image) =>
+          !images?.some(
+            (existingImage: ImageType) => existingImage.imageUrl === image.uri,
+          ),
+      );
+
       await patchReviewApi(
         Number(reviewId),
         rate,
         content.trim(),
-        imageSources,
+        newImages,
+        keepImageUrls,
       );
 
       await invalidateQueries([

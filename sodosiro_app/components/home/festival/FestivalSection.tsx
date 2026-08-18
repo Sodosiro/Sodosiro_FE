@@ -1,3 +1,4 @@
+import Spinner from "@/components/common/Spinner";
 import { useFestivalsQuery } from "@/hooks/query/useFestivalsQuery";
 import { router } from "expo-router";
 import { View } from "react-native";
@@ -5,7 +6,7 @@ import SectionTitle from "../SectionTitle";
 import FestivalPrevList from "./FestivalPrevList";
 
 export default function FestivalSection() {
-  const { data } = useFestivalsQuery(undefined, "ONGOING", 5);
+  const { data, isPending } = useFestivalsQuery(undefined, "ACTIVE", 5);
 
   const festivals = data?.pages.flatMap((page) => page.data.items) ?? [];
 
@@ -20,7 +21,13 @@ export default function FestivalSection() {
         }}
         isMore={isMore}
       />
-      <FestivalPrevList festivals={festivals} />
+      {isPending ? (
+        <View className={`flex-1 justify-center items-center h-70`}>
+          <Spinner />
+        </View>
+      ) : (
+        <FestivalPrevList festivals={festivals} />
+      )}
     </View>
   );
 }

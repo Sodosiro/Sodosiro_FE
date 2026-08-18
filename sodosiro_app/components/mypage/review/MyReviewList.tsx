@@ -1,4 +1,5 @@
 import { deleteReviewApi } from "@/api/review";
+import CustomText from "@/components/common/CustomText";
 import DeleteModal from "@/components/common/modal/DeleteModal";
 import ReviewImageModal from "@/components/placeDetail/review/ReviewImageModal";
 import { queryClient } from "@/lib/queryClient";
@@ -31,7 +32,7 @@ export default function MyReviewList({ reviews }: { reviews: MyReviewType[] }) {
     setIsDeleteModalVisible(false);
   };
 
-  return (
+  return reviews?.length > 0 ? (
     <>
       <FlatList
         data={reviews}
@@ -70,5 +71,11 @@ export default function MyReviewList({ reviews }: { reviews: MyReviewType[] }) {
         }}
       />
     </>
+  ) : (
+    <View className={`flex-1 justify-center items-center`}>
+      <CustomText font="body1" className={`text-text-muted pb-10`}>
+        작성한 리뷰가 없어요.
+      </CustomText>
+    </View>
   );
 }

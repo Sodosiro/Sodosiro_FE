@@ -54,6 +54,7 @@ export async function patchReviewApi(
   rating: number,
   body: string,
   images: ImagePickerAsset[],
+  keepImageUrls?: string[],
 ) {
   const formData = new FormData();
 
@@ -61,6 +62,7 @@ export async function patchReviewApi(
     string: JSON.stringify({
       rating,
       body,
+      keepImageUrls,
     }),
     type: "application/json",
   } as any);

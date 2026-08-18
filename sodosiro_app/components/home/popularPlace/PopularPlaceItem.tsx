@@ -18,6 +18,7 @@ export default function PopularPlaceItem({
     contentId,
     firstImage,
     title,
+    region,
     avgRating,
     reviewCount,
     overview,
@@ -59,7 +60,7 @@ export default function PopularPlaceItem({
               />
               <InfoChip
                 icon={<PinMiniIcon width={14} color={"#888888"} />}
-                text={""}
+                text={region}
               />
             </View>
             <CustomText

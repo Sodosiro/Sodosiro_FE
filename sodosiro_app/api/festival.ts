@@ -5,6 +5,7 @@ type GetFestivalsParams = {
   status?: FestivalStatus;
   cursor?: number;
   size?: number;
+  year?: number;
 };
 
 export async function getFestivalsApi(params?: GetFestivalsParams) {

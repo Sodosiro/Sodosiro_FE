@@ -11,7 +11,11 @@ export default function LikeListScreen() {
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>("all");
   const [sortOption, setSortOption] = useState<SortType>("RECENT");
 
-  const { data, isPending } = useLikePlacesQuery(undefined, sortOption);
+  const { data, isPending } = useLikePlacesQuery(
+    selectedCategory,
+    undefined,
+    sortOption,
+  );
 
   const places = data?.pages.flatMap((page) => page.data.content) ?? [];
 

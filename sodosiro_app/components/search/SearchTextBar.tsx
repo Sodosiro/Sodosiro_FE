@@ -24,7 +24,8 @@ export default function SearchTextBar() {
           returnKeyType="search"
           placeholder="가고 싶은 여행지를 검색해보세요"
           placeholderTextColor={"#888888"}
-          className={`${TitleTightClass} text-text-primary flex-1 w-full h-15 p-0`}
+          className={`${TitleTightClass} text-text-primary flex-1 w-full h-8 p-0`}
+          multiline={false}
         />
         <SearchIcon color={"#888888"} />
       </View>

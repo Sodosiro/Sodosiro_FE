@@ -106,8 +106,6 @@ export default function RootLayout() {
       try {
         const token = await registerForPushNotificationsAsync();
 
-        console.log("🔥 FCM Token:", token);
-
         // 나중에 서버 API 연결
         // await registerDeviceTokenApi({
         //   token,

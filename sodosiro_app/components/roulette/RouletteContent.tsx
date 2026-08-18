@@ -76,8 +76,13 @@ export default function RoulleteContent({
             <RouletteActionBar className={`justify-between`}>
               <CustomButton
                 type="primary"
-                title={result?.region + " 둘러보기"}
-                onPress={() => router.push("/roulette/result")}
+                title={result?.name + " 둘러보기"}
+                onPress={() =>
+                  router.push({
+                    pathname: "/roulette/result",
+                    params: { sigunguId: result.sigunguId, title: result.name },
+                  })
+                }
               />
               <CustomText
                 font="title tight"
@@ -91,7 +96,7 @@ export default function RoulleteContent({
           {!result && <RouletteActionBar />}
         </Animated.View>
       )}
-      <ChanceModal
+      <NoChanceModal
         isModalVisible={isModalVisible}
         setIsModalVisible={setIsModalVisible}
       />
@@ -117,7 +122,7 @@ const RouletteActionBar = ({
   );
 };
 
-const ChanceModal = ({
+const NoChanceModal = ({
   isModalVisible,
   setIsModalVisible,
 }: {

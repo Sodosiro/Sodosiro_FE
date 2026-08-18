@@ -2,28 +2,28 @@ import PlaceMini from "@/components/place/PlaceMini";
 import { View } from "react-native";
 import RegionSectionContainer from "./RegionSectionContainer";
 
-export default function TopAttractionSection({
+export default function FeatureSpotSection({
   title,
-  topAttractions,
+  featureSpots,
 }: {
   title: string;
-  topAttractions: {
-    id: number;
+  featureSpots: {
+    contentId: number;
     imageUrl: string;
     title: string;
-    desc: string;
   }[];
 }) {
   return (
-    <RegionSectionContainer title={`${title}의 대표 명소`}>
+    <RegionSectionContainer title={`${title}에서 발견할 수 있는 곳`}>
       <View className={`flex-col flex-1 gap-4`}>
-        {topAttractions.map((attraction, index) => (
+        {featureSpots?.map((featureSpot, index) => (
           <PlaceMini
             key={index}
-            id={attraction.id}
-            imageSource={attraction.imageUrl}
-            title={attraction.title}
-            desc={attraction.desc}
+            id={featureSpot.contentId}
+            imageUrl={featureSpot.imageUrl}
+            title={featureSpot.title}
+            desc={featureSpot.title}
+            category={1}
           />
         ))}
       </View>

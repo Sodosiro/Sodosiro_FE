@@ -76,7 +76,7 @@ const RouletteItem = React.memo(function RouletteItem({
       }}
     >
       <Animated.View style={[animatedStyle]}>
-        <CustomText font="display">{item.region}</CustomText>
+        <CustomText font="display">{item.name}</CustomText>
       </Animated.View>
     </View>
   );
@@ -120,7 +120,7 @@ export default forwardRef<RoulettePickerHandle, Props>(
         highlightIndex.value = -1;
 
         const displayTargetIndex = displayItems.findIndex(
-          (item) => item.region === items[targetIndex].region,
+          (item) => item.name === items[targetIndex].name,
         );
 
         const topRow =
@@ -150,7 +150,7 @@ export default forwardRef<RoulettePickerHandle, Props>(
             withTiming(1, { duration: 150 }, (finished) => {
               if (!finished) return;
               const firstIndex = displayItems.findIndex(
-                (item) => item.region === centerItem.region,
+                (item) => item.name === centerItem.name,
               );
               const resetIndex = displayItems.length + firstIndex;
               const resetTopRow = resetIndex - CENTER_INDEX;

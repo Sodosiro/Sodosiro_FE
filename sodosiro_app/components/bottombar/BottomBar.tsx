@@ -30,7 +30,7 @@ const TITLES = {
 export default function BottomBar({ state, navigation }: BottomTabBarProps) {
   return (
     <SafeAreaView edges={["bottom"]} style={{ backgroundColor: "white" }}>
-      <View className="flex-row border-t border-border bg-bg py-5 px-2">
+      <View className="flex-row border-t border-border bg-bg py-4 px-2">
         {state.routes.map((route, index) => {
           const focused = state.index === index;
 

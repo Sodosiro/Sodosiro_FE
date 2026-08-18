@@ -34,6 +34,7 @@ type PlaceType = {
     rankTag: string;
     calculatedAt: Date;
   } | null;
+  tags: string[] | null;
 };
 
 type PlacePrev = {

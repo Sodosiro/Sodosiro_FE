@@ -18,6 +18,7 @@ export default function AnimatedTabLabel({
       <Animated.Text
         className={`${focused ? `text-body2-tight` : `text-body3-tight`} font-pretendard`}
         style={textStyle}
+        numberOfLines={1}
       >
         {title}
       </Animated.Text>

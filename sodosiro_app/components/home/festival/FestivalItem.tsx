@@ -5,13 +5,7 @@ import InfoChip from "@/components/place/InfoChip";
 import { getSeasonImage } from "@/util/festival/festival";
 import { formatDate } from "@/util/time/time";
 import { useState } from "react";
-import {
-  Image,
-  Pressable,
-  View,
-  type LayoutChangeEvent,
-  type TextLayoutEvent,
-} from "react-native";
+import { Image, Pressable, View, type LayoutChangeEvent } from "react-native";
 import DdayBadge from "./DdayBadge";
 
 export default function FestivalItem({
@@ -24,91 +18,77 @@ export default function FestivalItem({
   const { imageUrl, regionName, title, description, startDate, endDate, tags } =
     festival;
 
-  const [descriptionHeight, setDescriptionHeight] = useState(0);
-  const [lineHeight, setLineHeight] = useState(0);
+  const [contentHeight, setContentHeight] = useState(0);
 
   const imageSource = imageUrl ? { uri: imageUrl } : getSeasonImage(startDate);
 
-  // description 영역의 실제 높이
-  const handleDescriptionLayout = (event: LayoutChangeEvent) => {
+  const handleContentLayout = (event: LayoutChangeEvent) => {
     const height = event.nativeEvent.layout.height;
 
-    if (height !== descriptionHeight) {
-      setDescriptionHeight(height);
+    if (height !== contentHeight) {
+      setContentHeight(height);
     }
   };
-
-  // 실제 텍스트 한 줄의 높이
-  const handleTextLayout = (event: TextLayoutEvent) => {
-    const lines = event.nativeEvent.lines;
-
-    if (lines.length === 0) return;
-
-    const height = lines[0].height;
-
-    if (height !== lineHeight) {
-      setLineHeight(height);
-    }
-  };
-
-  const numberOfLines =
-    descriptionHeight > 0 && lineHeight > 0
-      ? Math.max(2, Math.floor(descriptionHeight / lineHeight))
-      : undefined;
 
   return (
-    <Pressable className="flex-row gap-3 h-50" onPress={onPress}>
+    <View className="flex-row gap-3 items-stretch">
       {/* 이미지 */}
-      <View>
-        <Image source={imageSource} className="h-50 aspect-3/4 rounded-xl" />
+      <Pressable
+        onPress={onPress}
+        style={{
+          width: (contentHeight * 3) / 4 || 0,
+          height: contentHeight || 0,
+        }}
+      >
+        {contentHeight > 0 && (
+          <Image
+            source={imageSource}
+            className="w-full h-full rounded-xl"
+            resizeMode="cover"
+          />
+        )}
 
         <DdayBadge
           className="absolute bottom-3 left-3"
           startDate={startDate}
           endDate={endDate}
         />
-      </View>
+      </Pressable>
 
       {/* 내용 */}
-      <View className="gap-2 flex-1 py-1">
-        {/* 제목 */}
-        <CustomText font="title" numberOfLines={1}>
-          {title}
-        </CustomText>
+      <View className="flex-1 gap-3 py-1" onLayout={handleContentLayout}>
+        <Pressable onPress={onPress} className="gap-3">
+          {/* 제목 */}
+          <CustomText font="title" numberOfLines={1}>
+            {title}
+          </CustomText>
 
-        {/* 장소 / 날짜 */}
-        <View className="gap-2">
-          <InfoChip
-            icon={<PinMiniIcon width={14} color="#888888" />}
-            text={regionName}
-          />
+          {/* 장소 / 날짜 */}
+          <View className="gap-1.5">
+            <InfoChip
+              icon={<PinMiniIcon width={14} color="#888888" />}
+              text={regionName}
+            />
 
-          <InfoChip
-            icon={<CalendarMiniIcon width={14} color="#888888" />}
-            text={formatDate(startDate, endDate)}
-          />
-        </View>
+            <InfoChip
+              icon={<CalendarMiniIcon width={14} color="#888888" />}
+              text={formatDate(startDate, endDate)}
+            />
+          </View>
 
-        {/* 설명 */}
-        <View
-          className="flex-1 flex-row overflow-hidden"
-          onLayout={handleDescriptionLayout}
-        >
+          {/* 설명 - 최대 2줄 */}
           <CustomText
             font="body3"
-            className="flex-1 text-text-muted"
-            numberOfLines={numberOfLines}
-            onTextLayout={handleTextLayout}
+            className="text-text-muted"
+            numberOfLines={2}
           >
             {description}
           </CustomText>
-        </View>
+        </Pressable>
 
         {/* 태그 */}
-        <View>
-          <KeywordBadgeList keywords={tags} />
-        </View>
+        <KeywordBadgeList keywords={tags} />
       </View>
-    </Pressable>
+    </View>
   );
 }

@@ -1,6 +1,9 @@
 type SodosiType = {
-  region: string;
+  name: string;
   comment: string;
+  sigunguId: number;
+  areaCode: string;
+  sigunguCode: string;
 };
 
 type RegionType = {

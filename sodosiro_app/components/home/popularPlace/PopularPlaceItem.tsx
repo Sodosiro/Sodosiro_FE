@@ -5,7 +5,8 @@ import Tag from "@/components/place/Tag";
 import { DEFAULT_IMAGES } from "@/constants/Category";
 import { NumberToCategory } from "@/util/place/category";
 import { router } from "expo-router";
-import { Image, Pressable, View } from "react-native";
+import { useState } from "react";
+import { Image, LayoutChangeEvent, Pressable, View } from "react-native";
 import CustomText from "../../common/CustomText";
 import RateChip from "../../place/RateChip";
 
@@ -23,28 +24,46 @@ export default function PopularPlaceItem({
     reviewCount,
     overview,
     category,
+    tags,
   } = popularPlace;
+
+  const [contentHeight, setContentHeight] = useState(0);
 
   const imageSource = firstImage
     ? { uri: firstImage }
     : DEFAULT_IMAGES[NumberToCategory[category]];
 
+  const handleRoute = () => {
+    router.push({
+      pathname: "/place/[placeId]",
+      params: { placeId: contentId },
+    });
+  };
+
+  const handleContentLayout = (event: LayoutChangeEvent) => {
+    const height = event.nativeEvent.layout.height;
+    console.log(height);
+    if (height !== contentHeight) {
+      setContentHeight(height);
+    }
+  };
+
   return (
-    <Pressable
-      className={`gap-3 flex-row flex-1`}
-      onPress={() =>
-        router.push({
-          pathname: "/place/[placeId]",
-          params: { placeId: contentId },
-        })
-      }
-    >
-      <Image
-        source={imageSource}
-        className={`rounded-xl aspect-square overflow-hidden w-28 h-28`}
-      />
-      <View className={`flex-1 justify-between gap-1`}>
-        <View className={`gap-1`}>
+    <View className={`gap-3 flex-row items-stretch`}>
+      <Pressable
+        onPress={handleRoute}
+        className={`rounded-xl overflow-hidden`}
+        style={{ width: contentHeight, height: contentHeight }}
+      >
+        <Image
+          source={imageSource}
+          className={`w-full h-full`}
+          resizeMode="cover"
+        />
+      </Pressable>
+
+      <View className={`flex-1 gap-2`} onLayout={handleContentLayout}>
+        <Pressable className={`gap-1`} onPress={handleRoute}>
           <View className={`flex-row gap-1 items-center`}>
             <CustomText font="title" numberOfLines={1} className={`shrink`}>
               {title}
@@ -71,9 +90,9 @@ export default function PopularPlaceItem({
               {overview}
             </CustomText>
           </View>
-        </View>
-        <KeywordBadgeList keywords={[]} />
+        </Pressable>
+        <KeywordBadgeList keywords={tags?.slice(0, 3) ?? []} />
       </View>
-    </Pressable>
+    </View>
   );
 }

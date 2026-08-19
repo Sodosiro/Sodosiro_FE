@@ -54,9 +54,11 @@ export default function Dropdown({
     <View>
       <View className={`flex-row items-center flex-1`}>
         {header}
-        <Pressable onPress={onToggle} className={`${disabled && `pointer-events-none`}`}>
-          <RotatingArrowIcon isExpanded={isExpanded} />
-        </Pressable>
+        {!disabled ? (
+          <Pressable onPress={onToggle} className={`${disabled && `pointer-events-none`}`}>
+            <RotatingArrowIcon isExpanded={isExpanded} />
+          </Pressable>
+        ) : undefined}
       </View>
 
       <Animated.View style={{ height: bodyHeight, overflow: "hidden" }}>

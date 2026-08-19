@@ -39,7 +39,6 @@ function TimelineItem({
   isFirstIndex = false,
   onChangePlace,
 }: TimelineItemProps) {
-  console.log("place", place);
   return (
     <>
       <View className="flex-row">

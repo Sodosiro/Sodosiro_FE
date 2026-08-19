@@ -34,7 +34,7 @@ function TimelineDaySection({
   const [selectedId, setSelectedId] = useState<number | null>(dayPlan.places[0]?.contentId);
   const [showLocation, setShowLocation] = useState(false);
   const [changeTargetId, setChangeTargetId] = useState<number | null>(null);
-  const [selectedItem, setSelectedItem] = useState<PlaceType | null>(null);
+  const [selectedItem, setSelectedItem] = useState<TimelinePlaceType | null>(null);
   const { showToast } = useToast();
 
   const handleToggle = useCallback((placeId: number) => {
@@ -42,7 +42,7 @@ function TimelineDaySection({
   }, []);
 
   const renderEditableItem = useCallback(
-    ({ item, getIndex, drag }: RenderItemParams<PlaceType>) => {
+    ({ item, getIndex, drag }: RenderItemParams<TimelinePlaceType>) => {
       const index = getIndex() ?? 0;
 
       return (
@@ -68,7 +68,7 @@ function TimelineDaySection({
   }, [setOnDrag]);
 
   const handleDragEnd = useCallback(
-    ({ data }: { data: PlaceType[] }) => {
+    ({ data }: { data: TimelinePlaceType[] }) => {
       setOnDrag?.(false);
       setPlan?.((prev) =>
         prev.map((day) =>

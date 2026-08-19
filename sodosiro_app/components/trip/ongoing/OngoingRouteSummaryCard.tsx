@@ -29,16 +29,7 @@ export default function OngoingRouteSummaryCard({
   onPressKakaoMap,
 }: OngoingRouteSummaryCardProps) {
   return (
-    <View
-      className="bg-white rounded-2xl px-4 py-4 border border-[#D9D9D9] ml-8.5 mt-3"
-      style={{
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.06,
-        shadowRadius: 8,
-        elevation: 3,
-      }}
-    >
+    <View className="bg-white rounded-2xl px-4 py-4 border border-[#D9D9D9] ml-8.5 mt-3">
       <CustomText font="title" className="text-text-primary">
         {totalDuration} · {totalDistance} · {fare}
       </CustomText>

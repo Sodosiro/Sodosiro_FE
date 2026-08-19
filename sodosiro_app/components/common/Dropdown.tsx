@@ -1,20 +1,16 @@
 import RotatingArrowIcon from "@/components/common/RotatingArrowIcon";
-import { ReactNode, useEffect, useRef, useState } from "react";
-import { Animated, LayoutChangeEvent, Pressable, View } from "react-native";
-
-const EXPAND_DURATION_MS = 250;
+import { ReactNode } from "react";
+import { Pressable, View } from "react-native";
+import Animated, { FadeInDown } from "react-native-reanimated";
 
 type DropdownProps = {
   isExpanded: boolean;
   onToggle?: (() => void) | undefined;
-  /** 접었을 때도 항상 보이는 헤더 영역 (화살표 아이콘은 자동으로 오른쪽에 붙습니다) */
   header: ReactNode;
-  /** 펼쳤을 때만 보이는 본문 영역 */
   children: ReactNode;
   disabled?: boolean;
 };
 
-// 헤더를 누르면 본문이 펼쳐지고 화살표가 회전하는 범용 드롭다운(아코디언) 컴포넌트
 export default function Dropdown({
   isExpanded,
   onToggle,
@@ -22,59 +18,31 @@ export default function Dropdown({
   children,
   disabled = false,
 }: DropdownProps) {
-  const [contentHeight, setContentHeight] = useState(0);
-  const animatedController = useRef(new Animated.Value(isExpanded ? 1 : 0)).current;
-
-  useEffect(() => {
-    Animated.timing(animatedController, {
-      toValue: isExpanded ? 1 : 0,
-      duration: EXPAND_DURATION_MS,
-      useNativeDriver: false, // height 애니메이션을 위해 false 설정
-    }).start();
-  }, [isExpanded, animatedController]);
-
-  const bodyHeight = animatedController.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, contentHeight],
-  });
-
-  const bodyOpacity = animatedController.interpolate({
-    inputRange: [0, 0.5, 1],
-    outputRange: [0, 0, 1],
-  });
-
-  const handleLayout = (e: LayoutChangeEvent) => {
-    const { height } = e.nativeEvent.layout;
-    if (height > 0 && contentHeight === 0) {
-      setContentHeight(height);
-    }
-  };
-
   return (
-    <View>
-      <View className={`flex-row items-center flex-1`}>
-        {header}
+    <View className="question_section w-full bg-white">
+      <View className="flex-row items-center justify-between min-h-[26px] w-full flex-shrink-0 z-10 bg-white">
+        <View className="flex-1 mr-2 min-w-0 overflow-hidden">{header}</View>
+
         {!disabled ? (
-          <Pressable onPress={onToggle} className={`${disabled && `pointer-events-none`}`}>
+          <Pressable
+            onPress={onToggle}
+            className={`p-1 flex-shrink-0 ${disabled ? "pointer-events-none" : ""}`}
+            hitSlop={8}
+          >
             <RotatingArrowIcon isExpanded={isExpanded} />
           </Pressable>
-        ) : undefined}
+        ) : null}
       </View>
 
-      <Animated.View style={{ height: bodyHeight, overflow: "hidden" }}>
+      {isExpanded && (
         <Animated.View
-          style={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            opacity: bodyOpacity,
-          }}
-          onLayout={handleLayout}
+          key="dropdown_animated_content"
+          entering={FadeInDown.duration(150)}
+          className="w-full bg-white overflow-hidden z-0"
         >
           {children}
         </Animated.View>
-      </Animated.View>
+      )}
     </View>
   );
 }

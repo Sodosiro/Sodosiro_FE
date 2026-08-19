@@ -72,7 +72,7 @@ export default function TimelineScreen() {
           }}
           scrollEnabled={!onDrag}
           onScroll={handleScroll}
-          scrollEventThrottle={16}
+          scrollEventThrottle={32} // 부하 감소
           showsVerticalScrollIndicator={false}
         >
           {temp.map((item, index) => (

@@ -30,6 +30,11 @@ export function useTimelineScrollSpy() {
   const isScrolling = useRef(false);
   const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // 프로그래밍 방식(뱃지 클릭)으로 스크롤 중인지 여부
+  const isProgrammaticScroll = useRef(false);
+  // 사용자가 직접 손가락으로 드래그 중인지 여부
+  const isUserDragging = useRef(false);
+
   const handleBadgeContainerLayout = useCallback((event: LayoutChangeEvent) => {
     const { width } = event.nativeEvent.layout;
     if (width > 0) {
@@ -37,6 +42,7 @@ export function useTimelineScrollSpy() {
     }
   }, []);
 
+  // 뱃지를 화면 중앙으로 스크롤하는 함수 (본문 스크롤에는 절대 관여 안 함)
   const scrollBadgeIntoView = useCallback((index: number) => {
     const layout = badgeLayouts.current[index];
 
@@ -51,108 +57,97 @@ export function useTimelineScrollSpy() {
     });
   }, []);
 
-  // activeIndex 변경 시 뱃지 포커싱 스크롤 수행
+  // activeIndex 변경 시 뱃지 포커싱 실행 (세로 스크롤/클릭 모두 뱃지만 움직임)
   useEffect(() => {
     scrollBadgeIntoView(activeIndex);
   }, [activeIndex, scrollBadgeIntoView]);
 
-  const moveToSection = useCallback(
-    (index: number) => {
-      const section = sectionPositions.current[index];
+  // 뱃지를 눌러서 세로 스크롤을 이동시킬 때만 호출되는 함수
+  const moveToSection = useCallback((index: number) => {
+    const section = sectionPositions.current[index];
+    if (!section) return;
 
-      if (!section) return;
+    // 프로그래밍 이동 시작 설정
+    isProgrammaticScroll.current = true;
+    setActiveIndex(index);
 
-      setActiveIndex(index);
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
+    }
 
-      isScrolling.current = true;
+    mainScrollRef.current?.scrollTo({
+      y: Math.max(section.start - 12, 0),
+      animated: true,
+    });
 
-      if (scrollTimeoutRef.current) {
-        clearTimeout(scrollTimeoutRef.current);
-      }
+    // 이동 완료 후 잠금 해제
+    scrollTimeoutRef.current = setTimeout(() => {
+      isProgrammaticScroll.current = false;
+      scrollTimeoutRef.current = null;
+    }, PROGRAMMATIC_SCROLL_LOCK_MS);
+  }, []);
 
-      mainScrollRef.current?.scrollTo({
-        y: Math.max(section.start - 12, 0),
-        animated: true,
-      });
+  // 세로 스크롤 감지 핸들러
+  const handleScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    // 뱃지 클릭으로 스크롤 중일 때는 세로 스크롤 감지에 의한 activeIndex 변경을 무시 (충돌 방지)
+    if (isProgrammaticScroll.current) return;
 
-      scrollTimeoutRef.current = setTimeout(() => {
-        isScrolling.current = false;
-        scrollTimeoutRef.current = null;
-      }, PROGRAMMATIC_SCROLL_LOCK_MS);
-    },
-    [],
-  );
+    const { contentOffset, layoutMeasurement, contentSize } = event.nativeEvent;
+    const scrollY = contentOffset.y;
 
-  const handleScroll = useCallback(
-    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-      if (isScrolling.current) return;
+    const entries = Object.entries(sectionPositions.current) as [string, SectionPosition][];
 
-      const { contentOffset, layoutMeasurement, contentSize } = event.nativeEvent;
-      const scrollY = contentOffset.y;
+    if (entries.length === 0) return;
 
-      const entries = Object.entries(sectionPositions.current) as [
-        string,
-        SectionPosition,
-      ][];
+    let currentIndex = 0;
 
-      if (entries.length === 0) return;
+    // 최상단
+    if (scrollY <= 10) {
+      currentIndex = 0;
+    }
+    // 최하단
+    else if (
+      contentSize.height > 0 &&
+      layoutMeasurement.height + scrollY >= contentSize.height - 20
+    ) {
+      currentIndex = entries.length - 1;
+    }
+    // 일반 스크롤 영역
+    else {
+      const topThreshold = scrollY + 80;
+      for (let i = 0; i < entries.length; i++) {
+        const [indexStr, position] = entries[i];
+        const index = Number(indexStr);
 
-      let currentIndex = 0;
-
-      // 최상단
-      if (scrollY <= 10) {
-        currentIndex = 0;
-      }
-      // 맨 하단
-      else if (
-        contentSize.height > 0 &&
-        layoutMeasurement.height + scrollY >= contentSize.height - 20
-      ) {
-        currentIndex = entries.length - 1;
-      }
-      // 스크롤 상단 위치 기준 (상단 여백 80px 고려)
-      else {
-        const topThreshold = scrollY + 80;
-        for (let i = 0; i < entries.length; i++) {
-          const [indexStr, position] = entries[i];
-          const index = Number(indexStr);
-
-          if (topThreshold >= position.start) {
-            currentIndex = index;
-          } else {
-            break;
-          }
+        if (topThreshold >= position.start) {
+          currentIndex = index;
+        } else {
+          break;
         }
       }
+    }
 
-      setActiveIndex((prev) => (prev !== currentIndex ? currentIndex : prev));
-    },
-    [],
-  );
+    // 인덱스가 실제로 바뀔 때만 업데이트 (불필요한 re-render 방지)
+    setActiveIndex((prev) => (prev !== currentIndex ? currentIndex : prev));
+  }, []);
 
-  const handleSectionLayout = useCallback(
-    (index: number, event: LayoutChangeEvent) => {
-      const { y, height } = event.nativeEvent.layout;
+  const handleSectionLayout = useCallback((index: number, event: LayoutChangeEvent) => {
+    const { y, height } = event.nativeEvent.layout;
 
-      sectionPositions.current[index] = {
-        start: y,
-        end: y + height,
-      };
-    },
-    [],
-  );
+    sectionPositions.current[index] = {
+      start: y,
+      end: y + height,
+    };
+  }, []);
 
-  const handleBadgeLayout = useCallback(
-    (index: number, event: LayoutChangeEvent) => {
-      const { x, width } = event.nativeEvent.layout;
+  const handleBadgeLayout = useCallback((index: number, event: LayoutChangeEvent) => {
+    const { x, width } = event.nativeEvent.layout;
 
-      badgeLayouts.current[index] = {
-        x,
-        width,
-      };
-    },
-    [],
-  );
+    badgeLayouts.current[index] = {
+      x,
+      width,
+    };
+  }, []);
 
   const getSectionLayoutHandler = useCallback(
     (index: number) => {
@@ -195,4 +190,3 @@ export function useTimelineScrollSpy() {
     getBadgeLayoutHandler,
   };
 }
-

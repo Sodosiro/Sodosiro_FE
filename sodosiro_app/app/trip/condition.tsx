@@ -204,9 +204,8 @@ export default function TripScreen() {
             </View>
           </View>
         </ScrollView>
-
-        <TripConditionFooter onReset={handleReset} onSubmit={handleSubmit} />
       </KeyboardAvoidingView>
+      <TripConditionFooter onReset={handleReset} onSubmit={handleSubmit} />
     </SafeAreaView>
   );
 }

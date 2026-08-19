@@ -43,7 +43,9 @@ function TimelineItem({
     <>
       <View className="flex-row">
         <View className="w-[24px] mr-[10px] h-3"></View>
-        {isFirstIndex ? undefined : <View className="h-3 flex-1 border-t border-[#D9D9D9]" />}
+        {isFirstIndex || isEditing ? undefined : (
+          <View className="h-3 flex-1 border-t border-[#D9D9D9]" />
+        )}
       </View>
       <Pressable
         className={`pb-3 bg-bg`}
@@ -55,24 +57,27 @@ function TimelineItem({
           // onToggle={}
           disabled={isEditing}
           header={
-            <View className={`flex-row flex-1 items-center`}>
+            <View className="flex-row flex-1 items-center">
               {isEditing ? (
-                <View className="w-6 h-6 items-center mr-2.5">
+                <View className="w-6 h-6 items-center mr-2.5 flex-shrink-0">
                   <SwapIcon />
                 </View>
               ) : (
-                <View className="w-6 h-6 rounded-xl bg-[#1A1A1A] items-center justify-center mr-2.5">
+                <View className="w-6 h-6 rounded-xl bg-[#1A1A1A] items-center justify-center mr-2.5 flex-shrink-0">
                   <CustomText font="body3" className="text-white">
                     {order}
                   </CustomText>
                 </View>
               )}
 
-              <View className={`flex-row gap-1 items-center flex-1`}>
-                <CustomText font="title" numberOfLines={1}>
+              <View className="flex-row gap-1 items-center min-w-0 max-w-full flex-shrink">
+                <CustomText font="title" numberOfLines={1} className="flex-shrink">
                   {place.title}
                 </CustomText>
-                <Tag category={NumberToCategory[place?.category]} />
+
+                <View className="flex-shrink-0">
+                  <Tag category={NumberToCategory[place?.category]} />
+                </View>
               </View>
             </View>
           }
@@ -142,12 +147,14 @@ function TimelineItem({
               </View>
             </View>
           )}
-          <OngoingRouteSummaryCard
-            {...MOCK_TRANSPORT_ROUTE}
-            onPressKakaoMap={() => {
-              // 카카오맵 딥링크/웹뷰 오픈
-            }}
-          />
+          {mode == "isOngoing" ? (
+            <OngoingRouteSummaryCard
+              {...MOCK_TRANSPORT_ROUTE}
+              onPressKakaoMap={() => {
+                // 카카오맵 딥링크/웹뷰 오픈
+              }}
+            />
+          ) : null}
         </Dropdown>
       </Pressable>
     </>

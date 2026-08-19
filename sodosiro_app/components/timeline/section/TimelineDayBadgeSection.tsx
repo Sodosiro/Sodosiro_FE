@@ -1,13 +1,13 @@
 import DayBadge from "@/components/trip/badge/DayBadge";
 import EditToggleBadge from "@/components/trip/badge/EditToggleBadge";
 import { LinearGradient } from "expo-linear-gradient";
-import { Dispatch, SetStateAction, useEffect, useRef, useCallback, memo } from "react";
+import { Dispatch, memo, SetStateAction, useCallback, useEffect, useRef } from "react";
 import { LayoutChangeEvent, View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
 import DraggableFlatList, {
   OpacityDecorator,
   RenderItemParams,
 } from "react-native-draggable-flatlist";
+import { ScrollView } from "react-native-gesture-handler";
 
 type TimelineDayBadgeSectionProps = {
   badgeOrder: number[];
@@ -83,10 +83,7 @@ function TimelineDayBadgeSection({
 
       return (
         <OpacityDecorator>
-          <View
-            className="px-1"
-            onLayout={(e) => onLayoutDayBadge && onLayoutDayBadge(index, e)}
-          >
+          <View className="px-1" onLayout={(e) => onLayoutDayBadge && onLayoutDayBadge(index, e)}>
             <DayBadge
               text={`${index + 1}일차`}
               selected={!isEditing && index === activeIndex}
@@ -189,4 +186,3 @@ function TimelineDayBadgeSection({
 }
 
 export default memo(TimelineDayBadgeSection);
-

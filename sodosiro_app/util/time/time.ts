@@ -1,8 +1,8 @@
 import { format } from "date-fns";
 
-export function formatTimeAgo(date: Date): string {
+export function formatTimeAgo(date: Date, showDay = false): string {
   const now = new Date();
-  const diff = now.getTime() - date.getTime();
+  const diff = now.getTime() - new Date(date).getTime();
 
   const minute = 60 * 1000;
   const hour = 60 * minute;
@@ -18,6 +18,10 @@ export function formatTimeAgo(date: Date): string {
 
   if (diff < day) {
     return `${Math.floor(diff / hour)}시간 전`;
+  }
+
+  if (showDay) {
+    return `${date.getMonth() + 1}월 ${date.getDate()}일`;
   }
 
   return `${Math.floor(diff / day)}일 전`;

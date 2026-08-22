@@ -7,9 +7,11 @@ const MAX_TEXT_LENGTH = 300;
 export default function CreateFeedTextSection({
   text,
   setText,
+  isPending,
 }: {
   text: string;
   setText: Dispatch<SetStateAction<string>>;
+  isPending: boolean;
 }) {
   return (
     <View className="gap-3">
@@ -25,6 +27,7 @@ export default function CreateFeedTextSection({
           scrollEnabled={false}
           maxLength={MAX_TEXT_LENGTH}
           textAlignVertical="top"
+          editable={!isPending}
         />
 
         <CustomText

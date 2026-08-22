@@ -39,7 +39,7 @@ export default function FeedDetailModal({
 
   const initialIndex = Math.max(
     0,
-    feedsWithImages?.findIndex((feed) => feed.feedId === initialfeedId),
+    feedsWithImages?.findIndex((feed) => feed.diggingId === initialfeedId),
   );
 
   return (
@@ -64,12 +64,12 @@ export default function FeedDetailModal({
           })}
           showsHorizontalScrollIndicator={false}
           data={feedsWithImages}
-          keyExtractor={(item) => item.feedId.toString()}
+          keyExtractor={(item) => item.diggingId.toString()}
           renderItem={({ item }) => (
             <FeedDetailModalContent
               feed={item}
               initialImageUrl={
-                item.feedId === initialfeedId ? initialImageUrl : null
+                item.diggingId === initialfeedId ? initialImageUrl : null
               }
             />
           )}

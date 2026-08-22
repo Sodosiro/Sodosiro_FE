@@ -1,19 +1,20 @@
 import CustomText from "@/components/common/CustomText";
 import TripHistoryItem from "@/components/feed/create/TripHistoryItem";
-import { TRIP_HISTORY } from "@/mocks/feed";
 import { FlatList, View } from "react-native";
 
 export default function CreateFeedStepHistory({
-  selectedHistoryId,
-  setSelectedHistoryId,
+  courses,
+  selectedCourseId,
+  setSelectedCourseId,
 }: {
-  selectedHistoryId: number | null;
-  setSelectedHistoryId: React.Dispatch<React.SetStateAction<number | null>>;
+  courses: CourseType[];
+  selectedCourseId: number | undefined;
+  setSelectedCourseId: React.Dispatch<React.SetStateAction<number | undefined>>;
 }) {
   return (
     <FlatList
       className="px-5 py-3"
-      data={TRIP_HISTORY}
+      data={courses}
       ListHeaderComponent={
         <CustomText font="heading2">어떤 여행의 기록을 남길까요?</CustomText>
       }
@@ -24,8 +25,8 @@ export default function CreateFeedStepHistory({
       renderItem={({ item }) => (
         <TripHistoryItem
           historyItem={item}
-          selectedHistoryId={selectedHistoryId}
-          setSelectedHistoryId={setSelectedHistoryId}
+          selectedCourseId={selectedCourseId}
+          setSelectedCourseId={setSelectedCourseId}
         />
       )}
     />

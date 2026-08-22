@@ -16,9 +16,9 @@ export default function TripHistoryPlaceItem({
   selectedPlace,
   setSelectedPlace,
 }: {
-  place: TripHistoryPlaceType;
-  selectedPlace?: TripHistoryPlaceType | null;
-  setSelectedPlace?: Dispatch<SetStateAction<TripHistoryPlaceType | null>>;
+  place: TripSpotType;
+  selectedPlace?: TripSpotType | null;
+  setSelectedPlace?: Dispatch<SetStateAction<TripSpotType | null>>;
 }) {
   const { contentId, title, category, firstImage } = place ?? {};
   const { containerStyle, borderStyle, strokeStyle, fillStyle } =

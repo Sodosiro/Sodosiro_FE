@@ -14,11 +14,13 @@ export default function CreateFeedPhotoSection({
   setImages,
   isPicking,
   setIsPicking,
+  isPending,
 }: {
   images: ImagePicker.ImagePickerAsset[];
   setImages: Dispatch<SetStateAction<ImagePicker.ImagePickerAsset[]>>;
   isPicking: boolean;
   setIsPicking: Dispatch<SetStateAction<boolean>>;
+  isPending: boolean;
 }) {
   const handlePickImages = async () => {
     if (isPicking) {
@@ -70,7 +72,7 @@ export default function CreateFeedPhotoSection({
         {images.length === 0 && (
           <Pressable
             onPress={handlePickImages}
-            disabled={isPicking}
+            disabled={isPicking || isPending}
             className="w-full aspect-square rounded-xl bg-bg-subtle items-center justify-center gap-2"
           >
             {isPicking ? (
@@ -99,7 +101,7 @@ export default function CreateFeedPhotoSection({
 
             <Pressable
               className="flex-row py-3.5 gap-1 items-center justify-center rounded-xl bg-bg-subtle"
-              disabled={isPicking}
+              disabled={isPicking || isPending}
               onPress={handlePickImages}
             >
               {isPicking ? (

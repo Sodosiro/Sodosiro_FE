@@ -11,17 +11,22 @@ import Svg from "react-native-svg";
 
 export default function TripHistoryItem({
   historyItem,
-  selectedHistoryId,
-  setSelectedHistoryId,
+  selectedCourseId,
+  setSelectedCourseId,
 }: {
-  historyItem: TripHistoryType;
-  selectedHistoryId: number | null;
-  setSelectedHistoryId: Dispatch<SetStateAction<number | null>>;
+  historyItem: CourseType;
+  selectedCourseId: number | undefined;
+  setSelectedCourseId: Dispatch<SetStateAction<number | undefined>>;
 }) {
-  const { historyId, title, startDate, endDate } = historyItem ?? {};
+  const {
+    courseId: historyId,
+    displayName: title,
+    startDate,
+    endDate,
+  } = historyItem ?? {};
 
   const { containerStyle, borderStyle, strokeStyle, fillStyle } =
-    useSelectedAnimation(historyId === selectedHistoryId, {
+    useSelectedAnimation(historyId === selectedCourseId, {
       background: ["transparent", "#F3F8DE"],
       border: ["#d9d9d9", "#A9C92D"],
       stroke: ["#d9d9d9", "#A9C92D"],
@@ -32,7 +37,7 @@ export default function TripHistoryItem({
     <AnimatedPressable
       className={`flex-row rounded-xl gap-4 border p-3 items-center justify-between`}
       style={[containerStyle, borderStyle]}
-      onPress={() => setSelectedHistoryId(historyId)}
+      onPress={() => setSelectedCourseId(historyId)}
     >
       <View className={`gap-1`}>
         <CustomText font="title">{title}</CustomText>

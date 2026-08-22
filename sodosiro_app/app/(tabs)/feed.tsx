@@ -1,8 +1,10 @@
+import CustomText from "@/components/common/CustomText";
 import Header from "@/components/common/Header";
+import Spinner from "@/components/common/Spinner";
 import FeedDetailModal from "@/components/feed/FeedDetailModal";
 import FeedFloatingButton from "@/components/feed/FeedFloatingButton";
 import FeedItem from "@/components/feed/FeedItem";
-import { FEED } from "@/mocks/feed";
+import { useFeedsQuery } from "@/hooks/query/feed";
 import { useRef, useState } from "react";
 import { FlatList, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -22,6 +24,11 @@ export default function FeedScreen() {
 
   const insets = useSafeAreaInsets();
 
+  const { data, isPending } = useFeedsQuery();
+
+  const feeds =
+    data?.pages.flatMap((page) => page.data.items) ?? ([] as FeedType[]);
+
   return (
     <View
       style={{
@@ -31,26 +38,39 @@ export default function FeedScreen() {
       }}
     >
       <Header title="피드" showBackButton={false} />
-      <FlatList
-        ref={flatListRef}
-        data={FEED}
-        className={`px-5`}
-        keyExtractor={(item) => String(item.feedId)}
-        ItemSeparatorComponent={<View className={`w-full h-px bg-border`} />}
-        renderItem={({ item }) => (
-          <FeedItem
-            feed={item}
-            onPhotoPress={(imageUrl) => {
-              setSelectedFeedId(item.feedId);
-              setSelectedImageUrl(imageUrl);
-              setFeedDetailModalVisible(true);
-            }}
-          />
-        )}
-      />
+      {isPending ? (
+        <View className={`flex-1 justify-center items-center`}>
+          <Spinner />
+        </View>
+      ) : feeds?.length > 0 ? (
+        <FlatList
+          ref={flatListRef}
+          data={feeds}
+          className={`px-5`}
+          keyExtractor={(item) => String(item.diggingId)}
+          ItemSeparatorComponent={<View className={`w-full h-px bg-border`} />}
+          renderItem={({ item }) => (
+            <FeedItem
+              feed={item}
+              onPhotoPress={(imageUrl) => {
+                setSelectedFeedId(item.diggingId);
+                setSelectedImageUrl(imageUrl);
+                setFeedDetailModalVisible(true);
+              }}
+            />
+          )}
+        />
+      ) : (
+        <View className={`flex-1 justify-center items-center`}>
+          <CustomText font="body1" className={`text-text-muted`}>
+            작성된 피드가 없어요.
+          </CustomText>
+        </View>
+      )}
+
       <FeedFloatingButton onToTop={handleToTop} />
       <FeedDetailModal
-        feeds={FEED}
+        feeds={feeds}
         visible={feedDetailModalVisible}
         setVisible={setFeedDetailModalVisible}
         initialfeedId={selectedFeedId}

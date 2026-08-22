@@ -3,3 +3,5 @@ type DayPlan = {
   dateLabel: string;
   places: PlaceType[];
 };
+
+type TripStatus = "UPCOMING" | "IN_PROGRESS" | "FINISHED";

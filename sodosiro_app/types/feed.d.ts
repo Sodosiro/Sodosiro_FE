@@ -1,5 +1,6 @@
 type FeedType = {
-  feedId: number;
+  diggingId: number;
+  courseId: number;
   author: {
     userId: number;
     displayName: string;
@@ -8,27 +9,32 @@ type FeedType = {
   spot: {
     contentId: number;
     title: string;
+    firstImage: string;
   };
+  body: string;
   images: {
     imageUrl: string;
-    displayOrder: number;
+    order: number;
   }[];
-  body: string;
   likeCount: number;
   bookmarkCount: number;
+  isLikedByMe: boolean;
+  isBookmarkedByMe: boolean;
   createdAt: Date;
 };
 
-type TripHistoryType = {
-  historyId: number;
-  title: string;
+type CourseType = {
+  courseId: number;
+  displayName: string;
   startDate: Date;
   endDate: Date;
+  status: TripStatus;
 };
 
-type TripHistoryPlaceType = {
+type TripSpotType = {
   contentId: number;
   title: string;
   category: CategoryNumber;
   firstImage: string | null;
+  alreadyPosted: boolean;
 };

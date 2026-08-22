@@ -12,14 +12,16 @@ export default function CreateFeedStepContent({
   images,
   setImages,
   isPicking,
+  isPending,
   setIsPicking,
 }: {
-  selectedPlace: TripHistoryPlaceType | null;
+  selectedPlace: TripSpotType | null;
   text: string;
   setText: Dispatch<SetStateAction<string>>;
   images: ImagePicker.ImagePickerAsset[];
   setImages: Dispatch<SetStateAction<ImagePicker.ImagePickerAsset[]>>;
   isPicking: boolean;
+  isPending: boolean;
   setIsPicking: Dispatch<SetStateAction<boolean>>;
 }) {
   const scrollViewRef = useRef<ScrollView>(null);
@@ -48,9 +50,14 @@ export default function CreateFeedStepContent({
           setImages={setImages}
           isPicking={isPicking}
           setIsPicking={setIsPicking}
+          isPending={isPending}
         />
 
-        <CreateFeedTextSection text={text} setText={setText} />
+        <CreateFeedTextSection
+          text={text}
+          setText={setText}
+          isPending={isPending}
+        />
       </ScrollView>
     </KeyboardAvoidingView>
   );

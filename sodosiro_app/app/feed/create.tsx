@@ -1,10 +1,13 @@
+import { postFeedApi } from "@/api/feed";
 import CustomButton from "@/components/common/CustomButton";
 import CustomText from "@/components/common/CustomText";
 import Header from "@/components/common/Header";
 import CreateFeedStepContent from "@/components/feed/create/step/CreateFeedStepContent";
 import CreateFeedStepHistory from "@/components/feed/create/step/CreateFeedStepHistory";
 import CreateFeedStepPlace from "@/components/feed/create/step/CreateFeedStepPlace";
-import { TRIP_HISTORY } from "@/mocks/feed";
+import { useCoursePlacesQuery, useCoursesQuery } from "@/hooks/query/course";
+import { invalidateQueries } from "@/util/query/invalidateQueries";
+import axios from "axios";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
@@ -24,14 +27,16 @@ export default function CreateFeedScreen() {
 
   const [step, setStep] = useState(0);
 
-  const [selectedHistoryId, setSelectedHistoryId] = useState<number | null>(
-    null,
+  const [selectedCourseId, setSelectedCourseId] = useState<number | undefined>(
+    undefined,
   );
-  const [selectedPlace, setSelectedPlace] =
-    useState<TripHistoryPlaceType | null>(null);
+  const [selectedPlace, setSelectedPlace] = useState<TripSpotType | null>(null);
   const [text, setText] = useState("");
-  const [images, setImages] = useState<ImagePicker.ImagePickerAsset[]>([]);
+  const [imageSources, setImageSources] = useState<
+    ImagePicker.ImagePickerAsset[]
+  >([]);
   const [isPicking, setIsPicking] = useState(false);
+  const [isPending, setIsPending] = useState(false);
 
   const translateX = useSharedValue(0);
 
@@ -42,6 +47,12 @@ export default function CreateFeedScreen() {
       },
     ],
   }));
+
+  const { data: coursesData } = useCoursesQuery("FINISHED");
+  const courses = coursesData?.data.courses;
+
+  const { data: coursePlacesData } = useCoursePlacesQuery(selectedCourseId);
+  const places = coursePlacesData?.data.spots;
 
   const moveToStep = (nextStep: number) => {
     setStep(nextStep);
@@ -66,7 +77,7 @@ export default function CreateFeedScreen() {
       if (prevStep < 1) {
         setSelectedPlace(null);
       } else if (prevStep < 2) {
-        setImages([]);
+        setImageSources([]);
         setText("");
       }
 
@@ -77,14 +88,45 @@ export default function CreateFeedScreen() {
     router.back();
   };
 
-  const handleSubmit = () => {
-    // TODO: 피드 등록 API
+  const handleSubmit = async () => {
+    if (
+      text.trim() === "" ||
+      isPending ||
+      isPicking ||
+      imageSources?.length === 0 ||
+      !selectedPlace
+    ) {
+      return;
+    }
+    try {
+      setIsPending(true);
+
+      await postFeedApi(
+        Number(selectedCourseId),
+        selectedPlace?.contentId,
+        text.trim(),
+        imageSources,
+      );
+
+      await invalidateQueries([["feeds"]]);
+
+      router.push("/(tabs)/feed");
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.log("status:", error.response?.status);
+        console.log("data:", error.response?.data);
+      }
+      console.error("[postReviewApi] 피드 작성 실패:", error);
+    } finally {
+      setIsPending(false);
+    }
   };
 
   useEffect(() => {
     const subscription = BackHandler.addEventListener(
       "hardwareBackPress",
       () => {
+        if (isPending) return true;
         if (step > 0) {
           handleBack();
           return true;
@@ -95,15 +137,15 @@ export default function CreateFeedScreen() {
     return () => {
       subscription.remove();
     };
-  }, [step, width]);
+  }, [step, width, isPending]);
 
   const isNextDisabled =
     step === 0
-      ? !selectedHistoryId
+      ? !selectedCourseId
       : step === 1
         ? !selectedPlace
         : step === 2
-          ? text.trim() === "" || images?.length < 1 || isPicking
+          ? text.trim() === "" || imageSources?.length < 1 || isPicking
           : false;
 
   return (
@@ -115,7 +157,7 @@ export default function CreateFeedScreen() {
     >
       <Header title="발견 피드 작성하기" handleBack={handleBack} />
 
-      {TRIP_HISTORY.length < 1 ? (
+      {courses?.length < 1 ? (
         <View className={`flex-1 gap-8 justify-center items-center`}>
           <View className={`gap-3 items-center`}>
             <CustomText font="heading2">아직 완료한 여행이 없어요.</CustomText>
@@ -135,7 +177,7 @@ export default function CreateFeedScreen() {
         <>
           <View className="flex-1 overflow-hidden">
             <Animated.View
-              className="flex-1 flex-row"
+              className="flex-row flex-1"
               style={[
                 {
                   width: width * STEP_COUNT,
@@ -146,14 +188,16 @@ export default function CreateFeedScreen() {
               {/* Step 1 */}
               <View style={{ width }}>
                 <CreateFeedStepHistory
-                  selectedHistoryId={selectedHistoryId}
-                  setSelectedHistoryId={setSelectedHistoryId}
+                  courses={courses}
+                  selectedCourseId={selectedCourseId}
+                  setSelectedCourseId={setSelectedCourseId}
                 />
               </View>
 
               {/* Step 2 */}
               <View style={{ width }}>
                 <CreateFeedStepPlace
+                  places={places}
                   selectedPlace={selectedPlace}
                   setSelectedPlace={setSelectedPlace}
                 />
@@ -165,9 +209,10 @@ export default function CreateFeedScreen() {
                   selectedPlace={selectedPlace}
                   text={text}
                   setText={setText}
-                  images={images}
-                  setImages={setImages}
+                  images={imageSources}
+                  setImages={setImageSources}
                   isPicking={isPicking}
+                  isPending={isPending}
                   setIsPicking={setIsPicking}
                 />
               </View>
@@ -179,6 +224,7 @@ export default function CreateFeedScreen() {
               type="primary"
               title={step === STEP_COUNT - 1 ? "올리기" : "다음으로"}
               disabled={isNextDisabled}
+              loading={isPending}
               onPress={handleNext}
             />
           </View>

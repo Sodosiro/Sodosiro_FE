@@ -5,8 +5,12 @@ import { Pressable, View } from "react-native";
 
 export default function NotificationItem({
   notification,
+  isFloating,
+  onPress,
 }: {
   notification: NotificationType;
+  isFloating?: boolean;
+  onPress?: () => void;
 }) {
   const Icon =
     notification.type === "DIGGING_POST_LIKE" ? (
@@ -18,7 +22,10 @@ export default function NotificationItem({
     );
 
   return (
-    <Pressable className={`py-4 flex-row gap-3 justify-between items-start`}>
+    <Pressable
+      className={`${isFloating && `px-4`} py-4 flex-row gap-3 justify-between items-start`}
+      onPress={onPress ? onPress : undefined}
+    >
       <View
         className={`w-11 h-11 items-center justify-center bg-primary-light rounded-full`}
       >
@@ -31,11 +38,13 @@ export default function NotificationItem({
             {notification.body}
           </CustomText>
         )}
-        <CustomText font="body3 review" className={`text-text-muted`}>
-          {formatTimeAgo(new Date(notification.createdAt), true)}
-        </CustomText>
+        {notification.createdAt && (
+          <CustomText font="body3 review" className={`text-text-muted`}>
+            {formatTimeAgo(new Date(notification.createdAt), true)}
+          </CustomText>
+        )}
       </View>
-      {!notification.isRead && (
+      {!notification.isRead && !isFloating && (
         <View className={`w-2.5 h-2.5 rounded-full bg-primary-dark`} />
       )}
     </Pressable>

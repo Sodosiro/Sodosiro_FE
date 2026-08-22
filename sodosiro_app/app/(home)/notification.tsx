@@ -1,21 +1,26 @@
-import { patchAllNotificationsRead } from "@/api/notification";
+import {
+  patchAllNotificationsRead,
+  patchNotificationRead,
+} from "@/api/notification";
 import CustomText from "@/components/common/CustomText";
 import Header from "@/components/common/Header";
+import Spinner from "@/components/common/Spinner";
 import NotificationDay from "@/components/home/notification/NotificationDay";
 import NotificationItem from "@/components/home/notification/NotificationItem";
 import { useNotificationsQuery } from "@/hooks/query/notification";
 import { invalidateQueries } from "@/util/query/invalidateQueries";
+import { router } from "expo-router";
 import { FlatList, View } from "react-native";
 
 export default function NotificationScreen() {
-  const { data } = useNotificationsQuery();
+  const { data, isPending } = useNotificationsQuery();
 
   const notifications = data?.pages.flatMap((page) => page.data.items) ?? [];
   const unreadCount = data?.pages[0].data.unreadCount ?? 0;
 
   const handleAllRead = async () => {
     await patchAllNotificationsRead();
-    invalidateQueries(["notifications"]);
+    invalidateQueries([["notifications"]]);
   };
 
   return (
@@ -35,7 +40,11 @@ export default function NotificationScreen() {
         }
       />
 
-      {notifications.length > 0 ? (
+      {isPending ? (
+        <View className={`flex-1 justify-center items-center`}>
+          <Spinner />
+        </View>
+      ) : notifications.length > 0 ? (
         <FlatList
           data={notifications}
           keyExtractor={(item) => String(item.id)}
@@ -55,6 +64,21 @@ export default function NotificationScreen() {
               new Date(item.createdAt).toDateString() !==
                 new Date(previous.createdAt).toDateString();
 
+            const handlePress = async () => {
+              if (item.type === "DIGGING_POST_LIKE") {
+                router.push({
+                  pathname: "/feed/feedDetail",
+                  params: {
+                    feedId: String(item.payload?.diggingId),
+                  },
+                });
+                await patchNotificationRead(item.id);
+                invalidateQueries([["notifications"]]);
+              } else if (item.type === "NEARBY_LIKED_SPOTS") {
+              } else {
+              }
+            };
+
             return (
               <View>
                 {isDifferentDay && (
@@ -63,7 +87,7 @@ export default function NotificationScreen() {
 
                 {!isDifferentDay && <View className="w-full h-px bg-border" />}
 
-                <NotificationItem notification={item} />
+                <NotificationItem notification={item} onPress={handlePress} />
               </View>
             );
           }}

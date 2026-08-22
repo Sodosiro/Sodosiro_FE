@@ -10,6 +10,7 @@ export default function FeedLayout() {
     >
       <Stack.Screen name="create" />
       <Stack.Screen name="[feedId]" />
+      <Stack.Screen name="feedDetail" />
     </Stack>
   );
 }

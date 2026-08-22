@@ -1,10 +1,10 @@
-import { getFeedApi, patchFeedApi } from "@/api/feed";
+import { patchFeedApi } from "@/api/feed";
 import CustomButton from "@/components/common/CustomButton";
 import Header from "@/components/common/Header";
 import Spinner from "@/components/common/Spinner";
 import CreateFeedStepContent from "@/components/feed/create/step/CreateFeedStepContent";
+import { useFeedQuery } from "@/hooks/query/feed";
 import { invalidateQueries } from "@/util/query/invalidateQueries";
-import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import * as ImagePicker from "expo-image-picker";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -20,17 +20,12 @@ export default function ModifyFeedScreen() {
     ImagePicker.ImagePickerAsset[]
   >([]);
   const [isPicking, setIsPicking] = useState(false);
-  const [isPending, setIsPending] = useState(false);
 
   const { feedId } = useLocalSearchParams<{
     feedId: string;
   }>();
 
-  const { data } = useQuery({
-    queryKey: ["feed", Number(feedId)],
-    queryFn: () => getFeedApi(Number(feedId)),
-    enabled: !!feedId,
-  });
+  const { data, isPending } = useFeedQuery(Number(feedId));
 
   const { body, images } = data?.data ?? {};
 
@@ -73,8 +68,6 @@ export default function ModifyFeedScreen() {
       return;
     }
     try {
-      setIsPending(true);
-
       const keepImageUrls = imageSources
         .filter((image) =>
           images?.some(
@@ -103,8 +96,6 @@ export default function ModifyFeedScreen() {
         console.log("data:", error.response?.data);
       }
       console.error("[postReviewApi] 피드 수정 실패:", error);
-    } finally {
-      setIsPending(false);
     }
   };
 

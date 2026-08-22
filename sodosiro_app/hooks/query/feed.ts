@@ -1,5 +1,5 @@
-import { getFeedsApi } from "@/api/feed";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { getFeedApi, getFeedsApi } from "@/api/feed";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 
 export function useFeedsQuery(size = 20) {
   return useInfiniteQuery({
@@ -16,6 +16,14 @@ export function useFeedsQuery(size = 20) {
     getNextPageParam: (lastPage) => {
       return lastPage.data.nextCursor ?? undefined;
     },
+  });
+}
+
+export function useFeedQuery(feedId: number) {
+  return useQuery({
+    queryKey: ["feed", feedId],
+    queryFn: () => getFeedApi(feedId),
+    enabled: !!feedId,
   });
 }
 

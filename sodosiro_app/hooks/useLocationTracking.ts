@@ -9,12 +9,8 @@ export function useLocationTracking() {
         const isRunning =
           await Location.hasStartedLocationUpdatesAsync(LOCATION_TASK_NAME);
 
-        console.log("기존 Task:", isRunning);
-
         if (isRunning) {
           await Location.stopLocationUpdatesAsync(LOCATION_TASK_NAME);
-
-          console.log("기존 Task 중지");
         }
 
         const foreground = await Location.requestForegroundPermissionsAsync();
@@ -22,7 +18,6 @@ export function useLocationTracking() {
         console.log("foreground:", foreground.status);
 
         if (foreground.status !== "granted") {
-          console.log("위치 권한이 없습니다.");
           return;
         }
 
@@ -32,7 +27,6 @@ export function useLocationTracking() {
         console.log("background:", background.status);
 
         if (background.status !== "granted") {
-          console.log("백그라운드 위치 권한이 없습니다.");
           return;
         }
 
@@ -41,8 +35,6 @@ export function useLocationTracking() {
           distanceInterval: 100,
           pausesUpdatesAutomatically: false,
         });
-
-        console.log("위치 추적 시작");
       } catch (error) {
         console.error("위치 추적 시작 실패:", error);
       }

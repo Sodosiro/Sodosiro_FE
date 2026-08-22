@@ -1,6 +1,8 @@
+type NoticeType = "NEARBY_LIKED_SPOTS" | "REVIEW_REQUEST" | "DIGGING_POST_LIKE";
+
 type NotificationType = {
   id: number;
-  type: "NEARBY_LIKED_SPOTS" | "REVIEW_REQUEST" | "DIGGING_POST_LIKE";
+  type: NoticeType;
   title: string;
   body?: string;
   payload?:
@@ -13,5 +15,5 @@ type NotificationType = {
         nearbyCount: number;
       };
   isRead: boolean;
-  createdAt: Date;
+  createdAt?: Date;
 };

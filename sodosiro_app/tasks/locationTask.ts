@@ -4,13 +4,10 @@ import * as TaskManager from "expo-task-manager";
 export const LOCATION_TASK_NAME = "sodosiro-location-task";
 
 TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
-  console.log("실행");
   if (error) {
     console.error("백그라운드 위치 오류:", error);
     return;
   }
-
-  console.log(data);
 
   if (!data) return;
 

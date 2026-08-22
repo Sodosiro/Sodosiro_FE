@@ -20,7 +20,7 @@ export async function registerForPushNotificationsAsync() {
   }
 
   if (finalStatus !== "granted") {
-    throw new Error("알림 권한이 허용되지 않았습니다.");
+    return null;
   }
 
   const token = await Notifications.getDevicePushTokenAsync();

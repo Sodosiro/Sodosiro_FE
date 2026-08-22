@@ -1,5 +1,7 @@
 import { putFcmToken } from "@/api/notification";
 import { getMeApi } from "@/api/user";
+import NotificationListener from "@/components/notification/NotificationListener";
+import { NotificationProvider } from "@/components/notification/NotificationProvider";
 import { ToastProvider } from "@/contexts/ToastProvider";
 import { registerForPushNotificationsAsync } from "@/lib/pushNotification";
 import { queryClient } from "@/lib/queryClient";
@@ -116,122 +118,109 @@ export default function RootLayout() {
     if (!isAuthenticated) return;
 
     const registerPushToken = async () => {
-      try {
-        const fcmToken = await registerForPushNotificationsAsync();
-        const deviceId = Application.getAndroidId();
+      const fcmToken = await registerForPushNotificationsAsync();
+      const deviceId = Application.getAndroidId();
 
-        putFcmToken(deviceId, fcmToken);
-      } catch (error) {
-        console.error("FCM 등록 실패:", error);
-      }
+      if (fcmToken) putFcmToken(deviceId, fcmToken);
     };
 
     registerPushToken();
   }, [isAuthenticated]);
 
-  useEffect(() => {
-    const subscription = Notifications.addNotificationReceivedListener(
-      (notification) => {
-        console.log("🔔 알림 받음:", notification);
-      },
-    );
-
-    return () => {
-      subscription.remove();
-    };
-  }, []);
-
   return (
     <QueryClientProvider client={queryClient}>
       <GestureHandlerRootView style={{ flex: 1, backgroundColor: "white" }}>
-        <ToastProvider>
-          <PortalProvider>
-            <BottomSheetModalProvider>
-              <Stack>
-                <Stack.Screen
-                  name="index"
-                  options={{
-                    presentation: "modal",
-                    animation: "fade",
-                    headerShown: false,
-                  }}
-                />
-                <Stack.Screen
-                  name="(tabs)"
-                  options={{
-                    presentation: "modal",
-                    animation: "fade",
-                    headerShown: false,
-                  }}
-                />
-                <Stack.Screen
-                  name="(home)"
-                  options={{
-                    presentation: "modal",
-                    animation: "fade",
-                    headerShown: false,
-                  }}
-                />
-                <Stack.Screen
-                  name="explore/search"
-                  options={{
-                    presentation: "modal",
-                    animation: "fade",
-                    headerShown: false,
-                  }}
-                />
-                <Stack.Screen
-                  name="roulette"
-                  options={{
-                    presentation: "modal",
-                    animation: "fade",
-                    headerShown: false,
-                  }}
-                />
-                <Stack.Screen
-                  name="place"
-                  options={{
-                    presentation: "modal",
-                    animation: "fade",
-                    headerShown: false,
-                  }}
-                />
-                <Stack.Screen
-                  name="mypage"
-                  options={{
-                    presentation: "modal",
-                    animation: "fade",
-                    headerShown: false,
-                  }}
-                />
-                <Stack.Screen
-                  name="trip"
-                  options={{
-                    presentation: "modal",
-                    animation: "fade",
-                    headerShown: false,
-                  }}
-                />
-                <Stack.Screen
-                  name="feed"
-                  options={{
-                    presentation: "modal",
-                    animation: "fade",
-                    headerShown: false,
-                  }}
-                />
-                <Stack.Screen
-                  name="login"
-                  options={{
-                    presentation: "modal",
-                    animation: "fade",
-                    headerShown: false,
-                  }}
-                />
-              </Stack>
-            </BottomSheetModalProvider>
-          </PortalProvider>
-        </ToastProvider>
+        <NotificationProvider>
+          <NotificationListener />
+          <ToastProvider>
+            <PortalProvider>
+              <BottomSheetModalProvider>
+                <Stack>
+                  <Stack.Screen
+                    name="index"
+                    options={{
+                      presentation: "modal",
+                      animation: "fade",
+                      headerShown: false,
+                    }}
+                  />
+                  <Stack.Screen
+                    name="(tabs)"
+                    options={{
+                      presentation: "modal",
+                      animation: "fade",
+                      headerShown: false,
+                    }}
+                  />
+                  <Stack.Screen
+                    name="(home)"
+                    options={{
+                      presentation: "modal",
+                      animation: "fade",
+                      headerShown: false,
+                    }}
+                  />
+                  <Stack.Screen
+                    name="explore/search"
+                    options={{
+                      presentation: "modal",
+                      animation: "fade",
+                      headerShown: false,
+                    }}
+                  />
+                  <Stack.Screen
+                    name="roulette"
+                    options={{
+                      presentation: "modal",
+                      animation: "fade",
+                      headerShown: false,
+                    }}
+                  />
+                  <Stack.Screen
+                    name="place"
+                    options={{
+                      presentation: "modal",
+                      animation: "fade",
+                      headerShown: false,
+                    }}
+                  />
+                  <Stack.Screen
+                    name="mypage"
+                    options={{
+                      presentation: "modal",
+                      animation: "fade",
+                      headerShown: false,
+                    }}
+                  />
+                  <Stack.Screen
+                    name="trip"
+                    options={{
+                      presentation: "modal",
+                      animation: "fade",
+                      headerShown: false,
+                    }}
+                  />
+                  <Stack.Screen
+                    name="feed"
+                    options={{
+                      presentation: "modal",
+                      animation: "fade",
+                      headerShown: false,
+                    }}
+                  />
+                  <Stack.Screen
+                    name="login"
+                    options={{
+                      presentation: "modal",
+                      animation: "fade",
+                      headerShown: false,
+                    }}
+                  />
+                </Stack>
+              </BottomSheetModalProvider>
+            </PortalProvider>
+          </ToastProvider>
+        </NotificationProvider>
       </GestureHandlerRootView>
     </QueryClientProvider>
   );

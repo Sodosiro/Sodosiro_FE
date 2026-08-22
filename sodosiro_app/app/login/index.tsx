@@ -40,7 +40,7 @@ export default function LoginScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <View className={`px-5 py-3 h-16 justify-center`}>
         <Text
-          className={`font-gmarket-sans-medium text-[20px] text-text-primary`}
+          className={`font-gmarket-sans-medium text-[20px] text-text-primary shrink-0`}
         >
           소도시로
         </Text>

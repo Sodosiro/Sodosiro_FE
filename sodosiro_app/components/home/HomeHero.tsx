@@ -24,7 +24,7 @@ export default function HomeHero() {
             className={`flex-row items-center justify-between opacity-70 py-3.5`}
           >
             <Text
-              className={`text-[18px] font-semibold leading-none font-gmarket-sans-medium shrink-0`}
+              className={`text-[18px] font-semibold leading-none font-gmarket-sans-medium shrink-0 self-start`}
             >
               소도시로
             </Text>

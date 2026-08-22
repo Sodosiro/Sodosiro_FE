@@ -1,17 +1,9 @@
 import BottomSheet from "@/components/common/BottomSheet";
 import CustomText from "@/components/common/CustomText";
 import TripPlacesSection from "@/components/tripCondition/TripPlacesSection";
-import VerificationBottomSheet from "@/components/verification/VerificationBottomSheet";
 import { useToast } from "@/contexts/ToastProvider";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import {
-  Dispatch,
-  memo,
-  SetStateAction,
-  useCallback,
-  useRef,
-  useState,
-} from "react";
+import { Dispatch, memo, SetStateAction, useCallback, useRef, useState } from "react";
 import { LayoutChangeEvent, View } from "react-native";
 import DraggableFlatList, {
   OpacityDecorator,
@@ -39,12 +31,10 @@ function TimelineDaySection({
   onLayout,
 }: TimelineDaySectionProps) {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
-  const [selectedId, setSelectedId] = useState<number | null>(
-    dayPlan.places[0]?.contentId,
-  );
+  const [selectedId, setSelectedId] = useState<number | null>(dayPlan.places[0]?.contentId);
   const [showLocation, setShowLocation] = useState(false);
   const [changeTargetId, setChangeTargetId] = useState<number | null>(null);
-  const [selectedItem, setSelectedItem] = useState<PlaceType | null>(null);
+  const [selectedItem, setSelectedItem] = useState<TimelinePlaceType | null>(null);
   const { showToast } = useToast();
 
   const handleToggle = useCallback((placeId: number) => {
@@ -52,7 +42,7 @@ function TimelineDaySection({
   }, []);
 
   const renderEditableItem = useCallback(
-    ({ item, getIndex, drag }: RenderItemParams<PlaceType>) => {
+    ({ item, getIndex, drag }: RenderItemParams<TimelinePlaceType>) => {
       const index = getIndex() ?? 0;
 
       return (
@@ -78,7 +68,7 @@ function TimelineDaySection({
   }, [setOnDrag]);
 
   const handleDragEnd = useCallback(
-    ({ data }: { data: PlaceType[] }) => {
+    ({ data }: { data: TimelinePlaceType[] }) => {
       setOnDrag?.(false);
       setPlan?.((prev) =>
         prev.map((day) =>
@@ -108,9 +98,7 @@ function TimelineDaySection({
 
       // 현재 변경하려는 장소가 이미 같은 일차에 존재하는 경우
       const isDuplicatePlace = dayPlan.places.some(
-        (item) =>
-          item.contentId === selectedPlace.id &&
-          item.contentId !== changeTargetId,
+        (item) => item.contentId === selectedPlace.id && item.contentId !== changeTargetId,
       );
 
       if (isDuplicatePlace) {
@@ -194,20 +182,17 @@ function TimelineDaySection({
             />
           ))}
           {showLocation && (
-            <BottomSheet
-              visible={showLocation}
-              onClose={() => setShowLocation(false)}
-            >
+            <BottomSheet visible={showLocation} onClose={() => setShowLocation(false)}>
               <TripPlacesSection onSelectPlace={handleSelectPlace} />
               <View className="pt-5"></View>
             </BottomSheet>
           )}
-          <VerificationBottomSheet
+          {/* <VerificationBottomSheet
             ref={bottomSheetRef}
             selectedItem={selectedItem}
             showToast={showToast}
             onClose={() => bottomSheetRef?.current?.close()}
-          />
+          /> */}
         </View>
       )}
     </View>

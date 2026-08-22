@@ -68,23 +68,14 @@ export default function Header({
   };
 
   return (
-    <View
-      className={`h-16 flex-row items-center px-5 ${isBgWhite && `bg-white`}`}
-    >
+    <View className={`h-16 flex-row items-center px-5 ${isBgWhite && `bg-white`}`}>
       {showBackButton ? (
-        <Pressable
-          onPress={handleBack ?? defaultHandleBack}
-          hitSlop={12}
-          className="mr-2"
-        >
+        <Pressable onPress={handleBack ?? defaultHandleBack} hitSlop={12} className="mr-2">
           <LeftIcon color="#1A1A1A" />
         </Pressable>
       ) : null}
 
-      <CustomText
-        font="heading1"
-        className={`${Heading1Class} ${!showPencil && `flex-1`}`}
-      >
+      <CustomText font="heading1" className={`${Heading1Class} ${!showPencil && `flex-1`}`}>
         {title}
       </CustomText>
       {showPencil ? (
@@ -107,10 +98,7 @@ export default function Header({
           <View style={{ height: insets.top - 4 }} className="bg-white" />
 
           {/* 헤더 자리 (dimm 되지 않음, 흰 배경) */}
-          <View
-            style={{ height: HEADER_HEIGHT }}
-            className="flex-row items-center px-5 bg-white"
-          >
+          <View style={{ height: HEADER_HEIGHT }} className="flex-row items-center px-5 bg-white">
             {showBackButton ? (
               <View className="mr-2 opacity-40">
                 <LeftIcon color="#1A1A1A" />
@@ -135,13 +123,13 @@ export default function Header({
               }}
             />
 
-            <Pressable onPress={cancelEdit} hitSlop={12} className="ml-2">
+            <Pressable onPress={() => setDraftTitle("")} hitSlop={12} className="ml-2">
               <XIcon color="#1A1A1A" />
             </Pressable>
           </View>
 
           {/* dimm 오버레이: 탭하면 확정 후 종료 */}
-          <Pressable className="flex-1 bg-black/50" onPress={commitEdit} />
+          <Pressable className="flex-1 bg-black/50 z-999" onPress={commitEdit} />
         </View>
       </Modal>
     </View>

@@ -1,7 +1,7 @@
 type DayPlan = {
   id: number;
   dateLabel: string;
-  places: PlaceType[];
+  places: TimelinePlaceType[];
 };
 
 type TripStatus = "UPCOMING" | "IN_PROGRESS" | "FINISHED";

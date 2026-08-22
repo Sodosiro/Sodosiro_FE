@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ScrollView, TextInput, View } from "react-native";
+import { KeyboardAvoidingView, Platform, ScrollView, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import BottomSheet from "@/components/common/BottomSheet";
@@ -103,101 +103,108 @@ export default function TripScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }} edges={["top", "bottom"]}>
       <Stack.Screen options={{ headerShown: false }} />
       <Header title="여행 조건 설정" />
-      <ScrollView
-        className="flex-1"
-        contentContainerStyle={{ paddingBottom: 24 }}
-        showsVerticalScrollIndicator={false}
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <View className="px-5 pt-3 gap-8">
-          <View className="gap-3">
-            <Subtitle title="여행 일정" />
-            <TripConditionDatePickerButton
-              dateRange={dateRange}
-              onPress={() => {
-                setShowCalendar(true);
-              }}
-            />
-            {showCalendar && (
-              <BottomSheet visible={showCalendar} onClose={() => setShowCalendar(false)}>
-                <DatePickerSheet
-                  initialStartDate={dateRange.startDate ?? undefined}
-                  initialEndDate={dateRange.endDate ?? undefined}
-                  onConfirm={(start, end) => {
-                    if (start) {
-                      const resultDateRange: DateRange = {
-                        startDate: parseDate(start),
-                        endDate: start == end ? null : parseDate(end),
-                      };
-                      setDateRange(resultDateRange);
-                    }
-                    setShowCalendar(false);
-                  }}
-                />
-              </BottomSheet>
-            )}
-          </View>
-          <View className="gap-3">
-            <Subtitle title="이동 수단 선택" />
-            <View className="flex-row gap-3">
-              {transportList.map((item) => (
-                <TransportCard
-                  key={item.key}
-                  icon={item.icon}
-                  title={item.title}
-                  description={item.description}
-                  selected={transport === item.key}
-                  onPress={() => setTransport(item.key)}
-                />
-              ))}
-            </View>
-          </View>
-          <View className="gap-3">
-            <Subtitle title="여행 스타일" description="최대 2개 선택" />
-            <View className="flex-row flex-wrap gap-2.5">
-              {CATEGORIES.filter((category) => category !== "accommodation").map((category) => {
-                const isSelected = selectedCategories.includes(category);
-
-                return (
-                  <CategoryBadge
-                    key={category}
-                    category={category}
-                    isSelected={isSelected}
-                    disabled={selectedCategories.length >= 2 && !isSelected}
-                    onPress={async () => handleSelectCategory(category)}
-                  />
-                );
-              })}
-            </View>
-          </View>
-          <View className="gap-3">
-            <Subtitle title="꼭 가고 싶은 곳이 있으신가요?" description="선택사항" />
-            <View className="flex-row gap-3">
-              <LocationPickerButton
-                locationName={selectedPlace?.title}
-                onPress={() => setShowLocation(true)}
+        <ScrollView
+          className="flex-1"
+          contentContainerStyle={{ paddingBottom: 24 }}
+          showsVerticalScrollIndicator={false}
+        >
+          <View className="px-5 pt-3 gap-8">
+            <View className="gap-3">
+              <Subtitle title="여행 일정" />
+              <TripConditionDatePickerButton
+                dateRange={dateRange}
+                onPress={() => {
+                  setShowCalendar(true);
+                }}
               />
-              {showLocation && (
-                <BottomSheet visible={showLocation} onClose={() => setShowLocation(false)}>
-                  <TripPlacesSection onSelectPlace={handleSelectPlace} />
-                  <View className="pt-5"></View>
+              {showCalendar && (
+                <BottomSheet visible={showCalendar} onClose={() => setShowCalendar(false)}>
+                  <DatePickerSheet
+                    initialStartDate={dateRange.startDate ?? undefined}
+                    initialEndDate={dateRange.endDate ?? undefined}
+                    onConfirm={(start, end) => {
+                      if (start) {
+                        const resultDateRange: DateRange = {
+                          startDate: parseDate(start),
+                          endDate: start == end ? null : parseDate(end),
+                        };
+                        setDateRange(resultDateRange);
+                      }
+                      setShowCalendar(false);
+                    }}
+                  />
                 </BottomSheet>
               )}
             </View>
-          </View>
-          <View className="gap-3">
-            <Subtitle title="AI가 참고할 내용을 입력해주세요" description="선택사항" />
-            <View className="flex-row gap-3">
-              <TextInput
-                multiline
-                placeholder="내용을 입력하세요."
-                placeholderTextColor="#999999"
-                textAlignVertical="top"
-                className="min-h-[94px] flex-1 rounded-[12px] border border-[#D9D9D9] bg-white p-3 text-base text-[#1A1A1A]"
-              />
+            <View className="gap-3">
+              <Subtitle title="이동 수단 선택" />
+              <View className="flex-row gap-3">
+                {transportList.map((item) => (
+                  <TransportCard
+                    key={item.key}
+                    icon={item.icon}
+                    title={item.title}
+                    description={item.description}
+                    selected={transport === item.key}
+                    onPress={() => setTransport(item.key)}
+                  />
+                ))}
+              </View>
+            </View>
+            <View className="gap-3">
+              <Subtitle title="선호하는 관광지가 있나요?" description="최대 2개 선택" />
+              <View className="flex-row flex-wrap gap-2.5">
+                {CATEGORIES.filter(
+                  (category) => !(category == "accommodation" || category == "restaurant"),
+                ).map((category) => {
+                  const isSelected = selectedCategories.includes(category);
+
+                  return (
+                    <CategoryBadge
+                      key={category}
+                      category={category}
+                      isSelected={isSelected}
+                      disabled={selectedCategories.length >= 2 && !isSelected}
+                      onPress={async () => handleSelectCategory(category)}
+                    />
+                  );
+                })}
+              </View>
+            </View>
+            <View className="gap-3">
+              <Subtitle title="꼭 가고 싶은 곳이 있으신가요?" description="선택사항" />
+              <View className="flex-row gap-3">
+                <LocationPickerButton
+                  locationName={selectedPlace?.title}
+                  onPress={() => setShowLocation(true)}
+                />
+                {showLocation && (
+                  <BottomSheet visible={showLocation} onClose={() => setShowLocation(false)}>
+                    <TripPlacesSection onSelectPlace={handleSelectPlace} />
+                    <View className="pt-5"></View>
+                  </BottomSheet>
+                )}
+              </View>
+            </View>
+            <View className="gap-3">
+              <Subtitle title="AI가 참고할 내용을 입력해주세요" description="선택사항" />
+              <View className="flex-row gap-3">
+                <TextInput
+                  multiline
+                  placeholder="내용을 입력하세요."
+                  placeholderTextColor="#999999"
+                  textAlignVertical="top"
+                  className="min-h-[94px] flex-1 rounded-[12px] border border-[#D9D9D9] bg-white p-3 text-base text-[#1A1A1A]"
+                />
+              </View>
             </View>
           </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </KeyboardAvoidingView>
       <TripConditionFooter onReset={handleReset} onSubmit={handleSubmit} />
     </SafeAreaView>
   );

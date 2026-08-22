@@ -5,7 +5,7 @@ import Header from "@/components/common/Header";
 import Spinner from "@/components/common/Spinner";
 import Rating from "@/components/placeDetail/review/write/Rating";
 import ReviewForm from "@/components/placeDetail/review/write/ReviewForm";
-import { useMyReviewQuery } from "@/hooks/query/useMyReviewQuery";
+import { useMyReviewQuery } from "@/hooks/query/review";
 import { invalidateQueries } from "@/util/query/invalidateQueries";
 import { hasBatchim } from "@/util/word/word";
 import axios from "axios";

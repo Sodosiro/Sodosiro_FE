@@ -9,7 +9,7 @@ import Review from "@/components/placeDetail/review/Review";
 import EmptyReview from "@/components/placeDetail/review/ReviewEmpty";
 import ReviewFilter from "@/components/placeDetail/review/ReviewFilter";
 import ReviewImageModal from "@/components/placeDetail/review/ReviewImageModal";
-import { useReviewsQuery } from "@/hooks/query/useReviewsQuery";
+import { useReviewsQuery } from "@/hooks/query/review";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { FlatList, View } from "react-native";

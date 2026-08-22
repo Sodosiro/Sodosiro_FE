@@ -3,7 +3,7 @@ import Header from "@/components/common/Header";
 import Spinner from "@/components/common/Spinner";
 import FestivalBottomSheetModal from "@/components/home/festival/FestivalBottomSheetModal";
 import FestivalItem from "@/components/home/festival/FestivalItem";
-import { useFestivalsQuery } from "@/hooks/query/useFestivalsQuery";
+import { useFestivalsQuery } from "@/hooks/query/festival";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useEffect, useRef, useState } from "react";
 import { FlatList, LayoutChangeEvent, View } from "react-native";

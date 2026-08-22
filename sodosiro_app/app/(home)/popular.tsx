@@ -3,7 +3,7 @@ import CustomText from "@/components/common/CustomText";
 import Header from "@/components/common/Header";
 import Spinner from "@/components/common/Spinner";
 import PopularPlaceItem from "@/components/home/popularPlace/PopularPlaceItem";
-import { usePlacesQuery } from "@/hooks/query/usePlacesQuery";
+import { usePlacesQuery } from "@/hooks/query/place";
 import { useState } from "react";
 import { LayoutChangeEvent, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";

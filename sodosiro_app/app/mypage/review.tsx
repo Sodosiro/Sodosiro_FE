@@ -2,7 +2,7 @@ import Header from "@/components/common/Header";
 import Spinner from "@/components/common/Spinner";
 import MyReviewList from "@/components/mypage/review/MyReviewList";
 import ReviewFilter from "@/components/placeDetail/review/ReviewFilter";
-import { useMyReviewsQuery } from "@/hooks/query/useMyReviewsQuery";
+import { useMyReviewsQuery } from "@/hooks/query/review";
 import { useState } from "react";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";

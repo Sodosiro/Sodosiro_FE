@@ -2,7 +2,7 @@ import { CheckOffIcon, CheckOnIcon } from "@/assets/svgs";
 import CustomText from "@/components/common/CustomText";
 import DeleteModal from "@/components/common/modal/DeleteModal";
 import PlaceMini from "@/components/place/PlaceMini";
-import { useLikeMutation } from "@/hooks/mutation/useLikeMutation";
+import { useLikePlaceMutation } from "@/hooks/mutation/like";
 import { invalidateQueries } from "@/util/query/invalidateQueries";
 import { useState } from "react";
 import { FlatList, Pressable, View } from "react-native";
@@ -12,7 +12,7 @@ export default function LikeList({ places }: { places: PlacePrev[] }) {
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
-  const { mutate } = useLikeMutation();
+  const { mutate } = useLikePlaceMutation();
 
   const handleSelect = (id: number) => {
     setSelectedIds((prev) =>

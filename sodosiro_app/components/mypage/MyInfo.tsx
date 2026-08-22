@@ -31,10 +31,13 @@ export default function MyInfo() {
             style={{
               paddingVertical: 12,
               paddingHorizontal: 20,
+              height: 100,
             }}
-          >
+          />
+
+          <View className={`absolute top-0 left-5 h-16 justify-center`}>
             <CustomText font="heading1">내 정보</CustomText>
-          </LinearGradient>
+          </View>
           <View className={`px-5 py-5 gap-3`}>
             <Image
               className={`w-15 h-15 rounded-full`}

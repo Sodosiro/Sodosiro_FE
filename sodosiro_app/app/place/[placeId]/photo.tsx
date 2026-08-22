@@ -1,7 +1,7 @@
 import Header from "@/components/common/Header";
 import PhotoGrid from "@/components/placeDetail/review/photo/PhotoGrid";
 import PhotoReviewModal from "@/components/placeDetail/review/photo/PhotoReviewModal";
-import { useReviewsQuery } from "@/hooks/query/useReviewsQuery";
+import { useReviewsQuery } from "@/hooks/query/review";
 import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";

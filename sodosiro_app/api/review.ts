@@ -40,7 +40,7 @@ export async function postReviewApi(
     } as any);
   });
 
-  const { data } = await axiosInstance.post<User>("/api/v1/reviews", formData, {
+  const { data } = await axiosInstance.post("/api/v1/reviews", formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },

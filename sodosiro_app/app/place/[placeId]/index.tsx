@@ -8,7 +8,7 @@ import PlaceTabBar from "@/components/placeDetail/PlaceTabBar";
 import PlaceInfoSection from "@/components/placeDetail/section/PlaceInfoSection";
 import RecommedSection from "@/components/placeDetail/section/RecommendSection";
 import ReviewSection from "@/components/placeDetail/section/ReviewSection";
-import { usePlaceDetailQuery } from "@/hooks/query/usePlaceDetailQuery";
+import { usePlaceDetailQuery } from "@/hooks/query/place";
 import { usePlaceDetailTab } from "@/hooks/usePlaceDetailTab";
 import { NumberToCategory } from "@/util/place/category";
 import { useLocalSearchParams } from "expo-router";

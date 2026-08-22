@@ -1,5 +1,5 @@
 import Spinner from "@/components/common/Spinner";
-import { usePlacesQuery } from "@/hooks/query/usePlacesQuery";
+import { usePlacesQuery } from "@/hooks/query/place";
 import { router } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";

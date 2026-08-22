@@ -1,13 +1,13 @@
-import { postLikeApi } from "@/api/place";
+import { postLikePlacesApi } from "@/api/place";
 import { useExploreStore } from "@/stores/useExploreStore";
 import { invalidateQueries } from "@/util/query/invalidateQueries";
 import { useMutation } from "@tanstack/react-query";
 
-export function useLikeMutation() {
+export function useLikePlaceMutation() {
   const { updatePlaceLikeOptimistic, updatePlaceLike } = useExploreStore();
 
   const { mutate, isPending } = useMutation({
-    mutationFn: (contentIds: number[]) => postLikeApi(contentIds),
+    mutationFn: (contentIds: number[]) => postLikePlacesApi(contentIds),
 
     onMutate: (contentIds) => {
       updatePlaceLikeOptimistic(contentIds);

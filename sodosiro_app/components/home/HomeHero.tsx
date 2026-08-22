@@ -24,12 +24,15 @@ export default function HomeHero() {
             className={`flex-row items-center justify-between opacity-70 py-3.5`}
           >
             <Text
-              className={`text-[18px] font-semibold leading-none font-gmarket-sans-medium pr-0.5 self-start`}
+              className={`text-[18px] font-semibold leading-none font-gmarket-sans-medium shrink-0`}
             >
               소도시로
             </Text>
             <View className={`flex-row gap-3`}>
-              <NotificationIcon color={"#1a1a1a"} />
+              <NotificationIcon
+                color={"#1a1a1a"}
+                onPress={() => router.push("/(home)/notification")}
+              />
             </View>
           </View>
 

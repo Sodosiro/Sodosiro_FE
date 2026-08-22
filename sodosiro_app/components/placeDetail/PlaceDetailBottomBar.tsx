@@ -1,5 +1,5 @@
 import { PinIcon } from "@/assets/svgs";
-import { useLikeMutation } from "@/hooks/mutation/useLikeMutation";
+import { useLikePlaceMutation } from "@/hooks/mutation/like";
 import useSelectedAnimation from "@/hooks/useSelcetedAnimation";
 import { useEffect, useState } from "react";
 import { Linking, View } from "react-native";
@@ -26,7 +26,7 @@ export default function PlaceDetailBottomBar({
     fill: ["transparent", "#F8CF43"],
   });
 
-  const { mutate, isPending } = useLikeMutation();
+  const { mutate, isPending } = useLikePlaceMutation();
 
   const handleLike = () => {
     if (isPending) return;

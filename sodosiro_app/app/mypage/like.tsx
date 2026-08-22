@@ -2,7 +2,7 @@ import Header from "@/components/common/Header";
 import Spinner from "@/components/common/Spinner";
 import LikeFilter from "@/components/mypage/like/LikeFilter";
 import LikeList from "@/components/mypage/like/LikeList";
-import { useLikePlacesQuery } from "@/hooks/query/useLikePlacesQuery";
+import { useLikePlacesQuery } from "@/hooks/query/place";
 import { useState } from "react";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";

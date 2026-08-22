@@ -1,5 +1,5 @@
 import Spinner from "@/components/common/Spinner";
-import { useFestivalsQuery } from "@/hooks/query/useFestivalsQuery";
+import { useFestivalsQuery } from "@/hooks/query/festival";
 import { router } from "expo-router";
 import { View } from "react-native";
 import SectionTitle from "../SectionTitle";

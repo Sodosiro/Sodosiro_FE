@@ -3,8 +3,8 @@ import PlaceBottomSheet from "@/components/explore/bottomSheet/PlaceBottomSheet"
 import PlaceListBottomSheet from "@/components/explore/bottomSheet/PlaceListBottomSheet";
 import KakaoMap from "@/components/explore/KakaoMap";
 import MapOverlay from "@/components/explore/overlay/MapOverlay";
-import { useLikeMutation } from "@/hooks/mutation/useLikeMutation";
-import { useSearchPlacesQuery } from "@/hooks/query/useSearchPlacesQuery";
+import { useLikePlaceMutation } from "@/hooks/mutation/like";
+import { useSearchPlacesQuery } from "@/hooks/query/place";
 import { useExploreStore } from "@/stores/useExploreStore";
 import { useWebViewStore } from "@/stores/useWebViewStore";
 import type BottomSheet from "@gorhom/bottom-sheet";
@@ -39,7 +39,7 @@ export default function ExploreScreen() {
 
   const { data, isPending: isSearchPending } = useSearchPlacesQuery();
 
-  const { mutate, isPending: isLikePending } = useLikeMutation();
+  const { mutate, isPending: isLikePending } = useLikePlaceMutation();
 
   const handleLike = async (contentId: number) => {
     if (isLikePending) return;

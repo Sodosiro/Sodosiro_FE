@@ -3,16 +3,16 @@ import { invalidateQueries } from "@/util/query/invalidateQueries";
 import { useMutation } from "@tanstack/react-query";
 
 export function useLikeFeedMutation() {
-  const { mutateAsync, isPending } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: (diggingId: number) => postLikeFeedApi(diggingId),
 
     onSuccess: () => {
-      invalidateQueries([["feeds"]]);
+      invalidateQueries([["feeds"], ["myFeeds"]]);
     },
   });
 
   return {
-    mutateAsync,
+    mutate,
     isPending,
   };
 }

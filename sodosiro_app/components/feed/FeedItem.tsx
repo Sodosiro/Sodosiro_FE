@@ -4,7 +4,7 @@ import useSelectedAnimation from "@/hooks/useSelcetedAnimation";
 import { formatTimeAgo } from "@/util/time/time";
 import { formatDate } from "date-fns";
 import { router } from "expo-router";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Image, Pressable, ScrollView, View } from "react-native";
 import CustomText from "../common/CustomText";
 import LikeIcon from "../icon/like/LikeIcon";
@@ -42,7 +42,7 @@ export default function FeedItem({
     fill: ["white", "#F8CF43"],
   });
 
-  const { mutateAsync, isPending } = useLikeFeedMutation();
+  const { mutate, isPending } = useLikeFeedMutation();
 
   const handleLike = async () => {
     if (isPending) return;
@@ -50,9 +50,14 @@ export default function FeedItem({
     const nextIsLiked = !isLiked;
     setIsLiked(!isLiked);
     setLikeCount((prev) => prev + (nextIsLiked ? 1 : -1));
-    const data = await mutateAsync(feed.diggingId);
-    setIsLiked(data?.data.liked);
+    mutate(feed.diggingId);
   };
+
+  useEffect(() => {
+    setIsLiked(feed.isLikedByMe);
+    setIsBookmark(feed.isBookmarkedByMe);
+    setLikeCount(feed.likeCount);
+  }, [feed]);
 
   return (
     <View className={`gap-3 py-4`}>

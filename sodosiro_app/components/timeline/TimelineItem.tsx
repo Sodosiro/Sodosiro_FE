@@ -54,7 +54,7 @@ function TimelineItem({
       >
         <Dropdown
           isExpanded={isExpanded}
-          // onToggle={}
+          onToggle={!isEditing ? () => onToggle(`${place.contentId}`) : undefined}
           disabled={isEditing}
           header={
             <View className="flex-row flex-1 items-center">

@@ -37,7 +37,7 @@ export default function PlaceListBottomSheet({
   const selectedPlaceId = useExploreStore((state) => state.selectedPlaceId);
 
   useEffect(() => {
-    if (searchResult) {
+    if (keyword) {
       bottomSheetRef.current?.snapToIndex(1);
 
       requestAnimationFrame(() => {
@@ -49,7 +49,7 @@ export default function PlaceListBottomSheet({
     } else {
       bottomSheetRef.current?.close();
     }
-  }, [searchResult, keyword]);
+  }, [keyword]);
 
   useEffect(() => {
     if (!selectedPlaceId || !searchResult) return;
@@ -65,7 +65,7 @@ export default function PlaceListBottomSheet({
       animated: true,
       viewPosition: 0,
     });
-  }, [selectedPlaceId, searchResult]);
+  }, [selectedPlaceId, keyword]);
 
   return (
     <BottomSheet

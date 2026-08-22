@@ -6,8 +6,8 @@ import {
   BottomSheetModal,
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
-import { forwardRef } from "react";
-import { Image, Linking, View } from "react-native";
+import { forwardRef, useEffect } from "react";
+import { BackHandler, Image, Linking, View } from "react-native";
 
 interface Props {
   festival: FestivalType | null;
@@ -23,7 +23,6 @@ const FestivalBottomSheetModal = forwardRef<BottomSheetModal, Props>(
         : undefined;
 
     const handleOpenFestivalLink = async () => {
-      console.log(festival?.linkUrl);
       if (!festival?.linkUrl) return;
 
       const supported = await Linking.canOpenURL(festival.linkUrl);
@@ -31,6 +30,23 @@ const FestivalBottomSheetModal = forwardRef<BottomSheetModal, Props>(
         await Linking.openURL(festival.linkUrl);
       }
     };
+
+    useEffect(() => {
+      const subscription = BackHandler.addEventListener(
+        "hardwareBackPress",
+        () => {
+          // 모달이 열려있을 때만 뒤로가기를 가로챔
+          if (festival) {
+            (ref as React.RefObject<BottomSheetModal>)?.current?.dismiss();
+            return true;
+          }
+
+          return false;
+        },
+      );
+
+      return () => subscription.remove();
+    }, [festival, ref]);
 
     return (
       <BottomSheetModal

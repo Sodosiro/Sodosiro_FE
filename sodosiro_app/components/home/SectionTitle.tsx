@@ -11,17 +11,17 @@ type Props = {
 export default function SectionTitle({ title, onPress, isMore = true }: Props) {
   return (
     <View className={`flex-row justify-between items-center`}>
-      <CustomText font="heading2">{title}</CustomText>
-      <Pressable className={`flex-row items-center`} onPress={onPress}>
-        {isMore && (
-          <>
-            <CustomText font="body1" className={`text-text-muted px-px`}>
-              더보기
-            </CustomText>
-            <RightIcon width={20} color={"#888888"} />
-          </>
-        )}
-      </Pressable>
+      <CustomText font="heading2" className={`pr-0.5`}>
+        {title}
+      </CustomText>
+      {isMore && (
+        <Pressable className={`flex-row items-center`} onPress={onPress}>
+          <CustomText font="body1" className={`text-text-muted pr-0.5`}>
+            더보기
+          </CustomText>
+          <RightIcon width={20} color={"#888888"} />
+        </Pressable>
+      )}
     </View>
   );
 }

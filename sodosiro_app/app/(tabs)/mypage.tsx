@@ -3,8 +3,8 @@ import MyHistorySection from "@/components/mypage/section/MyHistorySection";
 import MyVisitedSection from "@/components/mypage/section/MyVisitedSection";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useRef, useState } from "react";
-import { ScrollView } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { ScrollView, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function MyPageScreen() {
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
@@ -19,12 +19,14 @@ export default function MyPageScreen() {
     }, []),
   );
 
+  const insets = useSafeAreaInsets();
+
   return (
-    <SafeAreaView
-      edges={["top"]}
+    <View
       style={{
-        flex: 1,
         backgroundColor: "white",
+        flex: 1,
+        paddingTop: insets.top,
       }}
     >
       <ScrollView
@@ -42,6 +44,6 @@ export default function MyPageScreen() {
         />
         <MyHistorySection />
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }

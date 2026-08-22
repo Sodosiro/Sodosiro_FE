@@ -9,12 +9,15 @@ export default function RecommendReasonSection({
   reasons: string[];
 }) {
   return (
-    <RegionSectionContainer title="이 지역을 추천하는 이유">
+    <RegionSectionContainer title="이런 여행을 좋아한다면 추천해요">
       <View className={`gap-3`}>
-        {reasons.map((reason, index) => (
+        {reasons?.map((reason, index) => (
           <View key={index} className={`flex-row gap-1`}>
             <CheckIcon />
-            <CustomText font="body3" className={`pt-1 text-text-secondary`}>
+            <CustomText
+              font="body3"
+              className={`pt-1 text-text-secondary shrink`}
+            >
               {reason}
             </CustomText>
           </View>

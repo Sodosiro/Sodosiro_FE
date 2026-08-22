@@ -6,14 +6,17 @@ interface ExploreStore {
   selectedCategory: CategoryType;
   allPlaces: PlaceType[] | null;
 
-  selectedPlaceId: number | null;
-  setSelectedPlaceId: (placeId: number | null) => void;
+  isPlacesPending: boolean;
+  setIsPlacesPending: (value: boolean) => void;
 
   setKeyword: (keyword: string) => void;
   setSearchResult: (results: PlaceType[]) => void;
   setSelectedCategory: (category: CategoryType) => void;
   clearSearchResult: () => void;
   setAllPlaces: (places: PlaceType[] | null) => void;
+
+  selectedPlaceId: number | null;
+  setSelectedPlaceId: (placeId: number | null) => void;
 
   updatePlaceLikeOptimistic: (contentIds: number[]) => void;
   updatePlaceLike: (
@@ -32,6 +35,11 @@ export const useExploreStore = create<ExploreStore>((set, get) => ({
   searchResult: null,
   selectedCategory: "all",
   allPlaces: null,
+
+  isPlacesPending: true,
+  setIsPlacesPending(value) {
+    set({ isPlacesPending: value });
+  },
 
   setKeyword: (keyword) => set({ keyword }),
   setSearchResult: (results) => set({ searchResult: results }),

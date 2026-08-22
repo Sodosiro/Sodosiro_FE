@@ -1,20 +1,25 @@
 import CustomText from "@/components/common/CustomText";
 import { getSeasonImage } from "@/util/festival/festival";
 import { formatDate } from "@/util/time/time";
-import { Image, View } from "react-native";
+import { Image, Pressable, View } from "react-native";
 import DdayBadge from "./DdayBadge";
 
 export default function FestivalPrevItem({
   festival,
+  onPress,
 }: {
   festival: FestivalType;
+  onPress?: (linkUrl: string) => Promise<void>;
 }) {
-  const { imageUrl, regionName, title, startDate, endDate } = festival;
+  const { imageUrl, regionName, title, startDate, endDate, linkUrl } = festival;
 
   const imageSource = imageUrl ? { uri: imageUrl } : getSeasonImage(startDate);
 
   return (
-    <View className={`w-39 gap-3`}>
+    <Pressable
+      className={`w-39 gap-3`}
+      onPress={onPress ? () => onPress(linkUrl) : undefined}
+    >
       <View>
         <Image source={imageSource} className={`h-52 aspect-3/4 rounded-xl`} />
         <DdayBadge
@@ -34,6 +39,6 @@ export default function FestivalPrevItem({
           {formatDate(startDate, endDate)}
         </CustomText>
       </View>
-    </View>
+    </Pressable>
   );
 }

@@ -1,4 +1,3 @@
-import { getPlacesApi } from "@/api/place";
 import Spinner from "@/components/common/Spinner";
 import PlaceBottomSheet from "@/components/explore/bottomSheet/PlaceBottomSheet";
 import PlaceListBottomSheet from "@/components/explore/bottomSheet/PlaceListBottomSheet";
@@ -9,7 +8,7 @@ import { useSearchPlacesQuery } from "@/hooks/query/useSearchPlacesQuery";
 import { useExploreStore } from "@/stores/useExploreStore";
 import { useWebViewStore } from "@/stores/useWebViewStore";
 import type BottomSheet from "@gorhom/bottom-sheet";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Dimensions, View } from "react-native";
 import { useSharedValue } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -33,9 +32,10 @@ export default function ExploreScreen() {
     );
   };
 
-  const [isPlacesPending, setisPlacesPending] = useState(true);
+  const isPlacesPending = useExploreStore((state) => state.isPlacesPending);
+  const allPlaces = useExploreStore((state) => state.allPlaces);
 
-  const { setAllPlaces, setSearchResult } = useExploreStore();
+  const { setSearchResult } = useExploreStore();
 
   const { data, isPending: isSearchPending } = useSearchPlacesQuery();
 
@@ -47,21 +47,6 @@ export default function ExploreScreen() {
   };
 
   useEffect(() => {
-    const getPlaces = async () => {
-      const response = await getPlacesApi({ size: 10000 });
-
-      const places = response?.data.items;
-
-      if (places) {
-        setAllPlaces(places);
-      }
-      setisPlacesPending(false);
-    };
-
-    getPlaces();
-  }, []);
-
-  useEffect(() => {
     const places = data?.data.items;
 
     if (places) {
@@ -71,7 +56,7 @@ export default function ExploreScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      {!isPlacesPending && (
+      {!isPlacesPending && allPlaces && (
         <KakaoMap
           webViewRef={webViewRef}
           mode="marker"

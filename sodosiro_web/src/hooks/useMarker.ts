@@ -23,6 +23,7 @@ export function useMarker() {
 
     overlay.setMap(map);
 
+    map.setLevel(6);
     map.setCenter(new kakao.maps.LatLng(place.mapY, place.mapX));
     map.setDraggable(false);
     map.setZoomable(false);

@@ -54,21 +54,26 @@ export default function PlaceItem({
             {place?.overview || place?.title}
           </CustomText>
         </View>
-        {!!place?.reviewCount && (
-          <RateChip rate={place?.avgRating} reviewCount={place?.reviewCount} />
-        )}
-        <CustomText
-          font="body2"
-          className={`text-primary-dark self-start`}
-          onPress={() =>
-            router.push({
-              pathname: "/place/[placeId]",
-              params: { placeId: place?.contentId },
-            })
-          }
-        >
-          상세보기
-        </CustomText>
+        <View className={`flex-row gap-1`}>
+          {!!place?.reviewCount && (
+            <RateChip
+              rate={place?.avgRating}
+              reviewCount={place?.reviewCount}
+            />
+          )}
+          <CustomText
+            font="body2"
+            className={`text-primary-dark self-start`}
+            onPress={() =>
+              router.push({
+                pathname: "/place/[placeId]",
+                params: { placeId: place?.contentId },
+              })
+            }
+          >
+            상세보기
+          </CustomText>
+        </View>
       </View>
       <Pressable onPress={handleLikeToggle} className={`p-2`}>
         <StarIcon animatedFill={fillStyle} width={20} height={20} />

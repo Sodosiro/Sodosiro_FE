@@ -73,12 +73,6 @@ export function usePlaceDetailTab() {
   const handleOnLayout = (event: LayoutChangeEvent, tab: TabType) => {
     const { y, height } = event.nativeEvent.layout;
 
-    console.log(tab, {
-      y,
-      height,
-      end: y + height,
-    });
-
     sectionPositions.current[tab] = {
       start: y,
       end: y + height,

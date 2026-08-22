@@ -19,10 +19,12 @@ export default function HomeScreen() {
 
   return (
     <ScrollView ref={scrollViewRef}>
-      <View className={`flex flex-col gap-8 bg-white pb-8`}>
+      <View className={`flex flex-col gap-6 bg-white pb-8`}>
         <HomeHero />
-        <PopularPlacesSection />
-        <FestivalSection />
+        <View className={`gap-8`}>
+          <PopularPlacesSection />
+          <FestivalSection />
+        </View>
       </View>
     </ScrollView>
   );

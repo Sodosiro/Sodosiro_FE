@@ -1,5 +1,6 @@
 import BottomBar from "@/components/bottombar/BottomBar";
-import { usePlacesQuery } from "@/hooks/query/usePlacesQuery";
+import { usePlacesQuery } from "@/hooks/query/place";
+import { useLocationTracking } from "@/hooks/useLocationTracking";
 import { useExploreStore } from "@/stores/useExploreStore";
 import { Tabs } from "expo-router";
 import { useEffect } from "react";
@@ -21,6 +22,8 @@ export default function TabLayout() {
     }
     setIsPlacesPending(false);
   }, [data]);
+
+  useLocationTracking();
 
   return (
     <>

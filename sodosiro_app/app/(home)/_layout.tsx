@@ -22,6 +22,7 @@ export default function HomeLayout() {
       >
         <Stack.Screen name="festival" />
         <Stack.Screen name="popular" />
+        <Stack.Screen name="notification" />
       </Stack>
     </View>
   );

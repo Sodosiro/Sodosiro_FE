@@ -25,7 +25,5 @@ export async function registerForPushNotificationsAsync() {
 
   const token = await Notifications.getDevicePushTokenAsync();
 
-  console.log("FCM Token:", token.data);
-
   return token.data;
 }

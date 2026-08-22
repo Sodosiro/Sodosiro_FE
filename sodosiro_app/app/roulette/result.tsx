@@ -11,7 +11,7 @@ import RecommendMonthSection from "@/components/region/section/RecommendMonthSec
 import RecommendReasonSection from "@/components/region/section/RecommendReasonSection";
 import RegionInfoSection from "@/components/region/section/RegionInfoSection";
 import TopFoodSection from "@/components/region/section/TopFoodSection";
-import { useRegionIntroductionQuery } from "@/hooks/query/useRegionIntroductionQuery";
+import { useRegionIntroductionQuery } from "@/hooks/query/region";
 import { hasBatchim } from "@/util/word/word";
 import { router } from "expo-router";
 import { useLocalSearchParams } from "expo-router/build/hooks";
@@ -92,7 +92,9 @@ export default function RouletteResultScreen() {
           type="primary"
           size="medium"
           title={`${title}${particle} 일정 짜기`}
-          onPress={() => router.push("/trip/condition")}
+          onPress={() =>
+            router.push({ pathname: "/trip/condition", params: { sigunguId } })
+          }
         />
       </BottomActionBar>
     </SafeAreaView>

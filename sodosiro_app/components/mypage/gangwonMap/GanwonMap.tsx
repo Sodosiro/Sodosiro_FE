@@ -8,10 +8,10 @@ import GangwonMapItem from "./GangwonMapItem";
 import RegionTag from "./RegionTag";
 
 interface GangwonMapProps {
-  visitedRegions: string[];
+  visitedRegionIds: number[];
   width?: number | string;
-  selectedRegion: string | null;
-  setSelectedRegion: Dispatch<SetStateAction<string | null>>;
+  selectedRegionId: number | null;
+  setSelectedRegionId: Dispatch<SetStateAction<number | null>>;
 }
 
 const VISIT_LEGEND = [
@@ -20,10 +20,10 @@ const VISIT_LEGEND = [
 ];
 
 export default function GangwonMap({
-  visitedRegions = [],
+  visitedRegionIds = [],
   width = "100%",
-  selectedRegion,
-  setSelectedRegion,
+  selectedRegionId,
+  setSelectedRegionId,
 }: GangwonMapProps) {
   // 실제 화면에 렌더링된 지도 크기
   const [mapSize, setMapSize] = useState({
@@ -32,13 +32,15 @@ export default function GangwonMap({
   });
 
   // 선택된 지역 데이터
-  const selected = GANGWON_MAP.find((region) => region.id === selectedRegion);
+  const selected = GANGWON_MAP.find(
+    (region) => region.sigunguId === selectedRegionId,
+  );
 
   useFocusEffect(
     useCallback(() => {
       return () => {
         // MyPage 떠날 때
-        setSelectedRegion(null);
+        setSelectedRegionId(null);
       };
     }, []),
   );
@@ -65,14 +67,14 @@ export default function GangwonMap({
           >
             {GANGWON_MAP.map((region) => (
               <GangwonMapItem
-                key={region.id}
-                id={region.id}
+                key={region.sigunguId}
+                id={region.sigunguId}
                 x={region.x}
                 y={region.y}
                 d={region.d}
-                isVisited={visitedRegions.includes(region.id)}
+                isVisited={visitedRegionIds.includes(region.sigunguId)}
                 onPress={() => {
-                  setSelectedRegion(region.id);
+                  setSelectedRegionId(region.sigunguId);
                 }}
               />
             ))}
@@ -81,9 +83,10 @@ export default function GangwonMap({
 
         {selected && mapSize.width > 0 && (
           <RegionTag
-            animateKey={selected.id}
+            animateKey={String(selected.sigunguId)}
             x={selected.x}
             y={selected.y}
+            name={selected.name}
             mapSize={mapSize}
           />
         )}

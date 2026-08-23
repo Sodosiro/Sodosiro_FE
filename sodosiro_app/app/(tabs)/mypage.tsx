@@ -39,8 +39,8 @@ export default function MyPageScreen() {
       >
         <MyInfo />
         <MyVisitedSection
-          selectedRegion={selectedRegion}
-          setSelectedRegion={setSelectedRegion}
+          selectedRegionId={selectedRegion}
+          setSelectedRegionId={setSelectedRegion}
         />
         <MyHistorySection />
       </ScrollView>

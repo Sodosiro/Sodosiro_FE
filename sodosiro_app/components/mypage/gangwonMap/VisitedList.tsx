@@ -1,6 +1,7 @@
 import { PinMiniIcon } from "@/assets/svgs";
 import { AnimatedDownIcon } from "@/components/common/animated/Animated";
 import CustomText from "@/components/common/CustomText";
+import { SODOSI_LIST } from "@/constants/Sodosi";
 import { useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import Animated, {
@@ -10,9 +11,9 @@ import Animated, {
 } from "react-native-reanimated";
 
 export default function VisitedList({
-  visitedRegions,
+  visitedRegionIds,
 }: {
-  visitedRegions: string[];
+  visitedRegionIds: number[];
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -51,7 +52,9 @@ export default function VisitedList({
 
             <CustomText font="body3" className="flex-1">
               방문한 지역{" "}
-              <Text className="text-primary-dark">{visitedRegions.length}</Text>
+              <Text className="text-primary-dark">
+                {visitedRegionIds.length}
+              </Text>
               곳
             </CustomText>
 
@@ -60,26 +63,40 @@ export default function VisitedList({
         </Pressable>
 
         <Animated.View style={animatedHeight}>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{
-              paddingHorizontal: 16,
-              alignItems: "center",
-              gap: 4,
-            }}
-          >
-            {visitedRegions.map((region) => (
-              <View
-                key={region}
-                className="rounded-full border border-primary bg-bg px-3 py-1.5"
+          {visitedRegionIds?.length > 0 ? (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{
+                paddingHorizontal: 16,
+                alignItems: "center",
+                gap: 4,
+              }}
+            >
+              {visitedRegionIds.map((regionId) => (
+                <View
+                  key={regionId}
+                  className="rounded-full border border-primary bg-bg px-3 py-1.5"
+                >
+                  <CustomText font="body3" className="text-primary-dark">
+                    {
+                      SODOSI_LIST.find((item) => item.sigunguId === regionId)
+                        ?.name
+                    }
+                  </CustomText>
+                </View>
+              ))}
+            </ScrollView>
+          ) : (
+            <View className={`flex-1 justify-center`}>
+              <CustomText
+                font="body3"
+                className={`text-text-muted text-center`}
               >
-                <CustomText font="body3" className="text-primary-dark">
-                  {region}
-                </CustomText>
-              </View>
-            ))}
-          </ScrollView>
+                아직 방문한 지역이 없어요.
+              </CustomText>
+            </View>
+          )}
         </Animated.View>
       </View>
     </View>

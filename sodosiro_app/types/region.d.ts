@@ -25,3 +25,9 @@ type RegionType = {
   };
   topFoods: string[];
 };
+
+type VisitedRegionType = {
+  sigunguId: number;
+  sigunguCode: string;
+  name: string;
+};

@@ -5,13 +5,14 @@ type Props = {
   animateKey: string;
   x: number;
   y: number;
+  name: string;
   mapSize: {
     width: number;
     height: number;
   };
 };
 
-export default function RegionTag({ animateKey, x, y, mapSize }: Props) {
+export default function RegionTag({ animateKey, x, y, name, mapSize }: Props) {
   return (
     <Animated.View
       key={animateKey}
@@ -27,7 +28,7 @@ export default function RegionTag({ animateKey, x, y, mapSize }: Props) {
         font="body2 tight"
         className={`text-primary-dark text-center`}
       >
-        {animateKey}
+        {name}
       </CustomText>
     </Animated.View>
   );

@@ -1,4 +1,4 @@
-import { VISITED_REGION } from "@/mocks/region";
+import { useVisitedRegionsQuery } from "@/hooks/query/region";
 import { Dispatch, SetStateAction } from "react";
 import { View } from "react-native";
 import GangwonMap from "../gangwonMap/GanwonMap";
@@ -6,21 +6,29 @@ import VisitedList from "../gangwonMap/VisitedList";
 import MypageSectionContainer from "./MypageSectionContainer";
 
 export default function MyVisitedSection({
-  selectedRegion,
-  setSelectedRegion,
+  selectedRegionId,
+  setSelectedRegionId: setSelectedRegionId,
 }: {
-  selectedRegion: string | null;
-  setSelectedRegion: Dispatch<SetStateAction<string | null>>;
+  selectedRegionId: number | null;
+  setSelectedRegionId: Dispatch<SetStateAction<number | null>>;
 }) {
+  const { data } = useVisitedRegionsQuery("51");
+
+  const visitedRegions = data?.data.visitedSigungus ?? [];
+
+  const visitedRegionIds = visitedRegions.map(
+    (item: { sigunguId: number }) => item.sigunguId,
+  );
+
   return (
     <MypageSectionContainer title="내 강원 탐험 지도">
       <View className={`bg-bg border border-border rounded-xl`}>
         <GangwonMap
-          selectedRegion={selectedRegion}
-          setSelectedRegion={setSelectedRegion}
-          visitedRegions={VISITED_REGION}
+          selectedRegionId={selectedRegionId}
+          setSelectedRegionId={setSelectedRegionId}
+          visitedRegionIds={visitedRegionIds}
         />
-        <VisitedList visitedRegions={VISITED_REGION} />
+        <VisitedList visitedRegionIds={visitedRegionIds} />
       </View>
     </MypageSectionContainer>
   );

@@ -4,7 +4,7 @@ import * as SecureStore from "expo-secure-store";
 
 export const axiosInstance = axios.create({
   baseURL: process.env.EXPO_PUBLIC_SERVER_DOMAIN,
-  timeout: 10000,
+  timeout: 30000,
 });
 
 axiosInstance.interceptors.request.use((config) => {
@@ -41,9 +41,7 @@ axiosInstance.interceptors.response.use(
         const newAccessToken = data.newAccessToken;
         const newRefreshToken = data.refreshToken;
 
-        await useAuthStore
-          .getState()
-          .updateToken(newAccessToken, newRefreshToken);
+        await useAuthStore.getState().updateToken(newAccessToken, newRefreshToken);
 
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 

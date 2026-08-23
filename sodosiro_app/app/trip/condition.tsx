@@ -1,9 +1,18 @@
-import { useState } from "react";
-import { KeyboardAvoidingView, Platform, ScrollView, TextInput, View } from "react-native";
+import { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  ScrollView,
+  TextInput,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import BottomSheet from "@/components/common/BottomSheet";
 import CategoryBadge from "@/components/common/category/CategoryBadge";
+import CustomText from "@/components/common/CustomText";
 import Header from "@/components/common/Header";
 import Subtitle from "@/components/common/Subtitle";
 import BigBusIcon from "@/components/icon/transport/BusIcon";
@@ -14,15 +23,17 @@ import TripConditionFooter from "@/components/tripCondition/TripConditionFooter"
 import LocationPickerButton from "@/components/tripCondition/TripConditionLocationButton";
 import TransportCard from "@/components/tripCondition/TripConditionTransportCard";
 import TripPlacesSection from "@/components/tripCondition/TripPlacesSection";
-import { router, Stack } from "expo-router";
+import { SODOSI_LIST } from "@/constants/Sodosi";
+import { useCourseRecommendationsMutation } from "@/hooks/query/useCourseMutation";
+import axios from "axios";
+import { router, Stack, useLocalSearchParams } from "expo-router";
 
-type TransportType = "car" | "bus" | "";
+type TransportType = "CAR" | "PUBLIC_TRANSPORT" | "";
 type DateRange = {
   startDate: Date | null;
   endDate: Date | null;
 };
 
-// 카테고리 목록 배열
 const CATEGORIES: CategoryType[] = [
   "restaurant",
   "cafe",
@@ -33,7 +44,39 @@ const CATEGORIES: CategoryType[] = [
   "accommodation",
 ];
 
+const TRANSPORT_LIST = [
+  {
+    key: "CAR",
+    icon: CarIcon,
+    title: "자동차",
+    description: "차량 이동 중심",
+  },
+  {
+    key: "PUBLIC_TRANSPORT",
+    icon: BigBusIcon,
+    title: "대중교통",
+    description: "버스 · 도보 중심",
+  },
+] as const;
+
+const CATEGORY_TO_TRAVEL_STYLE: Record<CategoryType, string> = {
+  all: "",
+  restaurant: "RESTAURANT",
+  cafe: "CAFE",
+  shopping: "SHOPPING",
+  attraction: "TOURIST_SPOT",
+  nature: "NATURE",
+  activity: "ACTIVITY",
+  accommodation: "ACCOMMODATION",
+};
+
 export default function TripScreen() {
+  const { sigunguId } = useLocalSearchParams<{
+    sigunguId: string;
+  }>();
+  const SODOSI = SODOSI_LIST.find((sodosi) => String(sodosi.sigunguId) == sigunguId);
+
+  const [tripTitle, setTripTitle] = useState(`${SODOSI?.name} 여행`);
   const [showCalendar, setShowCalendar] = useState(false);
   const [showLocation, setShowLocation] = useState(false);
   const [transport, setTransport] = useState<TransportType>("");
@@ -41,68 +84,127 @@ export default function TripScreen() {
     startDate: null,
     endDate: null,
   });
-  const [selectedPlace, setSelectedPlace] = useState<PopularPlaceType | null>(null);
+  const [selectedPlace, setSelectedPlace] = useState<PlaceType | null>(null);
+  const [aiMessage, setAiMessage] = useState("");
+  const [showErrorText, setShowErrorText] = useState(false);
 
-  const transportList = [
-    {
-      key: "car",
-      icon: CarIcon,
-      title: "자동차",
-      description: "차량 이동 중심",
-    },
-    {
-      key: "bus",
-      icon: BigBusIcon,
-      title: "대중교통",
-      description: "버스 · 도보 중심",
-    },
-  ] as const;
+  // useMutation hook
+  const { mutateAsync: postCourseRecommendations, isPending } = useCourseRecommendationsMutation();
 
-  // 선택된 카테고리 목록 상태 (최대 2개)
-  const [selectedCategories, setSelectedCategories] = useState<CategoryType[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<CategoryType[]>([]);
 
-  // 뱃지 토글 및 2개 제한 처리 함수
   const handleSelectCategory = (category: CategoryType) => {
-    setSelectedCategories((prev) => {
-      // 이미 선택되어 있다면 해제
+    setSelectedCategory((prev) => {
       if (prev.includes(category)) {
         return prev.filter((item) => item !== category);
       }
-
-      // 2개 미만일 때만 추가 (이미 2개가 선택되어 있으면 무시)
       if (prev.length < 2) {
         return [...prev, category];
       }
-
       return prev;
     });
   };
 
-  // 리셋 처리
+  const handleLocationPicker = () => {
+    if (selectedPlace) {
+      setSelectedPlace(null);
+    } else {
+      setShowLocation(true);
+    }
+  };
+
   const handleReset = () => {
-    console.log("조건 초기화");
-    // setTransport('car');
-    // setSelectedCategories([]);
-    // ... 상태 초기화 로직
+    setTripTitle(`${SODOSI?.name} 여행`);
+    setShowCalendar(false);
+    setShowLocation(false);
+    setTransport("");
+    setDateRange({
+      startDate: null,
+      endDate: null,
+    });
+    setSelectedPlace(null);
+    setAiMessage("");
+    setShowErrorText(false);
   };
 
-  // 일정 짜기 제출 처리
-  const handleSubmit = () => {
-    router.push("/trip/timeline");
+  const handleSubmit = async () => {
+    if (!SODOSI?.sigunguCode || !dateRange.startDate) return;
+
+    const requestBody = {
+      title: tripTitle,
+      sigunguCode: SODOSI?.sigunguCode,
+      transportMode: transport,
+      startDate: formatDate(dateRange.startDate),
+      endDate: formatDate(dateRange.endDate ?? dateRange.startDate),
+      travelStyles: selectedCategory.map((category) => CATEGORY_TO_TRAVEL_STYLE[category]),
+      ...(selectedPlace?.contentId && { mustVisitContentId: selectedPlace.contentId }),
+      ...(aiMessage && { aiMessage }),
+    };
+
+    try {
+      const response = await postCourseRecommendations(requestBody);
+      console.log("추천 코스 생성 성공:", response);
+
+      router.push("/trip/timeline");
+    } catch (error) {
+      console.error("추천 코스 생성 실패:", error);
+      if (axios.isAxiosError(error)) {
+        console.log("status:", error.response?.status);
+        console.log("data:", error.response?.data);
+      }
+    }
   };
 
-  // 장소 선택
-  const handleSelectPlace = (place: PopularPlaceType) => {
+  const handleDisabled = () => {
+    if (!dateRange.startDate || !transport || selectedCategory.length === 0) {
+      return true;
+    }
+    if (checkIsRestDayConflict()) {
+      return true;
+    }
+    return false;
+  };
+
+  const handleSelectPlace = (place: PlaceType) => {
     setSelectedPlace(place);
-
-    // BottomSheet 닫기
     setShowLocation(false);
   };
+
+  function formatDate(date: Date | null): string {
+    if (!date) return "";
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
+  function getDayName(date: Date | null): string {
+    if (!date) return "";
+    const days = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
+    return days[date.getDay()];
+  }
+
+  const checkIsRestDayConflict = () => {
+    if (!dateRange.startDate || dateRange.endDate || !selectedPlace?.restdate) {
+      return false;
+    }
+    const restdate = selectedPlace.restdate;
+    if (restdate === "데이터 미제공" || restdate === "연중무휴") {
+      return false;
+    }
+    const selectedDayName = getDayName(dateRange.startDate);
+    return restdate.includes(selectedDayName);
+  };
+
+  useEffect(() => {
+    const isConflict = checkIsRestDayConflict();
+    setShowErrorText(isConflict);
+  }, [dateRange, selectedPlace]);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }} edges={["top", "bottom"]}>
       <Stack.Screen options={{ headerShown: false }} />
-      <Header title="여행 조건 설정" />
+      <Header title={tripTitle} showPencil onTitleChange={(newTitle) => setTripTitle(newTitle)} />
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -114,7 +216,14 @@ export default function TripScreen() {
         >
           <View className="px-5 pt-3 gap-8">
             <View className="gap-3">
-              <Subtitle title="여행 일정" />
+              <View className="flex-row gap-1">
+                <View className="pt-1">
+                  <CustomText font="body3" style={{ color: "#F04452" }}>
+                    *
+                  </CustomText>
+                </View>
+                <Subtitle title="여행 날짜를 선택해주세요" />
+              </View>
               <TripConditionDatePickerButton
                 dateRange={dateRange}
                 onPress={() => {
@@ -140,10 +249,18 @@ export default function TripScreen() {
                 </BottomSheet>
               )}
             </View>
+
             <View className="gap-3">
-              <Subtitle title="이동 수단 선택" />
+              <View className="flex-row gap-1">
+                <View className="pt-1">
+                  <CustomText font="body3" style={{ color: "#F04452" }}>
+                    *
+                  </CustomText>
+                </View>
+                <Subtitle title="어떻게 이동하세요?" />
+              </View>
               <View className="flex-row gap-3">
-                {transportList.map((item) => (
+                {TRANSPORT_LIST.map((item) => (
                   <TransportCard
                     key={item.key}
                     icon={item.icon}
@@ -155,63 +272,112 @@ export default function TripScreen() {
                 ))}
               </View>
             </View>
+
             <View className="gap-3">
-              <Subtitle title="선호하는 관광지가 있나요?" description="최대 2개 선택" />
+              <View className="flex-row gap-1">
+                <View className="pt-1">
+                  <CustomText font="body3" style={{ color: "#F04452" }}>
+                    *
+                  </CustomText>
+                </View>
+                <Subtitle title="선호하는 관광지가 있나요?" description="최대 2개 선택" />
+              </View>
               <View className="flex-row flex-wrap gap-2.5">
                 {CATEGORIES.filter(
                   (category) => !(category == "accommodation" || category == "restaurant"),
                 ).map((category) => {
-                  const isSelected = selectedCategories.includes(category);
-
+                  const isSelected = selectedCategory.includes(category);
                   return (
                     <CategoryBadge
                       key={category}
                       category={category}
                       isSelected={isSelected}
-                      disabled={selectedCategories.length >= 2 && !isSelected}
+                      disabled={selectedCategory.length >= 2 && !isSelected}
                       onPress={async () => handleSelectCategory(category)}
                     />
                   );
                 })}
               </View>
             </View>
+
             <View className="gap-3">
-              <Subtitle title="꼭 가고 싶은 곳이 있으신가요?" description="선택사항" />
+              <Subtitle title="꼭 가고 싶은 곳이 있으신가요?" />
               <View className="flex-row gap-3">
                 <LocationPickerButton
                   locationName={selectedPlace?.title}
-                  onPress={() => setShowLocation(true)}
+                  onPress={handleLocationPicker}
+                  actionText={(selectedPlace && "삭제하기") || undefined}
                 />
+
                 {showLocation && (
-                  <BottomSheet visible={showLocation} onClose={() => setShowLocation(false)}>
+                  <BottomSheet
+                    visible={showLocation}
+                    onClose={() => setShowLocation(false)}
+                    minHeight={520}
+                  >
                     <TripPlacesSection onSelectPlace={handleSelectPlace} />
-                    <View className="pt-5"></View>
+                    <View className="pt-5" />
                   </BottomSheet>
                 )}
               </View>
+              {showErrorText && (
+                <CustomText font="body3" style={{ color: "#F04452" }}>
+                  여행 일정과 해당 장소의 휴무일이 겹쳐요.
+                </CustomText>
+              )}
             </View>
+
             <View className="gap-3">
-              <Subtitle title="AI가 참고할 내용을 입력해주세요" description="선택사항" />
+              <Subtitle title="AI가 참고할 내용을 입력해주세요" />
               <View className="flex-row gap-3">
                 <TextInput
                   multiline
+                  value={aiMessage}
+                  onChangeText={setAiMessage}
                   placeholder="내용을 입력하세요."
                   placeholderTextColor="#999999"
                   textAlignVertical="top"
                   className="min-h-[94px] flex-1 rounded-[12px] border border-[#D9D9D9] bg-white p-3 text-base text-[#1A1A1A]"
+                  maxLength={20}
                 />
               </View>
+              <CustomText font="body3" className="text-text-muted text-right">
+                {aiMessage.length}/20
+              </CustomText>
             </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-      <TripConditionFooter onReset={handleReset} onSubmit={handleSubmit} />
+
+      <TripConditionFooter
+        onReset={handleReset}
+        onSubmit={handleSubmit}
+        disabled={handleDisabled}
+      />
+
+      {/* 로딩 딤(Dim) 레이어 Modal */}
+      <Modal transparent visible={isPending} animationType="fade">
+        <View
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 9999,
+          }}
+        >
+          <ActivityIndicator size="large" color="white" />
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
 
 function parseDate(dateString: string): Date {
   const [year, month, day] = dateString.split("-").map(Number);
-
   return new Date(year, month - 1, day);
 }

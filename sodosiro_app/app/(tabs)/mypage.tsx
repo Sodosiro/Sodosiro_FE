@@ -1,24 +1,13 @@
 import MyInfo from "@/components/mypage/MyInfo";
 import MyHistorySection from "@/components/mypage/section/MyHistorySection";
 import MyVisitedSection from "@/components/mypage/section/MyVisitedSection";
-import { useFocusEffect } from "expo-router";
-import { useCallback, useRef, useState } from "react";
+import SettingSection from "@/components/mypage/section/SettingSection";
+import { useState } from "react";
 import { ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function MyPageScreen() {
-  const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
-  const scrollViewRef = useRef<ScrollView>(null);
-
-  useFocusEffect(
-    useCallback(() => {
-      scrollViewRef.current?.scrollTo({
-        y: 0,
-        animated: false,
-      });
-    }, []),
-  );
-
+  const [selectedRegionId, setSelectedRegionId] = useState<number | null>(null);
   const insets = useSafeAreaInsets();
 
   return (
@@ -30,8 +19,7 @@ export default function MyPageScreen() {
       }}
     >
       <ScrollView
-        ref={scrollViewRef}
-        onTouchStart={() => setSelectedRegion(null)}
+        onTouchStart={() => setSelectedRegionId(null)}
         contentContainerStyle={{
           gap: 32,
           paddingBottom: 32,
@@ -39,10 +27,11 @@ export default function MyPageScreen() {
       >
         <MyInfo />
         <MyVisitedSection
-          selectedRegionId={selectedRegion}
-          setSelectedRegionId={setSelectedRegion}
+          selectedRegionId={selectedRegionId}
+          setSelectedRegionId={setSelectedRegionId}
         />
         <MyHistorySection />
+        <SettingSection />
       </ScrollView>
     </View>
   );

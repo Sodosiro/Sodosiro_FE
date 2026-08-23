@@ -2,7 +2,7 @@ import { CheckOffIcon, CheckOnIcon } from "@/assets/svgs";
 import CustomText from "@/components/common/CustomText";
 import DeleteModal from "@/components/common/modal/DeleteModal";
 import PlaceMini from "@/components/place/PlaceMini";
-import { useLikePlaceMutation } from "@/hooks/mutation/like";
+import { useLikePlaceMutation } from "@/hooks/mutation/place";
 import { invalidateQueries } from "@/util/query/invalidateQueries";
 import { useState } from "react";
 import { FlatList, Pressable, View } from "react-native";

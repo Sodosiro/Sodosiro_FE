@@ -67,7 +67,7 @@ export async function patchFeedApi(
   images.forEach((image, index) => {
     formData.append("images", {
       uri: image.uri,
-      name: image.fileName ?? `review-${index}.jpg`,
+      name: image.fileName ?? `feed-${index}.jpg`,
       type: image.mimeType ?? "image/jpeg",
     } as any);
   });

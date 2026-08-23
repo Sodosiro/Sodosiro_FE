@@ -1,5 +1,6 @@
 import { PinMiniIcon } from "@/assets/svgs";
 import { useLikeFeedMutation } from "@/hooks/mutation/feed";
+import { useLikePlaceMutation } from "@/hooks/mutation/place";
 import useSelectedAnimation from "@/hooks/useSelcetedAnimation";
 import { formatTimeAgo } from "@/util/time/time";
 import { formatDate } from "date-fns";
@@ -7,6 +8,7 @@ import { router } from "expo-router";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Image, Pressable, ScrollView, View } from "react-native";
 import CustomText from "../common/CustomText";
+import VerifiedTag from "../common/tag/VerifiedTag";
 import LikeIcon from "../icon/like/LikeIcon";
 import StarIcon from "../icon/like/StarIcon";
 import ImageCardGrid from "./ImageCardGrid";
@@ -31,32 +33,46 @@ export default function FeedItem({
     ? { uri: profileImageUrl }
     : require("@/assets/images/profile_default.png");
 
-  const [isLiked, setIsLiked] = useState(feed?.isLikedByMe);
-  const [likeCount, setLikeCount] = useState(feed?.likeCount);
-  const [isBookmark, setIsBookmark] = useState(feed?.isBookmarkedByMe);
+  const [isFeedLiked, setIsFeedLiked] = useState(feed?.isLikedByMe);
+  const [feedLikeCount, setFeedLikeCount] = useState(feed?.likeCount);
+  const [isPlaceLiked, setIsPlaceLiked] = useState(feed?.isSpotLikedByMe);
+  const [placeLikeCount, setPlaceLikeCount] = useState(feed?.spot.likeCount);
 
-  const { fillStyle: likeFillStyle } = useSelectedAnimation(isLiked, {
+  const { fillStyle: likeFillStyle } = useSelectedAnimation(isFeedLiked, {
     fill: ["white", "#C4D96A"],
   });
-  const { fillStyle: starFillStyle } = useSelectedAnimation(isBookmark, {
+  const { fillStyle: starFillStyle } = useSelectedAnimation(isPlaceLiked, {
     fill: ["white", "#F8CF43"],
   });
 
-  const { mutate, isPending } = useLikeFeedMutation();
+  const { mutate: feedMutate, isPending: isFeedLikePending } =
+    useLikeFeedMutation();
+  const { mutate: placeMutate, isPending: isPlaceLikePending } =
+    useLikePlaceMutation();
 
-  const handleLike = async () => {
-    if (isPending) return;
+  const handleFeedLike = async () => {
+    if (isFeedLikePending) return;
 
-    const nextIsLiked = !isLiked;
-    setIsLiked(!isLiked);
-    setLikeCount((prev) => prev + (nextIsLiked ? 1 : -1));
-    mutate(feed.diggingId);
+    const nextIsLiked = !isFeedLiked;
+    setIsFeedLiked(!isFeedLiked);
+    setFeedLikeCount((prev) => prev + (nextIsLiked ? 1 : -1));
+    feedMutate(feed.diggingId);
+  };
+
+  const handlePlaceLike = async () => {
+    if (isPlaceLikePending) return;
+
+    const nextIsLiked = !isPlaceLiked;
+    setIsPlaceLiked(!isPlaceLiked);
+    setPlaceLikeCount((prev) => prev + (nextIsLiked ? 1 : -1));
+    placeMutate([feed.spot.contentId]);
   };
 
   useEffect(() => {
-    setIsLiked(feed.isLikedByMe);
-    setIsBookmark(feed.isBookmarkedByMe);
-    setLikeCount(feed.likeCount);
+    setIsFeedLiked(feed.isLikedByMe);
+    setIsPlaceLiked(feed.isSpotLikedByMe);
+    setFeedLikeCount(feed.likeCount);
+    setPlaceLikeCount(feed.spot.likeCount);
   }, [feed]);
 
   return (
@@ -68,6 +84,7 @@ export default function FeedItem({
             <CustomText font="title" className={`shrink`}>
               {feed.spot.title}
             </CustomText>
+            {feed.isGpsVerified && <VerifiedTag text="방문 인증" />}
           </View>
           <View className={`flex-row gap-3.5 items-center`}>
             <CustomText
@@ -116,6 +133,7 @@ export default function FeedItem({
               <CustomText font="body3" className={`text-text-muted`}>
                 {feed.spot.title}
               </CustomText>
+              {feed.isGpsVerified && <VerifiedTag text="방문 인증" />}
             </View>
           </View>
         </View>
@@ -133,16 +151,16 @@ export default function FeedItem({
 
       <View className={`flex-row gap-3`}>
         <View className={`flex-row gap-1 items-center`}>
-          <Pressable onPress={handleLike} hitSlop={20}>
+          <Pressable onPress={handleFeedLike} hitSlop={20}>
             <LikeIcon animatedFill={likeFillStyle} />
           </Pressable>
-          <CustomText font="body1">좋아요 {likeCount}</CustomText>
+          <CustomText font="body1">좋아요 {feedLikeCount}</CustomText>
         </View>
         <View className={`flex-row gap-1 items-center`}>
-          <Pressable onPress={() => setIsBookmark(!isBookmark)} hitSlop={20}>
+          <Pressable onPress={handlePlaceLike} hitSlop={20}>
             <StarIcon animatedFill={starFillStyle} />
           </Pressable>
-          <CustomText font="body1">장소 저장 {feed.bookmarkCount}</CustomText>
+          <CustomText font="body1">장소 저장 {placeLikeCount}</CustomText>
         </View>
       </View>
 

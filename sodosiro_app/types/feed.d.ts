@@ -10,6 +10,7 @@ type FeedType = {
     contentId: number;
     title: string;
     firstImage: string;
+    likeCount: number;
   };
   body: string;
   images: {
@@ -17,9 +18,9 @@ type FeedType = {
     order: number;
   }[];
   likeCount: number;
-  bookmarkCount: number;
   isLikedByMe: boolean;
-  isBookmarkedByMe: boolean;
+  isSpotLikedByMe: boolean;
+  isGpsVerified: boolean;
   createdAt: Date;
 };
 

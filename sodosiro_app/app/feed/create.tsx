@@ -9,7 +9,7 @@ import { useCoursePlacesQuery, useCoursesQuery } from "@/hooks/query/course";
 import { invalidateQueries } from "@/util/query/invalidateQueries";
 import axios from "axios";
 import * as ImagePicker from "expo-image-picker";
-import { useRouter } from "expo-router";
+import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { BackHandler, useWindowDimensions, View } from "react-native";
 import Animated, {
@@ -22,7 +22,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 const STEP_COUNT = 3;
 
 export default function CreateFeedScreen() {
-  const router = useRouter();
   const { width } = useWindowDimensions();
 
   const [step, setStep] = useState(0);
@@ -36,7 +35,7 @@ export default function CreateFeedScreen() {
     ImagePicker.ImagePickerAsset[]
   >([]);
   const [isPicking, setIsPicking] = useState(false);
-  const [isPending, setIsPending] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const translateX = useSharedValue(0);
 
@@ -48,10 +47,12 @@ export default function CreateFeedScreen() {
     ],
   }));
 
-  const { data: coursesData } = useCoursesQuery("FINISHED");
+  const { data: coursesData, isPending: isCoursesPending } =
+    useCoursesQuery("FINISHED");
   const courses = coursesData?.data.courses;
 
-  const { data: coursePlacesData } = useCoursePlacesQuery(selectedCourseId);
+  const { data: coursePlacesData, isPending: isPlacesPending } =
+    useCoursePlacesQuery(selectedCourseId);
   const places = coursePlacesData?.data.spots;
 
   const moveToStep = (nextStep: number) => {
@@ -91,7 +92,7 @@ export default function CreateFeedScreen() {
   const handleSubmit = async () => {
     if (
       text.trim() === "" ||
-      isPending ||
+      isSubmitting ||
       isPicking ||
       imageSources?.length === 0 ||
       !selectedPlace
@@ -99,7 +100,7 @@ export default function CreateFeedScreen() {
       return;
     }
     try {
-      setIsPending(true);
+      setIsSubmitting(true);
 
       await postFeedApi(
         Number(selectedCourseId),
@@ -118,7 +119,7 @@ export default function CreateFeedScreen() {
       }
       console.error("[postReviewApi] 피드 작성 실패:", error);
     } finally {
-      setIsPending(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -126,7 +127,7 @@ export default function CreateFeedScreen() {
     const subscription = BackHandler.addEventListener(
       "hardwareBackPress",
       () => {
-        if (isPending) return true;
+        if (isSubmitting) return true;
         if (step > 0) {
           handleBack();
           return true;
@@ -137,7 +138,7 @@ export default function CreateFeedScreen() {
     return () => {
       subscription.remove();
     };
-  }, [step, width, isPending]);
+  }, [step, width, isSubmitting]);
 
   const isNextDisabled =
     step === 0
@@ -191,6 +192,7 @@ export default function CreateFeedScreen() {
                   courses={courses}
                   selectedCourseId={selectedCourseId}
                   setSelectedCourseId={setSelectedCourseId}
+                  isPending={isCoursesPending}
                 />
               </View>
 
@@ -200,6 +202,7 @@ export default function CreateFeedScreen() {
                   places={places}
                   selectedPlace={selectedPlace}
                   setSelectedPlace={setSelectedPlace}
+                  isPending={isPlacesPending}
                 />
               </View>
 
@@ -212,7 +215,7 @@ export default function CreateFeedScreen() {
                   images={imageSources}
                   setImages={setImageSources}
                   isPicking={isPicking}
-                  isPending={isPending}
+                  isPending={isSubmitting}
                   setIsPicking={setIsPicking}
                 />
               </View>
@@ -224,7 +227,7 @@ export default function CreateFeedScreen() {
               type="primary"
               title={step === STEP_COUNT - 1 ? "올리기" : "다음으로"}
               disabled={isNextDisabled}
-              loading={isPending}
+              loading={isSubmitting}
               onPress={handleNext}
             />
           </View>

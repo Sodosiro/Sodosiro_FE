@@ -10,20 +10,14 @@ export default function MyInfo() {
 
   return (
     <View>
-      <View className={`relative w-full aspect-3/2`}>
+      <View className="relative w-full">
         <Image
-          className={`absolute w-full h-full`}
+          className="absolute w-full h-full"
           resizeMode="cover"
           source={require("@/assets/images/mypage_bg.png")}
         />
 
-        <View
-          className={`flex-1 justify-between`}
-          style={{
-            flex: 1,
-            justifyContent: "space-between",
-          }}
-        >
+        <View className="justify-between">
           <LinearGradient
             colors={["#FFFFFF", "rgba(255,255,255,0)"]}
             start={{ x: 0, y: 0 }}
@@ -35,12 +29,13 @@ export default function MyInfo() {
             }}
           />
 
-          <View className={`absolute top-0 left-5 h-16 justify-center`}>
+          <View className="absolute top-0 left-5 h-16 justify-center">
             <CustomText font="heading1">내 정보</CustomText>
           </View>
-          <View className={`px-5 py-5 gap-3`}>
+
+          <View className="px-5 py-5 gap-3">
             <Image
-              className={`w-15 h-15 rounded-full`}
+              className="w-15 h-15 rounded-full"
               resizeMode="cover"
               source={
                 user?.profileImage
@@ -53,18 +48,18 @@ export default function MyInfo() {
                   : require("@/assets/images/profile_default.png")
               }
             />
-            <View className={`gap-2`}>
-              <View className={`gap-1`}>
+            <View className="gap-2">
+              <View className="gap-1">
                 <CustomText font="heading2">{user?.nickName}</CustomText>
-                <CustomText font="body3" className={`text-text-secondary`}>
+                <CustomText font="body3" className="text-text-secondary">
                   {user?.introduction}
                 </CustomText>
               </View>
               <Pressable
-                className={`flex-row items-center self-start`}
+                className="flex-row items-center self-start"
                 onPress={() => router.push("/mypage/edit")}
               >
-                <CustomText font="body2" className={`text-text-muted`}>
+                <CustomText font="body2" className="text-text-muted">
                   프로필 편집
                 </CustomText>
                 <RightIcon width={16} height={16} color={"#888888"} />

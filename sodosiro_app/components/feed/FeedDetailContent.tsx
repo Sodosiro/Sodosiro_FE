@@ -41,7 +41,7 @@ export default function FeedDetailContent({
   };
 
   return (
-    <View className={`w-screen pb-20 flex-1`}>
+    <View className={`w-screen pb-20`}>
       <View className={`gap-3`}>
         <Animated.Image
           source={{ uri: currentImageUrl }}
@@ -66,7 +66,7 @@ export default function FeedDetailContent({
         </ScrollView>
       </View>
 
-      <View className={`px-5 flex-1 pb-10`}>
+      <View className={`px-5 pb-10 flex-1`}>
         <FeedItem feed={feed} withoutPhoto />
       </View>
     </View>

@@ -51,7 +51,7 @@ export default function CreateFeedPhotoSection({
   };
 
   const handleRemoveImage = (index: number) => {
-    if (isPicking) {
+    if (isPicking || isPending) {
       return;
     }
 

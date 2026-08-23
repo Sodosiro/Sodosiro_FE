@@ -4,8 +4,6 @@ import RateChip from "@/components/place/RateChip";
 import Tag from "@/components/place/Tag";
 import { View } from "react-native";
 
-const ANIMATION_DURATION = 300;
-
 export default function PlaceInfo({
   category,
   title,

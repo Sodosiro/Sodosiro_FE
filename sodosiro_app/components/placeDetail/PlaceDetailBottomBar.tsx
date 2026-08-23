@@ -1,5 +1,5 @@
 import { PinIcon } from "@/assets/svgs";
-import { useLikePlaceMutation } from "@/hooks/mutation/like";
+import { useLikePlaceMutation } from "@/hooks/mutation/place";
 import useSelectedAnimation from "@/hooks/useSelcetedAnimation";
 import { useEffect, useState } from "react";
 import { Linking, View } from "react-native";

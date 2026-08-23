@@ -67,6 +67,7 @@ export default function ProfileEditScreen() {
             text={nickNameTemp}
             setText={setNickNameTemp}
             placeholder={user?.nickName || "닉네임을 정해보세요"}
+            maxLength={10}
           />
           <EditText
             title={"한 줄 소개"}
@@ -75,6 +76,7 @@ export default function ProfileEditScreen() {
             placeholder={
               user?.introduction || "강원도의 숨은 소도시를 탐험 중이에요!"
             }
+            maxLength={20}
           />
         </View>
       </ScrollView>

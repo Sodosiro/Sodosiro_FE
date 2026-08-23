@@ -35,7 +35,7 @@ export default function TripHistoryPlaceItem({
 
   return (
     <AnimatedPressable
-      className={`flex-row rounded-xl gap-4 border p-2 items-center justify-between`}
+      className={`flex-row rounded-xl gap-4 border p-2 pr-4 items-center justify-between`}
       style={[containerStyle, borderStyle]}
       onPress={setSelectedPlace ? () => setSelectedPlace(place) : undefined}
     >

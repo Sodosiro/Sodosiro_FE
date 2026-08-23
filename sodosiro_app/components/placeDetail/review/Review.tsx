@@ -1,7 +1,7 @@
 import { StarIcon } from "@/assets/svgs";
 import CustomText from "@/components/common/CustomText";
 import { Image, Pressable, ScrollView, View } from "react-native";
-import VerifiedTag from "./VerifiedTag";
+import VerifiedTag from "../../common/tag/VerifiedTag";
 
 export default function Review({
   review,
@@ -40,7 +40,7 @@ export default function Review({
               {review?.author.displayName}
             </CustomText>
           )}
-          {review?.gpsVerified && <VerifiedTag />}
+          {review?.gpsVerified && <VerifiedTag text="인증 리뷰" />}
         </View>
         {!isMyReview && (
           <CustomText font="body3" className={`text-text-muted`}>

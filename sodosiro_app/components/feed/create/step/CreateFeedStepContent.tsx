@@ -56,7 +56,7 @@ export default function CreateFeedStepContent({
         <CreateFeedTextSection
           text={text}
           setText={setText}
-          isPending={isPending}
+          editable={isPending}
         />
       </ScrollView>
     </KeyboardAvoidingView>

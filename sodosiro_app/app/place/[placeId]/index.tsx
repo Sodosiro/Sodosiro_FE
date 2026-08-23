@@ -89,7 +89,7 @@ export default function PlaceDetailScreen() {
         <CustomCarousel
           images={
             images?.length > 0
-              ? images
+              ? images.slice(0, 10)
               : firstImage || require("@/assets/images/no_image.png")
           }
         />

@@ -7,13 +7,12 @@ import { useFeedQuery } from "@/hooks/query/feed";
 import { invalidateQueries } from "@/util/query/invalidateQueries";
 import axios from "axios";
 import * as ImagePicker from "expo-image-picker";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ModifyFeedScreen() {
-  const router = useRouter();
   const [place, setPlace] = useState<TripSpotType | null>(null);
   const [text, setText] = useState("");
   const [imageSources, setImageSources] = useState<
@@ -25,9 +24,13 @@ export default function ModifyFeedScreen() {
     feedId: string;
   }>();
 
-  const { data, isPending } = useFeedQuery(Number(feedId));
+  const { data: feedData, isPending: isFeedPending } = useFeedQuery(
+    Number(feedId),
+  );
 
-  const { body, images } = data?.data ?? {};
+  const { body, images } = feedData?.data ?? {};
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isImagesUnchanged =
     imageSources.length === (images?.length ?? 0) &&
@@ -36,9 +39,9 @@ export default function ModifyFeedScreen() {
     );
 
   useEffect(() => {
-    if (!data?.data) return;
+    if (!feedData?.data) return;
 
-    const feed = data.data;
+    const feed = feedData.data;
     setText(feed.body);
     setPlace({
       contentId: feed.spot.contentId,
@@ -55,12 +58,12 @@ export default function ModifyFeedScreen() {
         type: "image",
       })),
     );
-  }, [data]);
+  }, [feedData]);
 
   const handleSubmit = async () => {
     if (
       text.trim() === "" ||
-      isPending ||
+      isFeedPending ||
       isPicking ||
       imageSources?.length === 0 ||
       !place
@@ -68,6 +71,7 @@ export default function ModifyFeedScreen() {
       return;
     }
     try {
+      setIsSubmitting(true);
       const keepImageUrls = imageSources
         .filter((image) =>
           images?.some(
@@ -89,13 +93,15 @@ export default function ModifyFeedScreen() {
 
       await invalidateQueries([["feeds"], ["feed"]]);
 
-      router.push("/mypage/feed");
+      router.back();
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.log("status:", error.response?.status);
         console.log("data:", error.response?.data);
       }
       console.error("[postReviewApi] 피드 수정 실패:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -108,7 +114,7 @@ export default function ModifyFeedScreen() {
     >
       <Header title="피드 수정하기" />
 
-      {isPending ? (
+      {isFeedPending ? (
         <View className={`flex-1 justify-center items-center`}>
           <Spinner />
         </View>
@@ -120,7 +126,7 @@ export default function ModifyFeedScreen() {
           images={imageSources}
           setImages={setImageSources}
           isPicking={isPicking}
-          isPending={isPending}
+          isPending={isFeedPending || isSubmitting}
           setIsPicking={setIsPicking}
         />
       )}
@@ -129,9 +135,11 @@ export default function ModifyFeedScreen() {
           type="primary"
           title={"수정하기"}
           disabled={
-            (body === text && isImagesUnchanged) || imageSources?.length === 0
+            (body === text && isImagesUnchanged) ||
+            imageSources?.length === 0 ||
+            isPicking
           }
-          loading={isPending}
+          loading={isSubmitting}
           onPress={handleSubmit}
         />
       </View>

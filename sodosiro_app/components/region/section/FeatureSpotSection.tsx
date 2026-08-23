@@ -11,6 +11,8 @@ export default function FeatureSpotSection({
     contentId: number;
     imageUrl: string;
     title: string;
+    overview: string;
+    category: CategoryNumber;
   }[];
 }) {
   return (
@@ -22,8 +24,8 @@ export default function FeatureSpotSection({
             id={featureSpot.contentId}
             imageUrl={featureSpot.imageUrl}
             title={featureSpot.title}
-            desc={featureSpot.title}
-            category={1}
+            desc={featureSpot.overview}
+            category={featureSpot.category}
           />
         ))}
       </View>

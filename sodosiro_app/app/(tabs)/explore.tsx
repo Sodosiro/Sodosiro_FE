@@ -3,7 +3,7 @@ import PlaceBottomSheet from "@/components/explore/bottomSheet/PlaceBottomSheet"
 import PlaceListBottomSheet from "@/components/explore/bottomSheet/PlaceListBottomSheet";
 import KakaoMap from "@/components/explore/KakaoMap";
 import MapOverlay from "@/components/explore/overlay/MapOverlay";
-import { useLikePlaceMutation } from "@/hooks/mutation/like";
+import { useLikePlaceMutation } from "@/hooks/mutation/place";
 import { useSearchPlacesQuery } from "@/hooks/query/place";
 import { useExploreStore } from "@/stores/useExploreStore";
 import { useWebViewStore } from "@/stores/useWebViewStore";

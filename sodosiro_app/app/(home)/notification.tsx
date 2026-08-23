@@ -1,7 +1,4 @@
-import {
-  patchAllNotificationsRead,
-  patchNotificationRead,
-} from "@/api/notification";
+import { patchAllNotificationsRead } from "@/api/notification";
 import CustomText from "@/components/common/CustomText";
 import Header from "@/components/common/Header";
 import Spinner from "@/components/common/Spinner";
@@ -10,7 +7,6 @@ import NotificationItem from "@/components/home/notification/NotificationItem";
 import { useNotificationsQuery } from "@/hooks/query/notification";
 import { getNotificationPressHandler } from "@/util/notification/notification";
 import { invalidateQueries } from "@/util/query/invalidateQueries";
-import { router } from "expo-router";
 import { FlatList, View } from "react-native";
 
 export default function NotificationScreen() {
@@ -84,21 +80,6 @@ export default function NotificationScreen() {
               item.type,
               item.payload,
             );
-
-            async () => {
-              if (item.type === "DIGGING_POST_LIKE") {
-                router.push({
-                  pathname: "/feed/feedDetail",
-                  params: {
-                    feedId: String(item.payload?.diggingId),
-                  },
-                });
-                await patchNotificationRead(item.id);
-                invalidateQueries([["notifications"]]);
-              } else if (item.type === "NEARBY_LIKED_SPOTS") {
-              } else {
-              }
-            };
 
             return (
               <View>

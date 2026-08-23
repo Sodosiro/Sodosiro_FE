@@ -1,3 +1,4 @@
+import { postUpdateLocation } from "@/api/location";
 import * as Location from "expo-location";
 import * as TaskManager from "expo-task-manager";
 
@@ -24,6 +25,12 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
   console.log("현재 위치:", latitude, longitude);
 
   try {
+    postUpdateLocation({
+      latitude,
+      longitude,
+      accuracy: 100,
+      occurredAt: new Date(),
+    });
     // 서버 API 호출
   } catch (error) {
     console.error("위치 전송 실패:", error);

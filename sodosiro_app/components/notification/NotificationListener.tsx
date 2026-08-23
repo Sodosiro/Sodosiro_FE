@@ -1,7 +1,6 @@
-import { patchNotificationRead } from "@/api/notification";
+import { getNotificationPressHandler } from "@/util/notification/notification";
 import { invalidateQueries } from "@/util/query/invalidateQueries";
 import * as Notifications from "expo-notifications";
-import { router } from "expo-router";
 import { useEffect } from "react";
 import { useNotification } from "./NotificationProvider";
 
@@ -14,24 +13,16 @@ export default function NotificationListener() {
         // console.log("🔔 알림 받음:", JSON.stringify(notification, null, 2));
 
         const content = notification.request.content;
+        const id = content?.data?.id;
         const type = (content?.data?.type as NoticeType) ?? undefined;
+        const payload = content?.data?.payload ?? undefined;
 
-        const onPress =
-          type === "DIGGING_POST_LIKE"
-            ? async () => {
-                router.push({
-                  pathname: "/feed/feedDetail",
-                  params: { feedId: String(content?.data?.diggingId) },
-                });
-
-                await patchNotificationRead(
-                  Number(content?.data?.notificationId),
-                );
-                invalidateQueries([["notifications"]]);
-              }
-            : type === "NEARBY_LIKED_SPOTS"
-              ? () => {}
-              : () => {};
+        // 추후 타입 비교하면서 수정 필요
+        const onPress = getNotificationPressHandler(
+          id as number,
+          type,
+          payload,
+        );
 
         showNotification({
           title: content.title ?? undefined,

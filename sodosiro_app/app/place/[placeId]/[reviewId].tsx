@@ -116,7 +116,7 @@ export default function ReviewModifyScreen() {
         flex: 1,
       }}
     >
-      <Header title="리뷰 작성하기" />
+      <Header title="리뷰 수정하기" />
 
       {isGetReviewPending ? (
         <View className={`flex-1 justify-center items-center`}>
@@ -149,7 +149,7 @@ export default function ReviewModifyScreen() {
       <View className={`p-5 bg-bg`}>
         <CustomButton
           type="primary"
-          title="등록하기"
+          title="수정하기"
           disabled={
             rate === 0 ||
             content?.trim() === "" ||

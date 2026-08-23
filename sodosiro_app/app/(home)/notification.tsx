@@ -8,12 +8,14 @@ import Spinner from "@/components/common/Spinner";
 import NotificationDay from "@/components/home/notification/NotificationDay";
 import NotificationItem from "@/components/home/notification/NotificationItem";
 import { useNotificationsQuery } from "@/hooks/query/notification";
+import { getNotificationPressHandler } from "@/util/notification/notification";
 import { invalidateQueries } from "@/util/query/invalidateQueries";
 import { router } from "expo-router";
 import { FlatList, View } from "react-native";
 
 export default function NotificationScreen() {
-  const { data, isPending } = useNotificationsQuery();
+  const { data, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useNotificationsQuery();
 
   const notifications = data?.pages.flatMap((page) => page.data.items) ?? [];
   const unreadCount = data?.pages[0].data.unreadCount ?? 0;
@@ -49,6 +51,19 @@ export default function NotificationScreen() {
           data={notifications}
           keyExtractor={(item) => String(item.id)}
           contentContainerClassName="px-5"
+          onEndReached={() => {
+            if (hasNextPage && !isFetchingNextPage) {
+              fetchNextPage();
+            }
+          }}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={
+            isFetchingNextPage ? (
+              <View className="py-4 items-center">
+                <Spinner />
+              </View>
+            ) : null
+          }
           ListHeaderComponent={
             unreadCount > 0 ? (
               <CustomText font="body3" className="text-text-muted">
@@ -64,7 +79,13 @@ export default function NotificationScreen() {
               new Date(item.createdAt).toDateString() !==
                 new Date(previous.createdAt).toDateString();
 
-            const handlePress = async () => {
+            const handlePress = getNotificationPressHandler(
+              item.id,
+              item.type,
+              item.payload,
+            );
+
+            async () => {
               if (item.type === "DIGGING_POST_LIKE") {
                 router.push({
                   pathname: "/feed/feedDetail",

@@ -15,11 +15,10 @@ export default function PhotoScreen() {
     placeId: string;
   }>();
 
-  const { data: photoReviewsData } = useReviewsQuery(
-    Number(placeId),
-    undefined,
-    true,
-  );
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useReviewsQuery(Number(placeId), undefined, true);
+
+  const photoReviews = data?.pages.flatMap((page) => page.data.reviews) ?? [];
 
   return (
     <SafeAreaView
@@ -30,24 +29,29 @@ export default function PhotoScreen() {
     >
       <Header title={"포토"} />
       <PhotoGrid
-        photoReviews={
-          photoReviewsData?.pages.flatMap((page) => page.data.reviews) ?? []
-        }
+        photoReviews={photoReviews}
         onSelectPhoto={(photo) => {
           setSelectedReviewId(photo.reviewId);
           setSelectedImageUrl(photo.imageUrl);
           setVisible(true);
         }}
+        onLoadMore={() => {
+          if (hasNextPage && !isFetchingNextPage) {
+            fetchNextPage();
+          }
+        }}
+        isFetchingNextPage={isFetchingNextPage}
       />
       <PhotoReviewModal
-        photoReviews={
-          photoReviewsData?.pages.flatMap((page) => page.data.reviews) ?? []
-        }
+        photoReviews={photoReviews}
         visible={visible}
         setVisible={setVisible}
         initialReviewId={selectedReviewId}
         initialImageUrl={selectedImageUrl}
         onClose={() => setVisible(false)}
+        onLoadMore={fetchNextPage}
+        hasNextPage={hasNextPage}
+        isFetchingNextPage={isFetchingNextPage}
       />
     </SafeAreaView>
   );

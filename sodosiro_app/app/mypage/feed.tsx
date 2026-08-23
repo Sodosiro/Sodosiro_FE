@@ -24,7 +24,7 @@ export default function FeedScreen() {
   const handleConfirmDelete = async (feedId: number) => {
     await deleteFeedApi(feedId);
 
-    invalidateQueries([["myFeeds"], ["feeds"]]);
+    invalidateQueries([["feeds"]]);
 
     setDeleteFeedId(null);
     setIsDeleteModalVisible(false);

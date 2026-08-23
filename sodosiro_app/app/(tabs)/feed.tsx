@@ -24,7 +24,8 @@ export default function FeedScreen() {
 
   const insets = useSafeAreaInsets();
 
-  const { data, isPending } = useFeedsQuery();
+  const { data, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useFeedsQuery();
 
   const feeds =
     data?.pages.flatMap((page) => page.data.items) ?? ([] as FeedType[]);
@@ -49,6 +50,19 @@ export default function FeedScreen() {
           className={`px-5`}
           keyExtractor={(item) => String(item.diggingId)}
           ItemSeparatorComponent={<View className={`w-full h-px bg-border`} />}
+          onEndReached={() => {
+            if (hasNextPage && !isFetchingNextPage) {
+              fetchNextPage();
+            }
+          }}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={
+            isFetchingNextPage ? (
+              <View className="py-4 items-center">
+                <Spinner />
+              </View>
+            ) : null
+          }
           renderItem={({ item }) => (
             <FeedItem
               feed={item}
@@ -76,6 +90,9 @@ export default function FeedScreen() {
         initialfeedId={selectedFeedId}
         initialImageUrl={selectedImageUrl}
         onClose={() => setFeedDetailModalVisible(false)}
+        onLoadMore={fetchNextPage}
+        hasNextPage={hasNextPage}
+        isFetchingNextPage={isFetchingNextPage}
       />
     </View>
   );

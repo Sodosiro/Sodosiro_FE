@@ -29,7 +29,7 @@ export function useFeedQuery(feedId: number) {
 
 export function useMyFeedsQuery(size = 20) {
   return useInfiniteQuery({
-    queryKey: ["myFeeds", size],
+    queryKey: ["feeds", "myFeeds", size],
 
     queryFn: ({ pageParam }) =>
       getFeedsApi({

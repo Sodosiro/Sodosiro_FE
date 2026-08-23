@@ -7,7 +7,7 @@ export function useLikeFeedMutation() {
     mutationFn: (diggingId: number) => postLikeFeedApi(diggingId),
 
     onSuccess: () => {
-      invalidateQueries([["feeds"], ["myFeeds"]]);
+      invalidateQueries([["feeds"]]);
     },
   });
 

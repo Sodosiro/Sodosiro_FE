@@ -1,13 +1,26 @@
 import { deleteReviewApi } from "@/api/review";
 import CustomText from "@/components/common/CustomText";
 import DeleteModal from "@/components/common/modal/DeleteModal";
+import Spinner from "@/components/common/Spinner";
 import ReviewImageModal from "@/components/placeDetail/review/ReviewImageModal";
 import { queryClient } from "@/lib/queryClient";
 import { useState } from "react";
 import { FlatList, View } from "react-native";
 import MyReview from "./MyReview";
 
-export default function MyReviewList({ reviews }: { reviews: MyReviewType[] }) {
+interface MyReviewListProps {
+  reviews: MyReviewType[];
+  onLoadMore: () => void;
+  hasNextPage: boolean;
+  isFetchingNextPage: boolean;
+}
+
+export default function MyReviewList({
+  reviews,
+  onLoadMore,
+  hasNextPage,
+  isFetchingNextPage,
+}: MyReviewListProps) {
   const [isPhotoModalVisible, setIsPhotoModalVisible] = useState(false);
   const [selectedImages, setSelectedImages] = useState<string[] | null>(null);
   const [carouselIndex, setCarouselIndex] = useState(0);
@@ -38,6 +51,19 @@ export default function MyReviewList({ reviews }: { reviews: MyReviewType[] }) {
         data={reviews}
         keyExtractor={(item) => String(item.reviewId)}
         className={`pb-8 px-5`}
+        onEndReached={() => {
+          if (hasNextPage && !isFetchingNextPage) {
+            onLoadMore();
+          }
+        }}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={
+          isFetchingNextPage ? (
+            <View className="py-4 items-center">
+              <Spinner />
+            </View>
+          ) : null
+        }
         renderItem={({ item, index }) => (
           <MyReview
             review={item}

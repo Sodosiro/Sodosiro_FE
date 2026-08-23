@@ -24,6 +24,9 @@ export default function PhotoReviewModal({
   initialReviewId,
   initialImageUrl,
   onClose,
+  onLoadMore,
+  hasNextPage,
+  isFetchingNextPage,
 }: {
   photoReviews: ReviewType[];
   visible: boolean;
@@ -31,6 +34,9 @@ export default function PhotoReviewModal({
   initialReviewId: number | null;
   initialImageUrl: string | null;
   onClose: () => void;
+  onLoadMore: () => void;
+  hasNextPage: boolean;
+  isFetchingNextPage: boolean;
 }) {
   const { width } = Dimensions.get("window");
 
@@ -69,6 +75,12 @@ export default function PhotoReviewModal({
           showsHorizontalScrollIndicator={false}
           data={reviewsWithImages}
           keyExtractor={(item) => item.reviewId.toString()}
+          onEndReached={() => {
+            if (hasNextPage && !isFetchingNextPage) {
+              onLoadMore();
+            }
+          }}
+          onEndReachedThreshold={0.5}
           renderItem={({ item }) => (
             <PhotoReviewModalContent
               review={item}

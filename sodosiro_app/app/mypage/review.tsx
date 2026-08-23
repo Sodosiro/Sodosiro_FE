@@ -11,7 +11,8 @@ export default function MyReviewScreen() {
   const [sortOption, setSortOption] = useState<SortType>("RECENT");
   const [onlyPhotoReview, setOnlyPhotoReview] = useState(false);
 
-  const { data, isPending } = useMyReviewsQuery(sortOption, onlyPhotoReview);
+  const { data, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useMyReviewsQuery(sortOption, onlyPhotoReview);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
@@ -32,6 +33,9 @@ export default function MyReviewScreen() {
       ) : (
         <MyReviewList
           reviews={data?.pages?.flatMap((page) => page.data.reviews) ?? []}
+          onLoadMore={fetchNextPage}
+          hasNextPage={hasNextPage}
+          isFetchingNextPage={isFetchingNextPage}
         />
       )}
     </SafeAreaView>

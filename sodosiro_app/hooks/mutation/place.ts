@@ -19,7 +19,7 @@ export function useLikePlaceMutation() {
       contentIds.forEach((contentId) => {
         invalidateQueries([["placeDetail", contentId]]);
       });
-      invalidateQueries([["likePlaces"], ["feeds"], ["myFeeds"]]);
+      invalidateQueries([["likePlaces"], ["feeds"]]);
     },
   });
 

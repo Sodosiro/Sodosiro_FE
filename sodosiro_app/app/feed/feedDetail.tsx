@@ -24,6 +24,7 @@ export default function FeedDetailScreen() {
         <FeedDetailContent
           feed={feed}
           initialImageUrl={feed.images[0].imageUrl}
+          isFlex
         />
       )}
     </SafeAreaView>

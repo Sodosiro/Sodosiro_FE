@@ -32,6 +32,9 @@ export default function ReviewScreen() {
     data: reviewsData,
     isPending: isReviewsPending,
     isPlaceholderData,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
   } = useReviewsQuery(Number(placeId), sortOption, onlyPhotoReview);
 
   // 리뷰 포토 모아보기(5장)
@@ -94,10 +97,22 @@ export default function ReviewScreen() {
           data={reviews}
           keyExtractor={(item) => String(item.reviewId)}
           contentContainerClassName="px-5 pb-8"
+          onEndReached={() => {
+            if (hasNextPage && !isFetchingNextPage) {
+              fetchNextPage();
+            }
+          }}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={
+            isFetchingNextPage ? (
+              <View className="items-center py-4">
+                <Spinner />
+              </View>
+            ) : null
+          }
           ListHeaderComponent={
             <>
               <PhotoPreview placeId={placeId} photoReviews={photoReviews} />
-
               <CustomText font="heading2">리뷰</CustomText>
             </>
           }

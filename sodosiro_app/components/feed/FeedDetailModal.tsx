@@ -11,6 +11,9 @@ export default function FeedDetailModal({
   initialfeedId,
   initialImageUrl,
   onClose,
+  onLoadMore,
+  hasNextPage,
+  isFetchingNextPage,
 }: {
   feeds: FeedType[];
   visible: boolean;
@@ -18,6 +21,9 @@ export default function FeedDetailModal({
   initialfeedId: number | null;
   initialImageUrl: string | null;
   onClose: () => void;
+  onLoadMore: () => void;
+  hasNextPage: boolean;
+  isFetchingNextPage: boolean;
 }) {
   const { width } = Dimensions.get("window");
 
@@ -52,6 +58,12 @@ export default function FeedDetailModal({
           showsHorizontalScrollIndicator={false}
           data={feedsWithImages}
           keyExtractor={(item) => item.diggingId.toString()}
+          onEndReached={() => {
+            if (hasNextPage && !isFetchingNextPage) {
+              onLoadMore();
+            }
+          }}
+          onEndReachedThreshold={0.5}
           renderItem={({ item }) => (
             <FeedDetailContent
               feed={item}

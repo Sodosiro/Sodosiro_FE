@@ -11,9 +11,11 @@ import FeedItem from "./FeedItem";
 export default function FeedDetailContent({
   feed,
   initialImageUrl,
+  isFlex,
 }: {
   feed: FeedType;
   initialImageUrl?: string | null;
+  isFlex?: boolean;
 }) {
   const [currentImageUrl, setCurrentImageUrl] = useState(
     initialImageUrl &&
@@ -41,7 +43,7 @@ export default function FeedDetailContent({
   };
 
   return (
-    <View className={`w-screen pb-20`}>
+    <View className={`w-screen pb-20 ${isFlex && `flex-1`}`}>
       <View className={`gap-3`}>
         <Animated.Image
           source={{ uri: currentImageUrl }}

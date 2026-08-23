@@ -4,35 +4,43 @@ import CustomText from "@/components/common/CustomText";
 import { signInWithKakao } from "@/lib/kakao";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { router } from "expo-router";
+import { useState } from "react";
 import { Image, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function LoginScreen() {
   const login = useAuthStore((state) => state.login);
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleKakaoLogin = async () => {
-    const result = await signInWithKakao();
+    if (isLoading) return;
 
-    if (result.type === "cancel") {
-      return;
-    }
-
-    if (result.type === "error") {
-      console.error(result.message);
-      return;
-    }
+    setIsLoading(true);
 
     try {
+      const result = await signInWithKakao();
+
+      if (result.type === "cancel") {
+        return;
+      }
+
+      if (result.type === "error") {
+        console.error(result.message);
+        return;
+      }
+
       const data = await loginWithKakaoApi(result.token.idToken);
 
       await login(data.accessToken, data.refreshToken);
 
-      router.dismissAll();
       router.replace("/(tabs)");
     } catch (error: any) {
       console.log("로그인 에러", error);
       console.log(error.response?.status);
       console.log(error.response?.data);
+    } finally {
+      setIsLoading(false);
     }
   };
 

@@ -39,7 +39,7 @@ export default function AIRecommend({
       <Image className="size-6" source={require("@/assets/images/ai.png")} />
       <View className="gap-1 flex-1">
         <CustomText font="body1" className="text-primary-dark">
-          AI 추천 이유
+          AI 한 줄 요약
         </CustomText>
         {isFetching && !aiRecommendation?.available ? (
           <View className={`gap-1.5`}>

@@ -6,11 +6,13 @@ import { Image, Modal, Pressable } from "react-native";
 export default function EditProfileImage({
   profileImageTemp,
   setProfileImageTemp,
+  disabled,
 }: {
   profileImageTemp: string | ImagePicker.ImagePickerAsset | null;
   setProfileImageTemp: Dispatch<
     SetStateAction<string | ImagePicker.ImagePickerAsset | null>
   >;
+  disabled?: boolean;
 }) {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -39,6 +41,7 @@ export default function EditProfileImage({
       <Pressable
         className="items-center gap-2"
         onPress={() => setIsModalVisible(true)}
+        disabled={disabled}
       >
         <Image
           className="h-25 w-25 rounded-full"

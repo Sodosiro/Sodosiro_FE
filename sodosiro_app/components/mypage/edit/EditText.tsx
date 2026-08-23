@@ -9,12 +9,14 @@ export default function EditText({
   text,
   setText,
   maxLength,
+  disabled,
 }: {
   title: string;
   placeholder: string;
   text: string;
   setText: Dispatch<SetStateAction<string>>;
   maxLength?: number;
+  disabled?: boolean;
 }) {
   return (
     <View className={`gap-2`}>
@@ -27,6 +29,7 @@ export default function EditText({
         placeholderTextColor={"#888888"}
         className={`${Body3Class} text-text-secondary w-full p-4 border border-border rounded-xl`}
         maxLength={maxLength}
+        editable={!disabled}
       />
     </View>
   );

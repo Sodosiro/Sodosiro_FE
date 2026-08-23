@@ -94,7 +94,7 @@ export default function PlaceDetailScreen() {
           }
         />
 
-        {/* AI 추천 이유 */}
+        {/* AI 한 줄 요약 */}
         <AIRecommend
           contentId={Number(placeId)}
           aiRecommendation={aiRecommendation}

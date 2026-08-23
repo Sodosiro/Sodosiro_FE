@@ -10,8 +10,9 @@ import * as Location from "expo-location";
 import { forwardRef, useState } from "react";
 import { Image, Linking, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import CustomButton from "../common/CustomButton";
+import AnimatedButton from "../common/animated/AnimatedButton";
 import CustomText from "../common/CustomText";
+import Spinner from "../common/Spinner";
 
 type Props = {
   selectedItem: BingoItem | null;
@@ -70,6 +71,11 @@ const VerificationBottomSheet = forwardRef<BottomSheetModal, Props>(
       <BottomSheetModal
         ref={ref}
         enablePanDownToClose
+        handleIndicatorStyle={{
+          backgroundColor: "#E6E6E6",
+          width: 50,
+          height: 5,
+        }}
         backdropComponent={(props) => (
           <BottomSheetBackdrop
             {...props}
@@ -92,7 +98,7 @@ const VerificationBottomSheet = forwardRef<BottomSheetModal, Props>(
                   className={`w-25 h-25 rounded-xl`}
                 />
                 <View className={`gap-1`}>
-                  <View className={`flex-row gap-1`}>
+                  <View className={`flex-row gap-1 items-center`}>
                     <PinMiniIcon color={"#7E9432"} />
                     <CustomText font="title" className={`text-primary-dark`}>
                       {selectedItem.title}
@@ -101,7 +107,7 @@ const VerificationBottomSheet = forwardRef<BottomSheetModal, Props>(
                   <CustomText font="heading2">도착하셨나요?</CustomText>
                 </View>
               </View>
-              <CustomText font="body1" className={`text-text-secondary`}>
+              <CustomText font="body1" className={`text-text-secondary px-1`}>
                 현재 위치를 확인하여 방문을 인증할게요.
               </CustomText>
               <View className={`p-4 gap-2 rounded-xl bg-primary-light`}>
@@ -126,22 +132,26 @@ const VerificationBottomSheet = forwardRef<BottomSheetModal, Props>(
                   </CustomText>
                 </View>
               </View>
-              <View className={`flex-row gap-1`}>
-                <CustomButton
-                  type="tertiary"
-                  size="medium"
-                  title="취소하기"
-                  stretch
+              <View className={`flex-row gap-2`}>
+                <AnimatedButton
+                  backgroundColor={["#F5F5F5", "#E2E2E8"]}
+                  className={`h-13 flex-1 rounded-xl justify-center items-center`}
                   onPress={() => onClose()}
-                />
-                <CustomButton
-                  type="primary"
-                  size="medium"
-                  title="방문 인증하기"
-                  stretch
+                >
+                  <CustomText font="body3 tight">취소하기</CustomText>
+                </AnimatedButton>
+                <AnimatedButton
+                  backgroundColor={["#C4D96A", "#A9C92D"]}
+                  className={`h-13 flex-1 rounded-xl justify-center items-center`}
                   onPress={handleLocaion}
                   loading={isLoading}
-                />
+                >
+                  {isLoading ? (
+                    <Spinner size={16} />
+                  ) : (
+                    <CustomText font="body3 tight">방문 인증하기</CustomText>
+                  )}
+                </AnimatedButton>
               </View>
             </SafeAreaView>
           )}

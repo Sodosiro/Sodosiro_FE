@@ -40,6 +40,7 @@ export { default as CreateIcon } from "./24px/create.svg";
 export { default as DownIcon } from "./24px/down.svg";
 export { default as EditPlanIcon } from "./24px/edit_plan.svg";
 export { default as HeartNoticeIcon } from "./24px/heart_notice.svg";
+export { default as LogoutIcon } from "./24px/logout.svg";
 export { default as NavigationIcon } from "./24px/navigation.svg";
 export { default as NotificationIcon } from "./24px/notification.svg";
 export { default as PinIcon } from "./24px/pin.svg";

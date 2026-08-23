@@ -152,7 +152,6 @@ export default function RootLayout() {
       <GestureHandlerRootView style={{ flex: 1, backgroundColor: "white" }}>
         <NotificationProvider>
           <NotificationListener />
-
           <ToastProvider>
             <PortalProvider>
               <BottomSheetModalProvider>

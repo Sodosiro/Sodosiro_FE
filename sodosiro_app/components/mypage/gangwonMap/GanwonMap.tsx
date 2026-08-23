@@ -39,7 +39,6 @@ export default function GangwonMap({
   useFocusEffect(
     useCallback(() => {
       return () => {
-        // MyPage 떠날 때
         setSelectedRegionId(null);
       };
     }, []),

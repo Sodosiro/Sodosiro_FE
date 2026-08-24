@@ -5,14 +5,18 @@ import Tag from "@/components/place/Tag";
 import { DEFAULT_IMAGES } from "@/constants/Category";
 import { NumberToCategory } from "@/util/place/category";
 import { router } from "expo-router";
-import { Image, Pressable, View } from "react-native";
+import { Image, LayoutChangeEvent, Pressable, View } from "react-native";
 import CustomText from "../../common/CustomText";
 import RateChip from "../../place/RateChip";
 
 export default function PopularPlaceItem({
   popularPlace,
+  contentHeight,
+  onLayout,
 }: {
-  popularPlace: PlaceType;
+  popularPlace?: PlaceType;
+  contentHeight?: number;
+  onLayout?: (event: LayoutChangeEvent) => void;
 }) {
   const {
     contentId,
@@ -23,33 +27,59 @@ export default function PopularPlaceItem({
     reviewCount,
     overview,
     category,
-  } = popularPlace;
+    tags,
+  } = popularPlace ?? {
+    title: " ",
+    region: " ",
+    avgRating: 0,
+    reviewCount: 0,
+    overview: " ",
+    category: 1,
+    tags: ["tag"],
+  };
 
   const imageSource = firstImage
     ? { uri: firstImage }
-    : DEFAULT_IMAGES[NumberToCategory[category]];
+    : DEFAULT_IMAGES[NumberToCategory[category ?? 1]];
+
+  const handleRoute = () => {
+    if (contentId)
+      router.push({
+        pathname: "/place/[placeId]",
+        params: { placeId: contentId },
+      });
+  };
 
   return (
-    <Pressable
-      className={`gap-3 flex-row flex-1`}
-      onPress={() =>
-        router.push({
-          pathname: "/place/[placeId]",
-          params: { placeId: contentId },
-        })
-      }
+    <View
+      className={`gap-3 flex-row items-stretch shrink ${onLayout && `absolute opacity-0 pointer-events-none`}`}
     >
-      <Image
-        source={imageSource}
-        className={`rounded-xl aspect-square overflow-hidden w-28 h-28`}
-      />
-      <View className={`flex-1 justify-between gap-1`}>
-        <View className={`gap-1`}>
+      {contentHeight && (
+        <Pressable
+          onPress={handleRoute}
+          className={`rounded-xl overflow-hidden`}
+          style={{
+            width: contentHeight,
+            height: contentHeight,
+          }}
+        >
+          <Image
+            source={imageSource}
+            className={`w-full h-full`}
+            resizeMode="cover"
+          />
+        </Pressable>
+      )}
+      <View
+        className={`flex-1 gap-2`}
+        onLayout={onLayout ? onLayout : undefined}
+      >
+        <Pressable className={`gap-1`} onPress={handleRoute}>
           <View className={`flex-row gap-1 items-center`}>
             <CustomText font="title" numberOfLines={1} className={`shrink`}>
               {title}
             </CustomText>
-            <Tag category={NumberToCategory[category]} />
+            <Tag category={NumberToCategory[category ?? 1]} />
           </View>
           <View className={`gap-1.5`}>
             <View className={`flex-row gap-1`}>
@@ -71,9 +101,9 @@ export default function PopularPlaceItem({
               {overview}
             </CustomText>
           </View>
-        </View>
-        <KeywordBadgeList keywords={[]} />
+        </Pressable>
+        <KeywordBadgeList keywords={tags?.slice(0, 3) ?? []} />
       </View>
-    </Pressable>
+    </View>
   );
 }

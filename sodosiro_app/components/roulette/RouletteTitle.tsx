@@ -39,7 +39,10 @@ export default function RouletteTitle({
       className={`items-center px-10`}
     >
       <CustomText font="display">{title}</CustomText>
-      <CustomText font="body3" className={`text-text-secondary text-center`}>
+      <CustomText
+        font="body3"
+        className={`text-text-secondary text-center h-12`}
+      >
         {comment}
       </CustomText>
     </Animated.View>

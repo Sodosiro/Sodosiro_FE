@@ -1,4 +1,4 @@
-import { BigCheckIcon, EditPlanIcon } from "@/assets/svgs";
+import { AlignIcon, BigCheckIcon } from "@/assets/svgs";
 import { AnimatedPressable } from "@/components/common/animated/Animated";
 
 type EditToggleBadgeProps = {
@@ -7,10 +7,7 @@ type EditToggleBadgeProps = {
   onPress: (() => void) | undefined;
 };
 
-export default function EditToggleBadge({
-  isEditing,
-  onPress,
-}: EditToggleBadgeProps) {
+export default function EditToggleBadge({ isEditing, onPress }: EditToggleBadgeProps) {
   return (
     <AnimatedPressable
       className={`bg-white border border-border rounded-full min-h-10 items-center justify-center aspect-square z-20`}
@@ -19,7 +16,7 @@ export default function EditToggleBadge({
       {isEditing ? (
         <BigCheckIcon color={"#888888"} width={20} height={20} />
       ) : (
-        <EditPlanIcon width={20} height={20} />
+        <AlignIcon width={20} height={20} />
       )}
     </AnimatedPressable>
   );

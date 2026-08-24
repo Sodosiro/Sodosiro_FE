@@ -1,5 +1,6 @@
 import { postAiRecommendationApi } from "@/api/place";
 import CustomText from "@/components/common/CustomText";
+import ExpandableText from "@/components/common/ExpandableText";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { Image, View } from "react-native";
@@ -23,29 +24,32 @@ export default function AIRecommend({
   contentId: number;
   aiRecommendation: aiRecommendation;
 }) {
-  const { data, isPending } = useQuery({
+  const { data, isFetching } = useQuery({
     queryKey: ["aiRecommendation", contentId],
     queryFn: () => postAiRecommendationApi(contentId),
     enabled: !aiRecommendation?.available,
   });
 
-  const reason = aiRecommendation?.available
-    ? aiRecommendation.reason
-    : data?.data?.reason;
+  const reason = (
+    aiRecommendation?.available ? aiRecommendation.reason : data?.data?.reason
+  )?.replace(/\n/g, "");
 
   return (
-    <View className="flex-row px-4 py-3 gap-2 bg-primary-light">
+    <View className="flex-row px-4 pt-3 pb-4 gap-2 bg-primary-light">
       <Image className="size-6" source={require("@/assets/images/ai.png")} />
       <View className="gap-1 flex-1">
         <CustomText font="body1" className="text-primary-dark">
           AI 추천 이유
         </CustomText>
-        {isPending ? (
-          <SkeletonLine />
+        {isFetching && !aiRecommendation?.available ? (
+          <View className={`gap-1.5`}>
+            <SkeletonLine />
+            <SkeletonLine />
+          </View>
         ) : (
-          <CustomText font="body2" className="text-text-secondary">
+          <ExpandableText font="body2" textClass={`text-text-secondary pr-6`}>
             {reason}
-          </CustomText>
+          </ExpandableText>
         )}
       </View>
     </View>

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "119761589690",
+    "project_id": "sodosiro-d8b66",
+    "storage_bucket": "sodosiro-d8b66.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:119761589690:android:a70bc685234e0d8c463983",
+        "android_client_info": {
+          "package_name": "com.sodosiro.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvfvcoEPQvRcwzM0RdYmKHtRb8YyeUuz0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

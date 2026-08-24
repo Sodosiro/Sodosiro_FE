@@ -114,7 +114,7 @@ export default function Header({
               onSubmitEditing={commitEdit}
               returnKeyType="done"
               selectTextOnFocus
-              maxLength={30}
+              maxLength={14}
               className="flex-1 p-0"
               style={{
                 fontSize: 18,

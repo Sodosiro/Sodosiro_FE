@@ -1,23 +1,27 @@
-import TimelineDayBadgeSection from "@/components/timeline/section/TimelineDayBadgeSection";
-import TimelineDaySection from "@/components/timeline/section/TimelineDaySection";
+import { CourseSummaryItem } from "@/api/course";
+import Spinner from "@/components/common/Spinner";
 import { useTimelineScrollSpy } from "@/hooks/useTimelineScrollSpy";
-import { INITIAL_PLAN, UPCOMING_TRIPS } from "@/mocks/trip";
-import {
-  BottomSheetBackdrop,
-  BottomSheetModal,
-  BottomSheetScrollView,
-} from "@gorhom/bottom-sheet";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { ScrollView, View } from "react-native";
 import EmptyState from "../EmptyState";
 import UpcomingTripCard from "../upcoming/UpcomingTripCard";
 
-type UpcomingTripSectionProps = {};
+type UpcomingTripSectionProps = {
+  courses: CourseSummaryItem[] | undefined;
+  isPending: boolean;
+  isError: boolean;
+};
 
-export default function UpcomingTripSection({}: UpcomingTripSectionProps) {
+export default function UpcomingTripSection({
+  courses,
+  isPending,
+  isError,
+}: UpcomingTripSectionProps) {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
   const [isContentReady, setIsContentReady] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState<CourseSummaryItem | null>(null);
 
   const {
     activeIndex,
@@ -31,10 +35,11 @@ export default function UpcomingTripSection({}: UpcomingTripSectionProps) {
     getSectionLayoutHandler,
   } = useTimelineScrollSpy();
 
-  const [plan] = useState(INITIAL_PLAN);
-  const badgeOrder = useMemo(() => plan.map(({ id }) => id), [plan]);
+  // TODO: 향후 selectedCourse.courseId 기반으로 상세 타임라인 조회 API(INITIAL_PLAN 대체) 연결 가능
+  const [plan] = useState(courses);
+  const badgeOrder = useMemo(() => plan?.map((item, index) => index + 1), [plan]);
 
-  // 다른 페이지로 이동 시(화면 포커스 해제 시) 바텀시트 모달 자동 닫기
+  // 다른 페이지 이동 시 바텀시트 모달 자동 닫기
   useFocusEffect(
     useCallback(() => {
       return () => {
@@ -43,10 +48,11 @@ export default function UpcomingTripSection({}: UpcomingTripSectionProps) {
     }, []),
   );
 
-  const openBottomSheet = useCallback(() => {
+  const openBottomSheet = useCallback((course: CourseSummaryItem) => {
+    setSelectedCourse(course);
     setIsContentReady(false);
     bottomSheetRef.current?.present();
-    // 모달 슬라이드 애니메이션이 시작된 직후 내부에 무거운 타임라인 리스트를 렌더링 (지연 렌더링으로 프레임 드랍 방지)
+
     requestAnimationFrame(() => {
       setIsContentReady(true);
     });
@@ -55,33 +61,66 @@ export default function UpcomingTripSection({}: UpcomingTripSectionProps) {
   const handleSheetChange = useCallback((index: number) => {
     if (index === -1) {
       setIsContentReady(false);
+      setSelectedCourse(null);
     }
   }, []);
 
+  // 버튼 클릭 핸들러
+  const handleCardPress = (course: CourseSummaryItem) => {
+    router.push({
+      pathname: "/trip/timeline",
+      params: {
+        courseId: course.courseId,
+        isConfirmed: String(course.isConfirmed),
+      },
+    });
+  };
+
+  // 1. 로딩 상태 처리
+  if (isPending) {
+    return (
+      <View className={`flex-1 justify-center items-center`}>
+        <Spinner />
+      </View>
+    );
+  }
+
+  // 2. 에러 상태 처리
+  if (isError) {
+    return (
+      <EmptyState
+        title="일정을 불러오지 못했어요."
+        description="네트워크 상태를 확인하고 다시 시도해주세요."
+        actionLabel="다시 시도"
+        onPressAction={() => router.replace("/trip")}
+      />
+    );
+  }
+
   return (
     <View className="flex-1">
-      {UPCOMING_TRIPS.length === 0 ? (
+      {Number(courses?.length) === 0 ? (
         <EmptyState
           title="아직 여행 일정이 없어요."
           description="새로운 여행 일정을 만들까요?"
           actionLabel="새 일정 만들기"
-          onPressAction={() => router.push("/trip/condition")}
+          onPressAction={() => router.push("/roulette")}
         />
       ) : (
         <>
           <ScrollView className="flex-1">
             <View className="p-5">
-              {UPCOMING_TRIPS.map((trip) => (
+              {courses?.map((course) => (
                 <UpcomingTripCard
-                  key={trip.id}
-                  trip={trip}
-                  onPress={openBottomSheet}
+                  key={course.courseId}
+                  course={course}
+                  onPress={() => handleCardPress(course)}
                 />
               ))}
             </View>
           </ScrollView>
 
-          <BottomSheetModal
+          {/* <BottomSheetModal
             ref={bottomSheetRef}
             snapPoints={["70%"]}
             enableDynamicSizing={false}
@@ -109,7 +148,7 @@ export default function UpcomingTripSection({}: UpcomingTripSectionProps) {
               <>
                 <View className="overflow-hidden px-5">
                   <TimelineDayBadgeSection
-                    badgeOrder={badgeOrder}
+                    badgeOrder={badgeOrder ?? []}
                     showEditButton={false}
                     onPressDayBadge={moveToSection}
                     onLayoutDayBadge={handleBadgeLayout}
@@ -129,9 +168,9 @@ export default function UpcomingTripSection({}: UpcomingTripSectionProps) {
                   onScroll={handleScroll}
                   showsVerticalScrollIndicator={false}
                 >
-                  {plan.map((dayPlan, index) => (
+                  {plan?.map((dayPlan, index) => (
                     <TimelineDaySection
-                      key={dayPlan.id}
+                      key={dayPlan.courseId}
                       dayPlan={dayPlan}
                       mode="isUpcoming"
                       onLayout={getSectionLayoutHandler(index)}
@@ -141,7 +180,7 @@ export default function UpcomingTripSection({}: UpcomingTripSectionProps) {
                 </BottomSheetScrollView>
               </>
             )}
-          </BottomSheetModal>
+          </BottomSheetModal> */}
         </>
       )}
     </View>

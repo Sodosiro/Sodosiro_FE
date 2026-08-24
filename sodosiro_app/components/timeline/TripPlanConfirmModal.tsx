@@ -1,4 +1,5 @@
-import { BigXIcon } from "@/assets/svgs";
+import { CourseDayItem } from "@/api/course";
+import { BigXIcon, InfoMiniIcon } from "@/assets/svgs";
 import { useEffect, useState } from "react";
 import { Modal, Pressable, ScrollView, Text, View } from "react-native";
 import CustomText from "../common/CustomText";
@@ -8,15 +9,15 @@ type TripPlanConfirmModalProps = {
   visible: boolean;
   title?: string;
   dateRange?: string;
-  plan: DayPlan[];
+  plan: CourseDayItem[];
   onClose: () => void;
   onConfirm: (selectedDayIndex: number) => void;
 };
 
 export default function TripPlanConfirmModal({
   visible,
-  title = "강릉 여행",
-  dateRange = "10/5 (토) ~ 10/11 (금)",
+  title,
+  dateRange,
   plan = [],
   onClose,
   onConfirm,
@@ -29,15 +30,10 @@ export default function TripPlanConfirmModal({
   }, [plan]);
 
   const currentPlanItem = plan[selectedDayIndex];
-  const currentPlaces = currentPlanItem?.places ?? [];
+  const currentPlaces = currentPlanItem?.spots ?? [];
 
   return (
-    <Modal
-      visible={visible}
-      transparent
-      animationType="fade"
-      onRequestClose={onClose}
-    >
+    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <Pressable
         className="flex-1 bg-[rgba(0,0,0,0.5)] justify-center items-center"
         onPress={onClose}
@@ -73,7 +69,7 @@ export default function TripPlanConfirmModal({
             >
               {plan.map((day, index) => (
                 <DayBadge
-                  key={day.id}
+                  key={day.day}
                   text={`${index + 1}일차`}
                   selected={index === selectedDayIndex}
                   onPress={() => setSelectedDayIndex(index)}
@@ -83,7 +79,7 @@ export default function TripPlanConfirmModal({
             </ScrollView>
           </View>
 
-          <View className="bg-[#F5F5F5] rounded-2xl p-3 pb-4 h-54 gap-2">
+          <View className="bg-[#F5F5F5] rounded-2xl p-4 gap-2">
             <CustomText font="body1" className="text-text-secondary">
               장소 {currentPlaces.length}곳
             </CustomText>
@@ -94,7 +90,7 @@ export default function TripPlanConfirmModal({
               contentContainerClassName="gap-2"
             >
               {currentPlaces.map((place) => (
-                <View key={place.contentId} className="flex-row gap-2">
+                <View key={place.contentId} className="flex-row gap-2 pl-2">
                   <View className="w-1 h-1 rounded-full bg-gray-800 mt-1.5" />
                   <CustomText font="body2" className={`flex-1`}>
                     {place.title}
@@ -104,13 +100,18 @@ export default function TripPlanConfirmModal({
             </ScrollView>
           </View>
 
+          <View className="flex-row gap-2">
+            <InfoMiniIcon />
+            <CustomText font="body3" className={`text-text-muted`}>
+              일정을 확정하면 장소와 순서를 변경할 수 없어요.
+            </CustomText>
+          </View>
+
           <Pressable
             onPress={() => onConfirm(selectedDayIndex)}
             className="w-full bg-[#C5E17A] py-4 rounded-full items-center justify-center"
           >
-            <Text className="text-base font-bold text-gray-900">
-              이 일정으로 확정하기
-            </Text>
+            <Text className="text-base text-gray-900">이 일정으로 확정하기</Text>
           </Pressable>
         </Pressable>
       </Pressable>

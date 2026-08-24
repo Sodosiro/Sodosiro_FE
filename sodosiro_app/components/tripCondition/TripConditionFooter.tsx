@@ -7,19 +7,16 @@ import AnimatedButton from "../common/animated/AnimatedButton";
 type Props = {
   onReset: () => void;
   onSubmit: () => void;
-  disabled?: boolean;
+  disabled: () => boolean;
 };
 
-export default function TripConditionFooter({
-  onReset,
-  onSubmit,
-  disabled = false,
-}: Props) {
+export default function TripConditionFooter({ onReset, onSubmit, disabled }: Props) {
   return (
     <BottomActionBar>
       <AnimatedButton
         className={`flex-row items-center justify-center px-4 gap-1 rounded-full`}
         backgroundColor={["#FFFFFF", "#F5F5F5"]}
+        onPress={onReset}
       >
         <RefreshIcon width={16} />
         <CustomText font="body1">재설정</CustomText>
@@ -29,7 +26,7 @@ export default function TripConditionFooter({
         title="일정 짜기"
         stretch
         size="medium"
-        disabled={disabled}
+        disabled={disabled()}
         onPress={onSubmit}
       />
     </BottomActionBar>

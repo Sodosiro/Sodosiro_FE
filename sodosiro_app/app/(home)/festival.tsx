@@ -6,8 +6,7 @@ import FestivalItem from "@/components/home/festival/FestivalItem";
 import { useFestivalsQuery } from "@/hooks/query/useFestivalsQuery";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useEffect, useRef, useState } from "react";
-import { FlatList, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { FlatList, LayoutChangeEvent, View } from "react-native";
 
 const Schedules = ["ONGOING", "UPCOMING"] as const;
 
@@ -29,6 +28,12 @@ export default function FestivalScreen() {
   const { data, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useFestivalsQuery(undefined, selectedSchedule, 20);
 
+  const [festivalItemHeight, setFestivalItemHeight] = useState(0);
+
+  const handleMeasure = (event: LayoutChangeEvent) => {
+    setFestivalItemHeight(event.nativeEvent.layout.height);
+  };
+
   const festivals = data?.pages.flatMap((page) => page.data.items) ?? [];
 
   const handleFestivalPress = (festival: FestivalType) => {
@@ -46,7 +51,7 @@ export default function FestivalScreen() {
   }, [selectedFestival]);
 
   return (
-    <SafeAreaView style={{ backgroundColor: "white", flex: 1 }}>
+    <View style={{ backgroundColor: "white", flex: 1 }}>
       <Header title="다가오는 강원 축제" />
 
       <View className="bg-bg flex-1">
@@ -67,7 +72,8 @@ export default function FestivalScreen() {
             )}
           />
         </View>
-        {isPending ? (
+        <FestivalItem onLayout={handleMeasure} />
+        {isPending || festivalItemHeight === 0 ? (
           <View className="flex-1 justify-center items-center">
             <Spinner />
           </View>
@@ -79,6 +85,7 @@ export default function FestivalScreen() {
               <FestivalItem
                 festival={item}
                 onPress={() => handleFestivalPress(item)}
+                contentHeight={festivalItemHeight}
               />
             )}
             contentContainerClassName="px-5 py-2 gap-4"
@@ -103,6 +110,6 @@ export default function FestivalScreen() {
         festival={selectedFestival}
         onClose={onClose}
       />
-    </SafeAreaView>
+    </View>
   );
 }

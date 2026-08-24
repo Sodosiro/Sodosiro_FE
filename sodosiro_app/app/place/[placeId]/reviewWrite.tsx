@@ -35,6 +35,8 @@ export default function ReviewWriteScreen() {
       await postReviewApi(Number(placeId), rate, content.trim(), imageSources);
 
       await invalidateQueries([
+        ["places"],
+        ["search"],
         ["placeDetail", Number(placeId)],
         ["reviews", Number(placeId)],
       ]);

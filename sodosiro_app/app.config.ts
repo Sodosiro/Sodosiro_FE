@@ -20,6 +20,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       foregroundImage: "./assets/images/logo.png",
       backgroundColor: "#FFFFFF",
     },
+    googleServicesFile: "./google-services.json",
   },
   web: {
     bundler: "metro",
@@ -30,6 +31,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   plugins: [
     "expo-router",
     "expo-web-browser",
+    "expo-notifications",
     [
       "expo-splash-screen",
       {

@@ -5,5 +5,6 @@ declare global {
     nickName: string;
     profileImage: string | ImagePickerAsset | null;
     introduction: string | null;
+    email: string | null;
   };
 }

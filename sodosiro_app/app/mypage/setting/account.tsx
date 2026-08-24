@@ -2,12 +2,15 @@ import { RightIcon } from "@/assets/svgs";
 import CustomText from "@/components/common/CustomText";
 import Header from "@/components/common/Header";
 import LogoutModal from "@/components/mypage/setting/LogoutModal";
+import { useUserStore } from "@/stores/useUserStore";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 
 export default function AccountSettingScreen() {
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
+
+  const email = useUserStore((state) => state.user?.email);
 
   return (
     <>
@@ -16,7 +19,7 @@ export default function AccountSettingScreen() {
         <View className={`gap-3 py-3`}>
           <CustomText font="body1">로그인 계정 (카카오)</CustomText>
           <View className={`p-3 bg-primary-light rounded-md`}>
-            <CustomText font="body2">sodosiro@gmail.com</CustomText>
+            <CustomText font="body2">{email}</CustomText>
           </View>
         </View>
         <Pressable

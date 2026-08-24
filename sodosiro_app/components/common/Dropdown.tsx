@@ -36,7 +36,6 @@ export default function Dropdown({
 
       {isExpanded && (
         <Animated.View
-          key="dropdown_animated_content"
           entering={FadeInDown.duration(150)}
           className="w-full bg-white overflow-hidden z-0"
         >

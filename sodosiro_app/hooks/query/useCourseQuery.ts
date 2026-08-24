@@ -1,4 +1,4 @@
-import { getMyCoursesApi, GetMyCoursesParams } from "@/api/course";
+import { getCourseDetail, getMyCoursesApi, GetMyCoursesParams } from "@/api/course";
 import { useQuery } from "@tanstack/react-query";
 
 export const courseKeys = {
@@ -12,3 +12,11 @@ export function useMyCoursesQuery(params?: GetMyCoursesParams) {
     queryFn: () => getMyCoursesApi(params).then((res) => res),
   });
 }
+
+export const useCourseDetailQuery = (courseId: string | number | undefined) => {
+  return useQuery({
+    queryKey: ["courseDetail", courseId],
+    queryFn: () => getCourseDetail(courseId!),
+    enabled: !!courseId,
+  });
+};

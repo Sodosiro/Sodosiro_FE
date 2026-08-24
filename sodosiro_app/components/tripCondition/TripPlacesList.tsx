@@ -1,14 +1,15 @@
 import { PlusIcon } from "@/assets/svgs";
 
+import { SpotItem } from "@/api/course";
 import { View } from "react-native";
 import TripPlaceMini from "../place/TripPlaceMini";
 type Props = {
-  onSelectPlace?: (place: PlaceType) => void;
-  places: PlaceType[];
+  onSelectPlace?: (place: SpotItem) => void;
+  places: SpotItem[];
 };
 
 export default function TripPlacesList({ places, onSelectPlace }: Props) {
-  const handleSelect = (place: PlaceType) => {
+  const handleSelect = (place: SpotItem) => {
     onSelectPlace?.(place);
   };
   return (

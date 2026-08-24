@@ -1,4 +1,5 @@
 import { CalendarIcon } from "@/assets/svgs";
+import { DAY_OF_WEEKNAMES } from "@/constants/Trip";
 import { Pressable, Text } from "react-native";
 
 export interface DateRange {
@@ -18,8 +19,7 @@ function formatDate(date: Date) {
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
 
-  const weekDays = ["일", "월", "화", "수", "목", "금", "토"];
-  const weekDay = weekDays[date.getDay()];
+  const weekDay = DAY_OF_WEEKNAMES[date.getDay()];
 
   return `${year}.${month}.${day} (${weekDay})`;
 }

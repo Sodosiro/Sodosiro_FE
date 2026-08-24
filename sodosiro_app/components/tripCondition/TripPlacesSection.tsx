@@ -1,63 +1,49 @@
-import CustomText from "@/components/common/CustomText"; // 프로젝트의 CustomText 경로에 맞춰주세요
+import { SpotItem } from "@/api/course";
+import CustomText from "@/components/common/CustomText";
 import Spinner from "@/components/common/Spinner";
-import { useLikePlacesQuery } from "@/hooks/query/useLikePlacesQuery";
-import { usePlacesQuery } from "@/hooks/query/usePlacesQuery";
-import { useState } from "react";
+import { useAlternativeSpotsQuery } from "@/hooks/query/useAlternativeSpotsQuery";
 import { View } from "react-native";
-import CategoryList from "../common/category/CategoryList";
-import TripConditionTabBar from "./TripConditionTabBar";
 import TripPlacesList from "./TripPlacesList";
 
-type TabType = "지금 많이 찾는 장소" | "저장한 장소";
 type Props = {
-  onSelectPlace?: (place: PlaceType) => void;
+  contentId: number; // 대체 추천을 조회할 대상 장소의 contentId
+  onSelectPlace?: (place: SpotItem) => void;
 };
 
-export default function TripPlacesSection({ onSelectPlace }: Props) {
-  const [currentTab, setCurrentTab] = useState<TabType>("지금 많이 찾는 장소");
-  const [selectedCategory, setSelectedCategory] = useState<CategoryType>("all");
+export default function TripPlacesSection({ contentId, onSelectPlace }: Props) {
+  // 대체 장소 추천 쿼리 호출
+  const { data, isPending } = useAlternativeSpotsQuery(contentId);
 
-  // 1. 인기 장소 쿼리
-  const popularQuery = usePlacesQuery(selectedCategory, "POPULAR", 5);
-
-  // 2. 저장한 장소 쿼리
-  const likeQuery = useLikePlacesQuery(selectedCategory, undefined, "RECENT");
-
-  // 3. 현재 탭에 따른 데이터 및 로딩 상태 분기
-  const isPopularTab = currentTab === "지금 많이 찾는 장소";
-  const isPending = isPopularTab ? popularQuery.isPending : likeQuery.isPending;
-
-  const places = isPopularTab
-    ? popularQuery.data?.data.items
-    : (likeQuery.data?.pages.flatMap((page) => page.data.content) ?? []);
-
-  // 저장한 장소 탭이면서 데이터가 비어있는지 확인
-  const isLikeTabEmpty = !isPopularTab && (!places || places.length === 0);
+  const isEmpty = !data || data?.data.length == 0;
+  const places = data?.data;
 
   return (
     <View className="flex-col px-5 gap-3">
-      <TripConditionTabBar currentTab={currentTab} moveToSection={setCurrentTab} />
-      <CategoryList selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />
-
       {isPending ? (
         <View className="justify-center items-center h-91.5">
           <Spinner />
         </View>
-      ) : isLikeTabEmpty ? (
-        /* 저장한 장소가 없을 때 텍스트 표시 */
+      ) : isEmpty ? (
+        /* 대체 추천 장소가 없을 때 */
         <View className="justify-center items-center h-91.5 gap-2">
-          <CustomText font="title">아직 저장한 장소가 없어요.</CustomText>
+          <CustomText font="title">추천할 대체 장소가 없어요.</CustomText>
           <CustomText font="body2" className="text-gray-400">
-            마음에 드는 장소를 저장하면 여기에서 선택할 수 있어요.
+            주변에 추천할 만한 대체 장소를 찾지 못했습니다.
           </CustomText>
         </View>
       ) : (
-        <TripPlacesList
-          places={places}
-          onSelectPlace={(place) => {
-            onSelectPlace?.(place);
-          }}
-        />
+        /* 대체 장소 목록 표시 */
+        <View>
+          <View className="py-3">
+            <CustomText font="title">장소 변경하기</CustomText>
+          </View>
+          <TripPlacesList
+            places={places}
+            onSelectPlace={(place) => {
+              onSelectPlace?.(place);
+            }}
+          />
+        </View>
       )}
     </View>
   );

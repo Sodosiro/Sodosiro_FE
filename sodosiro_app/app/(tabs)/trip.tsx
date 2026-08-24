@@ -1,4 +1,5 @@
 import Header from "@/components/common/Header";
+import Spinner from "@/components/common/Spinner";
 import CompletedTripSection from "@/components/trip/section/CompletedTripSection";
 import OngoingTripSection from "@/components/trip/section/OngoingTripSection";
 import UpcomingTripSection from "@/components/trip/section/UpcomingTripSection";
@@ -38,33 +39,42 @@ export default function TripScreen() {
         currentTab={currentTab}
         moveToSection={setCurrentTab}
         counts={{
-          upcoming: Number(upcomingCourses?.data.courses?.length),
-          completed: Number(completedCourses?.data.courses?.length),
+          upcoming: Number(upcomingCourses?.data.courses?.length || 0),
+          completed: Number(completedCourses?.data.courses?.length || 0),
         }}
       />
-
-      <View className="flex-1">
-        <View style={{ display: currentTab === "예정" ? "flex" : "none", flex: 1 }}>
-          <UpcomingTripSection
-            courses={upcomingCourses?.data.courses}
-            isPending={isUpcomingPending}
-            isError={isUpcomingError}
-          />
+      {isOngoingPending ? (
+        <View className={`flex-1 justify-center items-center`}>
+          <Spinner />
         </View>
+      ) : (
+        <View className="flex-1">
+          <View style={{ display: currentTab === "예정" ? "flex" : "none", flex: 1 }}>
+            <UpcomingTripSection
+              courses={upcomingCourses?.data.courses}
+              isPending={isUpcomingPending}
+              isError={isUpcomingError}
+            />
+          </View>
 
-        <View
-          style={{
-            display: currentTab === "진행 중" ? "flex" : "none",
-            flex: 1,
-          }}
-        >
-          <OngoingTripSection />
-        </View>
+          <View
+            style={{
+              display: currentTab === "진행 중" ? "flex" : "none",
+              flex: 1,
+            }}
+          >
+            <OngoingTripSection
+              courses={ongoingCourses?.data.courses}
+              isPending={isUpcomingPending}
+              isError={isUpcomingError}
+            />
+          </View>
 
-        <View style={{ display: currentTab === "완료" ? "flex" : "none", flex: 1 }}>
-          <CompletedTripSection />
+          <View style={{ display: currentTab === "완료" ? "flex" : "none", flex: 1 }}>
+            <CompletedTripSection />
+          </View>
         </View>
-      </View>
+      )}
     </SafeAreaView>
   );
 }

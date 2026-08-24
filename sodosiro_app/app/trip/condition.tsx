@@ -1,18 +1,11 @@
 import { useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  Modal,
-  Platform,
-  ScrollView,
-  TextInput,
-  View,
-} from "react-native";
+import { KeyboardAvoidingView, Platform, ScrollView, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import BottomSheet from "@/components/common/BottomSheet";
 import CategoryBadge from "@/components/common/category/CategoryBadge";
 import CustomText from "@/components/common/CustomText";
+import DimmedLoading from "@/components/common/DimmedLoading";
 import Header from "@/components/common/Header";
 import Subtitle from "@/components/common/Subtitle";
 import BigBusIcon from "@/components/icon/transport/BusIcon";
@@ -21,8 +14,8 @@ import TripConditionDatePickerButton from "@/components/tripCondition/TripCondit
 import DatePickerSheet from "@/components/tripCondition/TripConditionDatePickerSheet";
 import TripConditionFooter from "@/components/tripCondition/TripConditionFooter";
 import LocationPickerButton from "@/components/tripCondition/TripConditionLocationButton";
+import TripConditionPlacesSection from "@/components/tripCondition/TripConditionPlacesSection";
 import TransportCard from "@/components/tripCondition/TripConditionTransportCard";
-import TripPlacesSection from "@/components/tripCondition/TripPlacesSection";
 import { SODOSI_LIST } from "@/constants/Sodosi";
 import { useCourseRecommendationsMutation } from "@/hooks/query/useCourseMutation";
 import axios from "axios";
@@ -145,7 +138,10 @@ export default function TripScreen() {
       const response = await postCourseRecommendations(requestBody);
       console.log("추천 코스 생성 성공:", response);
 
-      router.push("/trip/timeline");
+      router.push({
+        pathname: "/trip/timeline",
+        params: { courseId: response.courseId },
+      });
     } catch (error) {
       console.error("추천 코스 생성 실패:", error);
       if (axios.isAxiosError(error)) {
@@ -315,7 +311,7 @@ export default function TripScreen() {
                     onClose={() => setShowLocation(false)}
                     minHeight={520}
                   >
-                    <TripPlacesSection onSelectPlace={handleSelectPlace} />
+                    <TripConditionPlacesSection onSelectPlace={handleSelectPlace} />
                     <View className="pt-5" />
                   </BottomSheet>
                 )}
@@ -356,23 +352,7 @@ export default function TripScreen() {
       />
 
       {/* 로딩 딤(Dim) 레이어 Modal */}
-      <Modal transparent visible={isPending} animationType="fade">
-        <View
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 9999,
-          }}
-        >
-          <ActivityIndicator size="large" color="white" />
-        </View>
-      </Modal>
+      <DimmedLoading visible={isPending} />
     </SafeAreaView>
   );
 }

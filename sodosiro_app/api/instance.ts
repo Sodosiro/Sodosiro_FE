@@ -4,7 +4,7 @@ import * as SecureStore from "expo-secure-store";
 
 export const axiosInstance = axios.create({
   baseURL: process.env.EXPO_PUBLIC_SERVER_DOMAIN,
-  timeout: 30000,
+  timeout: 60000,
 });
 
 axiosInstance.interceptors.request.use((config) => {

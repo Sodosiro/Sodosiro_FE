@@ -1,4 +1,5 @@
 import {
+  confirmCourseApi,
   CourseRecommendationRequest,
   deleteCourse,
   postCourseRecommendationsApi,
@@ -37,3 +38,21 @@ export const useDeleteCourseMutation = () => {
     },
   });
 };
+
+export function useConfirmCourseMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (body: { courseId: number }) => confirmCourseApi(body),
+    onSuccess: (_, variables) => {
+      // 해당 코스 상세 정보 재조회
+      queryClient.invalidateQueries({
+        queryKey: ["courseDetail", variables.courseId],
+      });
+      // 전체/내 코스 목록 재조회
+      queryClient.invalidateQueries({
+        queryKey: ["courses"],
+      });
+    },
+  });
+}

@@ -38,9 +38,109 @@ export type MyCoursesResponse = {
   courses: CourseSummaryItem[];
 };
 
+// 이동 수단 타입
+export type TransportMode = "CAR" | "PUBLIC_TRANSPORT";
+
+// 좌표 타입
+export type GeoPoint = {
+  longitude: number;
+  latitude: number;
+};
+
+// 스팟(장소) 상세 정보 타입
+export type SpotItem = {
+  contentId: number;
+  title: string;
+  overview: string;
+  firstImage: string | null;
+  mapX: number;
+  mapY: number;
+  category: CategoryNumber;
+  mustVisit: boolean;
+  gpsVerified: boolean;
+  reviewWritten: boolean;
+  reviewId: number | null;
+  avgRating: number; // 추가됨
+  reviewCount: number; // 추가됨
+};
+
+// 일자별 일정 타입
+export type CourseDayItem = {
+  day: number;
+  date: string;
+  spots: SpotItem[];
+};
+
+// --- 자차 경로 (carRoutes) 관련 타입 ---
+export type CarRouteLeg = {
+  fromId: number;
+  toId: number;
+  durationSeconds: number;
+  distanceMeters: number;
+  tollFare: number;
+  estimatedFuelCost: number;
+  path: GeoPoint[];
+  success: boolean;
+};
+
+export type CourseCarRoute = {
+  day: number;
+  legs: CarRouteLeg[];
+};
+
+// --- 대중교통 경로 (transitRoutes) 관련 타입 ---
+export type TransitRouteStep = {
+  type: string;
+  guidance: string;
+  distanceMeters: number;
+  timeSeconds: number;
+  stopNames: string[];
+  vehicleNames: string[];
+  path: GeoPoint[];
+};
+
+export type TransitRouteDetail = {
+  fromId: number;
+  toId: number;
+  success: boolean;
+  type: string;
+  totalTimeSeconds: number;
+  totalDistanceMeters: number;
+  transfers: number;
+  fare: number;
+  steps: TransitRouteStep[];
+};
+
+export type CourseTransitRoute = {
+  day: number;
+  details: TransitRouteDetail[];
+};
+
+// --- 코스 상세 조회 API 응답 타입 (GET /api/v1/courses/{courseId}) ---
+export type CourseDetailResponse = {
+  courseId: number;
+  title: string;
+  startDate: string;
+  endDate: string;
+  status: CourseStatus;
+  transportMode: TransportMode;
+  days: CourseDayItem[];
+  carRoutes: CourseCarRoute[] | null; // 타입 세부화
+  transitRoutes: CourseTransitRoute[] | null; // 타입 세부화
+};
+
+// --- 일차별 장소 순서/구성 수정 (PATCH /api/v1/courses/{courseId}/days) ---
+export type CourseDayUpdateItem = {
+  day: number;
+  contentIds: number[];
+};
+
+export type UpdateCourseDaysRequest = {
+  days: CourseDayUpdateItem[];
+};
+
 export async function postCourseRecommendationsApi(body: CourseRecommendationRequest) {
-  const { data } = await axiosInstance.post("/api/v1/courses/recommendations", body);
-  return data;
+  return await axiosInstance.post("/api/v1/courses/recommendations", body);
 }
 
 /**
@@ -58,3 +158,27 @@ export async function getMyCoursesApi(params?: GetMyCoursesParams) {
 export const deleteCourse = async (courseId: number): Promise<void> => {
   await axiosInstance.delete(`/api/v1/courses/${courseId}`);
 };
+
+/** 코스 상세 조회 API */
+export const getCourseDetail = async (courseId: string | number) => {
+  return await axiosInstance.get(`/api/v1/courses/${courseId}`);
+};
+
+/**
+ * 코스의 일차별 스팟 순서/장소 수정 API
+ * PATCH /api/v1/courses/{courseId}/days
+ */
+export async function updateCourseDaysApi(
+  courseId: string | number,
+  requestData: UpdateCourseDaysRequest,
+) {
+  return await axiosInstance.patch(`/api/v1/courses/${courseId}/days`, requestData);
+}
+
+/**
+ * 코스 확정 API
+ * POST /api/v1/courses/confirm
+ */
+export async function confirmCourseApi(params: { courseId: number }) {
+  return await axiosInstance.post("/api/v1/courses/confirm", params);
+}

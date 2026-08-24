@@ -1,12 +1,10 @@
 import { CourseSummaryItem } from "@/api/course";
-import TimelineDayBadgeSection from "@/components/timeline/section/TimelineDayBadgeSection";
-import TimelineDaySection from "@/components/timeline/section/TimelineDaySection";
+import Spinner from "@/components/common/Spinner";
 import { useTimelineScrollSpy } from "@/hooks/useTimelineScrollSpy";
-import { INITIAL_PLAN } from "@/mocks/trip";
-import { BottomSheetBackdrop, BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useMemo, useRef, useState } from "react";
-import { ActivityIndicator, ScrollView, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import EmptyState from "../EmptyState";
 import UpcomingTripCard from "../upcoming/UpcomingTripCard";
 
@@ -25,7 +23,6 @@ export default function UpcomingTripSection({
   const [isContentReady, setIsContentReady] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<CourseSummaryItem | null>(null);
 
-  console.log("courses", courses);
   const {
     activeIndex,
     setActiveIndex,
@@ -39,8 +36,8 @@ export default function UpcomingTripSection({
   } = useTimelineScrollSpy();
 
   // TODO: 향후 selectedCourse.courseId 기반으로 상세 타임라인 조회 API(INITIAL_PLAN 대체) 연결 가능
-  const [plan] = useState(INITIAL_PLAN);
-  const badgeOrder = useMemo(() => plan.map(({ id }) => id), [plan]);
+  const [plan] = useState(courses);
+  const badgeOrder = useMemo(() => plan?.map((item, index) => index + 1), [plan]);
 
   // 다른 페이지 이동 시 바텀시트 모달 자동 닫기
   useFocusEffect(
@@ -68,11 +65,22 @@ export default function UpcomingTripSection({
     }
   }, []);
 
+  // 버튼 클릭 핸들러
+  const handleCardPress = (course: CourseSummaryItem) => {
+    router.push({
+      pathname: "/trip/timeline",
+      params: {
+        courseId: course.courseId,
+        isConfirmed: String(course.isConfirmed),
+      },
+    });
+  };
+
   // 1. 로딩 상태 처리
   if (isPending) {
     return (
-      <View className="flex-1 justify-center items-center">
-        <ActivityIndicator size="large" color="#7E9432" />
+      <View className={`flex-1 justify-center items-center`}>
+        <Spinner />
       </View>
     );
   }
@@ -96,7 +104,7 @@ export default function UpcomingTripSection({
           title="아직 여행 일정이 없어요."
           description="새로운 여행 일정을 만들까요?"
           actionLabel="새 일정 만들기"
-          onPressAction={() => router.push("/trip/condition")}
+          onPressAction={() => router.push("/roulette")}
         />
       ) : (
         <>
@@ -105,14 +113,14 @@ export default function UpcomingTripSection({
               {courses?.map((course) => (
                 <UpcomingTripCard
                   key={course.courseId}
-                  course={course} // trip대신 course 데이터 전달
-                  onPress={() => openBottomSheet(course)}
+                  course={course}
+                  onPress={() => handleCardPress(course)}
                 />
               ))}
             </View>
           </ScrollView>
 
-          <BottomSheetModal
+          {/* <BottomSheetModal
             ref={bottomSheetRef}
             snapPoints={["70%"]}
             enableDynamicSizing={false}
@@ -140,7 +148,7 @@ export default function UpcomingTripSection({
               <>
                 <View className="overflow-hidden px-5">
                   <TimelineDayBadgeSection
-                    badgeOrder={badgeOrder}
+                    badgeOrder={badgeOrder ?? []}
                     showEditButton={false}
                     onPressDayBadge={moveToSection}
                     onLayoutDayBadge={handleBadgeLayout}
@@ -160,9 +168,9 @@ export default function UpcomingTripSection({
                   onScroll={handleScroll}
                   showsVerticalScrollIndicator={false}
                 >
-                  {plan.map((dayPlan, index) => (
+                  {plan?.map((dayPlan, index) => (
                     <TimelineDaySection
-                      key={dayPlan.id}
+                      key={dayPlan.courseId}
                       dayPlan={dayPlan}
                       mode="isUpcoming"
                       onLayout={getSectionLayoutHandler(index)}
@@ -172,7 +180,7 @@ export default function UpcomingTripSection({
                 </BottomSheetScrollView>
               </>
             )}
-          </BottomSheetModal>
+          </BottomSheetModal> */}
         </>
       )}
     </View>

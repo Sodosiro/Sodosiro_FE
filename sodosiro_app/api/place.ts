@@ -16,6 +16,10 @@ type GetLikePlacesParams = {
   sort?: SortType;
 };
 
+type GetAlternativeSpotsParams = {
+  contentId: number | string;
+};
+
 export async function getPlacesApi(params?: GetPlacesParams) {
   return axiosInstance.get("/api/v1/travel/spots", { params });
 }
@@ -25,9 +29,7 @@ export async function getPlaceDetailApi(contentId: number) {
 }
 
 export async function postAiRecommendationApi(contentId: number) {
-  return axiosInstance.post(
-    `/api/v1/travel/spots/${contentId}/ai-recommendation`,
-  );
+  return axiosInstance.post(`/api/v1/travel/spots/${contentId}/ai-recommendation`);
 }
 
 export async function postLikeApi(contentIds: number[]) {
@@ -36,4 +38,8 @@ export async function postLikeApi(contentIds: number[]) {
 
 export async function getLikePlaces(params?: GetLikePlacesParams) {
   return axiosInstance.get(`/api/v1/spots/likes`, { params });
+}
+
+export async function getAlternativeSpotsApi(params: GetAlternativeSpotsParams) {
+  return await axiosInstance.get("/api/v1/travel/spots/alternatives", { params });
 }

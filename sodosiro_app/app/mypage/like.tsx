@@ -11,13 +11,11 @@ export default function LikeListScreen() {
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>("all");
   const [sortOption, setSortOption] = useState<SortType>("RECENT");
 
-  const { data, isPending } = useLikePlacesQuery(
-    selectedCategory,
-    undefined,
-    sortOption,
-  );
+  const { data, isPending, hasNextPage, isFetchingNextPage, fetchNextPage } =
+    useLikePlacesQuery(selectedCategory, undefined, sortOption);
 
   const places = data?.pages.flatMap((page) => page.data.content) ?? [];
+  const totalCount = data?.pages[0].data.totalCount ?? 0;
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
@@ -33,7 +31,13 @@ export default function LikeListScreen() {
           <Spinner />
         </View>
       ) : (
-        <LikeList places={places} />
+        <LikeList
+          totalCount={totalCount}
+          places={places}
+          hasNextPage={hasNextPage}
+          isFetchingNextPage={isFetchingNextPage}
+          fetchNextPage={fetchNextPage}
+        />
       )}
     </SafeAreaView>
   );

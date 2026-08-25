@@ -1,13 +1,25 @@
 import { CheckOffIcon, CheckOnIcon } from "@/assets/svgs";
 import CustomText from "@/components/common/CustomText";
 import DeleteModal from "@/components/common/modal/DeleteModal";
+import Spinner from "@/components/common/Spinner";
 import PlaceMini from "@/components/place/PlaceMini";
 import { useLikePlaceMutation } from "@/hooks/mutation/place";
-import { invalidateQueries } from "@/util/query/invalidateQueries";
 import { useState } from "react";
 import { FlatList, Pressable, View } from "react-native";
 
-export default function LikeList({ places }: { places: PlacePrev[] }) {
+export default function LikeList({
+  totalCount,
+  places,
+  hasNextPage,
+  isFetchingNextPage,
+  fetchNextPage,
+}: {
+  totalCount: number;
+  places: PlacePrev[];
+  hasNextPage: boolean;
+  isFetchingNextPage: boolean;
+  fetchNextPage: () => void;
+}) {
   const [isEditing, setIsEditing] = useState(false);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
@@ -37,8 +49,6 @@ export default function LikeList({ places }: { places: PlacePrev[] }) {
     if (selectedIds.length === 0) return;
 
     mutate(selectedIds);
-
-    invalidateQueries([["likePlaces"]]);
 
     setSelectedIds([]);
     setIsEditing(false);
@@ -78,7 +88,7 @@ export default function LikeList({ places }: { places: PlacePrev[] }) {
             ) : (
               <>
                 <CustomText font="body3 tight" className="text-text-secondary">
-                  총 {places.length}개
+                  총 {totalCount}개
                 </CustomText>
 
                 <CustomText
@@ -97,6 +107,19 @@ export default function LikeList({ places }: { places: PlacePrev[] }) {
             data={places}
             keyExtractor={(item) => String(item.contentId)}
             contentContainerClassName="px-5 pb-5 gap-4"
+            onEndReached={() => {
+              if (hasNextPage && !isFetchingNextPage) {
+                fetchNextPage();
+              }
+            }}
+            onEndReachedThreshold={0.5}
+            ListFooterComponent={
+              isFetchingNextPage ? (
+                <View className="py-5 items-center">
+                  <Spinner />
+                </View>
+              ) : null
+            }
             renderItem={({ item: place }) => {
               const isSelected = selectedIds.includes(place.contentId);
 

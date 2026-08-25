@@ -1,6 +1,6 @@
-import { getNotifications } from "@/api/notification";
+import { getNotifications, getNotificationsSetting } from "@/api/notification";
 import { useAuthStore } from "@/stores/useAuthStore";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 
 export function useNotificationsQuery(size: number = 20) {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -15,5 +15,12 @@ export function useNotificationsQuery(size: number = 20) {
     getNextPageParam: (lastPage) => {
       return lastPage.data.nextCursor ?? undefined;
     },
+  });
+}
+
+export function useNotificationsSettingQuery() {
+  return useQuery({
+    queryKey: ["notificationsSetting"],
+    queryFn: () => getNotificationsSetting(),
   });
 }

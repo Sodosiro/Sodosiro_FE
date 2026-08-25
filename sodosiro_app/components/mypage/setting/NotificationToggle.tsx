@@ -1,6 +1,6 @@
 import { AnimatedPressable } from "@/components/common/animated/Animated";
 import useSelectedAnimation from "@/hooks/useSelcetedAnimation";
-import { Dispatch, ReactNode, SetStateAction } from "react";
+import { ReactNode } from "react";
 import { View } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -9,12 +9,12 @@ import Animated, {
 
 export default function NotificationToggle({
   toggle,
-  setToggle,
+  onPress,
   children,
   disabled,
 }: {
   toggle: boolean;
-  setToggle: Dispatch<SetStateAction<boolean>>;
+  onPress: () => void;
   children: ReactNode;
   disabled?: boolean;
 }) {
@@ -39,7 +39,7 @@ export default function NotificationToggle({
       {children}
       <AnimatedPressable
         style={containerStyle}
-        onPress={() => setToggle((prev) => !prev)}
+        onPress={onPress}
         disabled={disabled}
         className="w-11 h-6 rounded-full p-0.75 bg-primary-pressed"
       >

@@ -23,3 +23,17 @@ export async function patchNotificationRead(notificationId: number) {
 export async function patchAllNotificationsRead() {
   return axiosInstance.patch(`/api/v1/notifications/read-all`);
 }
+
+export async function getNotificationsSetting() {
+  return axiosInstance.get(`/api/v1/notifications/preferences`);
+}
+
+export async function patchNotificationsSetting(
+  type: NoticeType,
+  enabled: boolean,
+) {
+  return axiosInstance.patch(`/api/v1/notifications/preferences`, {
+    type,
+    enabled,
+  });
+}

@@ -1,4 +1,8 @@
-type NoticeType = "NEARBY_LIKED_SPOTS" | "REVIEW_REQUEST" | "DIGGING_POST_LIKE";
+type NoticeType =
+  | "ALL"
+  | "NEARBY_LIKED_SPOTS"
+  | "REVIEW_REQUEST"
+  | "DIGGING_POST_LIKE";
 
 type NotificationType =
   | {

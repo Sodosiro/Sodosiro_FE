@@ -15,7 +15,7 @@ export default function NotificationListener() {
         const content = notification.request.content;
         const id = content?.data?.id;
         const type = (content?.data?.type as NoticeType) ?? undefined;
-        const payload = content?.data?.payload ?? undefined;
+        const payload = content?.data ?? undefined;
 
         // 추후 타입 비교하면서 수정 필요
         const onPress = getNotificationPressHandler(

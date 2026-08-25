@@ -1,11 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  TextInput,
-  View,
-} from "react-native";
+import { KeyboardAvoidingView, Platform, ScrollView, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import BottomSheet from "@/components/common/BottomSheet";
@@ -23,6 +17,7 @@ import LocationPickerButton from "@/components/tripCondition/TripConditionLocati
 import TripConditionPlacesSection from "@/components/tripCondition/TripConditionPlacesSection";
 import TransportCard from "@/components/tripCondition/TripConditionTransportCard";
 import { SODOSI_LIST } from "@/constants/Sodosi";
+import { COURSE_STATE } from "@/constants/Trip";
 import { useCourseRecommendationsMutation } from "@/hooks/query/useCourseMutation";
 import axios from "axios";
 import { router, Stack, useLocalSearchParams } from "expo-router";
@@ -73,9 +68,7 @@ export default function TripScreen() {
   const { sigunguId } = useLocalSearchParams<{
     sigunguId: string;
   }>();
-  const SODOSI = SODOSI_LIST.find(
-    (sodosi) => String(sodosi.sigunguId) == sigunguId,
-  );
+  const SODOSI = SODOSI_LIST.find((sodosi) => String(sodosi.sigunguId) == sigunguId);
 
   const [tripTitle, setTripTitle] = useState(`${SODOSI?.name} 여행`);
   const [showCalendar, setShowCalendar] = useState(false);
@@ -90,8 +83,7 @@ export default function TripScreen() {
   const [showErrorText, setShowErrorText] = useState(false);
 
   // useMutation hook
-  const { mutateAsync: postCourseRecommendations, isPending } =
-    useCourseRecommendationsMutation();
+  const { mutateAsync: postCourseRecommendations, isPending } = useCourseRecommendationsMutation();
 
   const [selectedCategory, setSelectedCategory] = useState<CategoryType[]>([]);
 
@@ -138,9 +130,7 @@ export default function TripScreen() {
       transportMode: transport,
       startDate: formatDate(dateRange.startDate),
       endDate: formatDate(dateRange.endDate ?? dateRange.startDate),
-      travelStyles: selectedCategory.map(
-        (category) => CATEGORY_TO_TRAVEL_STYLE[category],
-      ),
+      travelStyles: selectedCategory.map((category) => CATEGORY_TO_TRAVEL_STYLE[category]),
       ...(selectedPlace?.contentId && {
         mustVisitContentId: selectedPlace.contentId,
       }),
@@ -151,9 +141,13 @@ export default function TripScreen() {
       const response = await postCourseRecommendations(requestBody);
       console.log("추천 코스 생성 성공:", response);
 
+      if (router.canDismiss()) {
+        router.dismissAll();
+      }
+
       router.push({
         pathname: "/trip/timeline",
-        params: { courseId: response.data.courseId },
+        params: { courseId: response.data.courseId, courseStatus: COURSE_STATE.TEMP },
       });
     } catch (error) {
       console.error("추천 코스 생성 실패:", error);
@@ -189,15 +183,7 @@ export default function TripScreen() {
 
   function getDayName(date: Date | null): string {
     if (!date) return "";
-    const days = [
-      "일요일",
-      "월요일",
-      "화요일",
-      "수요일",
-      "목요일",
-      "금요일",
-      "토요일",
-    ];
+    const days = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
     return days[date.getDay()];
   }
 
@@ -219,16 +205,9 @@ export default function TripScreen() {
   }, [dateRange, selectedPlace]);
 
   return (
-    <SafeAreaView
-      style={{ flex: 1, backgroundColor: "white" }}
-      edges={["top", "bottom"]}
-    >
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }} edges={["top", "bottom"]}>
       <Stack.Screen options={{ headerShown: false }} />
-      <Header
-        title={tripTitle}
-        showPencil
-        onTitleChange={(newTitle) => setTripTitle(newTitle)}
-      />
+      <Header title={tripTitle} showPencil onTitleChange={(newTitle) => setTripTitle(newTitle)} />
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -255,10 +234,7 @@ export default function TripScreen() {
                 }}
               />
               {showCalendar && (
-                <BottomSheet
-                  visible={showCalendar}
-                  onClose={() => setShowCalendar(false)}
-                >
+                <BottomSheet visible={showCalendar} onClose={() => setShowCalendar(false)}>
                   <DatePickerSheet
                     initialStartDate={dateRange.startDate ?? undefined}
                     initialEndDate={dateRange.endDate ?? undefined}
@@ -307,15 +283,11 @@ export default function TripScreen() {
                     *
                   </CustomText>
                 </View>
-                <Subtitle
-                  title="선호하는 관광지가 있나요?"
-                  description="최대 2개 선택"
-                />
+                <Subtitle title="선호하는 관광지가 있나요?" description="최대 2개 선택" />
               </View>
               <View className="flex-row flex-wrap gap-2.5">
                 {CATEGORIES.filter(
-                  (category) =>
-                    !(category == "accommodation" || category == "restaurant"),
+                  (category) => !(category == "accommodation" || category == "restaurant"),
                 ).map((category) => {
                   const isSelected = selectedCategory.includes(category);
                   return (
@@ -346,9 +318,7 @@ export default function TripScreen() {
                     onClose={() => setShowLocation(false)}
                     minHeight={520}
                   >
-                    <TripConditionPlacesSection
-                      onSelectPlace={handleSelectPlace}
-                    />
+                    <TripConditionPlacesSection onSelectPlace={handleSelectPlace} />
                     <View className="pt-5" />
                   </BottomSheet>
                 )}

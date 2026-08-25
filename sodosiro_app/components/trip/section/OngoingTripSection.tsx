@@ -1,10 +1,24 @@
-import { CourseSummaryItem } from "@/api/course";
+import { CourseDayItem, CourseDetailResponse, CourseSummaryItem } from "@/api/course";
+import DimmedLoading from "@/components/common/DimmedLoading";
 import Spinner from "@/components/common/Spinner";
+import KakaoMap from "@/components/explore/KakaoMap";
+import TimelineDayBadgeSection from "@/components/timeline/section/TimelineDayBadgeSection";
+import TimelineDaySection from "@/components/timeline/section/TimelineDaySection";
+import { COURSE_STATE } from "@/constants/Trip";
+import { useToast } from "@/contexts/ToastProvider";
+import { useConfirmCourseMutation } from "@/hooks/query/useCourseMutation";
+import { useCourseDetailQuery } from "@/hooks/query/useCourseQuery";
 import { useTimelineScrollSpy } from "@/hooks/useTimelineScrollSpy";
-import { router } from "expo-router";
-import { useState } from "react";
-import { View } from "react-native";
+import { createRouteInfo, RenderCourseDayItem, transformCourseDetail } from "@/util/route/route";
+import { useQueryClient } from "@tanstack/react-query";
+import { router, useNavigation } from "expo-router";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Dimensions, View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
+import { useSharedValue } from "react-native-reanimated";
+import WebView from "react-native-webview";
 import EmptyState from "../EmptyState";
+import OnAirBanner from "../OnAirBanner";
 
 type OngoingTripSectionProps = {
   courses: CourseSummaryItem[] | undefined;
@@ -14,10 +28,21 @@ type OngoingTripSectionProps = {
 
 export default function OngoingTripSection({
   courses,
-  isPending,
-  isError,
+  isPending: isCoursesPending,
+  isError: isCoursesError,
 }: OngoingTripSectionProps) {
-  const [tripTitle, setTripTitle] = useState("강릉 여행");
+  const courseId = courses?.[0].courseId;
+  const courseStatus = COURSE_STATE.IN_PROGRESS;
+  const { data: courseResponse, isPending, isError } = useCourseDetailQuery(courseId);
+  const { mutate: confirmCourse, isPending: isConfirmPending } = useConfirmCourseMutation();
+  const queryClient = useQueryClient();
+  const navigation = useNavigation();
+  const { showToast } = useToast();
+
+  const [tripTitle, setTripTitle] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
+  const webViewRef = useRef<React.ComponentRef<typeof WebView>>(null);
+  const [temp, setTemp] = useState<CourseDayItem[]>([]);
 
   const {
     activeIndex,
@@ -31,7 +56,63 @@ export default function OngoingTripSection({
     getSectionLayoutHandler,
   } = useTimelineScrollSpy();
 
-  // const badgeOrder = useMemo(() => plan.map((item, index) => index +1), [plan]);
+  const [selectedSpotIndexes, setSelectedSpotIndexes] = useState<Record<number, number>>({});
+  const selectedSpotIndex = selectedSpotIndexes[activeIndex] ?? 0;
+
+  useEffect(() => {
+    if (courseResponse?.data) {
+      const courseDetail: CourseDetailResponse = courseResponse.data;
+      if (courseDetail.title) setTripTitle(courseDetail.title);
+      if (courseDetail.days) {
+        setTemp(courseDetail.days);
+      }
+      const EXCLUDE_KEYS = [
+        "mapX",
+        "mapY",
+        "x",
+        "y",
+        "lat",
+        "lng",
+        "latitude",
+        "longitude",
+        "point",
+        "points",
+        "path",
+        "stopNames",
+      ];
+      console.log(
+        "--------------------------courseDetail.transitRoutes--------------------------",
+        JSON.stringify(
+          courseDetail.carRoutes,
+          (key, value) => {
+            // 제외하고 싶은 좌표 키 값 필터링
+            if (EXCLUDE_KEYS.includes(key)) {
+              return undefined; // undefined를 반환하면 해당 키는 출력에서 제외됩니다.
+            }
+            return value;
+          },
+          2,
+        ),
+      );
+    }
+  }, [courseResponse]);
+
+  const transformedDays: RenderCourseDayItem[] = useMemo(() => {
+    if (!courseResponse?.data) return [];
+    return transformCourseDetail(courseResponse.data);
+  }, [courseResponse]);
+
+  const routeInfo = useMemo(() => {
+    if (!courseResponse?.data) {
+      return null;
+    }
+
+    return createRouteInfo(courseResponse.data, activeIndex, selectedSpotIndex);
+  }, [courseResponse, activeIndex, selectedSpotIndex]);
+
+  const badgeOrder = useMemo(() => temp.map((_, index) => index + 1), [temp]);
+  const screenWidth = Dimensions.get("window").width;
+  const animatedPosition = useSharedValue((screenWidth * 2) / 3);
 
   // 1. 로딩 상태 처리
   if (isPending) {
@@ -54,6 +135,8 @@ export default function OngoingTripSection({
     );
   }
 
+  console.log("transformedDays", transformedDays);
+
   return (
     <View className="flex-1">
       {Number(courses?.length) === 0 ? (
@@ -64,56 +147,64 @@ export default function OngoingTripSection({
           onPressAction={() => router.push("/roulette")}
         />
       ) : (
-        <></>
-      )}
-      {/* nodata */}
-      {/* {plan.length === 0 ? (
-        <EmptyState
-          title="아직 여행 일정이 없어요."
-          description="새로운 여행 일정을 만들까요?"
-          actionLabel="새 일정 만들기"
-          onPressAction={() => router.push("/trip/condition")}
-        />
-      ) : (
         <>
           <OnAirBanner tripTitle={tripTitle} />
-          <Image
-            source={require("@/assets/images/map.png")}
-            resizeMode="cover"
-            style={{ width: `100%` }}
-          />
-          <TimelineDayBadgeSection
-            badgeOrder={badgeOrder}
-            showEditButton={false}
-            onPressDayBadge={moveToSection}
-            onLayoutDayBadge={handleBadgeLayout}
-            onBadgeContainerLayout={handleBadgeContainerLayout}
-            activeIndex={activeIndex}
-            setActiveIndex={setActiveIndex}
-            badgeScrollRef={badgeScrollRef}
-          /> */}
+          <View className={`w-full aspect-3/2 overflow-hidden`}>
+            <KakaoMap
+              webViewRef={webViewRef}
+              mode={"navigation"}
+              routeData={routeInfo}
+              animatedPosition={animatedPosition}
+            />
+          </View>
 
-      {/* 일정 리스트 */}
-      {/* <ScrollView
-            ref={mainScrollRef}
-            className="flex-1"
-            contentContainerStyle={{ paddingHorizontal: 20 }}
-            onScroll={handleScroll}
-            scrollEventThrottle={16}
-            showsVerticalScrollIndicator={false}
-          >
-            {plan.map((dayPlan, index) => (
-              <TimelineDaySection
-                key={dayPlan.id}
-                dayPlan={dayPlan}
-                mode="isOngoing"
-                onLayout={getSectionLayoutHandler(index)}
-                dayIndex={index}
-              />
-            ))}
-          </ScrollView>
+          <View className="flex-1">
+            <TimelineDayBadgeSection
+              badgeOrder={badgeOrder}
+              showEditButton={false}
+              onPressDayBadge={moveToSection}
+              onLayoutDayBadge={handleBadgeLayout}
+              onBadgeContainerLayout={handleBadgeContainerLayout}
+              activeIndex={activeIndex}
+              setActiveIndex={setActiveIndex}
+              badgeScrollRef={badgeScrollRef}
+            />
+
+            <ScrollView
+              className="flex-1"
+              ref={mainScrollRef}
+              contentContainerStyle={{
+                paddingHorizontal: 20,
+              }}
+              onScroll={handleScroll}
+              scrollEventThrottle={32}
+              showsVerticalScrollIndicator={false}
+            >
+              {temp.map((item, index) => (
+                <TimelineDaySection
+                  key={item.day}
+                  dayPlan={item}
+                  // ★ 2. 해당 일차(day)에 해당하는 경로 통합 데이터(transformedSpots) 추가 전달
+                  transformedSpots={transformedDays.find((td) => td.day === item.day)?.spots}
+                  transportMode={courseResponse.data.transportMode}
+                  mode={courseStatus}
+                  dayIndex={index}
+                  setPlan={setTemp}
+                  onLayout={getSectionLayoutHandler(index)}
+                  onRouteSpotChange={(spotIndex) => {
+                    setSelectedSpotIndexes((prev) => ({
+                      ...prev,
+                      [index]: spotIndex,
+                    }));
+                  }}
+                />
+              ))}
+            </ScrollView>
+          </View>
+          {/* <DimmedLoading visible={isPatchPending || isConfirmPending} /> */}
+          <DimmedLoading visible={isConfirmPending} />
         </>
-      )} */}
+      )}
     </View>
   );
 }

@@ -5,6 +5,7 @@ import Header from "@/components/common/Header";
 import CreateFeedStepContent from "@/components/feed/create/step/CreateFeedStepContent";
 import CreateFeedStepHistory from "@/components/feed/create/step/CreateFeedStepHistory";
 import CreateFeedStepPlace from "@/components/feed/create/step/CreateFeedStepPlace";
+import { COURSE_STATE } from "@/constants/Trip";
 import { useCoursePlacesQuery, useCoursesQuery } from "@/hooks/query/course";
 import { invalidateQueries } from "@/util/query/invalidateQueries";
 import axios from "axios";
@@ -48,7 +49,7 @@ export default function CreateFeedScreen() {
   }));
 
   const { data: coursesData, isPending: isCoursesPending } =
-    useCoursesQuery("FINISHED");
+    useCoursesQuery(COURSE_STATE.FINISHED);
   const courses = coursesData?.data.courses;
 
   const { data: coursePlacesData, isPending: isPlacesPending } =

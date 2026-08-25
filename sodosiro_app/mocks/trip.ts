@@ -47,14 +47,14 @@ type RouteStep = {
   distance: string; // "300m"
 };
 
-type OngoingRouteSummaryCardProps = {
+type BusRouteSummaryCardProps = {
   totalDuration: string;
   totalDistance: string;
   fare: string;
   steps: RouteStep[];
 };
 
-export const MOCK_TRANSPORT_ROUTE: OngoingRouteSummaryCardProps = {
+export const MOCK_TRANSPORT_ROUTE: BusRouteSummaryCardProps = {
   totalDuration: "14분",
   totalDistance: "1.3km",
   fare: "1,750원",

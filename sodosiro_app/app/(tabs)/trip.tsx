@@ -4,6 +4,7 @@ import CompletedTripSection from "@/components/trip/section/CompletedTripSection
 import OngoingTripSection from "@/components/trip/section/OngoingTripSection";
 import UpcomingTripSection from "@/components/trip/section/UpcomingTripSection";
 import TripTabBar from "@/components/trip/TripTabBar";
+import { COURSE_STATE } from "@/constants/Trip";
 import { useMyCoursesQuery } from "@/hooks/query/useCourseQuery";
 import { useState } from "react";
 import { View } from "react-native";
@@ -18,19 +19,19 @@ export default function TripScreen() {
     data: upcomingCourses,
     isPending: isUpcomingPending,
     isError: isUpcomingError,
-  } = useMyCoursesQuery({ status: "UPCOMING" });
+  } = useMyCoursesQuery({ status: COURSE_STATE.UPCOMING });
 
   const {
     data: ongoingCourses,
     isPending: isOngoingPending,
     isError: isOngoingError,
-  } = useMyCoursesQuery({ status: "IN_PROGRESS" });
+  } = useMyCoursesQuery({ status: COURSE_STATE.IN_PROGRESS });
 
   const {
     data: completedCourses,
     isPending: isCompletedPending,
     isError: isCompletedError,
-  } = useMyCoursesQuery({ status: "FINISHED" });
+  } = useMyCoursesQuery({ status: COURSE_STATE.FINISHED });
 
   return (
     <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: "white" }}>
@@ -65,13 +66,17 @@ export default function TripScreen() {
           >
             <OngoingTripSection
               courses={ongoingCourses?.data.courses}
-              isPending={isUpcomingPending}
-              isError={isUpcomingError}
+              isPending={isOngoingPending}
+              isError={isOngoingError}
             />
           </View>
 
           <View style={{ display: currentTab === "완료" ? "flex" : "none", flex: 1 }}>
-            <CompletedTripSection />
+            <CompletedTripSection
+              courses={completedCourses?.data.courses}
+              isPending={isCompletedPending}
+              isError={isCompletedError}
+            />
           </View>
         </View>
       )}

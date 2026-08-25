@@ -1,6 +1,7 @@
 import {
   CourseDayItem,
   CourseDetailResponse,
+  CourseStatus,
   SpotItem,
   updateCourseDaysApi,
 } from "@/api/course";
@@ -14,12 +15,13 @@ import KakaoMap from "@/components/explore/KakaoMap";
 import TimelineDayBadgeSection from "@/components/timeline/section/TimelineDayBadgeSection";
 import TimelineDaySection from "@/components/timeline/section/TimelineDaySection";
 import TripPlanConfirmModal from "@/components/timeline/TripPlanConfirmModal";
+import { COURSE_STATE } from "@/constants/Trip";
 import { useToast } from "@/contexts/ToastProvider";
 import { useConfirmCourseMutation } from "@/hooks/query/useCourseMutation";
 import { useCourseDetailQuery } from "@/hooks/query/useCourseQuery";
 import { useTimelineScrollSpy } from "@/hooks/useTimelineScrollSpy";
 import { formatCoursePeriod } from "@/util/date/date";
-import { createRouteInfo } from "@/util/route/route";
+import { createRouteInfo, RenderCourseDayItem, transformCourseDetail } from "@/util/route/route";
 import { useQueryClient } from "@tanstack/react-query";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -29,24 +31,17 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import WebView from "react-native-webview";
 
 export default function TimelineScreen() {
-  const { courseId, isConfirmed } = useLocalSearchParams<{
+  const { courseId, courseStatus } = useLocalSearchParams<{
     courseId: string;
-    isConfirmed: string;
+    courseStatus: CourseStatus | "TEMP";
   }>();
-  const isCourseConfirmed = isConfirmed === "true";
 
-  const {
-    data: courseResponse,
-    isPending,
-    isError,
-  } = useCourseDetailQuery(courseId);
-  const { mutate: confirmCourse, isPending: isConfirmPending } =
-    useConfirmCourseMutation();
+  const { data: courseResponse, isPending, isError } = useCourseDetailQuery(courseId);
+  const { mutate: confirmCourse, isPending: isConfirmPending } = useConfirmCourseMutation();
   const queryClient = useQueryClient();
   const navigation = useNavigation();
   const { showToast } = useToast();
 
-  // 1. 모든 Hook 및 State는 조건문(Early Return)보다 항상 위에 선언되어야 합니다.
   const [tripTitle, setTripTitle] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -70,12 +65,13 @@ export default function TimelineScreen() {
   const [temp, setTemp] = useState<CourseDayItem[]>([]);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isPatchPending, setIsPatchPending] = useState(false);
-  const [selectedSpotIndexes, setSelectedSpotIndexes] = useState<
-    Record<number, number>
-  >({});
+  const [selectedSpotIndexes, setSelectedSpotIndexes] = useState<Record<number, number>>({});
   const selectedSpotIndex = selectedSpotIndexes[activeIndex] ?? 0;
 
-  // 2. API 데이터 수신 완료 시 state에 안전하게 세팅
+  const webViewRef = useRef<React.ComponentRef<typeof WebView>>(null);
+  const isInitialRender = useRef(true);
+
+  // API 데이터 수신 시 title 및 일정 상태 세팅
   useEffect(() => {
     if (courseResponse?.data) {
       const courseDetail: CourseDetailResponse = courseResponse.data;
@@ -84,7 +80,54 @@ export default function TimelineScreen() {
         setPlan(courseDetail.days);
         setTemp(courseDetail.days);
       }
+      const EXCLUDE_KEYS = [
+        "mapX",
+        "mapY",
+        "x",
+        "y",
+        "lat",
+        "lng",
+        "latitude",
+        "longitude",
+        "point",
+        "points",
+        "path",
+        "stopNames",
+      ];
+      console.log(
+        "--------------------------courseDetail.transitRoutes--------------------------",
+        JSON.stringify(
+          courseDetail.carRoutes,
+          (key, value) => {
+            // 제외하고 싶은 좌표 키 값 필터링
+            if (EXCLUDE_KEYS.includes(key)) {
+              return undefined; // undefined를 반환하면 해당 키는 출력에서 제외됩니다.
+            }
+            return value;
+          },
+          2,
+        ),
+      );
     }
+  }, [courseResponse]);
+
+  useEffect(() => {
+    // 최초 렌더링 시점이거나 아직 데이터 로딩 전이라면 실행하지 않음
+    if (isInitialRender.current) {
+      if (courseResponse?.data?.title && tripTitle === courseResponse.data.title) {
+        isInitialRender.current = false;
+      }
+      return;
+    }
+
+    // 사용자가 직접 제목을 수정했을 때만 실행
+    handleSaveCourseDays();
+  }, [tripTitle]);
+
+  // ★ 1. 경로 데이터가 매핑된 렌더링용 Day 데이터 생성
+  const transformedDays: RenderCourseDayItem[] = useMemo(() => {
+    if (!courseResponse?.data) return [];
+    return transformCourseDetail(courseResponse.data);
   }, [courseResponse]);
 
   const routeInfo = useMemo(() => {
@@ -103,11 +146,10 @@ export default function TimelineScreen() {
     setIsConfirmOpen(false);
     try {
       const requestBody = {
+        title: tripTitle,
         days: daysToSave.map((item) => ({
           day: item.day,
-          contentIds: item.spots
-            ? item.spots.map((spot) => spot.contentId)
-            : [],
+          contentIds: item.spots ? item.spots.map((spot) => spot.contentId) : [],
         })),
       };
 
@@ -138,9 +180,7 @@ export default function TimelineScreen() {
           ? {
               ...day,
               spots: day.spots.map((place) =>
-                place.contentId === changeTargetId
-                  ? { ...place, ...changedPlace }
-                  : place,
+                place.contentId === changeTargetId ? { ...place, ...changedPlace } : place,
               ),
             }
           : day,
@@ -176,12 +216,9 @@ export default function TimelineScreen() {
     );
   };
 
-  const webViewRef = useRef<React.ComponentRef<typeof WebView>>(null);
-
   const screenWidth = Dimensions.get("window").width;
   const animatedPosition = useSharedValue((screenWidth * 2) / 3);
 
-  // 3. Early Return(로딩 및 예외 처리)은 모든 Hook 선언이 완료된 바로 이 위치에서 수행합니다.
   if (isPending || !courseResponse?.data) {
     return (
       <View className={`flex-1 justify-center items-center`}>
@@ -201,12 +238,11 @@ export default function TimelineScreen() {
     >
       <Header
         title={tripTitle}
-        showPencil={!isCourseConfirmed}
+        showPencil={courseStatus === COURSE_STATE.TEMP}
         onTitleChange={(newTitle) => setTripTitle(newTitle)}
       />
 
-      {/* 확정 코스 여부에 따라 렌더링 결정 */}
-      {isCourseConfirmed && (
+      {courseStatus !== COURSE_STATE.TEMP && (
         <View className={`w-full aspect-3/2 overflow-hidden`}>
           <KakaoMap
             webViewRef={webViewRef}
@@ -222,7 +258,7 @@ export default function TimelineScreen() {
           badgeOrder={badgeOrder}
           isEditing={isEditing}
           setIsEditing={setIsEditing}
-          showEditButton={!isCourseConfirmed}
+          showEditButton={courseStatus === COURSE_STATE.TEMP}
           setPlan={setTemp}
           onPressDayBadge={moveToSection}
           handleConfirmOpen={handleConfirmOpen}
@@ -257,8 +293,10 @@ export default function TimelineScreen() {
               key={item.day}
               setOnDrag={setOnDrag}
               dayPlan={item}
-              mode={"isUpcoming"}
-              isCourseConfirmed={isCourseConfirmed}
+              // ★ 2. 해당 일차(day)에 해당하는 경로 통합 데이터(transformedSpots) 추가 전달
+              transformedSpots={transformedDays.find((td) => td.day === item.day)?.spots}
+              transportMode={courseResponse.data.transportMode}
+              mode={courseStatus}
               isEditing={isEditing}
               dayIndex={index}
               setPlan={setTemp}
@@ -274,7 +312,7 @@ export default function TimelineScreen() {
           ))}
         </ScrollView>
 
-        {!isCourseConfirmed && (
+        {courseStatus === COURSE_STATE.TEMP && (
           <TimelineExportFooter
             isEditing={isEditing}
             onConfirm={() => {
@@ -289,12 +327,12 @@ export default function TimelineScreen() {
         title="이 일정을 저장할까요?"
         cancelText="취소"
         confirmText="저장하기"
+        onConfirm={() => handleSaveCourseDays()}
         onClose={() => {
           setTemp(plan);
           setIsEditing(false);
           setIsConfirmOpen(false);
         }}
-        onConfirm={() => handleSaveCourseDays()}
       />
       <TripPlanConfirmModal
         title={tripTitle}
@@ -307,7 +345,6 @@ export default function TimelineScreen() {
           handleConfirmCourse();
         }}
       />
-      {/* 로딩 딤(Dim) 레이어 Modal */}
       <DimmedLoading visible={isPatchPending || isConfirmPending} />
     </View>
   );

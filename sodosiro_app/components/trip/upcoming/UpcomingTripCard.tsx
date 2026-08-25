@@ -4,6 +4,7 @@ import ConfirmDialog from "@/components/common/ConfirmDialog";
 import CustomText from "@/components/common/CustomText";
 import { SODOSI_LIST } from "@/constants/Sodosi";
 import { useDeleteCourseMutation } from "@/hooks/query/useCourseMutation"; // 삭제 Hook 경로에 맞춰 변경해 주세요
+import { calculateDDay, formatNightsAndDays } from "@/util/date/date";
 import { memo, useState } from "react";
 import { Pressable, View } from "react-native";
 import ActionBadge from "../badge/ActionBadge";
@@ -13,39 +14,6 @@ type UpcomingTripCardProps = {
   onPress: () => void;
   onDeleteSuccess?: () => void; // 삭제 성공 후 부모 컴포넌트에 알릴 콜백 (선택)
 };
-
-// D-Day 계산 함수
-function calculateDDay(startDateStr: string): number {
-  if (!startDateStr) return 0;
-  const [sYear, sMonth, sDay] = startDateStr.split("-").map(Number);
-  const today = new Date();
-
-  const start = new Date(sYear, sMonth - 1, sDay);
-  const current = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-
-  const diffTime = start.getTime() - current.getTime();
-  return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-}
-
-// 박/일 계산 함수
-function formatNightsAndDays(startDateStr: string, endDateStr: string): string {
-  if (!startDateStr || !endDateStr) return "";
-  const [sYear, sMonth, sDay] = startDateStr.split("-").map(Number);
-  const [eYear, eMonth, eDay] = endDateStr.split("-").map(Number);
-
-  const start = new Date(sYear, sMonth - 1, sDay);
-  const end = new Date(eYear, eMonth - 1, eDay);
-
-  const diffDays = Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
-
-  if (diffDays <= 0) {
-    return "당일치기";
-  }
-
-  const nights = diffDays;
-  const days = diffDays + 1;
-  return `${nights}박 ${days}일`;
-}
 
 function UpcomingTripCard({ course, onPress, onDeleteSuccess }: UpcomingTripCardProps) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -126,7 +94,7 @@ function UpcomingTripCard({ course, onPress, onDeleteSuccess }: UpcomingTripCard
         <View className="h-px bg-[#E5E5E5] my-3" />
 
         {/* Button */}
-        <View className="flex-row flex-1">
+        <View className="flex-row">
           <ActionBadge
             text={course.isConfirmed ? "여행 보기" : "이어서 만들기"}
             onPress={onPress}

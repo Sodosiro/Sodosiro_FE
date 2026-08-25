@@ -1,23 +1,32 @@
-import { SpotItem } from "@/api/course";
+import {
+  CarRouteLeg,
+  CourseStatus,
+  SpotItem,
+  TransitRouteDetail,
+  TransportMode,
+} from "@/api/course";
 import { AlignIcon, StarIcon } from "@/assets/svgs";
 import CustomText from "@/components/common/CustomText";
 import Dropdown from "@/components/common/Dropdown";
-import { MOCK_TRANSPORT_ROUTE } from "@/mocks/trip";
+import { COURSE_STATE } from "@/constants/Trip";
 import { NumberToCategory } from "@/util/place/category";
 import { router } from "expo-router";
 import { memo } from "react";
-import { Pressable, View } from "react-native";
+import { Linking, Pressable, View } from "react-native";
 import Tag from "../place/Tag";
 import ActionBadge from "../trip/badge/ActionBadge";
-import OngoingRouteSummaryCard from "../trip/ongoing/OngoingRouteSummaryCard";
+import BusRouteSummaryCard from "../trip/BusRouteSummaryCard";
+import CarRouteSummaryCard from "../trip/CarRouteSummaryCard";
 
 type TimelineItemProps = {
   place: SpotItem;
   isExpanded: boolean;
-  isCourseConfirmed: boolean;
   onToggle: (key: string) => void;
   order: number;
-  mode: "isOngoing" | "isUpcoming" | "completed";
+  mode: CourseStatus | "TEMP";
+  transportMode?: TransportMode;
+  routeDetail?: TransitRouteDetail | null; // 대중교통 세부 경로
+  carRouteLeg?: CarRouteLeg | null; // 자차 세부 경로
   onLongPress?: () => void;
   onVerificationPlace?: () => void;
   isEditing?: boolean;
@@ -29,10 +38,12 @@ type TimelineItemProps = {
 function TimelineItem({
   place,
   isExpanded,
-  isCourseConfirmed,
   onToggle,
   order,
   mode,
+  transportMode,
+  routeDetail,
+  carRouteLeg,
   onLongPress,
   onVerificationPlace,
   isEditing = false,
@@ -40,15 +51,31 @@ function TimelineItem({
   isFirstIndex = false,
   onChangePlace,
 }: TimelineItemProps) {
+  // console.log("transportMode", transportMode);
+  // console.log("routeDetail", routeDetail);
+  // console.log("carRouteLeg", carRouteLeg);
   const handleToggle = () => {
     if (!isEditing) {
       onToggle(`${place.contentId}`);
     }
   };
 
-  // 버튼 영역 렌더링 판단 로직을 밖으로 추출
+  const handleOpenKakaoMap = () => {
+    // 카카오맵 딥링크 연결 로직 예시
+    const url = `kakaomap://look?p=${place.mapY},${place.mapX}`;
+    Linking.canOpenURL(url).then((supported) => {
+      if (supported) {
+        Linking.openURL(url);
+      } else {
+        Linking.openURL(
+          `https://map.kakao.com/link/map/${place.title},${place.mapY},${place.mapX}`,
+        );
+      }
+    });
+  };
+
   const renderActionButton = () => {
-    if (mode === "isOngoing") {
+    if (mode === COURSE_STATE.IN_PROGRESS) {
       if (isAuthCompleted) {
         return (
           <ActionBadge
@@ -70,8 +97,7 @@ function TimelineItem({
       );
     }
 
-    // 코스가 확정되지 않은 경우에만 "장소 변경하기" 노출
-    if (!isCourseConfirmed) {
+    if (mode === COURSE_STATE.TEMP) {
       return <ActionBadge onPress={() => onChangePlace?.()} text="장소 변경하기" selected={true} />;
     }
 
@@ -82,7 +108,7 @@ function TimelineItem({
     <View className="pb-3 bg-bg">
       <View className="flex-row">
         <View className="w-[24px] mr-[10px] h-3" />
-        {isFirstIndex || isEditing ? undefined : (
+        {isFirstIndex || isEditing ? null : (
           <View className="h-3 flex-1 border-t border-[#D9D9D9]" />
         )}
       </View>
@@ -92,7 +118,6 @@ function TimelineItem({
         onToggle={handleToggle}
         disabled={isEditing}
         header={
-          // Header 전체 영역을 눌러도 토글 및 롱프레스(편집 모드)가 가능하도록 감싸기
           <Pressable
             className="flex-row flex-1 items-center"
             onPress={handleToggle}
@@ -165,14 +190,19 @@ function TimelineItem({
             </View>
           </View>
         )}
-        {mode === "isOngoing" ? (
-          <OngoingRouteSummaryCard
-            {...MOCK_TRANSPORT_ROUTE}
-            onPressKakaoMap={() => {
-              // 카카오맵 딥링크/웹뷰 오픈
-            }}
-          />
-        ) : null}
+
+        {/* 경로 정보 카드 렌더링 (임시 저장 상태가 아니고 경로 데이터가 존재할 때만 표시) */}
+        {mode !== COURSE_STATE.TEMP && (
+          <>
+            {transportMode === "PUBLIC_TRANSPORT" && routeDetail && (
+              <BusRouteSummaryCard routeDetail={routeDetail} onPressKakaoMap={handleOpenKakaoMap} />
+            )}
+
+            {transportMode === "CAR" && carRouteLeg && (
+              <CarRouteSummaryCard carRouteLeg={carRouteLeg} onPressKakaoMap={handleOpenKakaoMap} />
+            )}
+          </>
+        )}
       </Dropdown>
     </View>
   );

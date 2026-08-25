@@ -28,7 +28,18 @@ export function getNotificationPressHandler(
 
     case "REVIEW_REQUEST":
       return async () => {
-        // TODO
+        router.push({
+          pathname: "/trip/timeline",
+          params: {
+            courseId: String(payload.courseId),
+          },
+        });
+
+        await patchNotificationRead(id);
+        invalidateQueries([["notifications"]]);
       };
+
+    case "ALL":
+      return async () => {};
   }
 }

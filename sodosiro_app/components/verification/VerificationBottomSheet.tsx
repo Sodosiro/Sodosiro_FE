@@ -167,7 +167,7 @@ const VerificationBottomSheet = forwardRef<BottomSheetModal, Props>(
                     onClose();
                   }}
                 >
-                  <CustomText font="body3 tight">취소하기</CustomText>
+                  <CustomText font="body3 tight">취소</CustomText>
                 </AnimatedButton>
                 <AnimatedButton
                   backgroundColor={["#C4D96A", "#A9C92D"]}

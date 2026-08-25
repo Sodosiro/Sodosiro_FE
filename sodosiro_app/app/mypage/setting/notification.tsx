@@ -21,17 +21,13 @@ export default function NotificationSettingScreen() {
   }));
 
   const { data } = useNotificationsSettingQuery();
-  const { mutate } = useNotificationsSettingMutation();
+  const { mutate, isPending } = useNotificationsSettingMutation();
 
   const notificationsSetting = data?.data;
 
   const handleSettingToggle = async (type: NoticeType, enabled: boolean) => {
+    if (isPending) return;
     mutate({ type, enabled });
-
-    if (type === "ALL") setNoticeToggle(enabled);
-    else if (type === "NEARBY_LIKED_SPOTS") setTripNoticeToggle(enabled);
-    else if (type === "DIGGING_POST_LIKE") setActivityNoticeToggle(enabled);
-    else if (type === "REVIEW_REQUEST") setReviewRequestToggle(enabled);
   };
 
   useEffect(() => {
@@ -49,7 +45,7 @@ export default function NotificationSettingScreen() {
           toggle={noticeToggle}
           onPress={() => handleSettingToggle("ALL", !noticeToggle)}
         >
-          <CustomText font="heading2" className={`flex-1`}>
+          <CustomText font="heading2" className={`flex-1 py-2.5`}>
             전체 알림
           </CustomText>
         </NotificationToggle>

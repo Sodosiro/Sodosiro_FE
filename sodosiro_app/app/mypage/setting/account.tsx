@@ -26,7 +26,7 @@ export default function AccountSettingScreen() {
           className={`py-3 flex-row gap-2 items-center`}
           onPress={() => setIsLogoutModalVisible(true)}
         >
-          <CustomText font="body1" className={`flex-1 `}>
+          <CustomText font="body1" className={`flex-1`}>
             로그아웃
           </CustomText>
           <RightIcon width={16} />
@@ -35,7 +35,7 @@ export default function AccountSettingScreen() {
           className={`py-3 flex-row gap-2 items-center`}
           onPress={() => router.push("/mypage/setting/withdraw")}
         >
-          <CustomText font="body1" className={`flex-1 `}>
+          <CustomText font="body1" className={`flex-1`}>
             회원 탈퇴
           </CustomText>
           <RightIcon width={16} />

@@ -7,9 +7,9 @@ export default function RegionList({
   selectedRegion,
   setSelectedRegion,
 }: {
-  regionList: string[];
-  selectedRegion: string;
-  setSelectedRegion: Dispatch<SetStateAction<string>>;
+  regionList: SodosiType[];
+  selectedRegion: SodosiType;
+  setSelectedRegion: Dispatch<SetStateAction<SodosiType>>;
 }) {
   return (
     <View className={`pb-3`}>
@@ -21,7 +21,7 @@ export default function RegionList({
         {regionList.map((region, index) => (
           <AnimatedBadge
             key={index}
-            title={region}
+            title={region.name}
             isSelected={selectedRegion === region}
             onPress={() => setSelectedRegion(region)}
           />

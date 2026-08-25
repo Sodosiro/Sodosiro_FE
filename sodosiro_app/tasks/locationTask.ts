@@ -22,8 +22,6 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
 
   const { latitude, longitude } = location.coords;
 
-  console.log("현재 위치:", latitude, longitude);
-
   try {
     postUpdateLocation({
       latitude,

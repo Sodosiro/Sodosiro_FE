@@ -1,16 +1,9 @@
 import { postAiRecommendationApi } from "@/api/place";
 import CustomText from "@/components/common/CustomText";
 import ExpandableText from "@/components/common/ExpandableText";
+import { SkeletonLine } from "@/components/common/skeleton/SkeletonLine";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
 import { Image, View } from "react-native";
-import Animated, {
-  interpolateColor,
-  useAnimatedStyle,
-  useSharedValue,
-  withRepeat,
-  withTiming,
-} from "react-native-reanimated";
 
 type aiRecommendation = {
   available: boolean;
@@ -43,8 +36,14 @@ export default function AIRecommend({
         </CustomText>
         {isFetching && !aiRecommendation?.available ? (
           <View className={`gap-1.5`}>
-            <SkeletonLine />
-            <SkeletonLine />
+            <SkeletonLine
+              font="body2"
+              backgroundColors={["#EAF2C8", "#DCE9A5"]}
+            />
+            <SkeletonLine
+              font="body2"
+              backgroundColors={["#EAF2C8", "#DCE9A5"]}
+            />
           </View>
         ) : (
           <ExpandableText font="body2" textClass={`text-text-secondary pr-6`}>
@@ -52,37 +51,6 @@ export default function AIRecommend({
           </ExpandableText>
         )}
       </View>
-    </View>
-  );
-}
-
-function SkeletonLine({ width = "100%" }: { width?: `${number}%` }) {
-  const progress = useSharedValue(-1);
-
-  useEffect(() => {
-    progress.value = withRepeat(
-      withTiming(1, {
-        duration: 1000,
-      }),
-      -1,
-      true,
-    );
-  }, []);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    backgroundColor: interpolateColor(
-      progress.value,
-      [0, 1],
-      ["#EAF2C8", "#DCE9A5"],
-    ),
-  }));
-
-  return (
-    <View className="h-4 overflow-hidden rounded bg-gray-200" style={{ width }}>
-      <Animated.View
-        className="h-full w-full bg-gray-100"
-        style={animatedStyle}
-      />
     </View>
   );
 }

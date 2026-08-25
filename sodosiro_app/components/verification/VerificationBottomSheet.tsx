@@ -1,14 +1,16 @@
 import { PinMiniIcon } from "@/assets/svgs";
 import { DEFAULT_IMAGES } from "@/constants/Category";
-import { getDistance } from "@/util/location/distance";
+import { useBingoGpsMutation } from "@/hooks/mutation/bingo";
+import { NumberToCategory } from "@/util/place/category";
 import {
   BottomSheetBackdrop,
   BottomSheetModal,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
+import axios from "axios";
 import * as Location from "expo-location";
-import { forwardRef, useState } from "react";
-import { Image, Linking, View } from "react-native";
+import { forwardRef, useEffect, useState } from "react";
+import { BackHandler, Image, Linking, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AnimatedButton from "../common/animated/AnimatedButton";
 import CustomText from "../common/CustomText";
@@ -18,11 +20,16 @@ type Props = {
   selectedItem: BingoItem | null;
   showToast: (text: string, duration?: number) => void;
   onClose: () => void;
+  bingoStatus?: BingoStatus;
 };
 
 const VerificationBottomSheet = forwardRef<BottomSheetModal, Props>(
-  ({ selectedItem, showToast, onClose }, ref) => {
+  ({ selectedItem, showToast, onClose, bingoStatus }, ref) => {
     const [isLoading, setIsLoading] = useState(false);
+
+    const { mutateAsync } = useBingoGpsMutation();
+
+    const gpsDisabled = bingoStatus === "ENDED";
 
     const handleLocaion = async () => {
       if (!selectedItem) return;
@@ -44,33 +51,42 @@ const VerificationBottomSheet = forwardRef<BottomSheetModal, Props>(
 
         const { latitude, longitude } = location.coords;
 
-        const distance = getDistance(
+        await mutateAsync({
+          contentId: selectedItem.contentId,
           latitude,
           longitude,
-          selectedItem.latlng.lat,
-          selectedItem.latlng.lng,
-        );
-
-        onClose();
-
-        setTimeout(() => {
-          if (distance <= 300) {
-            showToast("방문이 인증되었어요!");
-          } else {
+        });
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (error.response?.data?.code === "GPS409-OUT_OF_RANGE") {
             showToast("300m 이내에서 인증할 수 있어요.");
+          } else {
+            showToast("위치 인증 중 오류가 발생했어요.");
           }
-        }, 300);
-      } catch {
-        showToast("현재 위치를 확인할 수 없어요.");
+        }
       } finally {
+        onClose();
         setIsLoading(false);
       }
     };
 
+    useEffect(() => {
+      if (!isLoading) return;
+
+      const subscription = BackHandler.addEventListener(
+        "hardwareBackPress",
+        () => {
+          return true;
+        },
+      );
+
+      return () => subscription.remove();
+    }, [isLoading]);
+
     return (
       <BottomSheetModal
         ref={ref}
-        enablePanDownToClose
+        enablePanDownToClose={!isLoading}
         handleIndicatorStyle={{
           backgroundColor: "#E6E6E6",
           width: 50,
@@ -81,7 +97,7 @@ const VerificationBottomSheet = forwardRef<BottomSheetModal, Props>(
             {...props}
             appearsOnIndex={0}
             disappearsOnIndex={-1}
-            pressBehavior="close"
+            pressBehavior={isLoading ? "none" : "close"}
           />
         )}
       >
@@ -91,9 +107,9 @@ const VerificationBottomSheet = forwardRef<BottomSheetModal, Props>(
               <View className={`flex-row gap-3 items-center`}>
                 <Image
                   source={
-                    selectedItem.imageSource
-                      ? { uri: selectedItem.imageSource }
-                      : DEFAULT_IMAGES[selectedItem.category]
+                    selectedItem.firstImage
+                      ? { uri: selectedItem.firstImage }
+                      : DEFAULT_IMAGES[NumberToCategory[selectedItem.category]]
                   }
                   className={`w-25 h-25 rounded-xl`}
                 />
@@ -107,8 +123,13 @@ const VerificationBottomSheet = forwardRef<BottomSheetModal, Props>(
                   <CustomText font="heading2">도착하셨나요?</CustomText>
                 </View>
               </View>
-              <CustomText font="body1" className={`text-text-secondary px-1`}>
-                현재 위치를 확인하여 방문을 인증할게요.
+              <CustomText
+                font="body3"
+                className={`${gpsDisabled ? `text-text-muted` : `text-text-secondary`} px-1`}
+              >
+                {gpsDisabled
+                  ? `지난 시즌의 빙고에요.`
+                  : `현재 위치를 확인하여 방문을 인증할게요.`}
               </CustomText>
               <View className={`p-4 gap-2 rounded-xl bg-primary-light`}>
                 <CustomText
@@ -136,7 +157,10 @@ const VerificationBottomSheet = forwardRef<BottomSheetModal, Props>(
                 <AnimatedButton
                   backgroundColor={["#F5F5F5", "#E2E2E8"]}
                   className={`h-13 flex-1 rounded-xl justify-center items-center`}
-                  onPress={() => onClose()}
+                  onPress={() => {
+                    if (isLoading) return;
+                    onClose();
+                  }}
                 >
                   <CustomText font="body3 tight">취소하기</CustomText>
                 </AnimatedButton>
@@ -144,12 +168,19 @@ const VerificationBottomSheet = forwardRef<BottomSheetModal, Props>(
                   backgroundColor={["#C4D96A", "#A9C92D"]}
                   className={`h-13 flex-1 rounded-xl justify-center items-center`}
                   onPress={handleLocaion}
+                  disabled={gpsDisabled}
+                  disabledColor="#f5f5f5"
                   loading={isLoading}
                 >
                   {isLoading ? (
                     <Spinner size={16} />
                   ) : (
-                    <CustomText font="body3 tight">방문 인증하기</CustomText>
+                    <CustomText
+                      font="body3 tight"
+                      className={`${gpsDisabled && `text-text-muted`}`}
+                    >
+                      방문 인증하기
+                    </CustomText>
                   )}
                 </AnimatedButton>
               </View>

@@ -1,13 +1,10 @@
 type BingoItem = {
   position: number;
+  contentId: number;
   title: string;
-  category: CategoryTypeWithoutAll;
+  category: CategoryNumber;
   completed: boolean;
-  latlng: {
-    lat: number;
-    lng: number;
-  };
-  imageSource?: string;
+  firstImage?: string;
 };
 
 type BingoList = {
@@ -19,4 +16,14 @@ type BingoResult = {
   completedLines: number;
   isBingo: boolean;
   completedPositions: number[][];
+};
+
+type SeasonType = "SPRING" | "SUMMER" | "FALL" | "WINTER";
+
+type BingoStatus = "ACTIVE" | "ENDED";
+
+type BingoSeasonType = {
+  year: number;
+  seasonType: SeasonType;
+  status: BingoStatus;
 };

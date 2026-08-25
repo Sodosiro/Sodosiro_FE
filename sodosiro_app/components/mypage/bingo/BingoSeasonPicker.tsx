@@ -1,4 +1,5 @@
 import CustomText from "@/components/common/CustomText";
+import { getBingoSeasonText } from "@/util/bingo/bingoSeason";
 import {
   BottomSheetBackdrop,
   BottomSheetFlatList,
@@ -15,19 +16,19 @@ import {
   View,
 } from "react-native";
 
-const BINGO_SEASONS = [
-  "2026년 여름",
-  "2026년 봄",
-  "2025년 겨울",
-  "2025년 가을",
-];
-
 const ITEM_HEIGHT = 48;
 const VISIBLE_ITEMS = 3;
 const WHEEL_HEIGHT = ITEM_HEIGHT * VISIBLE_ITEMS;
 
-export default function BingoSeasonPicker() {
-  const [selectedSeason, setSelectedSeason] = useState(BINGO_SEASONS[0]);
+export default function BingoSeasonPicker({
+  bingoSeasons,
+  selectedSeason,
+  setSelectedSeason,
+}: {
+  bingoSeasons: BingoSeasonType[];
+  selectedSeason: BingoSeasonType;
+  setSelectedSeason: Dispatch<SetStateAction<BingoSeasonType>>;
+}) {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
   const openSheet = () => {
     bottomSheetRef.current?.present();
@@ -37,7 +38,9 @@ export default function BingoSeasonPicker() {
     <>
       <View className="gap-2">
         <Pressable onPress={openSheet}>
-          <CustomText font="heading2">{selectedSeason}</CustomText>
+          <CustomText font="heading2">
+            {getBingoSeasonText(selectedSeason.year, selectedSeason.seasonType)}
+          </CustomText>
         </Pressable>
 
         <CustomText font="body2" className="text-text-muted">
@@ -49,6 +52,7 @@ export default function BingoSeasonPicker() {
         bottomSheetRef={bottomSheetRef}
         selectedSeason={selectedSeason}
         setSelectedSeason={setSelectedSeason}
+        bingoSeasons={bingoSeasons}
       />
     </>
   );
@@ -58,10 +62,12 @@ const BingoSeasonPickerModal = ({
   bottomSheetRef,
   selectedSeason,
   setSelectedSeason,
+  bingoSeasons,
 }: {
   bottomSheetRef: RefObject<BottomSheetModal | null>;
-  selectedSeason: string;
-  setSelectedSeason: Dispatch<SetStateAction<string>>;
+  selectedSeason: BingoSeasonType;
+  setSelectedSeason: Dispatch<SetStateAction<BingoSeasonType>>;
+  bingoSeasons: BingoSeasonType[];
 }) => {
   const flatListRef = useRef<BottomSheetFlatListMethods>(null);
 
@@ -72,14 +78,14 @@ const BingoSeasonPickerModal = ({
   const handleScrollEnd = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const offsetY = event.nativeEvent.contentOffset.y;
     const index = Math.round(offsetY / ITEM_HEIGHT);
-    const clampedIndex = Math.max(0, Math.min(index, BINGO_SEASONS.length - 1));
-    const season = BINGO_SEASONS[clampedIndex];
+    const clampedIndex = Math.max(0, Math.min(index, bingoSeasons?.length - 1));
+    const season = bingoSeasons?.[clampedIndex];
 
     setTempSelectedSeason(season);
   };
 
-  const handleSelect = (item: string) => {
-    const index = BINGO_SEASONS.indexOf(item);
+  const handleSelect = (item: BingoSeasonType) => {
+    const index = bingoSeasons?.indexOf(item);
 
     if (index < 0) return;
 
@@ -101,7 +107,8 @@ const BingoSeasonPickerModal = ({
     <BottomSheetModal
       ref={bottomSheetRef}
       index={0}
-      enableDynamicSizing
+      snapPoints={[300]}
+      enableDynamicSizing={false}
       enablePanDownToClose
       enableContentPanningGesture={false}
       backdropComponent={(props) => (
@@ -167,10 +174,12 @@ const BingoSeasonPickerModal = ({
               style={{
                 height: WHEEL_HEIGHT,
               }}
-              data={BINGO_SEASONS}
-              keyExtractor={(item) => item}
+              data={bingoSeasons}
+              keyExtractor={(item) =>
+                getBingoSeasonText(item.year, item.seasonType)
+              }
               showsVerticalScrollIndicator={false}
-              initialScrollIndex={BINGO_SEASONS.indexOf(selectedSeason)}
+              initialScrollIndex={bingoSeasons?.indexOf(selectedSeason)}
               bounces={false}
               snapToInterval={ITEM_HEIGHT}
               onMomentumScrollEnd={handleScrollEnd}
@@ -201,7 +210,7 @@ const BingoSeasonPickerModal = ({
                         isSelected ? "text-primary-dark" : "text-text-muted"
                       }
                     >
-                      {item}
+                      {getBingoSeasonText(item.year, item.seasonType)}
                     </CustomText>
                   </Pressable>
                 );

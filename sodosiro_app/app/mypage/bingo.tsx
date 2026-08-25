@@ -1,41 +1,76 @@
 import Header from "@/components/common/Header";
+import Spinner from "@/components/common/Spinner";
 import BingoAdvantage from "@/components/mypage/bingo/BingoAdventage";
 import BingoBoard from "@/components/mypage/bingo/BingoBoard";
 import BingoEmpty from "@/components/mypage/bingo/BingoEmpty";
 import BingoSeasonPicker from "@/components/mypage/bingo/BingoSeasonPicker";
 import RegionList from "@/components/mypage/bingo/RegionList";
 import { SODOSI_LIST } from "@/constants/Sodosi";
-import { BINGO_ITEMS } from "@/mocks/bingo";
+import { useBingoQuery, useBingoSeasonsQuery } from "@/hooks/query/bingo";
 import { getBingoResult } from "@/util/bingo/getBingoResult";
-import { useMemo, useState } from "react";
-import { ScrollView } from "react-native";
+import { useEffect, useMemo, useState } from "react";
+import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function BingoScreen() {
-  const regionList = SODOSI_LIST.map((item) => item.name);
+  const [selectedRegion, setSelectedRegion] = useState<SodosiType>(
+    SODOSI_LIST[0],
+  );
 
-  const [selectedRegion, setSelectedRegion] = useState<string>(regionList[0]);
+  const { data: bingoSeasonsData, isPending: isBingoSeasonsPending } =
+    useBingoSeasonsQuery();
+
+  const bingoSeasons = bingoSeasonsData?.data ?? {};
+
+  const [selectedSeason, setSelectedSeason] = useState<BingoSeasonType>(
+    bingoSeasons[0],
+  );
+
+  const { data: bingoData, isPending: isBingoPending } = useBingoQuery(
+    selectedRegion.sigunguId,
+    selectedSeason?.year,
+    selectedSeason?.seasonType,
+  );
+
+  const bingoItems = bingoData?.data.cells ?? [];
 
   const bingoResult = useMemo(
-    () => (BINGO_ITEMS ? getBingoResult(BINGO_ITEMS) : null),
-    [BINGO_ITEMS],
+    () => (bingoItems ? getBingoResult(bingoItems) : null),
+    [bingoItems],
   );
+
+  useEffect(() => {
+    setSelectedSeason(bingoSeasons[0]);
+  }, [bingoSeasonsData]);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <Header title="소도시 빙고" />
-      {BINGO_ITEMS.length > 0 ? (
+      {isBingoSeasonsPending ? (
+        <View className={`flex-1 justify-center items-center`}>
+          <Spinner />
+        </View>
+      ) : bingoSeasons?.length > 0 ? (
         <>
           <RegionList
-            regionList={regionList}
+            regionList={SODOSI_LIST}
             selectedRegion={selectedRegion}
             setSelectedRegion={setSelectedRegion}
           />
           <ScrollView
             contentContainerClassName={`gap-6 py-3 px-5 justify-start`}
           >
-            <BingoSeasonPicker />
-            <BingoBoard bingoItems={BINGO_ITEMS} bingoResult={bingoResult} />
+            <BingoSeasonPicker
+              bingoSeasons={bingoSeasons}
+              selectedSeason={selectedSeason}
+              setSelectedSeason={setSelectedSeason}
+            />
+            <BingoBoard
+              bingoItems={bingoItems}
+              bingoResult={bingoResult}
+              isPending={isBingoPending}
+              bingoStatus={selectedSeason?.status}
+            />
             <BingoAdvantage comingSoon />
           </ScrollView>
         </>

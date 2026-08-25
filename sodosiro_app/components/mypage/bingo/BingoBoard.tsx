@@ -5,14 +5,19 @@ import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useRef, useState } from "react";
 import { LayoutChangeEvent, View } from "react-native";
 import BingoCell from "./BingoCell";
+import BingoCellSkeleton from "./BingoCellSkeleton";
 import BingoLine from "./BingoLine";
 
 export default function BingoBoard({
   bingoItems,
   bingoResult,
+  isPending,
+  bingoStatus,
 }: {
   bingoItems: BingoItem[];
   bingoResult: BingoResult | null;
+  isPending: boolean;
+  bingoStatus: BingoStatus;
 }) {
   const [boardSize, setBoardSize] = useState(0);
 
@@ -45,22 +50,27 @@ export default function BingoBoard({
             line={bingoResult?.completedPositions ?? []}
           />
         )}
-        {bingoItems.map((item, index) => (
-          <BingoCell
-            key={index}
-            bingoItem={item}
-            onPress={() => {
-              setSelectedItem(item);
-              bottomSheetRef.current?.present();
-            }}
-          />
-        ))}
+        {isPending
+          ? Array.from({ length: 9 }, (_, index) => (
+              <BingoCellSkeleton key={index} />
+            ))
+          : bingoItems.map((item, index) => (
+              <BingoCell
+                key={index}
+                bingoItem={item}
+                onPress={() => {
+                  setSelectedItem(item);
+                  bottomSheetRef.current?.present();
+                }}
+              />
+            ))}
       </View>
       <VerificationBottomSheet
         ref={bottomSheetRef}
         selectedItem={selectedItem}
         showToast={showToast}
         onClose={() => bottomSheetRef?.current?.close()}
+        bingoStatus={bingoStatus}
       />
     </View>
   );

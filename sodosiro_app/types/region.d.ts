@@ -31,3 +31,11 @@ type VisitedRegionType = {
   sigunguCode: string;
   name: string;
 };
+
+type SodosiType = {
+  sigunguId: number;
+  areaCode: string;
+  sigunguCode: string;
+  name: string;
+  comment: string;
+};

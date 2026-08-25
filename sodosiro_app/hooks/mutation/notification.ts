@@ -7,8 +7,7 @@ export function useNotificationsSettingMutation() {
     mutationFn: ({ type, enabled }: { type: NoticeType; enabled: boolean }) =>
       patchNotificationsSetting(type, enabled),
 
-    onSuccess: (response) => {
-      console.log(response.data);
+    onSuccess: () => {
       invalidateQueries([["notificationsSetting"]]);
     },
   });

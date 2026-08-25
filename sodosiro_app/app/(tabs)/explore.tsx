@@ -61,6 +61,7 @@ export default function ExploreScreen() {
           webViewRef={webViewRef}
           mode="marker"
           animatedPosition={animatedPosition}
+          initialData={allPlaces}
         />
       )}
 

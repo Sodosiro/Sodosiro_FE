@@ -5,7 +5,14 @@ import TripPlacesSection from "@/components/tripCondition/TripPlacesSection";
 import { useToast } from "@/contexts/ToastProvider";
 import { formatDateWithDay } from "@/util/date/date";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import { Dispatch, memo, SetStateAction, useCallback, useRef, useState } from "react";
+import {
+  Dispatch,
+  memo,
+  SetStateAction,
+  useCallback,
+  useRef,
+  useState,
+} from "react";
 import { LayoutChangeEvent, View } from "react-native";
 import DraggableFlatList, {
   OpacityDecorator,
@@ -27,6 +34,8 @@ type TimelineDaySectionProps = {
     changeTargetId: number;
     changedPlace: SpotItem;
   }) => void;
+
+  onRouteSpotChange?: (spotIndex: number) => void;
 };
 
 function TimelineDaySection({
@@ -39,10 +48,11 @@ function TimelineDaySection({
   setOnDrag,
   onLayout,
   onPlaceChanged,
+  onRouteSpotChange,
 }: TimelineDaySectionProps) {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
   const [selectedId, setSelectedId] = useState<string | number | null>(
-    dayPlan.spots?.[0] ? `${dayPlan.day}-${dayPlan.spots[0]?.contentId}` : null,
+    dayPlan.spots?.[0] ? `${dayPlan.day}_${dayPlan.spots[0]?.contentId}` : null,
   );
   const [showLocation, setShowLocation] = useState(false);
   const [changeTargetId, setChangeTargetId] = useState<number | null>(null);
@@ -113,7 +123,9 @@ function TimelineDaySection({
       }
 
       const isDuplicatePlace = dayPlan.spots.some(
-        (item) => item.contentId === selectedPlace.contentId && item.contentId !== changeTargetId,
+        (item) =>
+          item.contentId === selectedPlace.contentId &&
+          item.contentId !== changeTargetId,
       );
 
       if (isDuplicatePlace) {
@@ -129,7 +141,9 @@ function TimelineDaySection({
             ? {
                 ...day,
                 spots: day.spots.map((place) =>
-                  place.contentId === changeTargetId ? { ...place, ...selectedPlace } : place,
+                  place.contentId === changeTargetId
+                    ? { ...place, ...selectedPlace }
+                    : place,
                 ),
               }
             : day,
@@ -146,7 +160,14 @@ function TimelineDaySection({
         changedPlace: selectedPlace,
       });
     },
-    [changeTargetId, dayPlan.date, dayPlan.spots, setPlan, showToast, onPlaceChanged],
+    [
+      changeTargetId,
+      dayPlan.date,
+      dayPlan.spots,
+      setPlan,
+      showToast,
+      onPlaceChanged,
+    ],
   );
 
   // 장소 변경 버튼 클릭
@@ -164,7 +185,10 @@ function TimelineDaySection({
         <CustomText font="title" className="text-primary-dark">
           {`${dayPlan.day}일차`}
         </CustomText>
-        <CustomText font="body3" className="text-primary-dark bg-primary-light px-1 py-0.5 rounded">
+        <CustomText
+          font="body3"
+          className="text-primary-dark bg-primary-light px-1 py-0.5 rounded"
+        >
           {`${formatDateWithDay(dayPlan.date)}`}
         </CustomText>
       </View>
@@ -193,7 +217,10 @@ function TimelineDaySection({
                 place={place}
                 isExpanded={isExpanded}
                 isEditing={false}
-                onToggle={() => handleToggle(place.contentId)}
+                onToggle={() => {
+                  handleToggle(place.contentId);
+                  onRouteSpotChange?.(index);
+                }}
                 order={index + 1}
                 mode={mode}
                 isCourseConfirmed={isCourseConfirmed}
@@ -210,9 +237,15 @@ function TimelineDaySection({
             );
           })}
           {showLocation && (
-            <BottomSheet visible={showLocation} onClose={() => setShowLocation(false)}>
+            <BottomSheet
+              visible={showLocation}
+              onClose={() => setShowLocation(false)}
+            >
               {changeTargetId && (
-                <TripPlacesSection onSelectPlace={handleSelectPlace} contentId={changeTargetId} />
+                <TripPlacesSection
+                  onSelectPlace={handleSelectPlace}
+                  contentId={changeTargetId}
+                />
               )}
               <View className="pt-5"></View>
             </BottomSheet>

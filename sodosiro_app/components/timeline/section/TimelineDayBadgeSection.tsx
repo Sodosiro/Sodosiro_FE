@@ -2,9 +2,19 @@ import { CourseDayItem } from "@/api/course";
 import DayBadge from "@/components/trip/badge/DayBadge";
 import EditToggleBadge from "@/components/trip/badge/EditToggleBadge";
 import { LinearGradient } from "expo-linear-gradient";
-import { Dispatch, memo, SetStateAction, useCallback, useEffect, useRef } from "react";
+import {
+  Dispatch,
+  memo,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+} from "react";
 import { LayoutChangeEvent, View } from "react-native";
-import { OpacityDecorator, RenderItemParams } from "react-native-draggable-flatlist";
+import {
+  OpacityDecorator,
+  RenderItemParams,
+} from "react-native-draggable-flatlist";
 import { ScrollView } from "react-native-gesture-handler";
 
 type TimelineDayBadgeSectionProps = {
@@ -81,7 +91,10 @@ function TimelineDayBadgeSection({
 
       return (
         <OpacityDecorator>
-          <View className="px-1" onLayout={(e) => onLayoutDayBadge && onLayoutDayBadge(index, e)}>
+          <View
+            className="px-1"
+            onLayout={(e) => onLayoutDayBadge && onLayoutDayBadge(index, e)}
+          >
             <DayBadge
               text={`${index + 1}일차`}
               selected={!isEditing && index === activeIndex}
@@ -93,7 +106,14 @@ function TimelineDayBadgeSection({
         </OpacityDecorator>
       );
     },
-    [badgeOrder, isEditing, activeIndex, handleBadgePress, onLayoutDayBadge, handleBadgeDelete],
+    [
+      badgeOrder,
+      isEditing,
+      activeIndex,
+      handleBadgePress,
+      onLayoutDayBadge,
+      handleBadgeDelete,
+    ],
   );
 
   return (

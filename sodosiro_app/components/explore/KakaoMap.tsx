@@ -14,10 +14,14 @@ export default function KakaoMap({
   webViewRef,
   mode,
   animatedPosition,
+  initialData,
+  routeData,
 }: {
   webViewRef: RefObject<WebView<unknown> | null>;
   mode: "marker" | "navigation";
-  animatedPosition: SharedValue<number>;
+  animatedPosition?: SharedValue<number>;
+  initialData?: any;
+  routeData?: any;
 }) {
   const { isLoading, setIsLoading } = useWebViewStore();
   const searchResult = useExploreStore((state) => state.searchResult);
@@ -40,14 +44,16 @@ export default function KakaoMap({
     webViewRef,
     mode,
     setIsLoading,
-    initialData: allPlaces,
+    initialData: routeData ? routeData : initialData,
   });
 
   useLocation(sendLocation, isMapReady);
 
-  const animatedStyle = useAnimatedStyle(() => ({
-    height: animatedPosition.value + 8,
-  }));
+  const animatedStyle = animatedPosition
+    ? useAnimatedStyle(() => ({
+        height: animatedPosition.value + 8,
+      }))
+    : undefined;
 
   useEffect(() => {
     if (!location) return;
@@ -98,6 +104,12 @@ export default function KakaoMap({
     updateData(filtered, !!searchResult && isKeywordChanged);
     previousKeywordRef.current = keyword;
   }, [searchResult, selectedCategory]);
+
+  useEffect(() => {
+    if (mode !== "navigation") return;
+
+    updateData(routeData);
+  }, [routeData]);
 
   return (
     <Animated.View

@@ -10,6 +10,7 @@ import DimmedLoading from "@/components/common/DimmedLoading";
 import Header from "@/components/common/Header";
 import Spinner from "@/components/common/Spinner";
 import TimelineExportFooter from "@/components/common/trip/TimelineExportFooter";
+import KakaoMap from "@/components/explore/KakaoMap";
 import TimelineDayBadgeSection from "@/components/timeline/section/TimelineDayBadgeSection";
 import TimelineDaySection from "@/components/timeline/section/TimelineDaySection";
 import TripPlanConfirmModal from "@/components/timeline/TripPlanConfirmModal";
@@ -18,11 +19,14 @@ import { useConfirmCourseMutation } from "@/hooks/query/useCourseMutation";
 import { useCourseDetailQuery } from "@/hooks/query/useCourseQuery";
 import { useTimelineScrollSpy } from "@/hooks/useTimelineScrollSpy";
 import { formatCoursePeriod } from "@/util/date/date";
+import { createRouteInfo } from "@/util/route/route";
 import { useQueryClient } from "@tanstack/react-query";
-import { Stack, useLocalSearchParams, useNavigation } from "expo-router";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { ScrollView, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useLocalSearchParams, useNavigation } from "expo-router";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Dimensions, ScrollView, View } from "react-native";
+import { useSharedValue } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import WebView from "react-native-webview";
 
 export default function TimelineScreen() {
   const { courseId, isConfirmed } = useLocalSearchParams<{
@@ -60,11 +64,16 @@ export default function TimelineScreen() {
 
   const [isEditing, setIsEditing] = useState(false);
   const [onDrag, setOnDrag] = useState(false);
+  const insets = useSafeAreaInsets();
 
   const [plan, setPlan] = useState<CourseDayItem[]>([]);
   const [temp, setTemp] = useState<CourseDayItem[]>([]);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isPatchPending, setIsPatchPending] = useState(false);
+  const [selectedSpotIndexes, setSelectedSpotIndexes] = useState<
+    Record<number, number>
+  >({});
+  const selectedSpotIndex = selectedSpotIndexes[activeIndex] ?? 0;
 
   // 2. API 데이터 수신 완료 시 state에 안전하게 세팅
   useEffect(() => {
@@ -72,17 +81,20 @@ export default function TimelineScreen() {
       const courseDetail: CourseDetailResponse = courseResponse.data;
       if (courseDetail.title) setTripTitle(courseDetail.title);
       if (courseDetail.days) {
-        console.log(
-          "courseDetail.days",
-          JSON.stringify(courseDetail.days, null, 2),
-        );
         setPlan(courseDetail.days);
         setTemp(courseDetail.days);
       }
     }
   }, [courseResponse]);
 
-  // 저장 처리 함수
+  const routeInfo = useMemo(() => {
+    if (!courseResponse?.data) {
+      return null;
+    }
+
+    return createRouteInfo(courseResponse.data, activeIndex, selectedSpotIndex);
+  }, [courseResponse, activeIndex, selectedSpotIndex]);
+
   const handleSaveCourseDays = async (daysOverride?: CourseDayItem[]) => {
     const daysToSave = daysOverride ?? temp;
 
@@ -147,14 +159,6 @@ export default function TimelineScreen() {
 
   const badgeOrder = useMemo(() => temp.map((_, index) => index + 1), [temp]);
 
-  // 3. Early Return(로딩 및 예외 처리)은 모든 Hook 선언이 완료된 바로 이 위치에서 수행합니다.
-  if (isPending || !courseResponse?.data) {
-    return (
-      <View className={`flex-1 justify-center items-center`}>
-        <Spinner />
-      </View>
-    );
-  }
   const handleConfirmCourse = () => {
     confirmCourse(
       { courseId: Number(courseId) },
@@ -172,17 +176,46 @@ export default function TimelineScreen() {
     );
   };
 
+  const webViewRef = useRef<React.ComponentRef<typeof WebView>>(null);
+
+  const screenWidth = Dimensions.get("window").width;
+  const animatedPosition = useSharedValue((screenWidth * 2) / 3);
+
+  // 3. Early Return(로딩 및 예외 처리)은 모든 Hook 선언이 완료된 바로 이 위치에서 수행합니다.
+  if (isPending || !courseResponse?.data) {
+    return (
+      <View className={`flex-1 justify-center items-center`}>
+        <Spinner />
+      </View>
+    );
+  }
+
   return (
-    <SafeAreaView
-      style={{ flex: 1, backgroundColor: "white" }}
-      edges={["top", "bottom"]}
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: "white",
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+      }}
     >
-      <Stack.Screen options={{ headerShown: false }} />
       <Header
         title={tripTitle}
         showPencil={!isCourseConfirmed}
         onTitleChange={(newTitle) => setTripTitle(newTitle)}
       />
+
+      {/* 확정 코스 여부에 따라 렌더링 결정 */}
+      {isCourseConfirmed && (
+        <View className={`w-full aspect-3/2 overflow-hidden`}>
+          <KakaoMap
+            webViewRef={webViewRef}
+            mode={"navigation"}
+            routeData={routeInfo}
+            animatedPosition={animatedPosition}
+          />
+        </View>
+      )}
 
       <View className="flex-1">
         <TimelineDayBadgeSection
@@ -213,7 +246,6 @@ export default function TimelineScreen() {
           ref={mainScrollRef}
           contentContainerStyle={{
             paddingHorizontal: 20,
-            paddingTop: 8,
           }}
           scrollEnabled={!onDrag}
           onScroll={handleScroll}
@@ -232,6 +264,12 @@ export default function TimelineScreen() {
               setPlan={setTemp}
               onLayout={getSectionLayoutHandler(index)}
               onPlaceChanged={handlePlaceChanged}
+              onRouteSpotChange={(spotIndex) => {
+                setSelectedSpotIndexes((prev) => ({
+                  ...prev,
+                  [index]: spotIndex,
+                }));
+              }}
             />
           ))}
         </ScrollView>
@@ -271,6 +309,6 @@ export default function TimelineScreen() {
       />
       {/* 로딩 딤(Dim) 레이어 Modal */}
       <DimmedLoading visible={isPatchPending || isConfirmPending} />
-    </SafeAreaView>
+    </View>
   );
 }

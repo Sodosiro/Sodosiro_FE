@@ -77,7 +77,9 @@ export default function CustomButton({
         <View className={`flex flex-row justify-center items-center gap-1`}>
           {checked && <BigCheckIcon color={textColor} />}
           {Icon && Icon}
-          <Text className={`${textSize} ${textClass} px-px`}>{title}</Text>
+          <Text className={`${textSize} ${textClass} px-px text-center`}>
+            {title}
+          </Text>
         </View>
       ) : (
         <Spinner color={type === "secondary" ? "#FFFFFF" : "#1A1A1A"} />

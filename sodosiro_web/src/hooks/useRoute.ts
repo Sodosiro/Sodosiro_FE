@@ -1,11 +1,21 @@
 import { useCallback, useEffect, useRef } from "react";
-import { ArrivalMarker, DepartMarker, TransitMarker } from "../assets/svgs";
+
+const createPath = (path: RoutePoint[]) =>
+  path.map(
+    ({ longitude, latitude }) => new kakao.maps.LatLng(latitude, longitude),
+  );
 
 export function useRoute() {
-  const outlineRef = useRef<kakao.maps.Polyline | null>(null);
-  const inlineRef = useRef<kakao.maps.Polyline | null>(null);
-  const dashRef = useRef<kakao.maps.Polyline | null>(null);
-  const markerRefs = useRef<kakao.maps.Marker[]>([]);
+  const polylineRefs = useRef<kakao.maps.Polyline[]>([]);
+  const markerRefs = useRef<kakao.maps.CustomOverlay[]>([]);
+
+  const clearRoutes = useCallback(() => {
+    polylineRefs.current.forEach((polyline) => {
+      polyline.setMap(null);
+    });
+
+    polylineRefs.current = [];
+  }, []);
 
   const clearMarkers = useCallback(() => {
     markerRefs.current.forEach((marker) => {
@@ -19,12 +29,38 @@ export function useRoute() {
     (
       map: kakao.maps.Map,
       position: { x: number; y: number },
-      image: kakao.maps.MarkerImage,
+      index: number,
     ) => {
-      const marker = new kakao.maps.Marker({
+      const content = document.createElement("div");
+
+      content.innerHTML = `
+        <div
+          style="
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #000000;
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            border: 1px solid #FFFFFF;
+            box-sizing: border-box;
+          "
+        >
+          ${index + 1}
+        </div>
+      `;
+
+      const marker = new kakao.maps.CustomOverlay({
         map,
         position: new kakao.maps.LatLng(position.y, position.x),
-        image,
+        content,
+        yAnchor: 0.5,
+        xAnchor: 0.5,
+        zIndex: 10,
       });
 
       markerRefs.current.push(marker);
@@ -32,103 +68,137 @@ export function useRoute() {
     [],
   );
 
-  const drawRoute = useCallback((map: kakao.maps.Map, routeInfo: RouteInfo) => {
-    clearMarkers();
-    outlineRef.current?.setMap(null);
-    inlineRef.current?.setMap(null);
-    dashRef.current?.setMap(null);
+  const drawCarRoute = useCallback(
+    (map: kakao.maps.Map, routeInfo: Extract<RouteInfo, { type: "CAR" }>) => {
+      const path = createPath(routeInfo.paths);
 
-    const bounds = new kakao.maps.LatLngBounds(
-      new kakao.maps.LatLng(routeInfo.bound.min_y, routeInfo.bound.min_x),
-      new kakao.maps.LatLng(routeInfo.bound.max_y, routeInfo.bound.max_x),
-    );
+      // 흰색 외곽
+      const outline = new kakao.maps.Polyline({
+        map,
+        path,
+        strokeWeight: 8,
+        strokeColor: "#FFFFFF",
+        strokeOpacity: 1,
+        strokeStyle: "solid",
+      });
 
-    const path = routeInfo.sections.flatMap((section) =>
-      section.roads.flatMap((road) =>
-        road.vertexes.reduce<kakao.maps.LatLng[]>((acc, _, index, arr) => {
-          if (index % 2 === 0) {
-            acc.push(
-              new kakao.maps.LatLng(
-                arr[index + 1], // lat(y)
-                arr[index], // lng(x)
-              ),
-            );
-          }
-          return acc;
-        }, []),
-      ),
-    );
+      // 초록색 내부
+      const inline = new kakao.maps.Polyline({
+        map,
+        path,
+        strokeWeight: 6,
+        strokeColor: "#7E9432",
+        strokeOpacity: 1,
+        strokeStyle: "solid",
+      });
 
-    outlineRef.current = new kakao.maps.Polyline({
-      map,
-      path,
-      strokeWeight: 8,
-      strokeColor: "#FFFFFF",
-      strokeOpacity: 1,
-    });
+      // 가운데 흰색 점선
+      const dash = new kakao.maps.Polyline({
+        map,
+        path,
+        strokeWeight: 1.5,
+        strokeColor: "#FFFFFF",
+        strokeOpacity: 1,
+        strokeStyle: "dash",
+      });
 
-    inlineRef.current = new kakao.maps.Polyline({
-      map,
-      path,
-      strokeWeight: 6,
-      strokeColor: "#2D7FF9",
-      strokeOpacity: 1,
-    });
+      polylineRefs.current.push(outline, inline, dash);
+    },
+    [],
+  );
 
-    dashRef.current = new kakao.maps.Polyline({
-      map,
-      path,
-      strokeWeight: 2,
-      strokeColor: "#FFFFFF",
-      strokeOpacity: 1,
-      strokeStyle: "dash",
-    });
+  const drawTransitRoute = useCallback(
+    (
+      map: kakao.maps.Map,
+      routeInfo: Extract<RouteInfo, { type: "TRANSIT" }>,
+    ) => {
+      routeInfo.routes.forEach((route) => {
+        const path = createPath(route.path);
 
-    const originImage = new kakao.maps.MarkerImage(
-      DepartMarker,
-      new kakao.maps.Size(60, 60),
-      {
-        offset: new kakao.maps.Point(30, 60),
-      },
-    );
+        const isWalking = route.type === "WALKING";
 
-    const destinationImage = new kakao.maps.MarkerImage(
-      ArrivalMarker,
-      new kakao.maps.Size(60, 60),
-      {
-        offset: new kakao.maps.Point(30, 60),
-      },
-    );
+        if (isWalking) {
+          const dash = new kakao.maps.Polyline({
+            map,
+            path,
+            strokeWeight: 4,
+            strokeColor: "#7E9432",
+            strokeOpacity: 1,
+            strokeStyle: "dashed",
+          });
 
-    const waypointImage = new kakao.maps.MarkerImage(
-      TransitMarker,
-      new kakao.maps.Size(60, 60),
-      {
-        offset: new kakao.maps.Point(30, 60),
-      },
-    );
-    window.ReactNativeWebView?.postMessage(
-      JSON.stringify({
-        type: "MARKER_IMAGE",
-      }),
-    );
-    createMarker(map, routeInfo.origin, originImage);
-    createMarker(map, routeInfo.destination, destinationImage);
-    routeInfo.waypoints.forEach((waypoint) => {
-      createMarker(map, waypoint, waypointImage);
-    });
+          polylineRefs.current.push(dash);
 
-    map.setBounds(bounds);
-  }, []);
+          return;
+        }
+
+        const outline = new kakao.maps.Polyline({
+          map,
+          path,
+          strokeWeight: 8,
+          strokeColor: "#FFFFFF",
+          strokeOpacity: 1,
+          strokeStyle: "solid",
+        });
+
+        const inline = new kakao.maps.Polyline({
+          map,
+          path,
+          strokeWeight: 6,
+          strokeColor: "#A9C92D",
+          strokeOpacity: 1,
+          strokeStyle: "solid",
+        });
+
+        const dash = new kakao.maps.Polyline({
+          map,
+          path,
+          strokeWeight: 1.5,
+          strokeColor: "#FFFFFF",
+          strokeOpacity: 1,
+          strokeStyle: "dash",
+        });
+
+        polylineRefs.current.push(outline, inline, dash);
+      });
+    },
+    [],
+  );
+
+  const drawRoute = useCallback(
+    (map: kakao.maps.Map, routeInfo: RouteInfo) => {
+      // 이전 경로 / 마커 제거
+      clearRoutes();
+      clearMarkers();
+
+      const bounds = new kakao.maps.LatLngBounds(
+        new kakao.maps.LatLng(routeInfo.bound.min_y, routeInfo.bound.min_x),
+        new kakao.maps.LatLng(routeInfo.bound.max_y, routeInfo.bound.max_x),
+      );
+
+      if (routeInfo.type === "CAR") {
+        drawCarRoute(map, routeInfo);
+      } else {
+        drawTransitRoute(map, routeInfo);
+      }
+
+      createMarker(map, routeInfo.origin, routeInfo.origin.index);
+
+      createMarker(map, routeInfo.destination, routeInfo.destination.index);
+
+      map.setBounds(bounds);
+    },
+    [clearRoutes, clearMarkers, drawCarRoute, drawTransitRoute, createMarker],
+  );
 
   useEffect(() => {
     return () => {
-      outlineRef.current?.setMap(null);
-      inlineRef.current?.setMap(null);
-      dashRef.current?.setMap(null);
+      clearRoutes();
       clearMarkers();
     };
-  }, [clearMarkers, createMarker]);
+  }, [clearRoutes, clearMarkers]);
 
-  return { drawRoute };
+  return {
+    drawRoute,
+  };
 }

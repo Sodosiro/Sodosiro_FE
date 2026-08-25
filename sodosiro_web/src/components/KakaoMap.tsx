@@ -1,5 +1,7 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+
 import { Map, useKakaoLoader } from "react-kakao-maps-sdk";
+
 import { useClusterer } from "../hooks/useClusterer";
 import { useCurrentLocationMarker } from "../hooks/useCurrentLocationMarker";
 import { useMarker } from "../hooks/useMarker";
@@ -15,6 +17,8 @@ export default function KakaoMap() {
   });
 
   const mapRef = useRef<kakao.maps.Map | null>(null);
+
+  const [isRoute, setIsRoute] = useState(false);
 
   const {
     create: createCluster,
@@ -33,6 +37,7 @@ export default function KakaoMap() {
   } = useMarkers(mapRef, getClusterByMarker);
 
   const { create: createMarker } = useMarker();
+
   const { drawRoute } = useRoute();
 
   const { updateLocation, startTracking, stopTracking, denyLocation } =
@@ -40,8 +45,11 @@ export default function KakaoMap() {
 
   const renderPlaces = (places: PlaceType[], isPanTo = false) => {
     clearSelectedMarker();
+
     const markers = createMarkers(places);
+
     setMarkers(markers);
+
     if (places.length > 0 && isPanTo) {
       selectMarkerByPlaceId(places[0].contentId);
     }
@@ -57,7 +65,16 @@ export default function KakaoMap() {
     denyLocation,
     selectMarkerByPlaceId,
     updateMarkers,
+    setIsRoute,
   });
+
+  useEffect(() => {
+    if (!mapRef.current) return;
+
+    requestAnimationFrame(() => {
+      mapRef.current?.relayout();
+    });
+  }, [isRoute]);
 
   const handleCreate = (map: kakao.maps.Map) => {
     mapRef.current = map;
@@ -82,9 +99,23 @@ export default function KakaoMap() {
 
   return (
     <div
-      className={`w-screen h-screen flex flex-col justify-center items-center mt-5`}
+      className={`
+        w-screen
+        h-screen
+        ${!isRoute ? "mt-5" : ""}
+        flex
+        flex-col
+        items-center
+        justify-center
+      `}
     >
-      <div className={`w-screen min-h-250 h-screen`}>
+      <div
+        className={`
+          w-screen
+          ${!isRoute ? "min-h-250" : ""}
+          h-screen
+        `}
+      >
         <Map
           ref={mapRef}
           center={{

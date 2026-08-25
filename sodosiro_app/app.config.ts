@@ -18,7 +18,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     package: "com.sodosiro.app",
     adaptiveIcon: {
       foregroundImage: "./assets/images/logo.png",
-      backgroundColor: "#FFFFFF",
+      backgroundColor: "#C4D96A",
+      monochromeImage: "./assets/images/monochrome.png",
     },
     googleServicesFile: "./google-services.json",
   },
@@ -37,7 +38,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       {
         image: "./assets/images/logo.png",
         resizeMode: "contain",
-        backgroundColor: "#ffffff",
+        backgroundColor: "#C4D96A",
       },
     ],
     "expo-font",

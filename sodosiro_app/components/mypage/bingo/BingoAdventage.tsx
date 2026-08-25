@@ -1,3 +1,5 @@
+import { AwardIcon } from "@/assets/svgs";
+import { AnimatedDownIcon } from "@/components/common/animated/Animated";
 import CustomText from "@/components/common/CustomText";
 import { ADVANTAGES } from "@/constants/Bingo";
 import { useState } from "react";
@@ -8,9 +10,12 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { SvgProps } from "react-native-svg";
-import { AnimatedDownIcon } from "../common/animated/Animated";
 
-export default function BingoAdvantage() {
+export default function BingoAdvantage({
+  comingSoon,
+}: {
+  comingSoon?: boolean;
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const [contentHeight, setContentHeight] = useState(0);
 
@@ -39,7 +44,21 @@ export default function BingoAdvantage() {
     });
   };
 
-  return (
+  return comingSoon ? (
+    <View
+      className={`flex-row gap-2 p-4 rounded-xl border border-border items-center`}
+    >
+      <AwardIcon />
+      <View className={`gap-1`}>
+        <CustomText font="body2" className={`text-text-secondary`}>
+          빙고 완성 혜택
+        </CustomText>
+        <CustomText font="body2" className={`text-text-secondary`}>
+          COMING SOON
+        </CustomText>
+      </View>
+    </View>
+  ) : (
     <View>
       <View className="overflow-hidden rounded-xl border border-border">
         <Pressable className="flex-row bg-bg-subtle p-4" onPress={handleToggle}>

@@ -1,7 +1,7 @@
 import { LockIcon } from "@/assets/svgs";
+import CustomButton from "@/components/common/CustomButton";
+import CustomText from "@/components/common/CustomText";
 import { View } from "react-native";
-import CustomButton from "../common/CustomButton";
-import CustomText from "../common/CustomText";
 
 export default function BingoEmpty() {
   return (

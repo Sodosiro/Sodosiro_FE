@@ -14,9 +14,6 @@ const MY_HISTORY_LIST = [
     route: "/mypage/feed",
   },
   {
-    title: "내 여행 이력",
-  },
-  {
     title: "내 리뷰",
     route: "/mypage/review",
   },

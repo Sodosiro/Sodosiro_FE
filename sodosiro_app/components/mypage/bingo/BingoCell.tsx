@@ -1,7 +1,7 @@
 import { BigCheckIcon, KeyIcon } from "@/assets/svgs";
+import CustomText from "@/components/common/CustomText";
 import { CELL_SIZE } from "@/constants/Bingo";
 import { Pressable, PressableProps, View } from "react-native";
-import CustomText from "../common/CustomText";
 
 interface Props extends PressableProps {
   bingoItem: BingoItem;

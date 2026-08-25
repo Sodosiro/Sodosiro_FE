@@ -1,17 +1,17 @@
+import CustomText from "@/components/common/CustomText";
+import VerificationBottomSheet from "@/components/verification/VerificationBottomSheet";
 import { useToast } from "@/contexts/ToastProvider";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useRef, useState } from "react";
 import { LayoutChangeEvent, View } from "react-native";
-import CustomText from "../common/CustomText";
-import VerificationBottomSheet from "../verification/VerificationBottomSheet";
 import BingoCell from "./BingoCell";
 import BingoLine from "./BingoLine";
 
 export default function BingoBoard({
-  bingo,
+  bingoItems,
   bingoResult,
 }: {
-  bingo: BingoList;
+  bingoItems: BingoItem[];
   bingoResult: BingoResult | null;
 }) {
   const [boardSize, setBoardSize] = useState(0);
@@ -45,7 +45,7 @@ export default function BingoBoard({
             line={bingoResult?.completedPositions ?? []}
           />
         )}
-        {bingo?.bingoItems.map((item, index) => (
+        {bingoItems.map((item, index) => (
           <BingoCell
             key={index}
             bingoItem={item}

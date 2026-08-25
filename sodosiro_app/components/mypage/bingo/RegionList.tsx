@@ -1,6 +1,6 @@
+import AnimatedBadge from "@/components/common/animated/AnimatedBadge";
 import { Dispatch, SetStateAction } from "react";
 import { ScrollView, View } from "react-native";
-import AnimatedBadge from "../common/animated/AnimatedBadge";
 
 export default function RegionList({
   regionList,

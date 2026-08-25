@@ -25,6 +25,7 @@ export { default as PencilIcon } from "./20px/pencil.svg";
 export { default as PlusIcon } from "./20px/plus.svg";
 
 // 24px
+export { default as AlignIcon } from "./24px/align.svg";
 export { default as AwardIcon } from "./24px/award.svg";
 export { default as WhiteBigCheckIcon } from "./24px/big-check-white.svg";
 export { default as BigCheckIcon } from "./24px/big-check.svg";
@@ -75,3 +76,4 @@ export { default as DotIcon } from "./10px/dot.svg";
 export { default as GpsIcon } from "./gps.svg";
 
 export { default as KakaoLogo } from "./kakao_logo.svg";
+

@@ -70,7 +70,7 @@ export default function OngoingRouteSummaryCard({
 
       <Pressable onPress={onPressKakaoMap} className="flex-row items-center justify-between">
         <CustomText font="body2" className="text-text-muted">
-          카카오맵에서 보기
+          카카오맵에서 경로 더보기
         </CustomText>
         <RightIcon />
       </Pressable>

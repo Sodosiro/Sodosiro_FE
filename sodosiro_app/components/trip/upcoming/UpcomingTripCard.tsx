@@ -1,69 +1,150 @@
-import { CalendarMiniIcon, PinMiniIcon } from "@/assets/svgs";
+import { CourseSummaryItem } from "@/api/course";
+import { CalendarMiniIcon, PinMiniIcon, TrashIcon } from "@/assets/svgs";
+import ConfirmDialog from "@/components/common/ConfirmDialog";
 import CustomText from "@/components/common/CustomText";
-import { memo } from "react";
-import { View } from "react-native";
+import { SODOSI_LIST } from "@/constants/Sodosi";
+import { useDeleteCourseMutation } from "@/hooks/query/useCourseMutation"; // 삭제 Hook 경로에 맞춰 변경해 주세요
+import { memo, useState } from "react";
+import { Pressable, View } from "react-native";
 import ActionBadge from "../badge/ActionBadge";
 
 type UpcomingTripCardProps = {
-  trip: UpcomingTripCardType;
+  course: CourseSummaryItem;
   onPress: () => void;
+  onDeleteSuccess?: () => void; // 삭제 성공 후 부모 컴포넌트에 알릴 콜백 (선택)
 };
 
-type UpcomingTripCardType = {
-  id: string;
-  dDay: number;
-  title: string;
-  region: string;
-  startDate: string;
-  nights: number;
-  locationText: string;
-};
+// D-Day 계산 함수
+function calculateDDay(startDateStr: string): number {
+  if (!startDateStr) return 0;
+  const [sYear, sMonth, sDay] = startDateStr.split("-").map(Number);
+  const today = new Date();
 
-function UpcomingTripCard({ trip, onPress }: UpcomingTripCardProps) {
+  const start = new Date(sYear, sMonth - 1, sDay);
+  const current = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+  const diffTime = start.getTime() - current.getTime();
+  return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+}
+
+// 박/일 계산 함수
+function formatNightsAndDays(startDateStr: string, endDateStr: string): string {
+  if (!startDateStr || !endDateStr) return "";
+  const [sYear, sMonth, sDay] = startDateStr.split("-").map(Number);
+  const [eYear, eMonth, eDay] = endDateStr.split("-").map(Number);
+
+  const start = new Date(sYear, sMonth - 1, sDay);
+  const end = new Date(eYear, eMonth - 1, eDay);
+
+  const diffDays = Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+
+  if (diffDays <= 0) {
+    return "당일치기";
+  }
+
+  const nights = diffDays;
+  const days = diffDays + 1;
+  return `${nights}박 ${days}일`;
+}
+
+function UpcomingTripCard({ course, onPress, onDeleteSuccess }: UpcomingTripCardProps) {
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const { mutateAsync: deleteCourse } = useDeleteCourseMutation();
+
+  const SODOSI = SODOSI_LIST.find((sodosi) => String(sodosi.sigunguCode) == course.sigunguCode);
+
+  const dDay = calculateDDay(course?.startDate);
+  const nightDayText = formatNightsAndDays(course?.startDate, course?.endDate);
+
+  // 삭제 모달 열기
+  const handleOpenDeleteModal = () => {
+    setIsDeleteModalOpen(true);
+  };
+
+  // 삭제 진행 (Confirm 버튼)
+  const handleDeleteConfirm = async () => {
+    try {
+      await deleteCourse(course.courseId);
+      setIsDeleteModalOpen(false);
+      onDeleteSuccess?.();
+    } catch (error) {
+      console.error("코스 삭제 실패:", error);
+    }
+  };
+
   return (
-    <View className="rounded-2xl border border-[#E5E5E5] bg-white px-5 py-4 mb-5">
-      {/* D-Day Badge 적용 */}
-      <View
-        className={`flex-row items-center self-start px-3.5 py-1.5 min-h-9 rounded-full bg-primary`}
-      >
-        <CustomText font="body3 tight">D-{trip.dDay}</CustomText>
-      </View>
+    <>
+      <View className="rounded-2xl border border-[#E5E5E5] bg-white px-5 py-4 mb-5">
+        <View className="flex-row justify-between">
+          <View className="flex-row gap-2 items-center">
+            {/* D-Day Badge */}
+            <View className="flex-row items-center self-start px-3.5 py-1.5 min-h-9 rounded-full bg-primary">
+              <CustomText font="body3 tight">
+                {dDay === 0 ? "D-Day" : dDay > 0 ? `D-${dDay}` : `D+${Math.abs(dDay)}`}
+              </CustomText>
+            </View>
+            {/* 임시저장된 코스 */}
+            {!course.isConfirmed && (
+              <View className="flex-row items-center px-1 py-1 min-h-7 rounded bg-[#F5F5F5]">
+                <CustomText font="body3 tight">임시저장된 코스</CustomText>
+              </View>
+            )}
+          </View>
+          {/* 삭제하기 버튼 */}
+          <Pressable onPress={handleOpenDeleteModal} hitSlop={8}>
+            <TrashIcon color={"#888888"} />
+          </Pressable>
+        </View>
 
-      {/* 제목 */}
-      <View className="flex-row items-center mt-2">
-        <CustomText font="title">{trip.title}</CustomText>
+        {/* 제목 */}
+        <View className="flex-row items-center mt-2 gap-1">
+          <CustomText font="title">{course.title}</CustomText>
+          <View className="flex-row items-center px-1.5 py-1.5 min-h-7 rounded bg-[#F5F5F5]">
+            <CustomText font="body3 tight">{SODOSI?.name}</CustomText>
+          </View>
+        </View>
 
-        <View className="ml-2 rounded-md bg-[#F5F5F5] px-2 py-1">
-          <CustomText font="body3">{trip.region}</CustomText>
+        {/* 날짜 */}
+        <View className="flex-row items-center mt-2">
+          <CalendarMiniIcon color={"#1A1A1A"} />
+
+          <CustomText font="body2" className="ml-2">
+            {course.startDate} · {nightDayText}
+          </CustomText>
+        </View>
+
+        {/* 장소 */}
+        <View className="flex-row items-center mt-2">
+          <PinMiniIcon color={"#444444"} />
+
+          <CustomText font="body2" className="ml-2">
+            {course.displayName}
+          </CustomText>
+        </View>
+
+        {/* Divider */}
+        <View className="h-px bg-[#E5E5E5] my-3" />
+
+        {/* Button */}
+        <View className="flex-row flex-1">
+          <ActionBadge
+            text={course.isConfirmed ? "여행 보기" : "이어서 만들기"}
+            onPress={onPress}
+            onLayout={() => {}}
+          />
         </View>
       </View>
 
-      {/* 날짜 */}
-      <View className="flex-row items-center mt-2">
-        <CalendarMiniIcon color={"#1A1A1A"} />
-
-        <CustomText font="body2" className="ml-2">
-          {trip.startDate} · 무박 {trip.nights}일
-        </CustomText>
-      </View>
-
-      {/* 장소 */}
-      <View className="flex-row items-center mt-2">
-        <PinMiniIcon color={"#444444"} />
-
-        <CustomText font="body2" className="ml-2">
-          {trip.locationText}
-        </CustomText>
-      </View>
-
-      {/* Divider */}
-      <View className="h-px bg-[#E5E5E5] my-3" />
-
-      {/* Button */}
-      <View className="flex-row flex-1">
-        <ActionBadge text={`여행 보기`} onPress={() => onPress()} onLayout={() => {}} />
-      </View>
-    </View>
+      {/* 삭제 확인 모달 */}
+      <ConfirmDialog
+        visible={isDeleteModalOpen}
+        title="이 일정을 삭제할까요?"
+        cancelText="취소"
+        confirmText="삭제하기"
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleDeleteConfirm}
+      />
+    </>
   );
 }
 

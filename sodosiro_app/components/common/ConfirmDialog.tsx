@@ -19,12 +19,7 @@ export default function ConfirmDialog({
   onConfirm,
 }: ConfirmDialogProps) {
   return (
-    <Modal
-      transparent
-      visible={visible}
-      animationType="fade"
-      onRequestClose={onClose}
-    >
+    <Modal transparent visible={visible} animationType="fade" onRequestClose={onClose}>
       {/* Dimmed Backdrop */}
       <Pressable
         className="flex-1 justify-center items-center px-6"
@@ -32,7 +27,10 @@ export default function ConfirmDialog({
         onPress={() => onClose()}
       >
         {/* Modal Box */}
-        <View className="w-full max-w-xs bg-white rounded-2xl p-6 shadow-lg">
+        <Pressable
+          className="w-full max-w-xs bg-white rounded-2xl p-6 shadow-lg"
+          onPress={(e) => e.stopPropagation()}
+        >
           {/* Title */}
           <CustomText font="title" className="text-text-primary text-base mb-8">
             {title}
@@ -52,7 +50,7 @@ export default function ConfirmDialog({
               </CustomText>
             </Pressable>
           </View>
-        </View>
+        </Pressable>
       </Pressable>
     </Modal>
   );

@@ -12,6 +12,7 @@ import RecommendReasonSection from "@/components/region/section/RecommendReasonS
 import RegionInfoSection from "@/components/region/section/RegionInfoSection";
 import TopFoodSection from "@/components/region/section/TopFoodSection";
 import { useRegionIntroductionQuery } from "@/hooks/query/region";
+
 import { hasBatchim } from "@/util/word/word";
 import { router } from "expo-router";
 import { useLocalSearchParams } from "expo-router/build/hooks";

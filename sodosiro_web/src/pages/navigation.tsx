@@ -1,10 +1,10 @@
 import KakaoMap from "../components/KakaoMap";
 
-export default function Marker() {
+export default function Navigation() {
   return (
     <>
       <div className={`w-screen h-screen`}>
-        <KakaoMap mode="marker" />
+        <KakaoMap mode="navigation" />
       </div>
     </>
   );

@@ -20,6 +20,7 @@ import CarRouteSummaryCard from "../trip/CarRouteSummaryCard";
 
 type TimelineItemProps = {
   place: SpotItem;
+  nextPlace?: SpotItem;
   isExpanded: boolean;
   onToggle: (key: string) => void;
   order: number;
@@ -37,6 +38,7 @@ type TimelineItemProps = {
 
 function TimelineItem({
   place,
+  nextPlace,
   isExpanded,
   onToggle,
   order,
@@ -61,15 +63,27 @@ function TimelineItem({
   };
 
   const handleOpenKakaoMap = () => {
-    // 카카오맵 딥링크 연결 로직 예시
-    const url = `kakaomap://look?p=${place.mapY},${place.mapX}`;
+    if (!nextPlace) return;
+
+    const transport = transportMode === "CAR" ? "car" : "publictransit";
+
+    const url =
+      `kakaomap://route` +
+      `?sp=${place.mapY},${place.mapX}` +
+      `&ep=${nextPlace.mapY},${nextPlace.mapX}` +
+      `&by=${transport}`;
+
     Linking.canOpenURL(url).then((supported) => {
       if (supported) {
         Linking.openURL(url);
       } else {
-        Linking.openURL(
-          `https://map.kakao.com/link/map/${place.title},${place.mapY},${place.mapX}`,
-        );
+        const webUrl =
+          `http://m.map.kakao.com/scheme/route` +
+          `?sp=${place.mapY},${place.mapX}` +
+          `&ep=${nextPlace.mapY},${nextPlace.mapX}` +
+          `&by=${transport}`;
+
+        Linking.openURL(webUrl);
       }
     });
   };
@@ -98,7 +112,13 @@ function TimelineItem({
     }
 
     if (mode === COURSE_STATE.TEMP) {
-      return <ActionBadge onPress={() => onChangePlace?.()} text="장소 변경하기" selected={true} />;
+      return (
+        <ActionBadge
+          onPress={() => onChangePlace?.()}
+          text="장소 변경하기"
+          selected={true}
+        />
+      );
     }
 
     return null;
@@ -107,7 +127,7 @@ function TimelineItem({
   return (
     <View className="pb-3 bg-bg">
       <View className="flex-row">
-        <View className="w-[24px] mr-[10px] h-3" />
+        <View className="w-6 mr-2.5 h-3" />
         {isFirstIndex || isEditing ? null : (
           <View className="h-3 flex-1 border-t border-[#D9D9D9]" />
         )}
@@ -125,23 +145,23 @@ function TimelineItem({
             disabled={isEditing && !onLongPress}
           >
             {isEditing ? (
-              <View className="w-6 h-6 items-center mr-2.5 flex-shrink-0">
+              <View className="w-6 h-6 items-center mr-2.5 shrink-0">
                 <AlignIcon />
               </View>
             ) : (
-              <View className="w-6 h-6 rounded-xl bg-[#1A1A1A] items-center justify-center mr-2.5 flex-shrink-0">
+              <View className="w-6 h-6 rounded-xl bg-[#1A1A1A] items-center justify-center mr-2.5 shrink-0">
                 <CustomText font="body3" className="text-white">
                   {order}
                 </CustomText>
               </View>
             )}
 
-            <View className="flex-row gap-1 items-center min-w-0 max-w-full flex-shrink">
-              <CustomText font="title" numberOfLines={1} className="flex-shrink">
+            <View className="flex-row gap-1 items-center min-w-0 max-w-full shrink">
+              <CustomText font="title" numberOfLines={1} className="shrink">
                 {place.title}
               </CustomText>
 
-              <View className="flex-shrink-0">
+              <View className="shrink-0">
                 <Tag category={NumberToCategory[place?.category]} />
               </View>
             </View>
@@ -195,11 +215,17 @@ function TimelineItem({
         {mode !== COURSE_STATE.TEMP && (
           <>
             {transportMode === "PUBLIC_TRANSPORT" && routeDetail && (
-              <BusRouteSummaryCard routeDetail={routeDetail} onPressKakaoMap={handleOpenKakaoMap} />
+              <BusRouteSummaryCard
+                routeDetail={routeDetail}
+                onPressKakaoMap={handleOpenKakaoMap}
+              />
             )}
 
             {transportMode === "CAR" && carRouteLeg && (
-              <CarRouteSummaryCard carRouteLeg={carRouteLeg} onPressKakaoMap={handleOpenKakaoMap} />
+              <CarRouteSummaryCard
+                carRouteLeg={carRouteLeg}
+                onPressKakaoMap={handleOpenKakaoMap}
+              />
             )}
           </>
         )}

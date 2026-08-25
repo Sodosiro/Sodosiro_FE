@@ -21,7 +21,11 @@ import { useConfirmCourseMutation } from "@/hooks/query/useCourseMutation";
 import { useCourseDetailQuery } from "@/hooks/query/useCourseQuery";
 import { useTimelineScrollSpy } from "@/hooks/useTimelineScrollSpy";
 import { formatCoursePeriod } from "@/util/date/date";
-import { createRouteInfo, RenderCourseDayItem, transformCourseDetail } from "@/util/route/route";
+import {
+  createRouteInfo,
+  RenderCourseDayItem,
+  transformCourseDetail,
+} from "@/util/route/route";
 import { useQueryClient } from "@tanstack/react-query";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -36,8 +40,13 @@ export default function TimelineScreen() {
     courseStatus: CourseStatus | "TEMP";
   }>();
 
-  const { data: courseResponse, isPending, isError } = useCourseDetailQuery(courseId);
-  const { mutate: confirmCourse, isPending: isConfirmPending } = useConfirmCourseMutation();
+  const {
+    data: courseResponse,
+    isPending,
+    isError,
+  } = useCourseDetailQuery(courseId);
+  const { mutate: confirmCourse, isPending: isConfirmPending } =
+    useConfirmCourseMutation();
   const queryClient = useQueryClient();
   const navigation = useNavigation();
   const { showToast } = useToast();
@@ -65,7 +74,9 @@ export default function TimelineScreen() {
   const [temp, setTemp] = useState<CourseDayItem[]>([]);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isPatchPending, setIsPatchPending] = useState(false);
-  const [selectedSpotIndexes, setSelectedSpotIndexes] = useState<Record<number, number>>({});
+  const [selectedSpotIndexes, setSelectedSpotIndexes] = useState<
+    Record<number, number>
+  >({});
   const selectedSpotIndex = selectedSpotIndexes[activeIndex] ?? 0;
 
   const webViewRef = useRef<React.ComponentRef<typeof WebView>>(null);
@@ -114,7 +125,10 @@ export default function TimelineScreen() {
   useEffect(() => {
     // 최초 렌더링 시점이거나 아직 데이터 로딩 전이라면 실행하지 않음
     if (isInitialRender.current) {
-      if (courseResponse?.data?.title && tripTitle === courseResponse.data.title) {
+      if (
+        courseResponse?.data?.title &&
+        tripTitle === courseResponse.data.title
+      ) {
         isInitialRender.current = false;
       }
       return;
@@ -149,7 +163,9 @@ export default function TimelineScreen() {
         title: tripTitle,
         days: daysToSave.map((item) => ({
           day: item.day,
-          contentIds: item.spots ? item.spots.map((spot) => spot.contentId) : [],
+          contentIds: item.spots
+            ? item.spots.map((spot) => spot.contentId)
+            : [],
         })),
       };
 
@@ -180,7 +196,9 @@ export default function TimelineScreen() {
           ? {
               ...day,
               spots: day.spots.map((place) =>
-                place.contentId === changeTargetId ? { ...place, ...changedPlace } : place,
+                place.contentId === changeTargetId
+                  ? { ...place, ...changedPlace }
+                  : place,
               ),
             }
           : day,
@@ -294,7 +312,9 @@ export default function TimelineScreen() {
               setOnDrag={setOnDrag}
               dayPlan={item}
               // ★ 2. 해당 일차(day)에 해당하는 경로 통합 데이터(transformedSpots) 추가 전달
-              transformedSpots={transformedDays.find((td) => td.day === item.day)?.spots}
+              transformedSpots={
+                transformedDays.find((td) => td.day === item.day)?.spots
+              }
               transportMode={courseResponse.data.transportMode}
               mode={courseStatus}
               isEditing={isEditing}

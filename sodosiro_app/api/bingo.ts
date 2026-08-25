@@ -22,11 +22,9 @@ export async function postBingoGps(
   latitude: number,
   longitude: number,
 ) {
-  const dd = await axiosInstance.post(`/api/v1/bingo/gps`, {
+  return await axiosInstance.post(`/api/v1/bingo/gps`, {
     contentId,
     latitude,
     longitude,
   });
-  console.log(dd);
-  return dd;
 }

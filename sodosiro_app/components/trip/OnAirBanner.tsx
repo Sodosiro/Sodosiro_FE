@@ -32,18 +32,18 @@ export default function OnAirBanner({ tripTitle }: OnAirBannerProps) {
   }));
 
   return (
-    <View className="flex-row items-center py-4 pl-5" style={{ backgroundColor: "#C4D96A" }}>
+    <View
+      className="flex-row items-center py-4 pl-5 gap-1.5"
+      style={{ backgroundColor: "#C4D96A" }}
+    >
       <Animated.View style={animatedStyle}>
-        <OnAirIcon />
+        <OnAirIcon width={6} />
       </Animated.View>
-
-      <CustomText font="body2" className="ml-1" style={{ fontWeight: "700" }}>
-        진행중
+      <CustomText font="body2" style={{ fontWeight: "700" }}>
+        진행 중
       </CustomText>
-
-      <CustomText font="body2" className="pl-1">
-        · {tripTitle}
-      </CustomText>
+      <View className={`w-0.5 h-0.5 bg-text-primary rounded-full`} />
+      <CustomText font="body2">{tripTitle}</CustomText>
     </View>
   );
 }

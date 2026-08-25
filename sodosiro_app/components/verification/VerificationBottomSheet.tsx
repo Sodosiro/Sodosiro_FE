@@ -1,5 +1,6 @@
 import { PinMiniIcon } from "@/assets/svgs";
 import { DEFAULT_IMAGES } from "@/constants/Category";
+import { useToast } from "@/contexts/ToastProvider";
 import { useBingoGpsMutation } from "@/hooks/mutation/bingo";
 import { NumberToCategory } from "@/util/place/category";
 import {
@@ -17,19 +18,26 @@ import CustomText from "../common/CustomText";
 import Spinner from "../common/Spinner";
 
 type Props = {
-  selectedItem: BingoItem | null;
-  showToast: (text: string, duration?: number) => void;
+  selectedItem: GpsVerificationItem | null;
   onClose: () => void;
   bingoStatus?: BingoStatus;
 };
 
 const VerificationBottomSheet = forwardRef<BottomSheetModal, Props>(
-  ({ selectedItem, showToast, onClose, bingoStatus }, ref) => {
+  ({ selectedItem, onClose, bingoStatus }, ref) => {
+    const { showToast } = useToast();
     const [isLoading, setIsLoading] = useState(false);
 
     const { mutateAsync } = useBingoGpsMutation();
 
     const gpsDisabled = bingoStatus === "ENDED";
+
+    const advantages = bingoStatus
+      ? ["빙고를 한 칸 채울 수 있어요.", "방문 기록이 남겨져요."]
+      : [
+          "리뷰에 방문 인증 표시가 붙어요.",
+          "내가 쓴 피드에 방문 인증 표시가 붙어요.",
+        ];
 
     const handleLocaion = async () => {
       if (!selectedItem) return;
@@ -139,18 +147,15 @@ const VerificationBottomSheet = forwardRef<BottomSheetModal, Props>(
                   방문을 인증하면
                 </CustomText>
                 <View className={`gap-1.5`}>
-                  <CustomText
-                    font="body2 tight"
-                    className={`text-text-secondary`}
-                  >
-                    • 빙고를 한 칸 채울 수 있어요.
-                  </CustomText>
-                  <CustomText
-                    font="body2 tight"
-                    className={`text-text-secondary`}
-                  >
-                    • 방문 기록이 남겨져요.
-                  </CustomText>
+                  {advantages.map((advantage, index) => (
+                    <CustomText
+                      key={index}
+                      font="body2 tight"
+                      className={`text-text-secondary`}
+                    >
+                      • {advantage}
+                    </CustomText>
+                  ))}
                 </View>
               </View>
               <View className={`flex-row gap-2`}>

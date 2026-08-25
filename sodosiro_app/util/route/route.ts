@@ -1,7 +1,22 @@
-import { CarRouteLeg, CourseDetailResponse, SpotItem, TransitRouteDetail } from "@/api/course";
+import {
+  CarRouteLeg,
+  CourseDetailResponse,
+  SpotItem,
+  TransitRouteDetail,
+} from "@/api/course";
 
-export function calculateBounds(paths: RoutePoint[]) {
-  if (paths.length === 0) {
+export function calculateBounds(
+  paths: RoutePoint[],
+  origin?: RoutePoint,
+  destination?: RoutePoint,
+) {
+  const points = [
+    ...paths,
+    ...(origin ? [origin] : []),
+    ...(destination ? [destination] : []),
+  ];
+
+  if (points.length === 0) {
     return {
       min_x: 0,
       min_y: 0,
@@ -10,13 +25,29 @@ export function calculateBounds(paths: RoutePoint[]) {
     };
   }
 
-  const longitudes = paths.map((point) => point.longitude);
-  const latitudes = paths.map((point) => point.latitude);
+  const longitudes = points.map((point) => point.longitude);
+  const latitudes = points.map((point) => point.latitude);
 
-  const min_x = Math.min(...longitudes);
-  const min_y = Math.min(...latitudes);
-  const max_x = Math.max(...longitudes);
-  const max_y = Math.max(...latitudes);
+  let min_x = Math.min(...longitudes);
+  let min_y = Math.min(...latitudes);
+  let max_x = Math.max(...longitudes);
+  let max_y = Math.max(...latitudes);
+
+  if (!destination) {
+    const longitudeCenter = (min_x + max_x) / 2;
+    const latitudeCenter = (min_y + max_y) / 2;
+
+    const longitudeRange = Math.max(max_x - min_x, 0.005);
+    const latitudeRange = Math.max(max_y - min_y, 0.005);
+
+    const scale = 2;
+
+    min_x = longitudeCenter - longitudeRange * scale;
+    max_x = longitudeCenter + longitudeRange * scale;
+
+    min_y = latitudeCenter - latitudeRange * scale;
+    max_y = latitudeCenter + latitudeRange * scale;
+  }
 
   return {
     min_x,
@@ -45,20 +76,41 @@ export function createRouteInfo(
   const originSpot = day.spots[spotIndex];
   const destinationSpot = day.spots[spotIndex + 1];
 
-  if (!originSpot || !destinationSpot) return null;
+  if (!originSpot) return null;
 
-  const fromId = originSpot.contentId;
-  const toId = destinationSpot.contentId;
+  const fromId = originSpot?.contentId;
+  const toId = destinationSpot?.contentId;
 
   // =========================================================
   // 자동차
   // =========================================================
   if (course.transportMode === "CAR") {
+    if (!destinationSpot)
+      return {
+        type: "CAR",
+        origin: {
+          x: originSpot.mapX,
+          y: originSpot.mapY,
+          index: spotIndex,
+        },
+        destination: {
+          x: 0,
+          y: 0,
+          index: spotIndex + 1,
+        },
+        bound: calculateBounds([], {
+          latitude: originSpot.mapY,
+          longitude: originSpot.mapX,
+        }),
+        paths: [],
+      };
+
     const dayRoute = course.carRoutes?.find((route) => route.day === day.day);
     if (!dayRoute) return null;
 
-    const leg = dayRoute.legs.find((leg) => leg.fromId === fromId && leg.toId === toId);
-    if (!leg || !leg.success || leg.path.length === 0) return null;
+    const leg = dayRoute.legs.find(
+      (leg) => leg.fromId === fromId && leg.toId === toId,
+    );
 
     return {
       type: "CAR",
@@ -72,49 +124,77 @@ export function createRouteInfo(
         y: destinationSpot.mapY,
         index: spotIndex + 1,
       },
-      bound: calculateBounds(leg.path),
-      paths: leg.path,
+      bound: calculateBounds(
+        leg?.path ?? [],
+        { latitude: originSpot.mapY, longitude: originSpot.mapX },
+        { latitude: destinationSpot.mapY, longitude: destinationSpot.mapX },
+      ),
+      paths: leg?.path ?? [],
     };
   }
 
   // =========================================================
   // 대중교통
   // =========================================================
-  const dayRoute = course.transitRoutes?.find((route) => route.day === day.day);
-  if (!dayRoute) return null;
+  else {
+    if (!destinationSpot)
+      return {
+        type: "TRANSIT",
+        origin: {
+          x: originSpot.mapX,
+          y: originSpot.mapY,
+          index: spotIndex,
+        },
+        destination: {
+          x: 0,
+          y: 0,
+          index: spotIndex + 1,
+        },
+        bound: calculateBounds([], {
+          latitude: originSpot.mapY,
+          longitude: originSpot.mapX,
+        }),
+        routes: [],
+      };
 
-  const detail = dayRoute.details.find(
-    (detail) => detail.fromId === fromId && detail.toId === toId,
-  );
+    const dayRoute = course.transitRoutes?.find(
+      (route) => route.day === day.day,
+    );
 
-  if (!detail || !detail.success) return null;
+    const detail = dayRoute?.details.find(
+      (detail) => detail.fromId === fromId && detail.toId === toId,
+    );
 
-  const routes = detail.steps
-    .filter((step) => step.type === "WALKING" || step.type === "BUS")
-    .map((step) => ({
-      type: step.type as "WALKING" | "BUS",
-      path: step.path,
-    }));
+    const routes =
+      detail?.steps
+        .filter((step) => step.type === "WALKING" || step.type === "BUS")
+        .map((step) => ({
+          type: step.type as "WALKING" | "BUS",
+          path: step.path,
+        })) ?? [];
 
-  const allPaths = routes.flatMap((route) => route.path);
+    const allPaths = routes.flatMap((route) => route.path);
 
-  if (allPaths.length === 0) return null;
-
-  return {
-    type: "TRANSIT",
-    origin: {
-      x: originSpot.mapX,
-      y: originSpot.mapY,
-      index: spotIndex,
-    },
-    destination: {
-      x: destinationSpot.mapX,
-      y: destinationSpot.mapY,
-      index: spotIndex + 1,
-    },
-    bound: calculateBounds(allPaths),
-    routes,
-  };
+    return {
+      type: "TRANSIT",
+      origin: {
+        x: originSpot.mapX,
+        y: originSpot.mapY,
+        index: spotIndex,
+      },
+      destination: {
+        x: destinationSpot.mapX,
+        y: destinationSpot.mapY,
+        index: spotIndex + 1,
+      },
+      bound: calculateBounds(
+        allPaths,
+        { latitude: originSpot.mapY, longitude: originSpot.mapX },
+        { latitude: destinationSpot.mapY, longitude: destinationSpot.mapX },
+      ),
+      routes,
+    };
+  }
 }
 
 // 스팟 사이에 배치될 경로 정보를 가진 통합 스팟 아이템 타입
@@ -144,22 +224,32 @@ type TransitStepItem = {
 /**
  * 연속된 WALKING 구간을 하나로 합치고 시간/거리를 계산해 주는 헬퍼 함수
  */
-function mergeConsecutiveWalkingSteps(steps: TransitStepItem[]): TransitStepItem[] {
+function mergeConsecutiveWalkingSteps(
+  steps: TransitStepItem[],
+): TransitStepItem[] {
   if (!steps || steps.length === 0) return [];
 
   return steps.reduce<TransitStepItem[]>((acc, currentStep) => {
     const prevStep = acc[acc.length - 1];
 
     // 이전 구간과 현재 구간이 모두 WALKING인 경우 합산
-    if (prevStep && prevStep.type === "WALKING" && currentStep.type === "WALKING") {
+    if (
+      prevStep &&
+      prevStep.type === "WALKING" &&
+      currentStep.type === "WALKING"
+    ) {
       const mergedDuration =
         (prevStep.sectionTimeSeconds ?? prevStep.durationSeconds ?? 0) +
         (currentStep.sectionTimeSeconds ?? currentStep.durationSeconds ?? 0);
 
-      const mergedDistance = (prevStep.distanceMeters ?? 0) + (currentStep.distanceMeters ?? 0);
+      const mergedDistance =
+        (prevStep.distanceMeters ?? 0) + (currentStep.distanceMeters ?? 0);
 
       // 좌표 path도 이어 붙임
-      const mergedPath = [...(prevStep.path ?? []), ...(currentStep.path ?? [])];
+      const mergedPath = [
+        ...(prevStep.path ?? []),
+        ...(currentStep.path ?? []),
+      ];
 
       acc[acc.length - 1] = {
         ...prevStep,
@@ -187,53 +277,67 @@ function mergeConsecutiveWalkingSteps(steps: TransitStepItem[]): TransitStepItem
   }, []);
 }
 
-export function transformCourseDetail(data: CourseDetailResponse): RenderCourseDayItem[] {
+export function transformCourseDetail(
+  data: CourseDetailResponse,
+): RenderCourseDayItem[] {
   const { transportMode, days, carRoutes, transitRoutes } = data;
 
   return days.map((dayItem) => {
     const currentCarRoute = carRoutes?.find((cr) => cr.day === dayItem.day);
-    const currentTransitRoute = transitRoutes?.find((tr) => tr.day === dayItem.day);
+    const currentTransitRoute = transitRoutes?.find(
+      (tr) => tr.day === dayItem.day,
+    );
 
-    const spotsWithRoutes: RenderSpotItem[] = dayItem.spots.map((spot, index) => {
-      const nextSpot = dayItem.spots[index + 1];
+    const spotsWithRoutes: RenderSpotItem[] = dayItem.spots.map(
+      (spot, index) => {
+        const nextSpot = dayItem.spots[index + 1];
 
-      if (!nextSpot) {
-        return { ...spot, nextCarRouteLeg: null, nextTransitRouteDetail: null };
-      }
-
-      // 자차인 경우
-      const carLeg =
-        transportMode === "CAR"
-          ? (currentCarRoute?.legs.find(
-              (leg) => leg.fromId === spot.contentId && leg.toId === nextSpot.contentId,
-            ) ?? null)
-          : null;
-
-      // 대중교통인 경우
-      let transitDetail: TransitRouteDetail | null = null;
-
-      if (transportMode === "PUBLIC_TRANSPORT" && currentTransitRoute) {
-        const rawDetail = currentTransitRoute.details.find(
-          (detail) => detail.fromId === spot.contentId && detail.toId === nextSpot.contentId,
-        );
-
-        if (rawDetail) {
-          // 연속된 도보(WALKING) 구간들을 합산 처리
-          transitDetail = {
-            ...rawDetail,
-            steps: mergeConsecutiveWalkingSteps(
-              rawDetail.steps as unknown as TransitStepItem[],
-            ) as any,
+        if (!nextSpot) {
+          return {
+            ...spot,
+            nextCarRouteLeg: null,
+            nextTransitRouteDetail: null,
           };
         }
-      }
 
-      return {
-        ...spot,
-        nextCarRouteLeg: carLeg,
-        nextTransitRouteDetail: transitDetail,
-      };
-    });
+        // 자차인 경우
+        const carLeg =
+          transportMode === "CAR"
+            ? (currentCarRoute?.legs.find(
+                (leg) =>
+                  leg.fromId === spot.contentId &&
+                  leg.toId === nextSpot.contentId,
+              ) ?? null)
+            : null;
+
+        // 대중교통인 경우
+        let transitDetail: TransitRouteDetail | null = null;
+
+        if (transportMode === "PUBLIC_TRANSPORT" && currentTransitRoute) {
+          const rawDetail = currentTransitRoute.details.find(
+            (detail) =>
+              detail.fromId === spot.contentId &&
+              detail.toId === nextSpot.contentId,
+          );
+
+          if (rawDetail) {
+            // 연속된 도보(WALKING) 구간들을 합산 처리
+            transitDetail = {
+              ...rawDetail,
+              steps: mergeConsecutiveWalkingSteps(
+                rawDetail.steps as unknown as TransitStepItem[],
+              ) as any,
+            };
+          }
+        }
+
+        return {
+          ...spot,
+          nextCarRouteLeg: carLeg,
+          nextTransitRouteDetail: transitDetail,
+        };
+      },
+    );
 
     return {
       day: dayItem.day,

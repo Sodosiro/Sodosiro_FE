@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 
 import { Map, useKakaoLoader } from "react-kakao-maps-sdk";
 
@@ -10,15 +10,13 @@ import { useRoute } from "../hooks/useRoute";
 import { useWebViewMessage } from "../hooks/useWebViewMessage";
 import { registerMapClick } from "../util/registerMapClick";
 
-export default function KakaoMap() {
+export default function KakaoMap({ mode }: { mode: "marker" | "navigation" }) {
   useKakaoLoader({
     appkey: import.meta.env.VITE_KAKAO_MAP_KEY,
     libraries: ["clusterer"],
   });
 
   const mapRef = useRef<kakao.maps.Map | null>(null);
-
-  const [isRoute, setIsRoute] = useState(false);
 
   const {
     create: createCluster,
@@ -65,16 +63,7 @@ export default function KakaoMap() {
     denyLocation,
     selectMarkerByPlaceId,
     updateMarkers,
-    setIsRoute,
   });
-
-  useEffect(() => {
-    if (!mapRef.current) return;
-
-    requestAnimationFrame(() => {
-      mapRef.current?.relayout();
-    });
-  }, [isRoute]);
 
   const handleCreate = (map: kakao.maps.Map) => {
     mapRef.current = map;
@@ -99,23 +88,9 @@ export default function KakaoMap() {
 
   return (
     <div
-      className={`
-        w-screen
-        h-screen
-        ${!isRoute ? "mt-5" : ""}
-        flex
-        flex-col
-        items-center
-        justify-center
-      `}
+      className={`w-screen h-screen ${mode === "marker" && "mt-5"} flex flex-col items-center justify-center`}
     >
-      <div
-        className={`
-          w-screen
-          ${!isRoute ? "min-h-250" : ""}
-          h-screen
-        `}
-      >
+      <div className={`w-screen ${mode === "marker" && "min-h-250"} h-screen`}>
         <Map
           ref={mapRef}
           center={{

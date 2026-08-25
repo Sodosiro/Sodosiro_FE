@@ -118,9 +118,17 @@ export default function KakaoMap({
     >
       <WebView
         ref={webViewRef}
-        source={{
-          uri: process.env.EXPO_PUBLIC_WEBVIEW_URI as string,
-        }}
+        source={
+          mode === "marker"
+            ? {
+                uri: process.env.EXPO_PUBLIC_WEBVIEW_URI as string,
+              }
+            : {
+                uri:
+                  (process.env.EXPO_PUBLIC_WEBVIEW_URI as string) +
+                  "/navigation",
+              }
+        }
         style={{ flex: 1 }}
         onMessage={handleMessage}
         onLoadStart={() => setIsLoading(true)}

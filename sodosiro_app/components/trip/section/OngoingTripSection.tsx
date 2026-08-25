@@ -1,17 +1,21 @@
-import { CourseDayItem, CourseDetailResponse, CourseSummaryItem } from "@/api/course";
-import DimmedLoading from "@/components/common/DimmedLoading";
+import {
+  CourseDayItem,
+  CourseDetailResponse,
+  CourseSummaryItem,
+} from "@/api/course";
 import Spinner from "@/components/common/Spinner";
 import KakaoMap from "@/components/explore/KakaoMap";
 import TimelineDayBadgeSection from "@/components/timeline/section/TimelineDayBadgeSection";
 import TimelineDaySection from "@/components/timeline/section/TimelineDaySection";
 import { COURSE_STATE } from "@/constants/Trip";
-import { useToast } from "@/contexts/ToastProvider";
-import { useConfirmCourseMutation } from "@/hooks/query/useCourseMutation";
 import { useCourseDetailQuery } from "@/hooks/query/useCourseQuery";
 import { useTimelineScrollSpy } from "@/hooks/useTimelineScrollSpy";
-import { createRouteInfo, RenderCourseDayItem, transformCourseDetail } from "@/util/route/route";
-import { useQueryClient } from "@tanstack/react-query";
-import { router, useNavigation } from "expo-router";
+import {
+  createRouteInfo,
+  RenderCourseDayItem,
+  transformCourseDetail,
+} from "@/util/route/route";
+import { router } from "expo-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Dimensions, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -33,14 +37,13 @@ export default function OngoingTripSection({
 }: OngoingTripSectionProps) {
   const courseId = courses?.[0].courseId;
   const courseStatus = COURSE_STATE.IN_PROGRESS;
-  const { data: courseResponse, isPending, isError } = useCourseDetailQuery(courseId);
-  const { mutate: confirmCourse, isPending: isConfirmPending } = useConfirmCourseMutation();
-  const queryClient = useQueryClient();
-  const navigation = useNavigation();
-  const { showToast } = useToast();
+  const {
+    data: courseResponse,
+    isPending,
+    isError,
+  } = useCourseDetailQuery(courseId);
 
   const [tripTitle, setTripTitle] = useState("");
-  const [modalVisible, setModalVisible] = useState(false);
   const webViewRef = useRef<React.ComponentRef<typeof WebView>>(null);
   const [temp, setTemp] = useState<CourseDayItem[]>([]);
 
@@ -56,7 +59,9 @@ export default function OngoingTripSection({
     getSectionLayoutHandler,
   } = useTimelineScrollSpy();
 
-  const [selectedSpotIndexes, setSelectedSpotIndexes] = useState<Record<number, number>>({});
+  const [selectedSpotIndexes, setSelectedSpotIndexes] = useState<
+    Record<number, number>
+  >({});
   const selectedSpotIndex = selectedSpotIndexes[activeIndex] ?? 0;
 
   useEffect(() => {
@@ -135,8 +140,6 @@ export default function OngoingTripSection({
     );
   }
 
-  console.log("transformedDays", transformedDays);
-
   return (
     <View className="flex-1">
       {Number(courses?.length) === 0 ? (
@@ -185,7 +188,9 @@ export default function OngoingTripSection({
                   key={item.day}
                   dayPlan={item}
                   // ★ 2. 해당 일차(day)에 해당하는 경로 통합 데이터(transformedSpots) 추가 전달
-                  transformedSpots={transformedDays.find((td) => td.day === item.day)?.spots}
+                  transformedSpots={
+                    transformedDays.find((td) => td.day === item.day)?.spots
+                  }
                   transportMode={courseResponse.data.transportMode}
                   mode={courseStatus}
                   dayIndex={index}
@@ -201,8 +206,6 @@ export default function OngoingTripSection({
               ))}
             </ScrollView>
           </View>
-          {/* <DimmedLoading visible={isPatchPending || isConfirmPending} /> */}
-          <DimmedLoading visible={isConfirmPending} />
         </>
       )}
     </View>

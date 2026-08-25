@@ -1,3 +1,10 @@
+type GpsVerificationItem = {
+  contentId: number;
+  title: string;
+  category: CategoryNumber;
+  firstImage?: string;
+};
+
 type BingoItem = {
   position: number;
   contentId: number;

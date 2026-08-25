@@ -1,4 +1,4 @@
-import { useEffect, type Dispatch, type SetStateAction } from "react";
+import { useEffect } from "react";
 
 export function useWebViewMessage({
   mapRef,
@@ -10,7 +10,6 @@ export function useWebViewMessage({
   denyLocation,
   selectMarkerByPlaceId,
   updateMarkers,
-  setIsRoute,
 }: {
   mapRef: React.RefObject<kakao.maps.Map | null>;
   renderPlaces: (places: PlaceType[], isPanTo?: boolean) => void;
@@ -21,7 +20,6 @@ export function useWebViewMessage({
   denyLocation: () => void;
   selectMarkerByPlaceId: (placeId: number) => kakao.maps.Marker | null;
   updateMarkers: (places: PlaceType[]) => void;
-  setIsRoute: Dispatch<SetStateAction<boolean>>;
 }) {
   useEffect(() => {
     const receiveMessage = (event: MessageEvent) => {
@@ -46,7 +44,6 @@ export function useWebViewMessage({
 
         case "SET_ROUTE":
           if (!mapRef.current) return;
-          setIsRoute(true);
           drawRoute(mapRef.current, data.routeInfo);
           break;
 

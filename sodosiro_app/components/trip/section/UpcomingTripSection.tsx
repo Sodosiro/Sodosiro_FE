@@ -22,7 +22,9 @@ export default function UpcomingTripSection({
       pathname: "/trip/timeline",
       params: {
         courseId: course.courseId,
-        courseStatus: Boolean(course.isConfirmed) ? COURSE_STATE.UPCOMING : COURSE_STATE.TEMP,
+        courseStatus: Boolean(course.isConfirmed)
+          ? COURSE_STATE.UPCOMING
+          : COURSE_STATE.TEMP,
       },
     });
   };

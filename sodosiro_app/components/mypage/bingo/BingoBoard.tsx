@@ -1,6 +1,5 @@
 import CustomText from "@/components/common/CustomText";
 import VerificationBottomSheet from "@/components/verification/VerificationBottomSheet";
-import { useToast } from "@/contexts/ToastProvider";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useRef, useState } from "react";
 import { LayoutChangeEvent, View } from "react-native";
@@ -23,8 +22,6 @@ export default function BingoBoard({
 
   const [selectedItem, setSelectedItem] = useState<BingoItem | null>(null);
   const bottomSheetRef = useRef<BottomSheetModal>(null);
-
-  const { showToast } = useToast();
 
   const handleLayout = (e: LayoutChangeEvent) => {
     const { width } = e.nativeEvent.layout;
@@ -68,7 +65,6 @@ export default function BingoBoard({
       <VerificationBottomSheet
         ref={bottomSheetRef}
         selectedItem={selectedItem}
-        showToast={showToast}
         onClose={() => bottomSheetRef?.current?.close()}
         bingoStatus={bingoStatus}
       />

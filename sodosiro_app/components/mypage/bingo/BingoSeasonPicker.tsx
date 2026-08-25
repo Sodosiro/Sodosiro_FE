@@ -39,7 +39,10 @@ export default function BingoSeasonPicker({
       <View className="gap-2">
         <Pressable onPress={openSheet}>
           <CustomText font="heading2">
-            {getBingoSeasonText(selectedSeason.year, selectedSeason.seasonType)}
+            {getBingoSeasonText(
+              selectedSeason?.year,
+              selectedSeason?.seasonType,
+            )}
           </CustomText>
         </Pressable>
 

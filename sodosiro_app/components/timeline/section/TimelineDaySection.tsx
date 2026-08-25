@@ -1,14 +1,25 @@
-import { CourseDayItem, CourseStatus, SpotItem, TransportMode } from "@/api/course";
+import {
+  CourseDayItem,
+  CourseStatus,
+  SpotItem,
+  TransportMode,
+} from "@/api/course";
 import BottomSheet from "@/components/common/BottomSheet";
 import CustomText from "@/components/common/CustomText";
 import TripPlacesSection from "@/components/tripCondition/TripPlacesSection";
 import VerificationBottomSheet from "@/components/verification/VerificationBottomSheet";
 import { useToast } from "@/contexts/ToastProvider";
 import { formatDateWithDay } from "@/util/date/date";
-import { NumberToCategory } from "@/util/place/category";
 import { RenderSpotItem } from "@/util/route/route";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import { Dispatch, memo, SetStateAction, useCallback, useRef, useState } from "react";
+import {
+  Dispatch,
+  memo,
+  SetStateAction,
+  useCallback,
+  useRef,
+  useState,
+} from "react";
 import { LayoutChangeEvent, View } from "react-native";
 import DraggableFlatList, {
   OpacityDecorator,
@@ -120,7 +131,9 @@ function TimelineDaySection({
       }
 
       const isDuplicatePlace = dayPlan.spots.some(
-        (item) => item.contentId === selectedPlace.contentId && item.contentId !== changeTargetId,
+        (item) =>
+          item.contentId === selectedPlace.contentId &&
+          item.contentId !== changeTargetId,
       );
 
       if (isDuplicatePlace) {
@@ -135,7 +148,9 @@ function TimelineDaySection({
             ? {
                 ...day,
                 spots: day.spots.map((place) =>
-                  place.contentId === changeTargetId ? { ...place, ...selectedPlace } : place,
+                  place.contentId === changeTargetId
+                    ? { ...place, ...selectedPlace }
+                    : place,
                 ),
               }
             : day,
@@ -151,7 +166,14 @@ function TimelineDaySection({
         changedPlace: selectedPlace,
       });
     },
-    [changeTargetId, dayPlan.date, dayPlan.spots, setPlan, showToast, onPlaceChanged],
+    [
+      changeTargetId,
+      dayPlan.date,
+      dayPlan.spots,
+      setPlan,
+      showToast,
+      onPlaceChanged,
+    ],
   );
 
   // 장소 변경 버튼 클릭
@@ -169,7 +191,10 @@ function TimelineDaySection({
         <CustomText font="title" className="text-primary-dark">
           {`${dayPlan.day}일차`}
         </CustomText>
-        <CustomText font="body3" className="text-primary-dark bg-primary-light px-1 py-0.5 rounded">
+        <CustomText
+          font="body3"
+          className="text-primary-dark bg-primary-light px-1 py-0.5 rounded"
+        >
           {`${formatDateWithDay(dayPlan.date)}`}
         </CustomText>
       </View>
@@ -190,6 +215,7 @@ function TimelineDaySection({
           {dayPlan.spots?.map((place, index) => {
             const uniqueKey = `${dayPlan.day}_${place.contentId}`;
             const isExpanded = uniqueKey === selectedId;
+            const nextPlace = dayPlan.spots?.[index + 1];
             const transformedSpot = transformedSpots?.[index]; // 현재 장소의 경로 데이터 추출
             // console.log("transformedSpot---", transformedSpot);
 
@@ -197,6 +223,7 @@ function TimelineDaySection({
               <TimelineItem
                 key={`place-${uniqueKey}`}
                 place={place}
+                nextPlace={nextPlace}
                 isExpanded={isExpanded}
                 isEditing={false}
                 transportMode={transportMode}
@@ -221,17 +248,22 @@ function TimelineDaySection({
             );
           })}
           {showLocation && (
-            <BottomSheet visible={showLocation} onClose={() => setShowLocation(false)}>
+            <BottomSheet
+              visible={showLocation}
+              onClose={() => setShowLocation(false)}
+            >
               {changeTargetId && (
-                <TripPlacesSection onSelectPlace={handleSelectPlace} contentId={changeTargetId} />
+                <TripPlacesSection
+                  onSelectPlace={handleSelectPlace}
+                  contentId={changeTargetId}
+                />
               )}
               <View className="pt-5" />
             </BottomSheet>
           )}
           <VerificationBottomSheet
             ref={bottomSheetRef}
-            selectedItem={mapSpotToBingoItem(selectedItem)}
-            showToast={showToast}
+            selectedItem={selectedItem}
             onClose={() => bottomSheetRef?.current?.close()}
           />
         </View>
@@ -241,21 +273,3 @@ function TimelineDaySection({
 }
 
 export default memo(TimelineDaySection);
-
-export const mapSpotToBingoItem = (
-  spot: SpotItem | null,
-  position: number = 0,
-): BingoItem | null => {
-  if (!spot) return null; // spot이 null이면 바로 null 반환
-  return {
-    position,
-    title: spot.title,
-    category: NumberToCategory[spot.category as CategoryNumber],
-    completed: spot.gpsVerified, // GPS 인증 여부를 completed로 매핑
-    latlng: {
-      lat: spot.mapY, // Kakao/TourAPI 기준 mapY가 위도(lat)
-      lng: spot.mapX, // mapX가 경도(lng)
-    },
-    imageSource: spot.firstImage ?? undefined, // null을 undefined로 안전하게 변환
-  };
-};

@@ -1,10 +1,12 @@
 import { Route, Routes } from "react-router-dom";
-import Index from "./pages/Index";
+import Marker from "./pages/Index";
+import Navigation from "./pages/navigation";
 
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<Index />} />
+      <Route path="/" element={<Marker />} />
+      <Route path="/navigation" element={<Navigation />} />
     </Routes>
   );
 }

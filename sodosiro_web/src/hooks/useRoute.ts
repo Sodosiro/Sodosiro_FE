@@ -122,7 +122,7 @@ export function useRoute() {
             map,
             path,
             strokeWeight: 4,
-            strokeColor: "#7E9432",
+            strokeColor: "#888888",
             strokeOpacity: 1,
             strokeStyle: "dashed",
           });
@@ -145,7 +145,7 @@ export function useRoute() {
           map,
           path,
           strokeWeight: 6,
-          strokeColor: "#A9C92D",
+          strokeColor: "#2A71FB",
           strokeOpacity: 1,
           strokeStyle: "solid",
         });

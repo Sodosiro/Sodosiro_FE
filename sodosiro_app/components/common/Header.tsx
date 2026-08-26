@@ -28,8 +28,6 @@ export default function Header({
   handleBack,
 }: Props) {
   const navigation = useNavigation();
-  // Modal 내부에서는 SafeAreaProvider 컨텍스트가 정상 전달되지 않으므로
-  // 바깥(Header 컴포넌트 최상단)에서 미리 insets를 구해둡니다.
   const insets = useSafeAreaInsets();
 
   const [isEditing, setIsEditing] = useState(false);
@@ -49,9 +47,12 @@ export default function Header({
   const startEditing = () => {
     setDraftTitle(title);
     setIsEditing(true);
-    requestAnimationFrame(() => {
+  };
+
+  const handleModalShow = () => {
+    setTimeout(() => {
       inputRef.current?.focus();
-    });
+    }, 50);
   };
 
   const commitEdit = () => {
@@ -70,17 +71,31 @@ export default function Header({
   return (
     <View className={`h-16 flex-row items-center px-5 ${isBgWhite && `bg-white`}`}>
       {showBackButton ? (
-        <Pressable onPress={handleBack ?? defaultHandleBack} hitSlop={12} className="mr-2">
+        <Pressable
+          onPress={handleBack ?? defaultHandleBack}
+          hitSlop={12}
+          className="mr-2"
+        >
           <LeftIcon color="#1A1A1A" />
         </Pressable>
       ) : null}
 
-      <CustomText font="heading1" className={`${Heading1Class} ${!showPencil && `flex-1`}`}>
+      <CustomText
+        font="heading1"
+        className={`${Heading1Class} ${!showPencil && `flex-1`}`}
+      >
         {title}
       </CustomText>
       {showPencil ? (
-        <Pressable onPress={startEditing} hitSlop={12} className="ml-1">
-          <PencilIcon color="#1A1A1A" style={{ height: `100%` }} />
+        <Pressable
+          onPress={startEditing}
+          hitSlop={12}
+          className="ml-1"
+        >
+          <PencilIcon
+            color="#1A1A1A"
+            style={{ height: `100%` }}
+          />
         </Pressable>
       ) : null}
 
@@ -92,13 +107,23 @@ export default function Header({
         animationType="fade"
         statusBarTranslucent
         onRequestClose={cancelEdit}
+        onShow={handleModalShow}
       >
-        <View className="flex-1" style={{ backgroundColor: "transparent" }}>
-          {/* 상태바 영역: SafeAreaView 대신 미리 구해둔 insets.top으로 직접 확보 */}
-          <View style={{ height: insets.top - 4 }} className="bg-white" />
+        <View
+          className="flex-1"
+          style={{ backgroundColor: "transparent" }}
+        >
+          {/* 상태바 영역 */}
+          <View
+            style={{ height: insets.top - 4 }}
+            className="bg-white"
+          />
 
-          {/* 헤더 자리 (dimm 되지 않음, 흰 배경) */}
-          <View style={{ height: HEADER_HEIGHT }} className="flex-row items-center px-5 bg-white">
+          {/* 헤더 자리 */}
+          <View
+            style={{ height: HEADER_HEIGHT }}
+            className="flex-row items-center px-5 bg-white"
+          >
             {showBackButton ? (
               <View className="mr-2 opacity-40">
                 <LeftIcon color="#1A1A1A" />
@@ -109,27 +134,34 @@ export default function Header({
 
             <TextInput
               ref={inputRef}
+              autoFocus
               value={draftTitle}
               onChangeText={setDraftTitle}
               onSubmitEditing={commitEdit}
               returnKeyType="done"
-              selectTextOnFocus
               maxLength={14}
               className="flex-1 p-0"
               style={{
-                fontSize: 18,
+                fontSize: 20,
                 fontWeight: "600",
                 color: "#1A1A1A",
               }}
             />
 
-            <Pressable onPress={() => setDraftTitle("")} hitSlop={12} className="ml-2">
+            <Pressable
+              onPress={() => setDraftTitle("")}
+              hitSlop={12}
+              className="ml-2"
+            >
               <XIcon color="#1A1A1A" />
             </Pressable>
           </View>
 
-          {/* dimm 오버레이: 탭하면 확정 후 종료 */}
-          <Pressable className="flex-1 bg-black/50 z-999" onPress={commitEdit} />
+          {/* dimm 오버레이 */}
+          <Pressable
+            style={{ flex: 1, backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+            onPress={commitEdit}
+          />
         </View>
       </Modal>
     </View>

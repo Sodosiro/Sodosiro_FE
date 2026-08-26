@@ -11,19 +11,22 @@ import TripPlacesList from "./TripPlacesList";
 type TabType = "지금 많이 찾는 장소" | "저장한 장소";
 type Props = {
   onSelectPlace?: (place: PlaceType) => void;
+  sigunguCode: string;
+  sigunguName: string;
 };
 
-export default function TripConditionPlacesSection({ onSelectPlace }: Props) {
+export default function TripConditionPlacesSection({
+  onSelectPlace,
+  sigunguCode,
+  sigunguName,
+}: Props) {
   const [currentTab, setCurrentTab] = useState<TabType>("지금 많이 찾는 장소");
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>("all");
 
-  // 1. 인기 장소 쿼리
   const popularQuery = usePlacesQuery(selectedCategory, "POPULAR", 5);
-
-  // 2. 저장한 장소 쿼리
+  // const popularQuery = usePlacesQuery(selectedCategory, "POPULAR", 5, sigunguCode); // 시군구 코드로 조회시 검색결과가 적음.
   const likeQuery = useLikePlacesQuery(selectedCategory, undefined, "RECENT");
 
-  // 3. 현재 탭에 따른 데이터 및 로딩 상태 분기
   const isPopularTab = currentTab === "지금 많이 찾는 장소";
   const isPending = isPopularTab ? popularQuery.isPending : likeQuery.isPending;
 
@@ -31,8 +34,9 @@ export default function TripConditionPlacesSection({ onSelectPlace }: Props) {
     ? popularQuery.data?.data.items
     : (likeQuery.data?.pages.flatMap((page) => page.data.content) ?? []);
 
-  // 저장한 장소 탭이면서 데이터가 비어있는지 확인
   const isLikeTabEmpty = !isPopularTab && (!places || places.length === 0);
+
+  console.log("popularQuery", popularQuery.data?.data.items);
 
   return (
     <View className="flex-col px-5 gap-3">
@@ -53,13 +57,17 @@ export default function TripConditionPlacesSection({ onSelectPlace }: Props) {
         /* 저장한 장소가 없을 때 텍스트 표시 */
         <View className="justify-center items-center h-91.5 gap-2">
           <CustomText font="title">아직 저장한 장소가 없어요.</CustomText>
-          <CustomText font="body2" className="text-gray-400">
+          <CustomText
+            font="body2"
+            className="text-gray-400"
+          >
             마음에 드는 장소를 저장하면 여기에서 선택할 수 있어요.
           </CustomText>
         </View>
       ) : (
         <TripPlacesList
           places={places}
+          sigunguName={sigunguName}
           onSelectPlace={(spot) => onSelectPlace?.(spotItemToPlaceType(spot))}
         />
       )}

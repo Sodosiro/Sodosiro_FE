@@ -5,6 +5,7 @@ type GetPlacesParams = {
   size?: number;
   category?: number[];
   keyword?: string;
+  sigunguCode?: string;
   sort?: "ALL" | "DEFAULT" | "POPULAR";
 };
 

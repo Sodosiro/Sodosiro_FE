@@ -1,11 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  TextInput,
-  View,
-} from "react-native";
+import { KeyboardAvoidingView, Platform, ScrollView, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import BottomSheet from "@/components/common/BottomSheet";
@@ -24,6 +18,7 @@ import TripConditionPlacesSection from "@/components/tripCondition/TripCondition
 import TransportCard from "@/components/tripCondition/TripConditionTransportCard";
 import { SODOSI_LIST } from "@/constants/Sodosi";
 import { COURSE_STATE } from "@/constants/Trip";
+import { useToast } from "@/contexts/ToastProvider";
 import { useCourseRecommendationsMutation } from "@/hooks/mutation/course";
 import axios from "axios";
 import { router, Stack, useLocalSearchParams } from "expo-router";
@@ -74,9 +69,7 @@ export default function TripScreen() {
   const { sigunguId } = useLocalSearchParams<{
     sigunguId: string;
   }>();
-  const SODOSI = SODOSI_LIST.find(
-    (sodosi) => String(sodosi.sigunguId) == sigunguId,
-  );
+  const SODOSI = SODOSI_LIST.find((sodosi) => String(sodosi.sigunguId) == sigunguId);
 
   const [tripTitle, setTripTitle] = useState(`${SODOSI?.name} 여행`);
   const [showCalendar, setShowCalendar] = useState(false);
@@ -91,10 +84,11 @@ export default function TripScreen() {
   const [showErrorText, setShowErrorText] = useState(false);
 
   // useMutation hook
-  const { mutateAsync: postCourseRecommendations, isPending } =
-    useCourseRecommendationsMutation();
+  const { mutateAsync: postCourseRecommendations, isPending } = useCourseRecommendationsMutation();
 
   const [selectedCategory, setSelectedCategory] = useState<CategoryType[]>([]);
+
+  const { showToast } = useToast();
 
   const handleSelectCategory = (category: CategoryType) => {
     setSelectedCategory((prev) => {
@@ -139,9 +133,7 @@ export default function TripScreen() {
       transportMode: transport,
       startDate: formatDate(dateRange.startDate),
       endDate: formatDate(dateRange.endDate ?? dateRange.startDate),
-      travelStyles: selectedCategory.map(
-        (category) => CATEGORY_TO_TRAVEL_STYLE[category],
-      ),
+      travelStyles: selectedCategory.map((category) => CATEGORY_TO_TRAVEL_STYLE[category]),
       ...(selectedPlace?.contentId && {
         mustVisitContentId: selectedPlace.contentId,
       }),
@@ -168,12 +160,17 @@ export default function TripScreen() {
       if (axios.isAxiosError(error)) {
         console.log("status:", error.response?.status);
         console.log("data:", error.response?.data);
+
+        const errorCode = error.response?.data?.code || "";
+        if (errorCode === "COURSE400-TRAVEL_DATE_OVERLAP") {
+          showToast(error.response?.data?.message || "");
+        }
       }
     }
   };
 
   const handleDisabled = () => {
-    if (!dateRange.startDate || !transport || selectedCategory.length === 0) {
+    if (!dateRange.startDate || !transport) {
       return true;
     }
     if (checkIsRestDayConflict()) {
@@ -197,15 +194,7 @@ export default function TripScreen() {
 
   function getDayName(date: Date | null): string {
     if (!date) return "";
-    const days = [
-      "일요일",
-      "월요일",
-      "화요일",
-      "수요일",
-      "목요일",
-      "금요일",
-      "토요일",
-    ];
+    const days = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
     return days[date.getDay()];
   }
 
@@ -250,7 +239,10 @@ export default function TripScreen() {
             <View className="gap-3">
               <View className="flex-row gap-1">
                 <View className="pt-1">
-                  <CustomText font="body3" style={{ color: "#F04452" }}>
+                  <CustomText
+                    font="body3"
+                    style={{ color: "#F04452" }}
+                  >
                     *
                   </CustomText>
                 </View>
@@ -288,7 +280,10 @@ export default function TripScreen() {
             <View className="gap-3">
               <View className="flex-row gap-1">
                 <View className="pt-1">
-                  <CustomText font="body3" style={{ color: "#F04452" }}>
+                  <CustomText
+                    font="body3"
+                    style={{ color: "#F04452" }}
+                  >
                     *
                   </CustomText>
                 </View>
@@ -310,11 +305,6 @@ export default function TripScreen() {
 
             <View className="gap-3">
               <View className="flex-row gap-1">
-                <View className="pt-1">
-                  <CustomText font="body3" style={{ color: "#F04452" }}>
-                    *
-                  </CustomText>
-                </View>
                 <Subtitle
                   title="선호하는 관광지가 있나요?"
                   description="최대 2개 선택"
@@ -322,8 +312,7 @@ export default function TripScreen() {
               </View>
               <View className="flex-row flex-wrap gap-2.5">
                 {CATEGORIES.filter(
-                  (category) =>
-                    !(category == "accommodation" || category == "restaurant"),
+                  (category) => !(category == "accommodation" || category == "restaurant"),
                 ).map((category) => {
                   const isSelected = selectedCategory.includes(category);
                   return (
@@ -356,13 +345,18 @@ export default function TripScreen() {
                   >
                     <TripConditionPlacesSection
                       onSelectPlace={handleSelectPlace}
+                      sigunguCode={SODOSI?.sigunguCode || ""}
+                      sigunguName={SODOSI?.name || ""}
                     />
                     <View className="pt-5" />
                   </BottomSheet>
                 )}
               </View>
               {showErrorText && (
-                <CustomText font="body3" style={{ color: "#F04452" }}>
+                <CustomText
+                  font="body3"
+                  style={{ color: "#F04452" }}
+                >
                   여행 일정과 해당 장소의 휴무일이 겹쳐요.
                 </CustomText>
               )}
@@ -382,7 +376,10 @@ export default function TripScreen() {
                   maxLength={20}
                 />
               </View>
-              <CustomText font="body3" className="text-text-muted text-right">
+              <CustomText
+                font="body3"
+                className="text-text-muted text-right"
+              >
                 {aiMessage.length}/20
               </CustomText>
             </View>

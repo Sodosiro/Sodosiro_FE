@@ -9,16 +9,18 @@ export function usePlacesQuery(
   category: CategoryType,
   sort?: "ALL" | "DEFAULT" | "POPULAR",
   size: number = 20,
+  sigunguCode?: string,
 ) {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   return useQuery({
-    queryKey: ["places", category, sort, size],
+    queryKey: ["places", category, sigunguCode, sort, size],
     queryFn: () =>
       getPlacesApi({
         size: size,
         category: category === "all" ? undefined : [CategoryToNumber[category]],
         sort,
+        sigunguCode,
       }),
     enabled: isAuthenticated,
   });
@@ -34,10 +36,7 @@ export function useSearchPlacesQuery() {
       getPlacesApi({
         keyword: keyword || undefined,
         size: 10000,
-        category:
-          selectedCategory !== "all"
-            ? [CategoryToNumber[selectedCategory]]
-            : undefined,
+        category: selectedCategory !== "all" ? [CategoryToNumber[selectedCategory]] : undefined,
       }),
     enabled: !!keyword.trim(),
   });

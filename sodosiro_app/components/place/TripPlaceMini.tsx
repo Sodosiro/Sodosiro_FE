@@ -5,6 +5,7 @@ import { NumberToCategory } from "@/util/place/category";
 import { router } from "expo-router";
 import { Image, Pressable, View } from "react-native";
 import CustomText from "../common/CustomText";
+import Tag from "./Tag";
 
 type Props = {
   id: number;
@@ -14,6 +15,8 @@ type Props = {
   category: CategoryNumber;
   icon?: React.ReactNode;
   avgRating?: number;
+  rankTag?: string;
+  disabled?: boolean;
   onPress?: () => void;
 };
 
@@ -24,11 +27,17 @@ export default function TripPlaceMini({
   desc,
   category,
   avgRating,
+  rankTag,
+  disabled = false,
   icon = <RightIcon color={"#777777"} />,
   onPress = () => router.push({ pathname: "/place/[placeId]", params: { placeId: id } }),
 }: Props) {
   return (
-    <Pressable className={`flex-row items-center flex-1 gap-3 min-h-14`} onPress={onPress}>
+    <Pressable
+      className={`flex-row items-center flex-1 gap-3 min-h-14 ${disabled ? "opacity-40" : ""}`}
+      disabled={disabled}
+      onPress={onPress}
+    >
       <Image
         source={imageUrl ? { uri: imageUrl } : DEFAULT_IMAGES[NumberToCategory[category]]}
         className={`rounded-xl`}
@@ -36,17 +45,32 @@ export default function TripPlaceMini({
         resizeMode="cover"
       />
       <View className={`flex-1 gap-0.5`}>
-        <CustomText font="title" numberOfLines={1}>
-          {title}
-        </CustomText>
-        <CustomText font="body3" className={`text-text-muted`} numberOfLines={1}>
+        <View className={`flex-row gap-1`}>
+          <CustomText
+            font="title"
+            numberOfLines={1}
+            className={disabled ? "text-text-muted" : ""}
+          >
+            {title}
+          </CustomText>
+          {rankTag && <Tag rankTag={rankTag} />}
+        </View>
+        <CustomText
+          font="body3"
+          className={`text-text-muted`}
+          numberOfLines={1}
+        >
           {desc}
         </CustomText>
         {Number(avgRating) > 0 && (
-          <RateChip rate={avgRating} reviewCount={0} noReviewCount={true} />
+          <RateChip
+            rate={avgRating}
+            reviewCount={0}
+            noReviewCount={true}
+          />
         )}
       </View>
-      {icon}
+      {!disabled && icon}
     </Pressable>
   );
 }

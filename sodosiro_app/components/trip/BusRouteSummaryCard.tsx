@@ -7,7 +7,7 @@ const MIN_SEGMENT_FLEX = 0.4;
 
 // 헬퍼 함수: 초 단위 시간을 분/시간 문구로 변환
 const formatDuration = (seconds: number): string => {
-  const minutes = Math.round(seconds / 60);
+  const minutes = Math.max(1, Math.round(seconds / 60)); // 최소 1분 보장
   if (minutes < 60) return `${minutes}분`;
   const hours = Math.floor(minutes / 60);
   const remainMinutes = minutes % 60;
@@ -23,11 +23,9 @@ const formatDistance = (meters: number): string => {
 // 헬퍼 함수: TransitRouteStep을 UI 표시용 속성으로 변환
 const parseStepItem = (step: TransitRouteStep, index: number) => {
   const isBus =
-    step.type?.toUpperCase().includes("BUS") ||
-    (step.vehicleNames && step.vehicleNames.length > 0);
+    step.type?.toUpperCase().includes("BUS") || (step.vehicleNames && step.vehicleNames.length > 0);
   const isWalk =
-    step.type?.toUpperCase().includes("WALK") ||
-    (!isBus && step.vehicleNames?.length === 0);
+    step.type?.toUpperCase().includes("WALK") || (!isBus && step.vehicleNames?.length === 0);
 
   let label = isWalk ? "도보" : "대중교통";
   if (isBus && step.vehicleNames && step.vehicleNames.length > 0) {
@@ -61,14 +59,15 @@ export default function BusRouteSummaryCard({
   const fare = `${routeDetail?.fare?.toLocaleString()}원`;
 
   // 2. steps 데이터 바인딩
-  const formattedSteps = routeDetail.steps.map((step, index) =>
-    parseStepItem(step, index),
-  );
+  const formattedSteps = routeDetail.steps.map((step, index) => parseStepItem(step, index));
 
   if (!routeDetail.success) {
     return (
       <View className="bg-white rounded-2xl px-4 py-4 ml-8.5 mt-3 justify-center items-center">
-        <CustomText font="body3" className="text-text-muted">
+        <CustomText
+          font="body3"
+          className="text-text-muted"
+        >
           이동 경로를 찾을 수 없어요.
         </CustomText>
       </View>
@@ -77,7 +76,10 @@ export default function BusRouteSummaryCard({
 
   return (
     <View className="bg-white rounded-2xl px-4 py-4 border border-[#D9D9D9] ml-8.5 mt-3">
-      <CustomText font="title" className="text-text-primary">
+      <CustomText
+        font="title"
+        className="text-text-primary"
+      >
         {totalDuration} · {totalDistance} {routeDetail?.fare && `· ${fare}`}
       </CustomText>
 
@@ -96,7 +98,10 @@ export default function BusRouteSummaryCard({
 
       <View className="gap-3">
         {formattedSteps.map((step) => (
-          <View key={step.id} className="flex-row items-center">
+          <View
+            key={step.id}
+            className="flex-row items-center"
+          >
             <View
               className={`w-6 h-6 rounded-full items-center justify-center mr-2 ${
                 step.type === "bus" ? "bg-[#2A71FB]" : "bg-bg-subtle"
@@ -105,10 +110,16 @@ export default function BusRouteSummaryCard({
               {step.type === "bus" ? <BusIcon /> : <WalkIcon />}
             </View>
 
-            <CustomText font="body2" className="text-text-primary shrink">
+            <CustomText
+              font="body2"
+              className="text-text-primary shrink"
+            >
               {step.label}
             </CustomText>
-            <CustomText font="body2" className="text-text-muted ml-1.5">
+            <CustomText
+              font="body2"
+              className="text-text-muted ml-1.5"
+            >
               · {step.duration} · {step.distance}
             </CustomText>
           </View>
@@ -121,10 +132,16 @@ export default function BusRouteSummaryCard({
         onPress={onPressKakaoMap}
         className="flex-row items-center justify-between"
       >
-        <CustomText font="body2" className="text-text-muted">
+        <CustomText
+          font="body2"
+          className="text-text-muted"
+        >
           카카오맵에서 경로 더보기
         </CustomText>
-        <RightIcon color={"#888888"} width={20} />
+        <RightIcon
+          color={"#888888"}
+          width={20}
+        />
       </Pressable>
     </View>
   );

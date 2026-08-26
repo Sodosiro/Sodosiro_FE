@@ -1,4 +1,4 @@
-type UpcomingTripCardType = {
+type TripCardType = {
   id: string;
   dDay: number;
   title: string;
@@ -8,7 +8,7 @@ type UpcomingTripCardType = {
   locationText: string;
 };
 
-export const UPCOMING_TRIPS: UpcomingTripCardType[] = [
+export const UPCOMING_TRIPS: TripCardType[] = [
   {
     id: "trip-001",
     dDay: 3,

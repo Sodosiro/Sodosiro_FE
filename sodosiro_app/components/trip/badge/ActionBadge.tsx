@@ -13,12 +13,10 @@ import {
 type ActionBadgeProps = {
   text: string;
   selected?: boolean;
-  bgWhite?: boolean;
   disabled?: boolean;
   /** 방문 인증이 완료됐을 때 체크 아이콘 표시 */
   isGpsVerificated?: boolean;
-  /** 현재 진행 중인 일정임을 강조 (초록 배경) */
-  isOngoing?: boolean;
+  primary?: boolean;
   onPress: () => void;
   onLayout?: (e: LayoutChangeEvent) => void;
 };
@@ -27,16 +25,15 @@ type ActionBadgeProps = {
 export default function ActionBadge({
   text,
   selected = false,
-  bgWhite = false,
   disabled = false,
   isGpsVerificated = false,
-  isOngoing = false,
+  primary = false,
   onPress,
   onLayout,
 }: ActionBadgeProps) {
   const pressed = useSharedValue(0);
 
-  const bgColors = isOngoing
+  const bgColors = primary
     ? ["#C4D96A", "#A9C92D"]
     : selected
       ? ["#1A1A1A", "#1A1A1A"]
@@ -44,7 +41,7 @@ export default function ActionBadge({
         ? ["#f4f4f4", "#f4f4f4"]
         : ["#ededed", "#e6e6e6"];
 
-  const textClass = isOngoing
+  const textClass = primary
     ? "text-text-primary"
     : selected
       ? "text-white"
@@ -75,9 +72,16 @@ export default function ActionBadge({
       }}
     >
       {isGpsVerificated && (
-        <BigCheckIcon color={"white"} width={14} height={14} />
+        <BigCheckIcon
+          color={"white"}
+          width={14}
+          height={14}
+        />
       )}
-      <CustomText font="body3 tight" className={textClass}>
+      <CustomText
+        font="body3 tight"
+        className={textClass}
+      >
         {text}
       </CustomText>
     </AnimatedPressable>

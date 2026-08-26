@@ -62,6 +62,10 @@ export type SpotItem = {
   reviewId: number | null;
   avgRating: number; // 추가됨
   reviewCount: number; // 추가됨
+  region: string; // 추가됨
+  popularity?: {
+    rankTag: string; // 추가됨
+  };
 };
 
 // 일자별 일정 타입
@@ -143,9 +147,7 @@ export async function getCoursesApi(status?: TripStatus) {
   return axiosInstance.get("/api/v1/courses/me", { params: { status } });
 }
 
-export async function postCourseRecommendationsApi(
-  body: CourseRecommendationRequest,
-) {
+export async function postCourseRecommendationsApi(body: CourseRecommendationRequest) {
   return await axiosInstance.post("/api/v1/courses/recommendations", body);
 }
 
@@ -178,10 +180,7 @@ export async function updateCourseDaysApi(
   courseId: string | number,
   requestData: UpdateCourseDaysRequest,
 ) {
-  return await axiosInstance.patch(
-    `/api/v1/courses/${courseId}/days`,
-    requestData,
-  );
+  return await axiosInstance.patch(`/api/v1/courses/${courseId}/days`, requestData);
 }
 
 /**

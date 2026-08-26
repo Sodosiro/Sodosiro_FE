@@ -35,11 +35,11 @@ export default function OngoingTripSection({
   isPending: isCoursesPending,
   isError: isCoursesError,
 }: OngoingTripSectionProps) {
-  const courseId = courses?.[0].courseId;
+  const courseId = courses?.[0]?.courseId ?? undefined;
   const courseStatus = COURSE_STATE.IN_PROGRESS;
   const {
     data: courseResponse,
-    isPending,
+    isFetching,
     isError,
   } = useCourseDetailQuery(courseId);
 
@@ -120,7 +120,7 @@ export default function OngoingTripSection({
   const animatedPosition = useSharedValue((screenWidth * 2) / 3);
 
   // 1. 로딩 상태 처리
-  if (isPending) {
+  if (isFetching) {
     return (
       <View className={`flex-1 justify-center items-center`}>
         <Spinner />
@@ -192,7 +192,7 @@ export default function OngoingTripSection({
                   transformedSpots={
                     transformedDays.find((td) => td.day === item.day)?.spots
                   }
-                  transportMode={courseResponse.data.transportMode}
+                  transportMode={courseResponse?.data.transportMode}
                   mode={courseStatus}
                   dayIndex={index}
                   setPlan={setTemp}

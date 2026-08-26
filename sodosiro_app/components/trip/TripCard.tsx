@@ -1,31 +1,28 @@
-import { CourseSummaryItem } from "@/api/course";
+import { CourseStatus, CourseSummaryItem } from "@/api/course";
 import { CalendarMiniIcon, PinMiniIcon, TrashIcon } from "@/assets/svgs";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
 import CustomText from "@/components/common/CustomText";
 import { SODOSI_LIST } from "@/constants/Sodosi";
+import { COURSE_STATE } from "@/constants/Trip";
 import { useDeleteCourseMutation } from "@/hooks/mutation/course";
 import { calculateDDay, formatNightsAndDays } from "@/util/date/date";
+import { router } from "expo-router";
 import { memo, useState } from "react";
 import { Pressable, View } from "react-native";
-import ActionBadge from "../badge/ActionBadge";
+import ActionBadge from "./badge/ActionBadge";
 
-type UpcomingTripCardProps = {
+type TripCardProps = {
   course: CourseSummaryItem;
+  courseStatus: CourseStatus | "TEMP";
   onPress: () => void;
   onDeleteSuccess?: () => void; // 삭제 성공 후 부모 컴포넌트에 알릴 콜백 (선택)
 };
 
-function UpcomingTripCard({
-  course,
-  onPress,
-  onDeleteSuccess,
-}: UpcomingTripCardProps) {
+function TripCard({ course, courseStatus, onPress, onDeleteSuccess }: TripCardProps) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { mutateAsync: deleteCourse } = useDeleteCourseMutation();
 
-  const SODOSI = SODOSI_LIST.find(
-    (sodosi) => String(sodosi.sigunguCode) == course.sigunguCode,
-  );
+  const SODOSI = SODOSI_LIST.find((sodosi) => String(sodosi.sigunguCode) == course.sigunguCode);
 
   const dDay = calculateDDay(course?.startDate);
   const nightDayText = formatNightsAndDays(course?.startDate, course?.endDate);
@@ -46,21 +43,30 @@ function UpcomingTripCard({
     }
   };
 
+  console.log("course", course);
+
   return (
     <>
       <View className="rounded-2xl border border-[#E5E5E5] bg-white px-5 py-4 mb-5">
         <View className="flex-row justify-between">
           <View className="flex-row gap-2 items-center">
             {/* D-Day Badge */}
-            <View className="flex-row items-center self-start px-3.5 py-1.5 min-h-9 rounded-full bg-primary">
-              <CustomText font="body3 tight">
-                {dDay === 0
-                  ? "D-Day"
-                  : dDay > 0
-                    ? `D-${dDay}`
-                    : `D+${Math.abs(dDay)}`}
-              </CustomText>
-            </View>
+            {course.status == COURSE_STATE.FINISHED ? (
+              <View className="flex-row items-center self-start px-3.5 py-1.5 min-h-9 rounded-full bg-[#444444]">
+                <CustomText
+                  font="body3 tight"
+                  className="text-white"
+                >
+                  완료
+                </CustomText>
+              </View>
+            ) : (
+              <View className="flex-row items-center self-start px-3.5 py-1.5 min-h-9 rounded-full bg-primary">
+                <CustomText font="body3 tight">
+                  {dDay === 0 ? "D-Day" : dDay > 0 ? `D-${dDay}` : `D+${Math.abs(dDay)}`}
+                </CustomText>
+              </View>
+            )}
             {/* 임시저장된 코스 */}
             {!course.isConfirmed && (
               <View className="flex-row items-center px-1 py-1 min-h-7 rounded bg-[#F5F5F5]">
@@ -69,7 +75,10 @@ function UpcomingTripCard({
             )}
           </View>
           {/* 삭제하기 버튼 */}
-          <Pressable onPress={handleOpenDeleteModal} hitSlop={8}>
+          <Pressable
+            onPress={handleOpenDeleteModal}
+            hitSlop={8}
+          >
             <TrashIcon color={"#888888"} />
           </Pressable>
         </View>
@@ -86,7 +95,10 @@ function UpcomingTripCard({
         <View className="flex-row items-center mt-2">
           <CalendarMiniIcon color={"#1A1A1A"} />
 
-          <CustomText font="body2" className="ml-2">
+          <CustomText
+            font="body2"
+            className="ml-2"
+          >
             {course.startDate} · {nightDayText}
           </CustomText>
         </View>
@@ -95,7 +107,10 @@ function UpcomingTripCard({
         <View className="flex-row items-center mt-2">
           <PinMiniIcon color={"#444444"} />
 
-          <CustomText font="body2" className="ml-2">
+          <CustomText
+            font="body2"
+            className="ml-2"
+          >
             {course.displayName}
           </CustomText>
         </View>
@@ -104,12 +119,25 @@ function UpcomingTripCard({
         <View className="h-px bg-[#E5E5E5] my-3" />
 
         {/* Button */}
-        <View className="flex-row">
+        <View className="flex-row gap-2">
           <ActionBadge
             text={course.isConfirmed ? "여행 보기" : "이어서 만들기"}
             onPress={onPress}
             onLayout={() => {}}
           />
+          {courseStatus == COURSE_STATE.FINISHED && (
+            <ActionBadge
+              text={"발견 카드 작성하기"}
+              primary={true}
+              onPress={() => {
+                router.push({
+                  pathname: "/feed/create",
+                  params: { courseId: course.courseId },
+                });
+              }}
+              onLayout={() => {}}
+            />
+          )}
         </View>
       </View>
 
@@ -126,4 +154,4 @@ function UpcomingTripCard({
   );
 }
 
-export default memo(UpcomingTripCard);
+export default memo(TripCard);

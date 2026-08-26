@@ -1,11 +1,12 @@
 import { CourseSummaryItem } from "@/api/course";
 import Spinner from "@/components/common/Spinner";
+import { COURSE_STATE } from "@/constants/Trip";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useRef } from "react";
 import { ScrollView, View } from "react-native";
 import EmptyState from "../EmptyState";
-import UpcomingTripCard from "../upcoming/UpcomingTripCard";
+import TripCard from "../TripCard";
 
 type CompletedTripSectionProps = {
   courses: CourseSummaryItem[] | undefined;
@@ -75,8 +76,9 @@ export default function CompletedTripSection({
           <ScrollView className="flex-1">
             <View className="p-5">
               {courses?.map((course) => (
-                <UpcomingTripCard
+                <TripCard
                   key={course.courseId}
+                  courseStatus={COURSE_STATE.FINISHED}
                   course={course}
                   onPress={() => handleCardPress(course)}
                 />

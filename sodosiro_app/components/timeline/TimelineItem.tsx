@@ -104,7 +104,7 @@ function TimelineItem({
           onPress={() => onVerificationPlace?.()}
           text="방문 인증하기"
           selected={true}
-          isOngoing={true}
+          primary={true}
           isGpsVerificated={place.gpsVerified}
         />
       );
@@ -149,14 +149,21 @@ function TimelineItem({
               </View>
             ) : (
               <View className="w-6 h-6 rounded-xl bg-[#1A1A1A] items-center justify-center mr-2.5 shrink-0">
-                <CustomText font="body3" className="text-white">
+                <CustomText
+                  font="body3"
+                  className="text-white"
+                >
                   {order}
                 </CustomText>
               </View>
             )}
 
             <View className="flex-row gap-1 items-center min-w-0 max-w-full shrink">
-              <CustomText font="title" numberOfLines={1} className="shrink">
+              <CustomText
+                font="title"
+                numberOfLines={1}
+                className="shrink"
+              >
                 {place.title}
               </CustomText>
               {place.gpsVerified && <VerificationIcon width={14} />}
@@ -187,7 +194,10 @@ function TimelineItem({
                 <StarIcon />
                 <CustomText font="body2">{place?.avgRating}</CustomText>
                 {place.reviewCount !== undefined && (
-                  <CustomText font="body3" className="text-text-muted">
+                  <CustomText
+                    font="body3"
+                    className="text-text-muted"
+                  >
                     ({place.reviewCount})
                   </CustomText>
                 )}

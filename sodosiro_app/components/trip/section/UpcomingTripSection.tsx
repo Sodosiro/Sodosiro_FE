@@ -4,7 +4,7 @@ import { COURSE_STATE } from "@/constants/Trip";
 import { router } from "expo-router";
 import { ScrollView, View } from "react-native";
 import EmptyState from "../EmptyState";
-import UpcomingTripCard from "../upcoming/UpcomingTripCard";
+import TripCard from "../TripCard";
 
 type UpcomingTripSectionProps = {
   courses: CourseSummaryItem[] | undefined;
@@ -22,9 +22,7 @@ export default function UpcomingTripSection({
       pathname: "/trip/timeline",
       params: {
         courseId: course.courseId,
-        courseStatus: Boolean(course.isConfirmed)
-          ? COURSE_STATE.UPCOMING
-          : COURSE_STATE.TEMP,
+        courseStatus: Boolean(course.isConfirmed) ? COURSE_STATE.UPCOMING : COURSE_STATE.TEMP,
       },
     });
   };
@@ -62,8 +60,11 @@ export default function UpcomingTripSection({
           <ScrollView className="flex-1">
             <View className="p-5">
               {courses?.map((course) => (
-                <UpcomingTripCard
+                <TripCard
                   key={course.courseId}
+                  courseStatus={
+                    Boolean(course.isConfirmed) ? COURSE_STATE.UPCOMING : COURSE_STATE.TEMP
+                  }
                   course={course}
                   onPress={() => handleCardPress(course)}
                 />

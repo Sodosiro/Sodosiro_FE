@@ -10,14 +10,10 @@ import { useCoursePlacesQuery, useCoursesQuery } from "@/hooks/query/course";
 import { invalidateQueries } from "@/util/query/invalidateQueries";
 import axios from "axios";
 import * as ImagePicker from "expo-image-picker";
-import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { router, useLocalSearchParams } from "expo-router";
+import { useEffect, useRef, useState } from "react";
 import { BackHandler, useWindowDimensions, View } from "react-native";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from "react-native-reanimated";
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const STEP_COUNT = 3;
@@ -25,20 +21,20 @@ const STEP_COUNT = 3;
 export default function CreateFeedScreen() {
   const { width } = useWindowDimensions();
 
-  const [step, setStep] = useState(0);
+  const { courseId } = useLocalSearchParams<{ courseId?: string }>();
+  const paramCourseId = courseId ? Number(courseId) : undefined;
 
-  const [selectedCourseId, setSelectedCourseId] = useState<number | undefined>(
-    undefined,
-  );
+  const initialStep = paramCourseId ? 1 : 0;
+  const [step, setStep] = useState(initialStep);
+  const [selectedCourseId, setSelectedCourseId] = useState<number | undefined>(paramCourseId);
+
   const [selectedPlace, setSelectedPlace] = useState<TripSpotType | null>(null);
   const [text, setText] = useState("");
-  const [imageSources, setImageSources] = useState<
-    ImagePicker.ImagePickerAsset[]
-  >([]);
+  const [imageSources, setImageSources] = useState<ImagePicker.ImagePickerAsset[]>([]);
   const [isPicking, setIsPicking] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const translateX = useSharedValue(0);
+  const translateX = useSharedValue(-width * initialStep);
 
   const contentStyle = useAnimatedStyle(() => ({
     transform: [
@@ -48,13 +44,27 @@ export default function CreateFeedScreen() {
     ],
   }));
 
-  const { data: coursesData, isPending: isCoursesPending } =
-    useCoursesQuery(COURSE_STATE.FINISHED);
+  const { data: coursesData, isPending: isCoursesPending } = useCoursesQuery(COURSE_STATE.FINISHED);
   const courses = coursesData?.data.courses;
 
   const { data: coursePlacesData, isPending: isPlacesPending } =
     useCoursePlacesQuery(selectedCourseId);
   const places = coursePlacesData?.data.spots;
+
+  const isInitialMount = useRef(true);
+
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
+    if (paramCourseId && selectedCourseId !== paramCourseId) {
+      setSelectedCourseId(paramCourseId);
+      setStep(1);
+      translateX.value = -width;
+    }
+  }, [paramCourseId, width]);
 
   const moveToStep = (nextStep: number) => {
     setStep(nextStep);
@@ -74,6 +84,11 @@ export default function CreateFeedScreen() {
 
   const handleBack = () => {
     if (step > 0) {
+      if (step === 1 && paramCourseId) {
+        router.back();
+        return;
+      }
+
       const prevStep = step - 1;
 
       if (prevStep < 1) {
@@ -125,21 +140,18 @@ export default function CreateFeedScreen() {
   };
 
   useEffect(() => {
-    const subscription = BackHandler.addEventListener(
-      "hardwareBackPress",
-      () => {
-        if (isSubmitting) return true;
-        if (step > 0) {
-          handleBack();
-          return true;
-        }
-        return false;
-      },
-    );
+    const subscription = BackHandler.addEventListener("hardwareBackPress", () => {
+      if (isSubmitting) return true;
+      if (step > 0) {
+        handleBack();
+        return true;
+      }
+      return false;
+    });
     return () => {
       subscription.remove();
     };
-  }, [step, width, isSubmitting]);
+  }, [step, width, isSubmitting, paramCourseId]);
 
   const isNextDisabled =
     step === 0
@@ -157,13 +169,19 @@ export default function CreateFeedScreen() {
         backgroundColor: "white",
       }}
     >
-      <Header title="발견 피드 작성하기" handleBack={handleBack} />
+      <Header
+        title="발견 피드 작성하기"
+        handleBack={handleBack}
+      />
 
       {courses?.length < 1 ? (
-        <View className={`flex-1 gap-8 justify-center items-center`}>
-          <View className={`gap-3 items-center`}>
+        <View className="flex-1 gap-8 justify-center items-center">
+          <View className="gap-3 items-center">
             <CustomText font="heading2">아직 완료한 여행이 없어요.</CustomText>
-            <CustomText font="body3" className={`text-text-muted`}>
+            <CustomText
+              font="body3"
+              className="text-text-muted"
+            >
               여행을 마치면 방문한 장소로{"\n"}발견 카드를 남길 수 있어요.
             </CustomText>
           </View>

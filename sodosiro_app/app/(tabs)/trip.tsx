@@ -5,7 +5,7 @@ import OngoingTripSection from "@/components/trip/section/OngoingTripSection";
 import UpcomingTripSection from "@/components/trip/section/UpcomingTripSection";
 import TripTabBar from "@/components/trip/TripTabBar";
 import { COURSE_STATE } from "@/constants/Trip";
-import { useMyCoursesQuery } from "@/hooks/query/useCourseQuery";
+import { useCoursesQuery } from "@/hooks/query/course";
 import { useState } from "react";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -19,19 +19,19 @@ export default function TripScreen() {
     data: upcomingCourses,
     isPending: isUpcomingPending,
     isError: isUpcomingError,
-  } = useMyCoursesQuery({ status: COURSE_STATE.UPCOMING });
+  } = useCoursesQuery(COURSE_STATE.UPCOMING);
 
   const {
     data: ongoingCourses,
     isPending: isOngoingPending,
     isError: isOngoingError,
-  } = useMyCoursesQuery({ status: COURSE_STATE.IN_PROGRESS });
+  } = useCoursesQuery(COURSE_STATE.IN_PROGRESS);
 
   const {
     data: completedCourses,
     isPending: isCompletedPending,
     isError: isCompletedError,
-  } = useMyCoursesQuery({ status: COURSE_STATE.FINISHED });
+  } = useCoursesQuery(COURSE_STATE.FINISHED);
 
   return (
     <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: "white" }}>
@@ -50,7 +50,12 @@ export default function TripScreen() {
         </View>
       ) : (
         <View className="flex-1">
-          <View style={{ display: currentTab === "예정" ? "flex" : "none", flex: 1 }}>
+          <View
+            style={{
+              display: currentTab === "예정" ? "flex" : "none",
+              flex: 1,
+            }}
+          >
             <UpcomingTripSection
               courses={upcomingCourses?.data.courses}
               isPending={isUpcomingPending}
@@ -71,7 +76,12 @@ export default function TripScreen() {
             />
           </View>
 
-          <View style={{ display: currentTab === "완료" ? "flex" : "none", flex: 1 }}>
+          <View
+            style={{
+              display: currentTab === "완료" ? "flex" : "none",
+              flex: 1,
+            }}
+          >
             <CompletedTripSection
               courses={completedCourses?.data.courses}
               isPending={isCompletedPending}

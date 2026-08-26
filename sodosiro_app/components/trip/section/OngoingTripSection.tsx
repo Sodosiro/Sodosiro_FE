@@ -8,7 +8,7 @@ import KakaoMap from "@/components/explore/KakaoMap";
 import TimelineDayBadgeSection from "@/components/timeline/section/TimelineDayBadgeSection";
 import TimelineDaySection from "@/components/timeline/section/TimelineDaySection";
 import { COURSE_STATE } from "@/constants/Trip";
-import { useCourseDetailQuery } from "@/hooks/query/useCourseQuery";
+import { useCourseDetailQuery } from "@/hooks/query/course";
 import { useTimelineScrollSpy } from "@/hooks/useTimelineScrollSpy";
 import {
   createRouteInfo,
@@ -185,6 +185,7 @@ export default function OngoingTripSection({
             >
               {temp.map((item, index) => (
                 <TimelineDaySection
+                  courseId={Number(courseId)}
                   key={item.day}
                   dayPlan={item}
                   // ★ 2. 해당 일차(day)에 해당하는 경로 통합 데이터(transformedSpots) 추가 전달

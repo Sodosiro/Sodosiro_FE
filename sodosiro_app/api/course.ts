@@ -191,3 +191,19 @@ export async function updateCourseDaysApi(
 export async function confirmCourseApi(params: { courseId: number }) {
   return await axiosInstance.post("/api/v1/courses/confirm", params);
 }
+
+export async function postCourseGps(
+  courseId: number,
+  contentId: number,
+  day: number,
+  latitude: number,
+  longitude: number,
+) {
+  return await axiosInstance.post(`/api/v1/gps`, {
+    courseId,
+    contentId,
+    day,
+    latitude,
+    longitude,
+  });
+}

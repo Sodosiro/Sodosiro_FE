@@ -3,6 +3,8 @@ type GpsVerificationItem = {
   title: string;
   category: CategoryNumber;
   firstImage?: string;
+  courseId?: number;
+  day?: number;
 };
 
 type BingoItem = {

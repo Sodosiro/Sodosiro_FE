@@ -3,7 +3,7 @@ import { CalendarMiniIcon, PinMiniIcon, TrashIcon } from "@/assets/svgs";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
 import CustomText from "@/components/common/CustomText";
 import { SODOSI_LIST } from "@/constants/Sodosi";
-import { useDeleteCourseMutation } from "@/hooks/query/useCourseMutation"; // 삭제 Hook 경로에 맞춰 변경해 주세요
+import { useDeleteCourseMutation } from "@/hooks/mutation/course";
 import { calculateDDay, formatNightsAndDays } from "@/util/date/date";
 import { memo, useState } from "react";
 import { Pressable, View } from "react-native";
@@ -15,11 +15,17 @@ type UpcomingTripCardProps = {
   onDeleteSuccess?: () => void; // 삭제 성공 후 부모 컴포넌트에 알릴 콜백 (선택)
 };
 
-function UpcomingTripCard({ course, onPress, onDeleteSuccess }: UpcomingTripCardProps) {
+function UpcomingTripCard({
+  course,
+  onPress,
+  onDeleteSuccess,
+}: UpcomingTripCardProps) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { mutateAsync: deleteCourse } = useDeleteCourseMutation();
 
-  const SODOSI = SODOSI_LIST.find((sodosi) => String(sodosi.sigunguCode) == course.sigunguCode);
+  const SODOSI = SODOSI_LIST.find(
+    (sodosi) => String(sodosi.sigunguCode) == course.sigunguCode,
+  );
 
   const dDay = calculateDDay(course?.startDate);
   const nightDayText = formatNightsAndDays(course?.startDate, course?.endDate);
@@ -48,7 +54,11 @@ function UpcomingTripCard({ course, onPress, onDeleteSuccess }: UpcomingTripCard
             {/* D-Day Badge */}
             <View className="flex-row items-center self-start px-3.5 py-1.5 min-h-9 rounded-full bg-primary">
               <CustomText font="body3 tight">
-                {dDay === 0 ? "D-Day" : dDay > 0 ? `D-${dDay}` : `D+${Math.abs(dDay)}`}
+                {dDay === 0
+                  ? "D-Day"
+                  : dDay > 0
+                    ? `D-${dDay}`
+                    : `D+${Math.abs(dDay)}`}
               </CustomText>
             </View>
             {/* 임시저장된 코스 */}

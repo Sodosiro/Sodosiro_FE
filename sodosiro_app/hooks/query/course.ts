@@ -1,5 +1,6 @@
-import { getCoursesApi } from "@/api/course";
+import { getCourseDetail, getCoursesApi } from "@/api/course";
 import { getFeedCandidatesApi } from "@/api/feed";
+import { getAlternativeSpotsApi } from "@/api/place";
 import { useQuery } from "@tanstack/react-query";
 
 export function useCoursesQuery(status: TripStatus) {
@@ -14,5 +15,21 @@ export function useCoursePlacesQuery(courseId: number | undefined) {
     queryKey: ["coursePlaces", courseId],
     queryFn: () => getFeedCandidatesApi(courseId!),
     enabled: !!courseId,
+  });
+}
+
+export const useCourseDetailQuery = (courseId: string | number | undefined) => {
+  return useQuery({
+    queryKey: ["courseDetail", courseId],
+    queryFn: () => getCourseDetail(courseId!),
+    enabled: !!courseId,
+  });
+};
+
+export function useAlternativeSpotsQuery(contentId?: number | string) {
+  return useQuery({
+    queryKey: ["alternativeSpots", contentId],
+    queryFn: () => getAlternativeSpotsApi({ contentId: contentId! }),
+    enabled: !!contentId,
   });
 }

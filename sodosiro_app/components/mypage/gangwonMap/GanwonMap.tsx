@@ -3,8 +3,8 @@ import { GANGWON_MAP } from "@/constants/GangwonMap";
 import { useFocusEffect } from "expo-router";
 import { Dispatch, SetStateAction, useCallback, useState } from "react";
 import { View } from "react-native";
-import Svg from "react-native-svg";
-import GangwonMapItem from "./GangwonMapItem";
+import Svg, { G } from "react-native-svg";
+import GangwonMapItem, { PinMini } from "./GangwonMapItem";
 import RegionTag from "./RegionTag";
 
 interface GangwonMapProps {
@@ -62,6 +62,7 @@ export default function GangwonMap({
             style={{
               userSelect: "none",
               aspectRatio: 800 / 699,
+              overflow: "visible",
             }}
           >
             {GANGWON_MAP.map((region) => (
@@ -77,6 +78,20 @@ export default function GangwonMap({
                 }}
               />
             ))}
+            <G>
+              {GANGWON_MAP.filter((region) =>
+                visitedRegionIds.includes(region.sigunguId),
+              ).map((region) => (
+                <PinMini
+                  key={region.sigunguId}
+                  x={region.x}
+                  y={region.y}
+                  onPress={() => {
+                    setSelectedRegionId(region.sigunguId);
+                  }}
+                />
+              ))}
+            </G>
           </Svg>
         </View>
 

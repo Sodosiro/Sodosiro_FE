@@ -36,12 +36,11 @@ export default function GangwonMapItem({
         fillRule="evenodd"
         d={d}
       />
-      {isVisited && <PinMini x={x} y={y} onPress={onPress} />}
     </G>
   );
 }
 
-function PinMini({
+export function PinMini({
   x,
   y,
   onPress,

@@ -1,5 +1,10 @@
 import { CELL_SIZE, GAP, LINE_WEIGHT } from "@/constants/Bingo";
-import { View } from "react-native";
+import { useEffect } from "react";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 
 type Props = {
   boardSize: number;
@@ -33,12 +38,33 @@ const LINE_MAP = {
   },
 } as const;
 
+const BingoLineItem = ({
+  isCompleted,
+  style,
+}: {
+  isCompleted: boolean;
+  style: any;
+}) => {
+  const opacity = useSharedValue(isCompleted ? 0.3 : 0.3);
+
+  useEffect(() => {
+    opacity.value = withTiming(isCompleted ? 0.8 : 0.3, {
+      duration: 300,
+    });
+  }, [isCompleted]);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+  }));
+
+  return <Animated.View pointerEvents="none" style={[style, animatedStyle]} />;
+};
+
 export default function BingoLine({ line, boardSize }: Props) {
   const LINE_SCALE = 0.8;
   const lineLength = boardSize * LINE_SCALE;
   const offset = (boardSize - lineLength) / 2;
 
-  // 완성된 라인 체크용
   const completedLines = new Set(line.map((item) => item.join("")));
 
   return (
@@ -47,9 +73,9 @@ export default function BingoLine({ line, boardSize }: Props) {
         const isCompleted = completedLines.has(key);
 
         return (
-          <View
+          <BingoLineItem
             key={key}
-            pointerEvents="none"
+            isCompleted={isCompleted}
             style={{
               position: "absolute",
 
@@ -57,8 +83,6 @@ export default function BingoLine({ line, boardSize }: Props) {
               height: LINE_WEIGHT,
 
               backgroundColor: "#7E9432",
-              opacity: isCompleted ? 0.8 : 0.3,
-
               borderRadius: 999,
 
               ...("top" in position && {

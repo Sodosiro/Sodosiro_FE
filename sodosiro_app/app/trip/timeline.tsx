@@ -17,8 +17,8 @@ import TimelineDaySection from "@/components/timeline/section/TimelineDaySection
 import TripPlanConfirmModal from "@/components/timeline/TripPlanConfirmModal";
 import { COURSE_STATE } from "@/constants/Trip";
 import { useToast } from "@/contexts/ToastProvider";
-import { useConfirmCourseMutation } from "@/hooks/query/useCourseMutation";
-import { useCourseDetailQuery } from "@/hooks/query/useCourseQuery";
+import { useConfirmCourseMutation } from "@/hooks/mutation/course";
+import { useCourseDetailQuery } from "@/hooks/query/course";
 import { useTimelineScrollSpy } from "@/hooks/useTimelineScrollSpy";
 import { formatCoursePeriod } from "@/util/date/date";
 import {
@@ -308,6 +308,7 @@ export default function TimelineScreen() {
         >
           {temp.map((item, index) => (
             <TimelineDaySection
+              courseId={Number(courseId)}
               key={item.day}
               setOnDrag={setOnDrag}
               dayPlan={item}

@@ -1,8 +1,14 @@
-import { WhiteBigCheckIcon } from "@/assets/svgs";
+import { BigCheckIcon } from "@/assets/svgs";
 import { AnimatedPressable } from "@/components/common/animated/Animated";
 import CustomText from "@/components/common/CustomText";
 import { ACTION_BADGE_CLASS } from "@/components/trip/badge/badgeStyles";
 import { LayoutChangeEvent } from "react-native";
+import {
+  interpolateColor,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 
 type ActionBadgeProps = {
   text: string;
@@ -10,7 +16,7 @@ type ActionBadgeProps = {
   bgWhite?: boolean;
   disabled?: boolean;
   /** 방문 인증이 완료됐을 때 체크 아이콘 표시 */
-  isAuthCompleted?: boolean;
+  isGpsVerificated?: boolean;
   /** 현재 진행 중인 일정임을 강조 (초록 배경) */
   isOngoing?: boolean;
   onPress: () => void;
@@ -23,18 +29,20 @@ export default function ActionBadge({
   selected = false,
   bgWhite = false,
   disabled = false,
-  isAuthCompleted = false,
+  isGpsVerificated = false,
   isOngoing = false,
   onPress,
   onLayout,
 }: ActionBadgeProps) {
-  const bgClass = isOngoing
-    ? "bg-primary"
+  const pressed = useSharedValue(0);
+
+  const bgColors = isOngoing
+    ? ["#C4D96A", "#A9C92D"]
     : selected
-      ? "bg-text-primary"
+      ? ["#1A1A1A", "#1A1A1A"]
       : disabled
-        ? "bg-btn-disabled"
-        : "bg-bg-soft";
+        ? ["#f4f4f4", "#f4f4f4"]
+        : ["#ededed", "#e6e6e6"];
 
   const textClass = isOngoing
     ? "text-text-primary"
@@ -44,14 +52,31 @@ export default function ActionBadge({
         ? "text-text-muted"
         : "text-text-primary";
 
+  const animatedStyle = useAnimatedStyle(() => ({
+    backgroundColor: interpolateColor(pressed.value, [0, 1], bgColors),
+  }));
+
   return (
     <AnimatedPressable
-      className={`${bgClass} ${ACTION_BADGE_CLASS}`}
+      className={`${ACTION_BADGE_CLASS}`}
+      style={animatedStyle}
       disabled={disabled}
       onPress={onPress}
       onLayout={onLayout}
+      onPressIn={() => {
+        pressed.value = withTiming(1, {
+          duration: 100,
+        });
+      }}
+      onPressOut={() => {
+        pressed.value = withTiming(0, {
+          duration: 100,
+        });
+      }}
     >
-      {isAuthCompleted && <WhiteBigCheckIcon />}
+      {isGpsVerificated && (
+        <BigCheckIcon color={"white"} width={14} height={14} />
+      )}
       <CustomText font="body3 tight" className={textClass}>
         {text}
       </CustomText>

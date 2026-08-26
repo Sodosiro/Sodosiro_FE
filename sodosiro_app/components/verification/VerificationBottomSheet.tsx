@@ -2,6 +2,7 @@ import { PinMiniIcon } from "@/assets/svgs";
 import { DEFAULT_IMAGES } from "@/constants/Category";
 import { useToast } from "@/contexts/ToastProvider";
 import { useBingoGpsMutation } from "@/hooks/mutation/bingo";
+import { useCourseGpsMutation } from "@/hooks/mutation/course";
 import { NumberToCategory } from "@/util/place/category";
 import {
   BottomSheetBackdrop,
@@ -28,7 +29,8 @@ const VerificationBottomSheet = forwardRef<BottomSheetModal, Props>(
     const { showToast } = useToast();
     const [isLoading, setIsLoading] = useState(false);
 
-    const { mutateAsync } = useBingoGpsMutation();
+    const { mutateAsync: bingoMutateAsync } = useBingoGpsMutation();
+    const { mutateAsync: courseMutateAsync } = useCourseGpsMutation();
 
     const gpsDisabled = bingoStatus === "ENDED";
 
@@ -39,7 +41,7 @@ const VerificationBottomSheet = forwardRef<BottomSheetModal, Props>(
           "내가 쓴 피드에 방문 인증 표시가 붙어요.",
         ];
 
-    const handleLocaion = async () => {
+    const handleVerivication = async () => {
       if (!selectedItem) return;
 
       try {
@@ -59,11 +61,22 @@ const VerificationBottomSheet = forwardRef<BottomSheetModal, Props>(
 
         const { latitude, longitude } = location.coords;
 
-        await mutateAsync({
-          contentId: selectedItem.contentId,
-          latitude,
-          longitude,
-        });
+        if (bingoStatus) {
+          await bingoMutateAsync({
+            contentId: selectedItem.contentId,
+            latitude,
+            longitude,
+          });
+        } else {
+          await courseMutateAsync({
+            courseId: selectedItem.courseId as number,
+            contentId: selectedItem.contentId,
+            day: selectedItem.day as number,
+            latitude,
+            longitude,
+          });
+        }
+        showToast("방문이 인증되었어요!.");
       } catch (error) {
         if (axios.isAxiosError(error)) {
           if (error.response?.data?.code === "GPS409-OUT_OF_RANGE") {
@@ -172,7 +185,7 @@ const VerificationBottomSheet = forwardRef<BottomSheetModal, Props>(
                 <AnimatedButton
                   backgroundColor={["#C4D96A", "#A9C92D"]}
                   className={`h-13 flex-1 rounded-xl justify-center items-center`}
-                  onPress={handleLocaion}
+                  onPress={handleVerivication}
                   disabled={gpsDisabled}
                   disabledColor="#f5f5f5"
                   loading={isLoading}

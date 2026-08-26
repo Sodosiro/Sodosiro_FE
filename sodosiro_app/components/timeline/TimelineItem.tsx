@@ -5,7 +5,7 @@ import {
   TransitRouteDetail,
   TransportMode,
 } from "@/api/course";
-import { AlignIcon, StarIcon } from "@/assets/svgs";
+import { AlignIcon, StarIcon, VerificationIcon } from "@/assets/svgs";
 import CustomText from "@/components/common/CustomText";
 import Dropdown from "@/components/common/Dropdown";
 import { COURSE_STATE } from "@/constants/Trip";
@@ -49,7 +49,6 @@ function TimelineItem({
   onLongPress,
   onVerificationPlace,
   isEditing = false,
-  isAuthCompleted = false,
   isFirstIndex = false,
   onChangePlace,
 }: TimelineItemProps) {
@@ -90,13 +89,13 @@ function TimelineItem({
 
   const renderActionButton = () => {
     if (mode === COURSE_STATE.IN_PROGRESS) {
-      if (isAuthCompleted) {
+      if (place.gpsVerified) {
         return (
           <ActionBadge
             onPress={() => {}}
             text="방문 인증 완료"
             selected={true}
-            isAuthCompleted={true}
+            isGpsVerificated={true}
           />
         );
       }
@@ -106,7 +105,7 @@ function TimelineItem({
           text="방문 인증하기"
           selected={true}
           isOngoing={true}
-          isAuthCompleted={false}
+          isGpsVerificated={place.gpsVerified}
         />
       );
     }
@@ -160,6 +159,7 @@ function TimelineItem({
               <CustomText font="title" numberOfLines={1} className="shrink">
                 {place.title}
               </CustomText>
+              {place.gpsVerified && <VerificationIcon width={14} />}
 
               <View className="shrink-0">
                 <Tag category={NumberToCategory[place?.category]} />

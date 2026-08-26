@@ -1,7 +1,7 @@
 import { SpotItem } from "@/api/course";
 import CustomText from "@/components/common/CustomText";
 import Spinner from "@/components/common/Spinner";
-import { useAlternativeSpotsQuery } from "@/hooks/query/useAlternativeSpotsQuery";
+import { useAlternativeSpotsQuery } from "@/hooks/query/course";
 import { View } from "react-native";
 import TripPlacesList from "./TripPlacesList";
 

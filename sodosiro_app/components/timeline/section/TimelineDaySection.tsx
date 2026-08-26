@@ -28,6 +28,7 @@ import DraggableFlatList, {
 import TimelineItem from "../TimelineItem";
 
 type TimelineDaySectionProps = {
+  courseId: number;
   dayPlan: CourseDayItem;
   dayIndex: number;
   mode: CourseStatus | "TEMP";
@@ -46,6 +47,7 @@ type TimelineDaySectionProps = {
 };
 
 function TimelineDaySection({
+  courseId,
   dayPlan,
   dayIndex,
   mode,
@@ -263,7 +265,13 @@ function TimelineDaySection({
           )}
           <VerificationBottomSheet
             ref={bottomSheetRef}
-            selectedItem={selectedItem}
+            selectedItem={
+              {
+                ...selectedItem,
+                day: dayPlan?.day,
+                courseId,
+              } as GpsVerificationItem
+            }
             onClose={() => bottomSheetRef?.current?.close()}
           />
         </View>

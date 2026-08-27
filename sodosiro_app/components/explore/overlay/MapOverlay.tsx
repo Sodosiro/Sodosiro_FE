@@ -1,4 +1,3 @@
-import { BottomSheetSnapPoints } from "@/constants/BottomSheet";
 import { useExploreStore } from "@/stores/useExploreStore";
 import { useLocationStore } from "@/stores/useLocationStore";
 import * as Location from "expo-location";
@@ -45,16 +44,10 @@ export default function MapOverlay({
   const screenHeight = Dimensions.get("window").height;
 
   const animatedStyle = useAnimatedStyle(() => {
-    if (animatedIndex.value === -1) {
-      return {
-        bottom: 0,
-      };
-    }
-
-    const sheetHeight = screenHeight - animatedPosition.value - 98;
+    const sheetHeight = screenHeight - animatedPosition.value;
 
     return {
-      bottom: Math.min(sheetHeight, BottomSheetSnapPoints[1] as number),
+      bottom: sheetHeight - 80,
     };
   });
 
@@ -103,7 +96,7 @@ export default function MapOverlay({
       </View>
 
       <Animated.View
-        className={`w-screen flex-row absolute bottom-0`}
+        className={`w-screen flex-row absolute`}
         style={animatedStyle}
         pointerEvents="box-none"
       >

@@ -55,7 +55,7 @@ export default function ExploreScreen() {
   }, [data]);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView edges={["top"]} style={{ flex: 1 }}>
       {!isPlacesPending && allPlaces && (
         <KakaoMap
           webViewRef={webViewRef}
@@ -88,6 +88,8 @@ export default function ExploreScreen() {
         handleLike={handleLike}
       />
       <PlaceBottomSheet
+        animatedPosition={animatedPosition}
+        animatedIndex={animatedIndex}
         handlePlaceItemPress={handlePlaceItemPress}
         handleLike={handleLike}
       />

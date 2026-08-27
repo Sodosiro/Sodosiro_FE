@@ -1,5 +1,4 @@
 import CustomText from "@/components/common/CustomText";
-import { BottomSheetSnapPoints } from "@/constants/BottomSheet";
 import { useExploreStore } from "@/stores/useExploreStore";
 import BottomSheet, {
   BottomSheetFlatList,
@@ -72,7 +71,9 @@ export default function PlaceListBottomSheet({
       ref={bottomSheetRef}
       index={-1}
       animatedIndex={animatedIndex}
-      snapPoints={BottomSheetSnapPoints}
+      snapPoints={
+        searchResult?.length && searchResult?.length > 1 ? [24, 226] : [24, 136]
+      }
       animatedPosition={animatedPosition}
       backgroundStyle={{
         backgroundColor: "white",

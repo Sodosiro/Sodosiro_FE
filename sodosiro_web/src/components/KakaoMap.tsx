@@ -11,6 +11,12 @@ import { useWebViewMessage } from "../hooks/useWebViewMessage";
 import { registerMapClick } from "../util/registerMapClick";
 
 export default function KakaoMap({ mode }: { mode: "marker" | "navigation" }) {
+  const params = new URLSearchParams(window.location.search);
+
+  const lat = Number(params.get("lat"));
+  const lng = Number(params.get("lng"));
+  const level = Number(params.get("level"));
+
   useKakaoLoader({
     appkey: import.meta.env.VITE_KAKAO_MAP_KEY,
     libraries: ["clusterer"],
@@ -94,10 +100,10 @@ export default function KakaoMap({ mode }: { mode: "marker" | "navigation" }) {
         <Map
           ref={mapRef}
           center={{
-            lat: 37.8528,
-            lng: 128.2555,
+            lat: lat || 37.8528,
+            lng: lng || 128.2555,
           }}
-          level={12}
+          level={level || 12}
           style={{
             width: "100%",
             height: "100%",

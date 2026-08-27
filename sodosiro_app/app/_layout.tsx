@@ -3,6 +3,7 @@ import { getMeApi } from "@/api/user";
 import NotificationListener from "@/components/notification/NotificationListener";
 import { NotificationProvider } from "@/components/notification/NotificationProvider";
 import { ToastProvider } from "@/contexts/ToastProvider";
+import { useLocation } from "@/hooks/useLocation";
 import { registerForPushNotificationsAsync } from "@/lib/pushNotification";
 import { queryClient } from "@/lib/queryClient";
 import { useAuthStore } from "@/stores/useAuthStore";
@@ -102,6 +103,8 @@ export default function RootLayout() {
 
   const setUser = useUserStore((state) => state.setUser);
 
+  useLocation();
+
   useEffect(() => {
     initialize();
   }, [initialize]);
@@ -185,7 +188,7 @@ export default function RootLayout() {
                     />
 
                     <Stack.Screen
-                      name="explore/search"
+                      name="explore"
                       options={{
                         presentation: "modal",
                         animation: "fade",

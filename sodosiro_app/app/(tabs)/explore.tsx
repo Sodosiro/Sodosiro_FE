@@ -6,31 +6,23 @@ import MapOverlay from "@/components/explore/overlay/MapOverlay";
 import { useLikePlaceMutation } from "@/hooks/mutation/place";
 import { useSearchPlacesQuery } from "@/hooks/query/place";
 import { useExploreStore } from "@/stores/useExploreStore";
-import { useWebViewStore } from "@/stores/useWebViewStore";
 import type BottomSheet from "@gorhom/bottom-sheet";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Dimensions, View } from "react-native";
 import { useSharedValue } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import WebView from "react-native-webview";
 
 export default function ExploreScreen() {
-  const isLoading = useWebViewStore((state) => state.isLoading);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const webViewRef = useRef<React.ComponentRef<typeof WebView>>(null);
   const bottomSheetRef = useRef<BottomSheet>(null);
   const screenHeight = Dimensions.get("window").height;
   const animatedPosition = useSharedValue(screenHeight);
   const animatedIndex = useSharedValue(-1);
 
-  const webViewRef = useRef<React.ComponentRef<typeof WebView>>(null);
-
-  const handlePlaceItemPress = (placeId: number) => {
-    webViewRef.current?.postMessage(
-      JSON.stringify({
-        type: "PAN_TO",
-        placeId: placeId,
-      }),
-    );
-  };
+  const searchResult = useExploreStore((state) => state.searchResult);
 
   const isPlacesPending = useExploreStore((state) => state.isPlacesPending);
   const allPlaces = useExploreStore((state) => state.allPlaces);
@@ -44,6 +36,15 @@ export default function ExploreScreen() {
   const handleLike = async (contentId: number) => {
     if (isLikePending) return;
     mutate([contentId]);
+  };
+
+  const handlePlaceItemPress = (placeId: number) => {
+    webViewRef.current?.postMessage(
+      JSON.stringify({
+        type: "PAN_TO",
+        placeId: placeId,
+      }),
+    );
   };
 
   useEffect(() => {
@@ -62,6 +63,7 @@ export default function ExploreScreen() {
           mode="marker"
           animatedPosition={animatedPosition}
           initialData={allPlaces}
+          setIsLoading={setIsLoading}
         />
       )}
 
@@ -81,6 +83,7 @@ export default function ExploreScreen() {
         </View>
       )}
       <PlaceListBottomSheet
+        places={searchResult}
         bottomSheetRef={bottomSheetRef}
         animatedPosition={animatedPosition}
         animatedIndex={animatedIndex}

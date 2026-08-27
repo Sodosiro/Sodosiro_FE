@@ -23,7 +23,15 @@ export function getNotificationPressHandler(
 
     case "NEARBY_LIKED_SPOTS":
       return async () => {
-        // TODO
+        router.push({
+          pathname: "/explore/nearbyLiked",
+          params: {
+            placeIds: payload.nearbyContentIds.map(String),
+          },
+        });
+
+        await patchNotificationRead(id);
+        invalidateQueries([["notifications"]]);
       };
 
     case "REVIEW_REQUEST":

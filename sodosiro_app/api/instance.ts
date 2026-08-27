@@ -17,6 +17,19 @@ axiosInstance.interceptors.request.use((config) => {
   return config;
 });
 
+// axiosInstance.interceptors.response.use(
+//   (response) => response,
+//   async (error) => {
+//     console.log("🔥 Axios Error");
+//     console.log("URL:", error.config?.url);
+//     console.log("METHOD:", error.config?.method);
+//     console.log("STATUS:", error.response?.status);
+//     console.log("DATA:", error.response?.data);
+
+//     return Promise.reject(error);
+//   },
+// );
+
 // accessToken 만료 시 refreshToken으로 토큰 재발급 및 기존 api 재요청
 axiosInstance.interceptors.response.use(
   (response) => response,
@@ -41,7 +54,9 @@ axiosInstance.interceptors.response.use(
         const newAccessToken = data.newAccessToken;
         const newRefreshToken = data.refreshToken;
 
-        await useAuthStore.getState().updateToken(newAccessToken, newRefreshToken);
+        await useAuthStore
+          .getState()
+          .updateToken(newAccessToken, newRefreshToken);
 
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 

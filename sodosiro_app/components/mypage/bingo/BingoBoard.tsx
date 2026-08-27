@@ -1,5 +1,6 @@
 import CustomText from "@/components/common/CustomText";
 import VerificationBottomSheet from "@/components/verification/VerificationBottomSheet";
+import { getBingoSeasonText } from "@/util/bingo/bingoSeason";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useRef, useState } from "react";
 import { LayoutChangeEvent, View } from "react-native";
@@ -12,11 +13,13 @@ export default function BingoBoard({
   bingoResult,
   isPending,
   bingoStatus,
+  selectedSeason,
 }: {
   bingoItems: BingoItem[];
   bingoResult: BingoResult | null;
   isPending: boolean;
   bingoStatus: BingoStatus;
+  selectedSeason: BingoSeasonType;
 }) {
   const [boardSize, setBoardSize] = useState(0);
 
@@ -27,11 +30,24 @@ export default function BingoBoard({
     const { width } = e.nativeEvent.layout;
     setBoardSize(width);
   };
+  const completedCount = bingoResult?.completedLines ?? 0;
+  selectedSeason.seasonType;
+  const bingoText =
+    completedCount === 0
+      ? "빙고를 만들어 볼까요?"
+      : completedCount < 4
+        ? `빙고 ${completedCount}줄 완성!`
+        : completedCount < 6
+          ? `벌써 ${completedCount}줄이나 완성했어요!`
+          : completedCount < 8
+            ? `올빙고까지 ${8 - completedCount}줄 남았어요!`
+            : `${getBingoSeasonText(selectedSeason)} 시즌 올빙고!🎉`;
+
   return (
     <View className={`gap-3`}>
       <View className={`flex-row justify-between`}>
         <CustomText font="title" className={`text-primary-dark`}>
-          빙고 {bingoResult?.completedLines}줄 완성!
+          {bingoText}
         </CustomText>
         <CustomText font="body3" className={`text-text-muted`}>
           {bingoResult?.completedLines}줄/8줄

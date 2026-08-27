@@ -70,6 +70,7 @@ export default function BingoScreen() {
               bingoResult={bingoResult}
               isPending={isBingoPending}
               bingoStatus={selectedSeason?.status}
+              selectedSeason={selectedSeason}
             />
             <BingoAdvantage comingSoon />
           </ScrollView>

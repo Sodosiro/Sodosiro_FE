@@ -1,9 +1,10 @@
 import { postAiRecommendationApi } from "@/api/place";
+import { LogoIcon } from "@/assets/svgs";
 import CustomText from "@/components/common/CustomText";
 import ExpandableText from "@/components/common/ExpandableText";
 import { SkeletonLine } from "@/components/common/skeleton/SkeletonLine";
 import { useQuery } from "@tanstack/react-query";
-import { Image, View } from "react-native";
+import { View } from "react-native";
 
 type aiRecommendation = {
   available: boolean;
@@ -29,7 +30,7 @@ export default function AIRecommend({
 
   return (
     <View className="flex-row px-4 pt-3 pb-4 gap-2 bg-primary-light">
-      <Image className="size-6" source={require("@/assets/images/ai.png")} />
+      <LogoIcon width={20} height={20} />
       <View className="gap-1 flex-1">
         <CustomText font="body1" className="text-primary-dark">
           AI 한 줄 요약

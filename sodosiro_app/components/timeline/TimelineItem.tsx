@@ -52,9 +52,6 @@ function TimelineItem({
   isFirstIndex = false,
   onChangePlace,
 }: TimelineItemProps) {
-  // console.log("transportMode", transportMode);
-  // console.log("routeDetail", routeDetail);
-  // console.log("carRouteLeg", carRouteLeg);
   const handleToggle = () => {
     if (!isEditing) {
       onToggle(`${place.contentId}`);
@@ -88,6 +85,18 @@ function TimelineItem({
   };
 
   const renderActionButton = () => {
+    /** 임시저장 */
+    if (mode === COURSE_STATE.TEMP) {
+      return (
+        <ActionBadge
+          onPress={() => onChangePlace?.()}
+          text="장소 변경하기"
+          selected={true}
+        />
+      );
+    }
+
+    /** 진행 중 */
     if (mode === COURSE_STATE.IN_PROGRESS) {
       if (place.gpsVerified) {
         return (
@@ -110,14 +119,42 @@ function TimelineItem({
       );
     }
 
-    if (mode === COURSE_STATE.TEMP) {
-      return (
-        <ActionBadge
-          onPress={() => onChangePlace?.()}
-          text="장소 변경하기"
-          selected={true}
-        />
-      );
+    /** 완료 */
+    if (mode === COURSE_STATE.FINISHED) {
+      const reviewId = place.reviewId;
+      if (place.reviewWritten && reviewId !== null && reviewId !== undefined) {
+        return (
+          <ActionBadge
+            onPress={() =>
+              router.push({
+                pathname: "/place/[placeId]/[reviewId]",
+                params: {
+                  placeId: place.contentId,
+                  reviewId,
+                  title: place.title,
+                },
+              })
+            }
+            text="리뷰 수정하기"
+            selected={true}
+            primary={true}
+          />
+        );
+      } else {
+        return (
+          <ActionBadge
+            onPress={() =>
+              router.push({
+                pathname: "/place/[placeId]/reviewWrite",
+                params: { placeId: place.contentId, title: place.title },
+              })
+            }
+            text="리뷰 작성하기"
+            selected={true}
+            primary={true}
+          />
+        );
+      }
     }
 
     return null;

@@ -27,9 +27,7 @@ export default function ReviewModifyScreen() {
     title: string;
   }>();
 
-  const { data, isPending: isGetReviewPending } = useMyReviewQuery(
-    Number(reviewId),
-  );
+  const { data, isPending: isGetReviewPending } = useMyReviewQuery(Number(reviewId));
 
   const { body, rating, images } = data?.data ?? {};
 
@@ -49,32 +47,23 @@ export default function ReviewModifyScreen() {
 
       const keepImageUrls = imageSources
         .filter((image) =>
-          images?.some(
-            (existingImage: ImageType) => existingImage.imageUrl === image.uri,
-          ),
+          images?.some((existingImage: ImageType) => existingImage.imageUrl === image.uri),
         )
         .map((image) => image.uri);
 
       const newImages = imageSources.filter(
         (image) =>
-          !images?.some(
-            (existingImage: ImageType) => existingImage.imageUrl === image.uri,
-          ),
+          !images?.some((existingImage: ImageType) => existingImage.imageUrl === image.uri),
       );
 
-      await patchReviewApi(
-        Number(reviewId),
-        rate,
-        content.trim(),
-        newImages,
-        keepImageUrls,
-      );
+      await patchReviewApi(Number(reviewId), rate, content.trim(), newImages, keepImageUrls);
 
       await invalidateQueries([
         ["placeDetail", Number(placeId)],
         ["reviews", Number(placeId)],
         ["myReview", Number(reviewId)],
         ["myReviews"],
+        ["courseDetail"],
       ]);
 
       router.back();
@@ -91,9 +80,7 @@ export default function ReviewModifyScreen() {
 
   const isImagesUnchanged =
     imageSources.length === (images?.length ?? 0) &&
-    imageSources.every(
-      (image, index) => image.uri === images?.[index]?.imageUrl,
-    );
+    imageSources.every((image, index) => image.uri === images?.[index]?.imageUrl);
 
   useEffect(() => {
     if (!data?.data) return;
@@ -128,11 +115,13 @@ export default function ReviewModifyScreen() {
             <View className={`gap-3`}>
               <CustomText font="heading2">
                 {title}
-                <Text className={`text-text-muted`}>
-                  {particle} 어떠셨나요?
-                </Text>
+                <Text className={`text-text-muted`}>{particle} 어떠셨나요?</Text>
               </CustomText>
-              <Rating rate={rate} setRate={setRate} isPending={isPending} />
+              <Rating
+                rate={rate}
+                setRate={setRate}
+                isPending={isPending}
+              />
             </View>
             <ReviewForm
               content={content}

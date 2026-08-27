@@ -53,12 +53,12 @@ export default function BusRouteSummaryCard({
   routeDetail,
   onPressKakaoMap,
 }: BusRouteSummaryCardProps) {
-  // 1. 요약 데이터 바인딩
+  // 요약 데이터 바인딩
   const totalDuration = formatDuration(routeDetail.totalTimeSeconds);
   const totalDistance = formatDistance(routeDetail.totalDistanceMeters);
   const fare = `${routeDetail?.fare?.toLocaleString()}원`;
 
-  // 2. steps 데이터 바인딩
+  // steps 데이터 바인딩
   const formattedSteps = routeDetail.steps.map((step, index) => parseStepItem(step, index));
 
   if (!routeDetail.success) {
@@ -75,22 +75,23 @@ export default function BusRouteSummaryCard({
   }
 
   return (
-    <View className="bg-white rounded-2xl px-4 py-4 border border-[#D9D9D9] ml-8.5 mt-3">
+    <View className="bg-white rounded-2xl px-4 py-4 border border-[#D9D9D9] ml-8.5 mt-3 shrink-0">
       <CustomText
         font="title"
         className="text-text-primary"
       >
-        {totalDuration} · {totalDistance} {routeDetail?.fare && `· ${fare}`}
+        {totalDuration} · {totalDistance} {routeDetail?.fare ? `· ${fare}` : ""}
       </CustomText>
 
       {/* 구간별 비율 진행 바 */}
-      <View className="flex-row h-1.5 rounded-full overflow-hidden mt-2.5 mb-4">
+      <View className="flex-row h-1.5 w-full rounded-full overflow-hidden mt-2.5 mb-4 bg-[#D9D9D9]">
         {formattedSteps.map((step) => (
           <View
             key={step.id}
             className={`h-full ${step.type === "bus" ? "bg-[#2A71FB]" : "bg-[#D9D9D9]"}`}
             style={{
               flexGrow: Math.max(step.durationMinutes, MIN_SEGMENT_FLEX),
+              flexBasis: 0,
             }}
           />
         ))}
@@ -103,34 +104,37 @@ export default function BusRouteSummaryCard({
             className="flex-row items-center"
           >
             <View
-              className={`w-6 h-6 rounded-full items-center justify-center mr-2 ${
+              className={`w-6 h-6 rounded-full items-center justify-center mr-2 shrink-0 ${
                 step.type === "bus" ? "bg-[#2A71FB]" : "bg-bg-subtle"
               }`}
             >
               {step.type === "bus" ? <BusIcon /> : <WalkIcon />}
             </View>
 
-            <CustomText
-              font="body2"
-              className="text-text-primary shrink"
-            >
-              {step.label}
-            </CustomText>
-            <CustomText
-              font="body2"
-              className="text-text-muted ml-1.5"
-            >
-              · {step.duration} · {step.distance}
-            </CustomText>
+            <View className="flex-1 flex-row items-center flex-wrap">
+              <CustomText
+                font="body2"
+                className="text-text-primary shrink"
+                numberOfLines={1}
+              >
+                {step.label}
+              </CustomText>
+              <CustomText
+                font="body2"
+                className="text-text-muted ml-1.5 shrink-0"
+              >
+                · {step.duration} · {step.distance}
+              </CustomText>
+            </View>
           </View>
         ))}
       </View>
 
-      <View className="h-px my-3" />
+      <View className="h-px bg-[#E5E5E5] my-3" />
 
       <Pressable
         onPress={onPressKakaoMap}
-        className="flex-row items-center justify-between"
+        className="flex-row items-center justify-between py-1"
       >
         <CustomText
           font="body2"

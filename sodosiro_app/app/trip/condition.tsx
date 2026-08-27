@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { KeyboardAvoidingView, Platform, ScrollView, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -10,8 +10,9 @@ import Header from "@/components/common/Header";
 import Subtitle from "@/components/common/Subtitle";
 import BigBusIcon from "@/components/icon/transport/BusIcon";
 import CarIcon from "@/components/icon/transport/CarIcon";
+import DatePickerBottomSheet from "@/components/tripCondition/bottomSheet/DatePickerBottomSheet";
+import PlaceListBottomSheet from "@/components/tripCondition/bottomSheet/PlaceListBottomSheet";
 import TripConditionDatePickerButton from "@/components/tripCondition/TripConditionDatePickerButton";
-import DatePickerSheet from "@/components/tripCondition/TripConditionDatePickerSheet";
 import TripConditionFooter from "@/components/tripCondition/TripConditionFooter";
 import LocationPickerButton from "@/components/tripCondition/TripConditionLocationButton";
 import TripConditionPlacesSection from "@/components/tripCondition/TripConditionPlacesSection";
@@ -20,6 +21,7 @@ import { SODOSI_LIST } from "@/constants/Sodosi";
 import { COURSE_STATE } from "@/constants/Trip";
 import { useToast } from "@/contexts/ToastProvider";
 import { useCourseRecommendationsMutation } from "@/hooks/mutation/course";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import axios from "axios";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 
@@ -69,6 +71,9 @@ export default function TripScreen() {
   const { sigunguId } = useLocalSearchParams<{
     sigunguId: string;
   }>();
+  const bottomSheetRef = useRef<BottomSheetModal>(null);
+  const datePickerRef = useRef<BottomSheetModal>(null);
+
   const SODOSI = SODOSI_LIST.find((sodosi) => String(sodosi.sigunguId) == sigunguId);
 
   const [tripTitle, setTripTitle] = useState(`${SODOSI?.name} 여행`);
@@ -106,7 +111,18 @@ export default function TripScreen() {
     if (selectedPlace) {
       setSelectedPlace(null);
     } else {
-      setShowLocation(true);
+      // setShowLocation(true);
+      bottomSheetRef.current?.present();
+    }
+  };
+
+  const handleConfirmDate = (start: string, end: string) => {
+    if (start) {
+      const resultDateRange: DateRange = {
+        startDate: parseDate(start),
+        endDate: start == end ? null : parseDate(end),
+      };
+      setDateRange(resultDateRange);
     }
   };
 
@@ -251,30 +267,9 @@ export default function TripScreen() {
               <TripConditionDatePickerButton
                 dateRange={dateRange}
                 onPress={() => {
-                  setShowCalendar(true);
+                  datePickerRef.current?.present();
                 }}
               />
-              {showCalendar && (
-                <BottomSheet
-                  visible={showCalendar}
-                  onClose={() => setShowCalendar(false)}
-                >
-                  <DatePickerSheet
-                    initialStartDate={dateRange.startDate ?? undefined}
-                    initialEndDate={dateRange.endDate ?? undefined}
-                    onConfirm={(start, end) => {
-                      if (start) {
-                        const resultDateRange: DateRange = {
-                          startDate: parseDate(start),
-                          endDate: start == end ? null : parseDate(end),
-                        };
-                        setDateRange(resultDateRange);
-                      }
-                      setShowCalendar(false);
-                    }}
-                  />
-                </BottomSheet>
-              )}
             </View>
 
             <View className="gap-3">
@@ -352,6 +347,7 @@ export default function TripScreen() {
                   </BottomSheet>
                 )}
               </View>
+
               {showErrorText && (
                 <CustomText
                   font="body3"
@@ -386,6 +382,21 @@ export default function TripScreen() {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+
+      <PlaceListBottomSheet
+        bottomSheetRef={bottomSheetRef}
+        sigunguCode={SODOSI?.sigunguCode || ""}
+        sigunguName={SODOSI?.name || ""}
+        onSelectPlace={(place) => setSelectedPlace(place)}
+      />
+
+      {/* 날짜 선택 바텀시트 모달 */}
+      <DatePickerBottomSheet
+        bottomSheetRef={datePickerRef}
+        onConfirm={handleConfirmDate}
+        initialStartDate={dateRange.startDate ?? undefined}
+        initialEndDate={dateRange.endDate ?? undefined}
+      />
 
       <TripConditionFooter
         onReset={handleReset}

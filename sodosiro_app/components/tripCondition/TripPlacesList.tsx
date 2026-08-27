@@ -1,8 +1,9 @@
-import { PlusIcon } from "@/assets/svgs";
-
 import { SpotItem } from "@/api/course";
+import { PlusIcon } from "@/assets/svgs";
+import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import { View } from "react-native";
 import TripPlaceMini from "../place/TripPlaceMini";
+
 type Props = {
   onSelectPlace?: (place: SpotItem) => void;
   places: SpotItem[];
@@ -13,13 +14,16 @@ export default function TripPlacesList({ places, onSelectPlace, sigunguName }: P
   const handleSelect = (place: SpotItem) => {
     onSelectPlace?.(place);
   };
+
   return (
-    <View className={`gap-4 mt-1`}>
-      {places?.map((place, index) => (
-        <View
-          key={index}
-          className={`flex-row items-center justify-between`}
-        >
+    <BottomSheetFlatList
+      data={places}
+      keyExtractor={(item, index) => String(item.contentId ?? index)}
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ paddingBottom: 40 }}
+      ItemSeparatorComponent={() => <View className="h-4" />}
+      renderItem={({ item: place }) => (
+        <View className="flex-row items-center justify-between">
           <TripPlaceMini
             id={place.contentId}
             imageUrl={place.firstImage}
@@ -33,7 +37,7 @@ export default function TripPlacesList({ places, onSelectPlace, sigunguName }: P
             onPress={() => handleSelect(place)}
           />
         </View>
-      ))}
-    </View>
+      )}
+    />
   );
 }

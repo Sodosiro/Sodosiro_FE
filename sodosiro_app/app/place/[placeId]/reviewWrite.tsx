@@ -39,6 +39,7 @@ export default function ReviewWriteScreen() {
         ["search"],
         ["placeDetail", Number(placeId)],
         ["reviews", Number(placeId)],
+        ["courseDetail"],
       ]);
 
       router.back();
@@ -67,7 +68,11 @@ export default function ReviewWriteScreen() {
             {title}
             <Text className={`text-text-muted`}>{particle} 어떠셨나요?</Text>
           </CustomText>
-          <Rating rate={rate} setRate={setRate} isPending={isPending} />
+          <Rating
+            rate={rate}
+            setRate={setRate}
+            isPending={isPending}
+          />
         </View>
         <ReviewForm
           content={content}

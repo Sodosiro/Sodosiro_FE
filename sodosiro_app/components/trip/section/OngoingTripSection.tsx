@@ -1,8 +1,4 @@
-import {
-  CourseDayItem,
-  CourseDetailResponse,
-  CourseSummaryItem,
-} from "@/api/course";
+import { CourseDayItem, CourseDetailResponse, CourseSummaryItem } from "@/api/course";
 import Spinner from "@/components/common/Spinner";
 import KakaoMap from "@/components/explore/KakaoMap";
 import TimelineDayBadgeSection from "@/components/timeline/section/TimelineDayBadgeSection";
@@ -10,11 +6,7 @@ import TimelineDaySection from "@/components/timeline/section/TimelineDaySection
 import { COURSE_STATE } from "@/constants/Trip";
 import { useCourseDetailQuery } from "@/hooks/query/course";
 import { useTimelineScrollSpy } from "@/hooks/useTimelineScrollSpy";
-import {
-  createRouteInfo,
-  RenderCourseDayItem,
-  transformCourseDetail,
-} from "@/util/route/route";
+import { createRouteInfo, RenderCourseDayItem, transformCourseDetail } from "@/util/route/route";
 import { router } from "expo-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Dimensions, View } from "react-native";
@@ -38,15 +30,31 @@ export default function OngoingTripSection({
   const [isLoading, setIsLoading] = useState(true);
   const courseId = courses?.[0]?.courseId ?? undefined;
   const courseStatus = COURSE_STATE.IN_PROGRESS;
-  const {
-    data: courseResponse,
-    isFetching,
-    isError,
-  } = useCourseDetailQuery(courseId);
+  const { data: courseResponse, isFetching, isError } = useCourseDetailQuery(courseId);
 
   const [tripTitle, setTripTitle] = useState("");
   const webViewRef = useRef<React.ComponentRef<typeof WebView>>(null);
   const [temp, setTemp] = useState<CourseDayItem[]>([]);
+
+  // 오늘 날짜 구하기 (YYYY-MM-DD 포맷)
+  const todayStr = useMemo(() => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }, []);
+
+  // 오늘 날짜에 해당하는 days 배열의 인덱스 계산
+  const targetInitialIndex = useMemo(() => {
+    if (!courseResponse?.data?.days) return 0;
+    const courseDetail: CourseDetailResponse = courseResponse.data;
+
+    const foundIndex = courseDetail.days.findIndex((item) => item.date === todayStr);
+
+    // 오늘 날짜를 찾지 못했거나 범위를 벗어난 경우 0(첫 번째 날)으로 fallback
+    return foundIndex !== -1 ? foundIndex : 0;
+  }, [courseResponse, todayStr]);
 
   const {
     activeIndex,
@@ -58,11 +66,9 @@ export default function OngoingTripSection({
     handleBadgeLayout,
     handleBadgeContainerLayout,
     getSectionLayoutHandler,
-  } = useTimelineScrollSpy();
+  } = useTimelineScrollSpy(targetInitialIndex);
 
-  const [selectedSpotIndexes, setSelectedSpotIndexes] = useState<
-    Record<number, number>
-  >({});
+  const [selectedSpotIndexes, setSelectedSpotIndexes] = useState<Record<number, number>>({});
   const selectedSpotIndex = selectedSpotIndexes[activeIndex] ?? 0;
 
   useEffect(() => {
@@ -86,20 +92,20 @@ export default function OngoingTripSection({
         "path",
         "stopNames",
       ];
-      console.log(
-        "--------------------------courseDetail.transitRoutes--------------------------",
-        JSON.stringify(
-          courseDetail.carRoutes,
-          (key, value) => {
-            // 제외하고 싶은 좌표 키 값 필터링
-            if (EXCLUDE_KEYS.includes(key)) {
-              return undefined; // undefined를 반환하면 해당 키는 출력에서 제외됩니다.
-            }
-            return value;
-          },
-          2,
-        ),
-      );
+      // console.log(
+      //   "--------------------------courseDetail.transitRoutes--------------------------",
+      //   JSON.stringify(
+      //     courseDetail.carRoutes,
+      //     (key, value) => {
+      //       // 제외하고 싶은 좌표 키 값 필터링
+      //       if (EXCLUDE_KEYS.includes(key)) {
+      //         return undefined; // undefined를 반환하면 해당 키는 출력에서 제외됩니다.
+      //       }
+      //       return value;
+      //     },
+      //     2,
+      //   ),
+      // );
     }
   }, [courseResponse]);
 
@@ -191,9 +197,7 @@ export default function OngoingTripSection({
                   key={item.day}
                   dayPlan={item}
                   // ★ 2. 해당 일차(day)에 해당하는 경로 통합 데이터(transformedSpots) 추가 전달
-                  transformedSpots={
-                    transformedDays.find((td) => td.day === item.day)?.spots
-                  }
+                  transformedSpots={transformedDays.find((td) => td.day === item.day)?.spots}
                   transportMode={courseResponse?.data.transportMode}
                   mode={courseStatus}
                   dayIndex={index}

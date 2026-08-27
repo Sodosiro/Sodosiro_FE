@@ -1,9 +1,9 @@
 import AnimatedBadge from "@/components/common/animated/AnimatedBadge";
+import EmptyState from "@/components/common/EmptyState";
 import Header from "@/components/common/Header";
 import Spinner from "@/components/common/Spinner";
 import FestivalBottomSheetModal from "@/components/home/festival/FestivalBottomSheetModal";
 import FestivalItem from "@/components/home/festival/FestivalItem";
-import EmptyState from "@/components/trip/EmptyState";
 import { useFestivalsQuery } from "@/hooks/query/festival";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useEffect, useRef, useState } from "react";

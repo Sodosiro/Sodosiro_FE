@@ -5,7 +5,7 @@ import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useRef } from "react";
 import { ScrollView, View } from "react-native";
-import EmptyState from "../EmptyState";
+import EmptyState from "../../common/EmptyState";
 import TripCard from "../TripCard";
 
 type CompletedTripSectionProps = {

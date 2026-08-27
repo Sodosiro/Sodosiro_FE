@@ -1,5 +1,5 @@
+import EmptyState from "@/components/common/EmptyState";
 import Spinner from "@/components/common/Spinner";
-import EmptyState from "@/components/trip/EmptyState";
 import { usePlacesQuery } from "@/hooks/query/place";
 import { router } from "expo-router";
 import { useState } from "react";

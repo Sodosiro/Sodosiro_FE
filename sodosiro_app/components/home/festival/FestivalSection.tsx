@@ -1,5 +1,5 @@
+import EmptyState from "@/components/common/EmptyState";
 import Spinner from "@/components/common/Spinner";
-import EmptyState from "@/components/trip/EmptyState";
 import { useFestivalsQuery } from "@/hooks/query/festival";
 import { router } from "expo-router";
 import { View } from "react-native";

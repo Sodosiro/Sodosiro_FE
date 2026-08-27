@@ -1,9 +1,9 @@
 import { CheckOffIcon, CheckOnIcon } from "@/assets/svgs";
 import CustomText from "@/components/common/CustomText";
+import EmptyState from "@/components/common/EmptyState";
 import DeleteModal from "@/components/common/modal/DeleteModal";
 import Spinner from "@/components/common/Spinner";
 import PlaceMini from "@/components/place/PlaceMini";
-import EmptyState from "@/components/trip/EmptyState";
 import { useLikePlaceMutation } from "@/hooks/mutation/place";
 import { router } from "expo-router";
 import { useState } from "react";

@@ -1,8 +1,8 @@
+import EmptyState from "@/components/common/EmptyState";
 import Header from "@/components/common/Header";
 import Spinner from "@/components/common/Spinner";
 import LikeFilter from "@/components/mypage/like/LikeFilter";
 import LikeList from "@/components/mypage/like/LikeList";
-import EmptyState from "@/components/trip/EmptyState";
 import { useLikePlacesQuery } from "@/hooks/query/place";
 import { useState } from "react";
 import { View } from "react-native";

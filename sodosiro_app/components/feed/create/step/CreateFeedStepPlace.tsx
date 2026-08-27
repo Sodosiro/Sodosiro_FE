@@ -20,8 +20,9 @@ export default function CreateFeedStepPlace({
     </View>
   ) : (
     <FlatList
-      className="px-5 py-3"
       data={places}
+      className="px-5"
+      contentContainerClassName="py-3"
       ListHeaderComponent={
         <CustomText font="heading2">어떤 곳을 남길까요?</CustomText>
       }

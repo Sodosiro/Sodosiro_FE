@@ -1,4 +1,8 @@
-import { CourseDayItem, CourseDetailResponse, CourseSummaryItem } from "@/api/course";
+import {
+  CourseDayItem,
+  CourseDetailResponse,
+  CourseSummaryItem,
+} from "@/api/course";
 import Spinner from "@/components/common/Spinner";
 import KakaoMap from "@/components/explore/KakaoMap";
 import TimelineDayBadgeSection from "@/components/timeline/section/TimelineDayBadgeSection";
@@ -6,14 +10,18 @@ import TimelineDaySection from "@/components/timeline/section/TimelineDaySection
 import { COURSE_STATE } from "@/constants/Trip";
 import { useCourseDetailQuery } from "@/hooks/query/course";
 import { useTimelineScrollSpy } from "@/hooks/useTimelineScrollSpy";
-import { createRouteInfo, RenderCourseDayItem, transformCourseDetail } from "@/util/route/route";
+import {
+  createRouteInfo,
+  RenderCourseDayItem,
+  transformCourseDetail,
+} from "@/util/route/route";
 import { router } from "expo-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Dimensions, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSharedValue } from "react-native-reanimated";
 import WebView from "react-native-webview";
-import EmptyState from "../EmptyState";
+import EmptyState from "../../common/EmptyState";
 import OnAirBanner from "../OnAirBanner";
 
 type OngoingTripSectionProps = {
@@ -32,7 +40,11 @@ export default function OngoingTripSection({
   const [isLoading, setIsLoading] = useState(true);
   const courseId = courses?.[0]?.courseId ?? undefined;
   const courseStatus = COURSE_STATE.IN_PROGRESS;
-  const { data: courseResponse, isFetching, isError } = useCourseDetailQuery(courseId);
+  const {
+    data: courseResponse,
+    isFetching,
+    isError,
+  } = useCourseDetailQuery(courseId);
 
   const [tripTitle, setTripTitle] = useState("");
   const webViewRef = useRef<React.ComponentRef<typeof WebView>>(null);
@@ -52,7 +64,9 @@ export default function OngoingTripSection({
     if (!courseResponse?.data?.days) return 0;
     const courseDetail: CourseDetailResponse = courseResponse.data;
 
-    const foundIndex = courseDetail.days.findIndex((item) => item.date === todayStr);
+    const foundIndex = courseDetail.days.findIndex(
+      (item) => item.date === todayStr,
+    );
 
     // 오늘 날짜를 찾지 못했거나 범위를 벗어난 경우 0(첫 번째 날)으로 fallback
     return foundIndex !== -1 ? foundIndex : 0;
@@ -70,7 +84,9 @@ export default function OngoingTripSection({
     getSectionLayoutHandler,
   } = useTimelineScrollSpy(targetInitialIndex);
 
-  const [selectedSpotIndexes, setSelectedSpotIndexes] = useState<Record<number, number>>({});
+  const [selectedSpotIndexes, setSelectedSpotIndexes] = useState<
+    Record<number, number>
+  >({});
   const selectedSpotIndex = selectedSpotIndexes[activeIndex] ?? 0;
 
   useEffect(() => {
@@ -199,7 +215,9 @@ export default function OngoingTripSection({
                   key={item.day}
                   dayPlan={item}
                   // ★ 2. 해당 일차(day)에 해당하는 경로 통합 데이터(transformedSpots) 추가 전달
-                  transformedSpots={transformedDays.find((td) => td.day === item.day)?.spots}
+                  transformedSpots={
+                    transformedDays.find((td) => td.day === item.day)?.spots
+                  }
                   transportMode={courseResponse?.data.transportMode}
                   mode={courseStatus}
                   dayIndex={index}

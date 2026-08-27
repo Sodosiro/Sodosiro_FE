@@ -1,9 +1,9 @@
 import CategoryList from "@/components/common/category/CategoryList";
 import CustomText from "@/components/common/CustomText";
+import EmptyState from "@/components/common/EmptyState";
 import Header from "@/components/common/Header";
 import Spinner from "@/components/common/Spinner";
 import PopularPlaceItem from "@/components/home/popularPlace/PopularPlaceItem";
-import EmptyState from "@/components/trip/EmptyState";
 import { usePlacesQuery } from "@/hooks/query/place";
 import { useState } from "react";
 import { LayoutChangeEvent, View } from "react-native";

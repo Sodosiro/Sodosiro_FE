@@ -3,7 +3,7 @@ import Spinner from "@/components/common/Spinner";
 import { COURSE_STATE } from "@/constants/Trip";
 import { router } from "expo-router";
 import { ScrollView, View } from "react-native";
-import EmptyState from "../EmptyState";
+import EmptyState from "../../common/EmptyState";
 import TripCard from "../TripCard";
 
 type UpcomingTripSectionProps = {

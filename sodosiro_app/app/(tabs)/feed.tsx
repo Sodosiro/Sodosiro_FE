@@ -1,9 +1,9 @@
+import EmptyState from "@/components/common/EmptyState";
 import Header from "@/components/common/Header";
 import Spinner from "@/components/common/Spinner";
 import FeedDetailModal from "@/components/feed/FeedDetailModal";
 import FeedFloatingButton from "@/components/feed/FeedFloatingButton";
 import FeedItem from "@/components/feed/FeedItem";
-import EmptyState from "@/components/trip/EmptyState";
 import { useFeedsQuery } from "@/hooks/query/feed";
 import { router } from "expo-router";
 import { useRef, useState } from "react";

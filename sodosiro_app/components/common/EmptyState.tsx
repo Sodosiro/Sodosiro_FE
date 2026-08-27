@@ -34,7 +34,12 @@ export default function EmptyState({
 
       {actionLabel ? (
         <View className="mt-4">
-          <CustomButton type="primary" title={actionLabel} onPress={onPressAction} size="small" />
+          <CustomButton
+            type="primary"
+            title={actionLabel}
+            onPress={onPressAction}
+            size="small"
+          />
         </View>
       ) : null}
     </View>

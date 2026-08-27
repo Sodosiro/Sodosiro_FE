@@ -1,3 +1,4 @@
+import EmptyState from "@/components/common/EmptyState";
 import Header from "@/components/common/Header";
 import Spinner from "@/components/common/Spinner";
 import BingoAdvantage from "@/components/mypage/bingo/BingoAdventage";
@@ -5,7 +6,6 @@ import BingoBoard from "@/components/mypage/bingo/BingoBoard";
 import BingoEmpty from "@/components/mypage/bingo/BingoEmpty";
 import BingoSeasonPicker from "@/components/mypage/bingo/BingoSeasonPicker";
 import RegionList from "@/components/mypage/bingo/RegionList";
-import EmptyState from "@/components/trip/EmptyState";
 import { SODOSI_LIST } from "@/constants/Sodosi";
 import { useBingoQuery, useBingoSeasonsQuery } from "@/hooks/query/bingo";
 import { getBingoResult } from "@/util/bingo/getBingoResult";

@@ -3,6 +3,7 @@ import Header from "@/components/common/Header";
 import Spinner from "@/components/common/Spinner";
 import FestivalBottomSheetModal from "@/components/home/festival/FestivalBottomSheetModal";
 import FestivalItem from "@/components/home/festival/FestivalItem";
+import EmptyState from "@/components/trip/EmptyState";
 import { useFestivalsQuery } from "@/hooks/query/festival";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useEffect, useRef, useState } from "react";
@@ -25,8 +26,15 @@ export default function FestivalScreen() {
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
-  const { data, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useFestivalsQuery(undefined, selectedSchedule, 20);
+  const {
+    data,
+    isPending,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isError,
+    refetch,
+  } = useFestivalsQuery(undefined, selectedSchedule, 20);
 
   const [festivalItemHeight, setFestivalItemHeight] = useState(0);
 
@@ -77,6 +85,13 @@ export default function FestivalScreen() {
           <View className="flex-1 justify-center items-center">
             <Spinner />
           </View>
+        ) : !isError ? (
+          <EmptyState
+            title="축제를 불러오지 못했어요."
+            description="네트워크 상태를 확인하고 다시 시도해주세요"
+            actionLabel="다시 시도"
+            onPressAction={() => refetch()}
+          />
         ) : (
           <FlatList
             data={festivals}

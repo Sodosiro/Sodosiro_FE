@@ -17,7 +17,7 @@ export default function EmptyReview({
       <View className={`gap-2 items-center`}>
         <CustomText font="title">아직 등록된 리뷰가 없어요.</CustomText>
         <CustomText font="body3" className={`text-text-secondary`}>
-          첫번째 리뷰를 남겨보세요!
+          첫 번째 리뷰를 남겨보세요!
         </CustomText>
       </View>
       {showWriteButton && (

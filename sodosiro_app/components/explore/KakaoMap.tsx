@@ -48,8 +48,6 @@ export default function KakaoMap({
       }))
     : undefined;
 
-  const initialBound = routeData?.bound;
-
   useEffect(() => {
     const previousPlaces = previousPlacesRef.current;
 

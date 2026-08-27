@@ -10,19 +10,23 @@ type UpcomingTripSectionProps = {
   courses: CourseSummaryItem[] | undefined;
   isPending: boolean;
   isError: boolean;
+  refetch: () => {};
 };
 
 export default function UpcomingTripSection({
   courses,
   isPending,
   isError,
+  refetch,
 }: UpcomingTripSectionProps) {
   const handleCardPress = (course: CourseSummaryItem) => {
     router.push({
       pathname: "/trip/timeline",
       params: {
         courseId: course.courseId,
-        courseStatus: Boolean(course.isConfirmed) ? COURSE_STATE.UPCOMING : COURSE_STATE.TEMP,
+        courseStatus: Boolean(course.isConfirmed)
+          ? COURSE_STATE.UPCOMING
+          : COURSE_STATE.TEMP,
       },
     });
   };
@@ -41,7 +45,7 @@ export default function UpcomingTripSection({
         title="일정을 불러오지 못했어요."
         description="네트워크 상태를 확인하고 다시 시도해주세요."
         actionLabel="다시 시도"
-        onPressAction={() => router.replace("/trip")}
+        onPressAction={() => refetch()}
       />
     );
   }
@@ -63,7 +67,9 @@ export default function UpcomingTripSection({
                 <TripCard
                   key={course.courseId}
                   courseStatus={
-                    Boolean(course.isConfirmed) ? COURSE_STATE.UPCOMING : COURSE_STATE.TEMP
+                    Boolean(course.isConfirmed)
+                      ? COURSE_STATE.UPCOMING
+                      : COURSE_STATE.TEMP
                   }
                   course={course}
                   onPress={() => handleCardPress(course)}

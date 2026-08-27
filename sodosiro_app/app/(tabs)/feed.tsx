@@ -1,10 +1,11 @@
-import CustomText from "@/components/common/CustomText";
 import Header from "@/components/common/Header";
 import Spinner from "@/components/common/Spinner";
 import FeedDetailModal from "@/components/feed/FeedDetailModal";
 import FeedFloatingButton from "@/components/feed/FeedFloatingButton";
 import FeedItem from "@/components/feed/FeedItem";
+import EmptyState from "@/components/trip/EmptyState";
 import { useFeedsQuery } from "@/hooks/query/feed";
+import { router } from "expo-router";
 import { useRef, useState } from "react";
 import { FlatList, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -24,8 +25,15 @@ export default function FeedScreen() {
 
   const insets = useSafeAreaInsets();
 
-  const { data, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useFeedsQuery();
+  const {
+    data,
+    isPending,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isError,
+    refetch,
+  } = useFeedsQuery();
 
   const feeds =
     data?.pages.flatMap((page) => page.data.items) ?? ([] as FeedType[]);
@@ -76,9 +84,20 @@ export default function FeedScreen() {
         />
       ) : (
         <View className={`flex-1 justify-center items-center`}>
-          <CustomText font="body1" className={`text-text-muted`}>
-            작성된 피드가 없어요.
-          </CustomText>
+          <EmptyState
+            title={
+              !isError ? "작성된 피드가 없어요." : "피드를 불러오지 못했어요."
+            }
+            description={
+              !isError
+                ? "첫 번째 피드를 작성해보세요!"
+                : "네트워크 상태를 확인하고 다시 시도해주세요."
+            }
+            actionLabel={!isError ? "피드 작성하기" : "다시 시도"}
+            onPressAction={
+              !isError ? () => router.push("/feed/create") : () => refetch()
+            }
+          />
         </View>
       )}
 

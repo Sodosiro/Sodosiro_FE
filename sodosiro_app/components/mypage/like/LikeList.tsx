@@ -3,7 +3,9 @@ import CustomText from "@/components/common/CustomText";
 import DeleteModal from "@/components/common/modal/DeleteModal";
 import Spinner from "@/components/common/Spinner";
 import PlaceMini from "@/components/place/PlaceMini";
+import EmptyState from "@/components/trip/EmptyState";
 import { useLikePlaceMutation } from "@/hooks/mutation/place";
+import { router } from "expo-router";
 import { useState } from "react";
 import { FlatList, Pressable, View } from "react-native";
 
@@ -57,7 +59,7 @@ export default function LikeList({
 
   return (
     <View className="pt-3 flex-1">
-      {places?.length > 0 ? (
+      {places?.length < 0 ? (
         <>
           {/* 상단 */}
           <View className="flex-row justify-between items-center px-5 mb-3">
@@ -159,11 +161,12 @@ export default function LikeList({
           />
         </>
       ) : (
-        <View className={`flex-1 justify-center items-center`}>
-          <CustomText font="body1" className={`text-text-muted pb-10`}>
-            저장한 장소가 없어요.
-          </CustomText>
-        </View>
+        <EmptyState
+          title="저장한 장소가 없어요."
+          description="관심있는 장소를 저장해보세요."
+          actionLabel="탐색하기"
+          onPressAction={() => router.push("/(tabs)/explore")}
+        />
       )}
     </View>
   );

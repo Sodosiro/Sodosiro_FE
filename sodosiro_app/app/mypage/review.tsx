@@ -2,6 +2,7 @@ import Header from "@/components/common/Header";
 import Spinner from "@/components/common/Spinner";
 import MyReviewList from "@/components/mypage/review/MyReviewList";
 import ReviewFilter from "@/components/placeDetail/review/ReviewFilter";
+import EmptyState from "@/components/trip/EmptyState";
 import { useMyReviewsQuery } from "@/hooks/query/review";
 import { useState } from "react";
 import { View } from "react-native";
@@ -11,8 +12,15 @@ export default function MyReviewScreen() {
   const [sortOption, setSortOption] = useState<SortType>("RECENT");
   const [onlyPhotoReview, setOnlyPhotoReview] = useState(false);
 
-  const { data, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useMyReviewsQuery(sortOption, onlyPhotoReview);
+  const {
+    data,
+    isPending,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isError,
+    refetch,
+  } = useMyReviewsQuery(sortOption, onlyPhotoReview);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
@@ -30,6 +38,13 @@ export default function MyReviewScreen() {
         <View className={`flex-1 justify-center items-center`}>
           <Spinner />
         </View>
+      ) : isError ? (
+        <EmptyState
+          title="리뷰를 불러오지 못했어요."
+          description="네트워크 상태를 확인하고 다시 시도해주세요."
+          actionLabel="다시 시도"
+          onPressAction={() => refetch()}
+        />
       ) : (
         <MyReviewList
           reviews={data?.pages?.flatMap((page) => page.data.reviews) ?? []}

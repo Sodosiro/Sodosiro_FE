@@ -5,6 +5,7 @@ import BingoBoard from "@/components/mypage/bingo/BingoBoard";
 import BingoEmpty from "@/components/mypage/bingo/BingoEmpty";
 import BingoSeasonPicker from "@/components/mypage/bingo/BingoSeasonPicker";
 import RegionList from "@/components/mypage/bingo/RegionList";
+import EmptyState from "@/components/trip/EmptyState";
 import { SODOSI_LIST } from "@/constants/Sodosi";
 import { useBingoQuery, useBingoSeasonsQuery } from "@/hooks/query/bingo";
 import { getBingoResult } from "@/util/bingo/getBingoResult";
@@ -17,8 +18,12 @@ export default function BingoScreen() {
     SODOSI_LIST[0],
   );
 
-  const { data: bingoSeasonsData, isPending: isBingoSeasonsPending } =
-    useBingoSeasonsQuery();
+  const {
+    data: bingoSeasonsData,
+    isPending: isBingoSeasonsPending,
+    isError: isBingoSeasonsError,
+    refetch: bingoSeasonRefetch,
+  } = useBingoSeasonsQuery();
 
   const bingoSeasons = bingoSeasonsData?.data ?? {};
 
@@ -26,7 +31,11 @@ export default function BingoScreen() {
     bingoSeasons[0],
   );
 
-  const { data: bingoData, isPending: isBingoPending } = useBingoQuery(
+  const {
+    data: bingoData,
+    isPending: isBingoPending,
+    isError: isBingoError,
+  } = useBingoQuery(
     selectedRegion.sigunguId,
     selectedSeason?.year,
     selectedSeason?.seasonType,
@@ -50,6 +59,15 @@ export default function BingoScreen() {
         <View className={`flex-1 justify-center items-center`}>
           <Spinner />
         </View>
+      ) : isBingoSeasonsError || isBingoError ? (
+        <>
+          <EmptyState
+            title="빙고를 불러오지 못했어요."
+            description="네트워크 상태를 확인하고 다시 시도해주세요."
+            actionLabel="다시 시도"
+            onPressAction={() => bingoSeasonRefetch()}
+          />
+        </>
       ) : bingoSeasons?.length > 0 ? (
         <>
           <RegionList

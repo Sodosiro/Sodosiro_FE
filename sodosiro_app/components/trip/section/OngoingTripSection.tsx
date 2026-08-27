@@ -28,12 +28,14 @@ type OngoingTripSectionProps = {
   courses: CourseSummaryItem[] | undefined;
   isPending: boolean;
   isError: boolean;
+  refetch: () => {};
 };
 
 export default function OngoingTripSection({
   courses,
   isPending: isCoursesPending,
   isError: isCoursesError,
+  refetch,
 }: OngoingTripSectionProps) {
   const [isLoading, setIsLoading] = useState(true);
   const courseId = courses?.[0]?.courseId ?? undefined;
@@ -136,7 +138,7 @@ export default function OngoingTripSection({
         title="일정을 불러오지 못했어요."
         description="네트워크 상태를 확인하고 다시 시도해주세요."
         actionLabel="다시 시도"
-        onPressAction={() => router.replace("/trip")}
+        onPressAction={() => refetch()}
       />
     );
   }

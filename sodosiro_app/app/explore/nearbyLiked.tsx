@@ -105,7 +105,6 @@ export default function NearbyLikedScreen() {
           <Header title="근처 저장한 장소" />
         </View>
       </View>
-
       {!isPlacesPending && allPlaces ? (
         <>
           <WebView

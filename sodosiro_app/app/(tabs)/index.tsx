@@ -5,8 +5,8 @@ import { ScrollView, View } from "react-native";
 
 export default function HomeScreen() {
   return (
-    <ScrollView>
-      <View className={`flex flex-col gap-6 bg-white pb-8`}>
+    <ScrollView className={`flex-1`}>
+      <View className={`flex-1 flex-col gap-6 bg-white pb-8`}>
         <HomeHero />
         <View className={`gap-8`}>
           <PopularPlacesSection />

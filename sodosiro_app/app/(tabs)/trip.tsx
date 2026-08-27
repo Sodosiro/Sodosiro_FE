@@ -19,18 +19,21 @@ export default function TripScreen() {
     data: upcomingCourses,
     isPending: isUpcomingPending,
     isError: isUpcomingError,
+    refetch: upcomingRefetch,
   } = useCoursesQuery(COURSE_STATE.UPCOMING);
 
   const {
     data: ongoingCourses,
     isPending: isOngoingPending,
     isError: isOngoingError,
+    refetch: ongoingRefetch,
   } = useCoursesQuery(COURSE_STATE.IN_PROGRESS);
 
   const {
     data: completedCourses,
     isPending: isCompletedPending,
     isError: isCompletedError,
+    refetch: completedRefetch,
   } = useCoursesQuery(COURSE_STATE.FINISHED);
 
   return (
@@ -60,6 +63,7 @@ export default function TripScreen() {
               courses={upcomingCourses?.data.courses}
               isPending={isUpcomingPending}
               isError={isUpcomingError}
+              refetch={upcomingRefetch}
             />
           </View>
 
@@ -73,6 +77,7 @@ export default function TripScreen() {
               courses={ongoingCourses?.data.courses}
               isPending={isOngoingPending}
               isError={isOngoingError}
+              refetch={ongoingRefetch}
             />
           </View>
 
@@ -86,6 +91,7 @@ export default function TripScreen() {
               courses={completedCourses?.data.courses}
               isPending={isCompletedPending}
               isError={isCompletedError}
+              refetch={completedRefetch}
             />
           </View>
         </View>

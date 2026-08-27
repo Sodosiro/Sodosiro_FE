@@ -12,12 +12,14 @@ type CompletedTripSectionProps = {
   courses: CourseSummaryItem[] | undefined;
   isPending: boolean;
   isError: boolean;
+  refetch: () => {};
 };
 
 export default function CompletedTripSection({
   courses,
   isPending,
   isError,
+  refetch,
 }: CompletedTripSectionProps) {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 
@@ -57,7 +59,7 @@ export default function CompletedTripSection({
         title="일정을 불러오지 못했어요."
         description="네트워크 상태를 확인하고 다시 시도해주세요."
         actionLabel="다시 시도"
-        onPressAction={() => router.replace("/trip")}
+        onPressAction={() => refetch()}
       />
     );
   }

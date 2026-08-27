@@ -1,5 +1,6 @@
 import { putFcmToken } from "@/api/notification";
 import { getMeApi } from "@/api/user";
+import NetworkStatusListener from "@/components/network/NetworkStatusListener";
 import NotificationListener from "@/components/notification/NotificationListener";
 import { NotificationProvider } from "@/components/notification/NotificationProvider";
 import { ToastProvider } from "@/contexts/ToastProvider";
@@ -156,6 +157,7 @@ export default function RootLayout() {
         <NotificationProvider>
           <NotificationListener />
           <ToastProvider>
+            <NetworkStatusListener />
             <PortalProvider>
               <BottomSheetModalProvider>
                 <Stack>

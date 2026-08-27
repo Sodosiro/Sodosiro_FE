@@ -64,6 +64,7 @@ export { default as BigXIcon } from "./32px/big_x.svg";
 export { default as BigBusIcon } from "./32px/bus.svg";
 export { default as CarIcon } from "./32px/car.svg";
 export { default as KeyIcon } from "./32px/key.svg";
+export { default as NoInternetIcon } from "./32px/no_internet.svg";
 
 // 36px
 export { default as EmptyRateIcon } from "./36px/empty_rate.svg";

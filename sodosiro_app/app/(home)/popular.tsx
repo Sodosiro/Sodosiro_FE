@@ -3,6 +3,7 @@ import CustomText from "@/components/common/CustomText";
 import Header from "@/components/common/Header";
 import Spinner from "@/components/common/Spinner";
 import PopularPlaceItem from "@/components/home/popularPlace/PopularPlaceItem";
+import EmptyState from "@/components/trip/EmptyState";
 import { usePlacesQuery } from "@/hooks/query/place";
 import { useState } from "react";
 import { LayoutChangeEvent, View } from "react-native";
@@ -11,7 +12,10 @@ import { FlatList } from "react-native-gesture-handler";
 export default function PopularPlaceScreen() {
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>("all");
 
-  const { data, isPending } = usePlacesQuery(selectedCategory, "POPULAR");
+  const { data, isPending, isError, refetch } = usePlacesQuery(
+    selectedCategory,
+    "POPULAR",
+  );
 
   const places = data?.data.items;
 
@@ -36,6 +40,13 @@ export default function PopularPlaceScreen() {
           <View className={`flex-1 justify-center items-center`}>
             <Spinner />
           </View>
+        ) : isError ? (
+          <EmptyState
+            title="장소를 불러오지 못했어요."
+            description="네트워크 상태를 확인하고 다시 시도해주세요."
+            actionLabel="다시 시도"
+            onPressAction={() => refetch()}
+          />
         ) : (
           <FlatList
             data={places}

@@ -3,7 +3,7 @@ import { Image, View } from "react-native";
 
 export default function NoFestival() {
   return (
-    <View className={`rounded-xl items-center px-4 py-8 gap-3 bg-bg-subtle`}>
+    <View className={`rounded-xl items-center px-4 py-8 gap-3`}>
       <View className={`opacity-70`}>
         <Image source={require("@/assets/images/calendar.png")} />
       </View>

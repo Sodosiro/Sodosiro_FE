@@ -11,6 +11,7 @@ import {
 } from "@gorhom/bottom-sheet";
 import axios from "axios";
 import * as Location from "expo-location";
+import { router } from "expo-router";
 import { forwardRef, useEffect, useState } from "react";
 import { BackHandler, Image, Linking, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -32,7 +33,14 @@ const VerificationBottomSheet = forwardRef<BottomSheetModal, Props>(
     const { mutateAsync: bingoMutateAsync } = useBingoGpsMutation();
     const { mutateAsync: courseMutateAsync } = useCourseGpsMutation();
 
-    const gpsDisabled = bingoStatus === "ENDED";
+    const isSeasonEnded = bingoStatus === "ENDED";
+    const isCompleted = selectedItem?.completed;
+
+    const imageSource = selectedItem?.firstImage
+      ? { uri: selectedItem.firstImage }
+      : DEFAULT_IMAGES[
+          NumberToCategory[selectedItem?.category as CategoryNumber]
+        ];
 
     const advantages = bingoStatus
       ? ["빙고를 한 칸 채울 수 있어요.", "방문 기록이 남겨져요."]
@@ -127,11 +135,7 @@ const VerificationBottomSheet = forwardRef<BottomSheetModal, Props>(
             <SafeAreaView edges={["bottom"]} style={{ flex: 1, gap: 16 }}>
               <View className={`flex-row gap-3 items-center`}>
                 <Image
-                  source={
-                    selectedItem.firstImage
-                      ? { uri: selectedItem.firstImage }
-                      : DEFAULT_IMAGES[NumberToCategory[selectedItem.category]]
-                  }
+                  source={imageSource}
                   className={`w-25 h-25 rounded-xl`}
                 />
                 <View className={`gap-1`}>
@@ -141,36 +145,49 @@ const VerificationBottomSheet = forwardRef<BottomSheetModal, Props>(
                       {selectedItem.title}
                     </CustomText>
                   </View>
-                  <CustomText font="heading2">도착하셨나요?</CustomText>
+                  <CustomText
+                    font="heading2"
+                    className={`${isSeasonEnded && !isCompleted && `text-text-muted`}`}
+                  >
+                    {isCompleted
+                      ? `인증 완료`
+                      : isSeasonEnded
+                        ? `미인증`
+                        : `도착하셨나요?`}
+                  </CustomText>
                 </View>
               </View>
               <CustomText
                 font="body3"
-                className={`${gpsDisabled ? `text-text-muted` : `text-text-secondary`} px-1`}
+                className={`${isSeasonEnded ? `text-text-muted` : `text-text-secondary`} px-1`}
               >
-                {gpsDisabled
+                {isSeasonEnded
                   ? `지난 시즌의 빙고에요.`
-                  : `현재 위치를 확인하여 방문을 인증할게요.`}
+                  : isCompleted
+                    ? `방문이 인증되었어요.`
+                    : `현재 위치를 확인하여 방문을 인증할게요.`}
               </CustomText>
-              <View className={`p-4 gap-2 rounded-xl bg-primary-light`}>
-                <CustomText
-                  font="body2 tight"
-                  className={`text-text-secondary`}
-                >
-                  방문을 인증하면
-                </CustomText>
-                <View className={`gap-1.5`}>
-                  {advantages.map((advantage, index) => (
-                    <CustomText
-                      key={index}
-                      font="body2 tight"
-                      className={`text-text-secondary`}
-                    >
-                      • {advantage}
-                    </CustomText>
-                  ))}
+              {!isSeasonEnded && (
+                <View className={`p-4 gap-2 rounded-xl bg-primary-light`}>
+                  <CustomText
+                    font="body2 tight"
+                    className={`text-text-secondary`}
+                  >
+                    방문을 인증하면
+                  </CustomText>
+                  <View className={`gap-1.5`}>
+                    {advantages.map((advantage, index) => (
+                      <CustomText
+                        key={index}
+                        font="body2 tight"
+                        className={`text-text-secondary`}
+                      >
+                        • {advantage}
+                      </CustomText>
+                    ))}
+                  </View>
                 </View>
-              </View>
+              )}
               <View className={`flex-row gap-2`}>
                 <AnimatedButton
                   backgroundColor={["#F5F5F5", "#E2E2E8"]}
@@ -185,19 +202,26 @@ const VerificationBottomSheet = forwardRef<BottomSheetModal, Props>(
                 <AnimatedButton
                   backgroundColor={["#C4D96A", "#A9C92D"]}
                   className={`h-13 flex-1 rounded-xl justify-center items-center`}
-                  onPress={handleVerivication}
-                  disabled={gpsDisabled}
-                  disabledColor="#f5f5f5"
+                  onPress={
+                    !isCompleted && !isSeasonEnded
+                      ? handleVerivication
+                      : () => {
+                          onClose();
+                          router.push({
+                            pathname: "/place/[placeId]",
+                            params: { placeId: selectedItem.contentId },
+                          });
+                        }
+                  }
                   loading={isLoading}
                 >
                   {isLoading ? (
                     <Spinner size={16} />
                   ) : (
-                    <CustomText
-                      font="body3 tight"
-                      className={`${gpsDisabled && `text-text-muted`}`}
-                    >
-                      방문 인증하기
+                    <CustomText font="body3 tight">
+                      {isCompleted || isSeasonEnded
+                        ? `장소 상세보기`
+                        : `방문 인증하기`}
                     </CustomText>
                   )}
                 </AnimatedButton>

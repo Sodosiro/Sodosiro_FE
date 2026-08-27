@@ -64,6 +64,7 @@ export default function BingoScreen() {
               bingoSeasons={bingoSeasons}
               selectedSeason={selectedSeason}
               setSelectedSeason={setSelectedSeason}
+              isPending={isBingoSeasonsPending}
             />
             <BingoBoard
               bingoItems={bingoItems}

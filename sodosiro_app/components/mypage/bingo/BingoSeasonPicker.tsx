@@ -1,4 +1,6 @@
+import { DownIcon } from "@/assets/svgs";
 import CustomText from "@/components/common/CustomText";
+import { SkeletonLine } from "@/components/common/skeleton/SkeletonLine";
 import { getBingoSeasonText } from "@/util/bingo/bingoSeason";
 import {
   BottomSheetBackdrop,
@@ -24,10 +26,12 @@ export default function BingoSeasonPicker({
   bingoSeasons,
   selectedSeason,
   setSelectedSeason,
+  isPending,
 }: {
   bingoSeasons: BingoSeasonType[];
   selectedSeason: BingoSeasonType;
   setSelectedSeason: Dispatch<SetStateAction<BingoSeasonType>>;
+  isPending: boolean;
 }) {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
   const openSheet = () => {
@@ -37,11 +41,16 @@ export default function BingoSeasonPicker({
   return (
     <>
       <View className="gap-2">
-        <Pressable onPress={openSheet}>
-          <CustomText font="heading2">
-            {getBingoSeasonText(selectedSeason)}
-          </CustomText>
-        </Pressable>
+        {isPending ? (
+          <SkeletonLine font="heading2" />
+        ) : (
+          <Pressable onPress={openSheet} className={`flex-row gap-1`}>
+            <CustomText font="heading2">
+              {getBingoSeasonText(selectedSeason)}
+            </CustomText>
+            <DownIcon width={16} />
+          </Pressable>
+        )}
 
         <CustomText font="body2" className="text-text-muted">
           계절이 바뀌면 새로운 빙고가 열려요.

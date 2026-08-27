@@ -2,6 +2,7 @@ type GpsVerificationItem = {
   contentId: number;
   title: string;
   category: CategoryNumber;
+  completed?: boolean;
   firstImage?: string;
   courseId?: number;
   day?: number;

@@ -36,7 +36,7 @@ export function SkeletonLine({
 
   return (
     <AnimatedView className="w-full rounded" style={[{ width }, animatedStyle]}>
-      <CustomText font={font} />
+      <CustomText font={font}> </CustomText>
     </AnimatedView>
   );
 }

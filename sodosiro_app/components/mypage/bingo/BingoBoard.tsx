@@ -31,7 +31,7 @@ export default function BingoBoard({
     setBoardSize(width);
   };
   const completedCount = bingoResult?.completedLines ?? 0;
-  selectedSeason.seasonType;
+  selectedSeason?.seasonType;
   const bingoText =
     completedCount === 0
       ? "빙고를 만들어 볼까요?"

@@ -5,6 +5,7 @@ import { type RefObject } from "react";
 import { Dimensions, Linking, Pressable, View } from "react-native";
 import type { SharedValue } from "react-native-reanimated";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import WebView from "react-native-webview";
 import { useShallow } from "zustand/react/shallow";
 import CategoryList from "../../common/category/CategoryList";
@@ -38,16 +39,18 @@ export default function MapOverlay({
     })),
   );
 
+  const insets = useSafeAreaInsets();
+
   const setIsDenied = useLocationStore((state) => state.setIsDenied);
   const setIsTracking = useLocationStore((state) => state.setIsTracking);
 
   const screenHeight = Dimensions.get("window").height;
 
   const animatedStyle = useAnimatedStyle(() => {
-    const sheetHeight = screenHeight - animatedPosition.value;
+    const sheetHeight = screenHeight - insets.bottom - animatedPosition.value;
 
     return {
-      bottom: sheetHeight - 80,
+      bottom: Math.max(sheetHeight - 64, 16),
     };
   });
 

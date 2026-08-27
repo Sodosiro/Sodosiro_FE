@@ -17,35 +17,39 @@ axiosInstance.interceptors.request.use((config) => {
   return config;
 });
 
-// axiosInstance.interceptors.response.use(
-//   (response) => response,
-//   async (error) => {
-//     console.log("🔥 Axios Error");
-//     console.log("URL:", error.config?.url);
-//     console.log("METHOD:", error.config?.method);
-//     console.log("STATUS:", error.response?.status);
-//     console.log("DATA:", error.response?.data);
-
-//     return Promise.reject(error);
-//   },
-// );
-
 // accessToken 만료 시 refreshToken으로 토큰 재발급 및 기존 api 재요청
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
+    const status = error.response?.status;
+    const errorCode = error.response?.data?.code;
 
-    if (
-      error.response?.status === 401 &&
-      error.response?.data?.code === "JWT401-EXPIRED_ACCESS" &&
-      !originalRequest._retry
-    ) {
+    // 1. 401 에러 감지 로깅 (어떤 요청에서 401이 났는지 확인)
+    if (status === 401) {
+      console.group("❌ [Axios 401 Error Detected]");
+      console.log("URL:", originalRequest?.url);
+      console.log("Method:", originalRequest?.method?.toUpperCase());
+      console.log("Error Code:", errorCode);
+      console.log("Response Data:", error.response?.data);
+      console.groupEnd();
+    }
+
+    // 2. AccessToken 만료 시 재발급 로직
+    if (status === 401 && errorCode === "JWT401-EXPIRED_ACCESS" && !originalRequest._retry) {
       originalRequest._retry = true;
 
-      const refreshToken = await SecureStore.getItemAsync("refreshToken");
-
       try {
+        const refreshToken = await SecureStore.getItemAsync("refreshToken");
+
+        if (!refreshToken) {
+          console.warn("⚠️ RefreshToken이 SecureStore에 없습니다. 로그아웃 처리합니다.");
+          await useAuthStore.getState().logout();
+          return Promise.reject(error);
+        }
+
+        console.log("🔄 토큰 재발급 요청 시작 (/v1/auth/reissue)...");
+
         const { data } = await axios.post(
           `${process.env.EXPO_PUBLIC_SERVER_DOMAIN}/v1/auth/reissue`,
           { refreshToken },
@@ -54,17 +58,21 @@ axiosInstance.interceptors.response.use(
         const newAccessToken = data.newAccessToken;
         const newRefreshToken = data.refreshToken;
 
-        await useAuthStore
-          .getState()
-          .updateToken(newAccessToken, newRefreshToken);
+        await useAuthStore.getState().updateToken(newAccessToken, newRefreshToken);
 
+        console.log("✅ 토큰 재발급 성공! 실패했던 기존 요청을 재시도합니다.");
+
+        // 헤더 업데이트 및 기존 요청 재시도
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-
         return axiosInstance(originalRequest);
-      } catch {
-        await useAuthStore.getState().logout();
+      } catch (reissueError: any) {
+        console.group("🔥 [Token Reissue Failed]");
+        console.log("Reissue Error Status:", reissueError.response?.status);
+        console.log("Reissue Error Data:", reissueError.response?.data);
+        console.groupEnd();
 
-        return Promise.reject(error);
+        await useAuthStore.getState().logout();
+        return Promise.reject(reissueError);
       }
     }
 

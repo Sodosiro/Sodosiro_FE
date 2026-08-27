@@ -1,12 +1,23 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { Dimensions, Pressable, ScrollView, View } from "react-native";
+import BottomActionBar from "@/components/common/BottomActionBar";
+import CustomButton from "@/components/common/CustomButton";
+import CustomText from "@/components/common/CustomText";
+import Subtitle from "@/components/common/Subtitle";
+import {
+  BottomSheetBackdrop,
+  BottomSheetModal,
+  BottomSheetScrollView,
+  useBottomSheetSpringConfigs,
+  type BottomSheetBackdropProps,
+} from "@gorhom/bottom-sheet";
+import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
+import { Dimensions, Pressable, View } from "react-native";
 import { Calendar, DateData } from "react-native-calendars";
-import BottomActionBar from "../common/BottomActionBar";
-import CustomButton from "../common/CustomButton";
-import CustomText from "../common/CustomText";
-import Subtitle from "../common/Subtitle";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const width = Dimensions.get("window").width;
+// 달력 컨테이너 전체 너비 (좌우 패딩 20px씩 총 40px 제외)
+const CALENDAR_WIDTH = width - 40;
+const CELL_WIDTH = CALENDAR_WIDTH / 7;
 const CELL_SIZE = 40;
 const MAX_RANGE_DAYS = 7;
 
@@ -18,7 +29,8 @@ const getTodayString = () => {
   return `${y}-${m}-${d}`;
 };
 
-const dateToString = (date: Date) => {
+const dateToString = (date?: Date | null): string | null => {
+  if (!date || !(date instanceof Date) || isNaN(date.getTime())) return null;
   const y = date.getFullYear();
   const m = String(date.getMonth() + 1).padStart(2, "0");
   const d = String(date.getDate()).padStart(2, "0");
@@ -26,19 +38,22 @@ const dateToString = (date: Date) => {
 };
 
 type Props = {
+  bottomSheetRef: RefObject<BottomSheetModal | null>;
   disabled?: boolean;
   initialStartDate?: Date;
   initialEndDate?: Date;
   onConfirm: (start: string, end: string) => void;
 };
 
-export default function DatePickerSheet({
+export default function DatePickerBottomSheet({
+  bottomSheetRef,
   disabled,
   initialStartDate,
   initialEndDate,
   onConfirm,
 }: Props) {
-  // 현재로부터 3달뒤까지
+  const insets = useSafeAreaInsets();
+
   const months = Array.from({ length: 4 }, (_, i) => {
     const date = new Date();
     date.setMonth(date.getMonth() + i);
@@ -52,9 +67,34 @@ export default function DatePickerSheet({
   const [startDate, setStartDate] = useState<string | null>(null);
   const [endDate, setEndDate] = useState<string | null>(null);
 
-  const scrollRef = useRef<ScrollView>(null);
+  const scrollRef = useRef<any>(null);
   const monthOffsets = useRef<Record<string, number>>({});
-  const pendingScrollMonth = useRef<string | null>(null);
+
+  const normalizeToMonthKey = (date?: Date): string | null => {
+    const dateStr = dateToString(date);
+    if (!dateStr) return null;
+    return `${dateStr.slice(0, 7)}-01`;
+  };
+
+  const pendingScrollMonth = useRef<string | null>(normalizeToMonthKey(initialStartDate));
+  const animationConfigs = useBottomSheetSpringConfigs({
+    damping: 100,
+    stiffness: 400,
+    mass: 1,
+  });
+
+  const renderBackdrop = useCallback(
+    (props: BottomSheetBackdropProps) => (
+      <BottomSheetBackdrop
+        {...props}
+        pressBehavior="close"
+        appearsOnIndex={0}
+        disappearsOnIndex={-1}
+        opacity={0.5}
+      />
+    ),
+    [],
+  );
 
   const handleDayPress = useCallback(
     (day: DateData) => {
@@ -62,20 +102,17 @@ export default function DatePickerSheet({
 
       if (dateString < today) return;
 
-      // 첫 선택
       if (!startDate) {
         setStartDate(dateString);
         setEndDate(dateString);
         return;
       }
 
-      // 같은 날짜 클릭
       if (dateString === startDate) {
         setEndDate(startDate);
         return;
       }
 
-      // 이전 날짜 선택
       if (dateString < startDate) {
         setStartDate(dateString);
         setEndDate(dateString);
@@ -83,8 +120,7 @@ export default function DatePickerSheet({
       }
 
       const diffDays =
-        (new Date(dateString).getTime() - new Date(startDate).getTime()) /
-          (1000 * 60 * 60 * 24) +
+        (new Date(dateString).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24) +
         1;
 
       if (diffDays > MAX_RANGE_DAYS) {
@@ -93,29 +129,26 @@ export default function DatePickerSheet({
         return;
       }
 
-      // 범위 선택
       setEndDate(dateString);
     },
     [startDate, today],
   );
 
-  // 시트가 열리고 애니메이션이 끝난 뒤에 초기값 세팅 + 스크롤 실행
   useEffect(() => {
     if (!initialStartDate) return;
 
     const startStr = dateToString(initialStartDate);
-    if (startStr < today) return;
+    if (!startStr || startStr < today) return;
 
-    const endStr = initialEndDate ? dateToString(initialEndDate) : startStr;
+    const endStr = dateToString(initialEndDate) || startStr;
+
     const monthKey = `${startStr.slice(0, 7)}-01`;
     pendingScrollMonth.current = monthKey;
 
     setStartDate(startStr);
     setEndDate(endStr);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialStartDate, initialEndDate]);
+  }, [initialStartDate, initialEndDate, today]);
 
-  // startDate가 세팅된 뒤, 레이아웃이 잡혀있으면 스크롤. 아직이면 onLayout에서 처리.
   useEffect(() => {
     if (!startDate) return;
     const monthKey = pendingScrollMonth.current;
@@ -130,6 +163,39 @@ export default function DatePickerSheet({
     }
   }, [startDate]);
 
+  const handleSheetChange = useCallback(
+    (index: number) => {
+      if (index < 0) return; // 닫힌 상태면 무시
+
+      // 열릴 때마다 최신 initialStartDate 기준으로 다시 계산
+      const monthKey = normalizeToMonthKey(initialStartDate) ?? pendingScrollMonth.current;
+      if (!monthKey) return;
+
+      const trySnap = () => {
+        const offset = monthOffsets.current[monthKey];
+        if (offset !== undefined) {
+          requestAnimationFrame(() => {
+            scrollRef.current?.scrollTo({ y: offset, animated: true });
+          });
+          pendingScrollMonth.current = null;
+        } else {
+          // 아직 onLayout이 안 끝났을 수 있으니 잠시 후 재시도
+          pendingScrollMonth.current = monthKey;
+        }
+      };
+
+      trySnap();
+    },
+    [initialStartDate],
+  );
+
+  const handleConfirm = () => {
+    if (startDate && endDate) {
+      onConfirm(startDate, endDate);
+      bottomSheetRef.current?.dismiss();
+    }
+  };
+
   const buttonTitle =
     startDate && endDate
       ? startDate === endDate
@@ -137,29 +203,60 @@ export default function DatePickerSheet({
         : `${formatDate(startDate)} - ${formatDate(endDate, true)} 선택하기`
       : "일정을 선택해주세요";
 
+  // 시스템 하단 네비게이션 바 높이를 고려한 전체 snapPoints 높이 조정
+  const sheetHeight = 580 + insets.bottom;
+
   return (
-    <View>
-      <View className="px-5 py-5">
-        <Subtitle title="여행 날짜를 선택해주세요." />
-        <CustomText font="body3 tight" className="text-text-muted mt-2 mb-3">
-          최대 7일까지 선택할 수 있어요.
-        </CustomText>
-        <ScrollView
+    <BottomSheetModal
+      ref={bottomSheetRef}
+      snapPoints={[sheetHeight]}
+      onChange={handleSheetChange}
+      backdropComponent={renderBackdrop}
+      animationConfigs={animationConfigs}
+      backgroundStyle={{ backgroundColor: "white" }}
+      handleIndicatorStyle={{
+        backgroundColor: "#E6E6E6",
+        width: 50,
+        height: 5,
+      }}
+      enablePanDownToClose={true}
+      enableDynamicSizing={false}
+    >
+      {/* 안드로이드 하단 버튼 영역 침범 방지를 위한 paddingBottom 적용 */}
+      <View
+        className="h-full flex-col "
+        style={{ paddingBottom: insets.bottom }}
+      >
+        {/* 1. 상단 고정 헤더 */}
+        <View className="px-5 pt-2 pb-3">
+          <Subtitle title="여행 날짜를 선택해주세요." />
+          <CustomText
+            font="body3 tight"
+            className="text-text-muted mt-1"
+          >
+            최대 7일까지 선택할 수 있어요.
+          </CustomText>
+        </View>
+
+        {/* 2. 중간 달력 수직 스크롤 영역 */}
+        <BottomSheetScrollView
           ref={scrollRef}
-          className="h-[380px]"
+          style={{ flex: 1 }}
           showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 20 }}
         >
-          {uniqueMonths.map((month) => (
+          {uniqueMonths.map((month, index) => (
             <View
               key={month}
-              className={`mt-8`}
+              className={index === 0 ? "mt-2" : "mt-8"}
               onLayout={(e) => {
-                monthOffsets.current[month] = e.nativeEvent.layout.y;
-                // 레이아웃이 이제 막 잡혔는데, 대기 중인 스크롤 대상이면 바로 실행
-                if (pendingScrollMonth.current === month && startDate) {
-                  const offset = e.nativeEvent.layout.y;
+                const y = e.nativeEvent.layout.y;
+                monthOffsets.current[month] = y;
+
+                // startDate 유무와 무관하게, pendingScrollMonth만 체크
+                if (pendingScrollMonth.current === month) {
                   requestAnimationFrame(() => {
-                    scrollRef.current?.scrollTo({ y: offset, animated: true });
+                    scrollRef.current?.scrollTo({ y, animated: false });
                   });
                   pendingScrollMonth.current = null;
                 }
@@ -178,7 +275,12 @@ export default function DatePickerSheet({
                 disableMonthChange
                 onDayPress={handleDayPress}
                 style={{ margin: 0, padding: 0 }}
-                headerStyle={{ paddingHorizontal: 0, marginHorizontal: 0 }}
+                headerStyle={{
+                  paddingHorizontal: 0,
+                  marginHorizontal: 0,
+                  paddingVertical: 0,
+                  marginVertical: 0,
+                }}
                 theme={{
                   backgroundColor: "#FFFFFF",
                   calendarBackground: "#FFFFFF",
@@ -187,10 +289,28 @@ export default function DatePickerSheet({
                   textDayHeaderFontSize: 15,
                   stylesheet: {
                     calendar: {
-                      header: {
+                      main: {
+                        paddingLeft: 0,
+                        paddingRight: 0,
                         week: {
+                          marginTop: 0,
+                          marginBottom: 0,
                           flexDirection: "row",
-                          justifyContent: "space-between",
+                          justifyContent: "space-around",
+                        },
+                      },
+                      header: {
+                        monthText: {
+                          height: 0,
+                          margin: 0,
+                        },
+                        week: {
+                          marginTop: 8,
+                          marginBottom: 8,
+                          flexDirection: "row",
+                          justifyContent: "space-around",
+                          paddingHorizontal: 0,
+                          marginHorizontal: 0,
                         },
                       },
                     },
@@ -198,7 +318,7 @@ export default function DatePickerSheet({
                 }}
                 renderHeader={() => <View style={{ height: 0 }} />}
                 dayComponent={({ date, state }: any) => {
-                  if (!date) return <View style={{ width: width / 7 }} />;
+                  if (!date) return <View style={{ width: CELL_WIDTH }} />;
                   return (
                     <DayCell
                       date={date}
@@ -212,20 +332,21 @@ export default function DatePickerSheet({
               />
             </View>
           ))}
-        </ScrollView>
-      </View>
+        </BottomSheetScrollView>
 
-      <BottomActionBar>
-        <CustomButton
-          type="primary"
-          title={buttonTitle}
-          stretch
-          size="medium"
-          disabled={disabled || !startDate || !endDate}
-          onPress={() => startDate && endDate && onConfirm(startDate, endDate)}
-        />
-      </BottomActionBar>
-    </View>
+        {/* 3. 하단 고정 버튼 바 */}
+        <BottomActionBar>
+          <CustomButton
+            type="primary"
+            title={buttonTitle}
+            stretch
+            size="medium"
+            disabled={disabled || !startDate || !endDate}
+            onPress={handleConfirm}
+          />
+        </BottomActionBar>
+      </View>
+    </BottomSheetModal>
   );
 }
 
@@ -251,35 +372,31 @@ function DayCell({ date, state, startDate, endDate, onPress }: DayCellProps) {
   const isWeekend = day === 0 || day === 6;
   const isToday = state === "today";
 
-  const cellWidth = width / 7;
-
-  const textColor = isDisabled
-    ? "#C9C9C9"
-    : isEdge
-      ? "#FFFFFF"
-      : isWeekend
-        ? "#E0483C"
-        : "#1A1A1A";
-
+  const textColor = isDisabled ? "#C9C9C9" : isEdge ? "#FFFFFF" : isWeekend ? "#E0483C" : "#1A1A1A";
+  const CELL_SIZE = 40;
+  const CELL_VERTICAL_PADDING = 4; // 기존 week margin(상하 8px)을 셀 높이로 대체
   return (
     <Pressable
       onPress={isDisabled ? undefined : onPress}
       disabled={isDisabled}
       style={{
-        width: cellWidth,
+        width: CELL_WIDTH,
         alignItems: "center",
-        justifyContent: "flex-start",
+        justifyContent: "center",
+        marginHorizontal: 0,
+        paddingHorizontal: 0,
       }}
     >
       <View
         style={{
-          width: cellWidth,
-          height: CELL_SIZE,
+          width: CELL_WIDTH,
+          height: CELL_SIZE + CELL_VERTICAL_PADDING * 2,
           alignItems: "center",
           justifyContent: "center",
+          position: "relative",
         }}
       >
-        {/* 구간 배경 트랙 (당일치기는 트랙 없음) */}
+        {/* 구간 연두색 배경 트랙 - 셀 빈틈없이 100% 꽉 차도록 설정 */}
         {hasRange && !isSingleDay && (isMiddle || isStart || isEnd) && (
           <View
             style={{
@@ -293,7 +410,7 @@ function DayCell({ date, state, startDate, endDate, onPress }: DayCellProps) {
           />
         )}
 
-        {/* 날짜 원 */}
+        {/* 날짜 동그라미 원 */}
         <View
           style={{
             width: CELL_SIZE,
@@ -302,6 +419,7 @@ function DayCell({ date, state, startDate, endDate, onPress }: DayCellProps) {
             alignItems: "center",
             justifyContent: "center",
             backgroundColor: isEdge ? "#7E9432" : "transparent",
+            zIndex: 1,
           }}
         >
           <CustomText
@@ -322,6 +440,7 @@ function DayCell({ date, state, startDate, endDate, onPress }: DayCellProps) {
               position: "absolute",
               bottom: -5,
               opacity: isToday ? 1 : 0,
+              zIndex: 2,
             }}
           >
             오늘

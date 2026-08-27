@@ -38,7 +38,7 @@ export default function CompletedTripSection({
       pathname: "/trip/timeline",
       params: {
         courseId: course.courseId,
-        isConfirmed: String(course.isConfirmed),
+        courseStatus: COURSE_STATE.FINISHED,
       },
     });
   };

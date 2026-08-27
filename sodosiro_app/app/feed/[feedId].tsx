@@ -1,5 +1,6 @@
 import { patchFeedApi } from "@/api/feed";
 import CustomButton from "@/components/common/CustomButton";
+import DimmedLoading from "@/components/common/DimmedLoading";
 import Header from "@/components/common/Header";
 import Spinner from "@/components/common/Spinner";
 import CreateFeedStepContent from "@/components/feed/create/step/CreateFeedStepContent";
@@ -143,6 +144,7 @@ export default function ModifyFeedScreen() {
           onPress={handleSubmit}
         />
       </View>
+      <DimmedLoading visible={isSubmitting} />
     </SafeAreaView>
   );
 }

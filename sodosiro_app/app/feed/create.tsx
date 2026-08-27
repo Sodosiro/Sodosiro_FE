@@ -1,6 +1,7 @@
 import { postFeedApi } from "@/api/feed";
 import CustomButton from "@/components/common/CustomButton";
 import CustomText from "@/components/common/CustomText";
+import DimmedLoading from "@/components/common/DimmedLoading";
 import Header from "@/components/common/Header";
 import CreateFeedStepContent from "@/components/feed/create/step/CreateFeedStepContent";
 import CreateFeedStepHistory from "@/components/feed/create/step/CreateFeedStepHistory";
@@ -13,7 +14,11 @@ import * as ImagePicker from "expo-image-picker";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { BackHandler, useWindowDimensions, View } from "react-native";
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const STEP_COUNT = 3;
@@ -26,11 +31,15 @@ export default function CreateFeedScreen() {
 
   const initialStep = paramCourseId ? 1 : 0;
   const [step, setStep] = useState(initialStep);
-  const [selectedCourseId, setSelectedCourseId] = useState<number | undefined>(paramCourseId);
+  const [selectedCourseId, setSelectedCourseId] = useState<number | undefined>(
+    paramCourseId,
+  );
 
   const [selectedPlace, setSelectedPlace] = useState<TripSpotType | null>(null);
   const [text, setText] = useState("");
-  const [imageSources, setImageSources] = useState<ImagePicker.ImagePickerAsset[]>([]);
+  const [imageSources, setImageSources] = useState<
+    ImagePicker.ImagePickerAsset[]
+  >([]);
   const [isPicking, setIsPicking] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -44,7 +53,9 @@ export default function CreateFeedScreen() {
     ],
   }));
 
-  const { data: coursesData, isPending: isCoursesPending } = useCoursesQuery(COURSE_STATE.FINISHED);
+  const { data: coursesData, isPending: isCoursesPending } = useCoursesQuery(
+    COURSE_STATE.FINISHED,
+  );
   const courses = coursesData?.data.courses;
 
   const { data: coursePlacesData, isPending: isPlacesPending } =
@@ -140,14 +151,17 @@ export default function CreateFeedScreen() {
   };
 
   useEffect(() => {
-    const subscription = BackHandler.addEventListener("hardwareBackPress", () => {
-      if (isSubmitting) return true;
-      if (step > 0) {
-        handleBack();
-        return true;
-      }
-      return false;
-    });
+    const subscription = BackHandler.addEventListener(
+      "hardwareBackPress",
+      () => {
+        if (isSubmitting) return true;
+        if (step > 0) {
+          handleBack();
+          return true;
+        }
+        return false;
+      },
+    );
     return () => {
       subscription.remove();
     };
@@ -169,19 +183,13 @@ export default function CreateFeedScreen() {
         backgroundColor: "white",
       }}
     >
-      <Header
-        title="발견 피드 작성하기"
-        handleBack={handleBack}
-      />
+      <Header title="발견 피드 작성하기" handleBack={handleBack} />
 
       {courses?.length < 1 ? (
         <View className="flex-1 gap-8 justify-center items-center">
           <View className="gap-3 items-center">
             <CustomText font="heading2">아직 완료한 여행이 없어요.</CustomText>
-            <CustomText
-              font="body3"
-              className="text-text-muted"
-            >
+            <CustomText font="body3" className="text-text-muted">
               여행을 마치면 방문한 장소로{"\n"}발견 카드를 남길 수 있어요.
             </CustomText>
           </View>
@@ -252,6 +260,7 @@ export default function CreateFeedScreen() {
           </View>
         </>
       )}
+      <DimmedLoading visible={isSubmitting} />
     </SafeAreaView>
   );
 }

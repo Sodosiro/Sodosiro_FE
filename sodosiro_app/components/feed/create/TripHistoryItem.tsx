@@ -18,12 +18,7 @@ export default function TripHistoryItem({
   selectedCourseId: number | undefined;
   setSelectedCourseId: Dispatch<SetStateAction<number | undefined>>;
 }) {
-  const {
-    courseId: historyId,
-    displayName: title,
-    startDate,
-    endDate,
-  } = historyItem ?? {};
+  const { courseId: historyId, title, startDate, endDate } = historyItem ?? {};
 
   const { containerStyle, borderStyle, strokeStyle, fillStyle } =
     useSelectedAnimation(historyId === selectedCourseId, {

@@ -1,4 +1,4 @@
-import { getFeedApi, getFeedsApi } from "@/api/feed";
+import { getFeedApi, getFeedsApi, getMyFeedsApi } from "@/api/feed";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 
 export function useFeedsQuery(size = 20) {
@@ -32,7 +32,7 @@ export function useMyFeedsQuery(size = 20) {
     queryKey: ["feeds", "myFeeds", size],
 
     queryFn: ({ pageParam }) =>
-      getFeedsApi({
+      getMyFeedsApi({
         size,
         cursor: pageParam,
       }),

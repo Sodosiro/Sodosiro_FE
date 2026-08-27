@@ -27,6 +27,7 @@ type FeedType = {
 type CourseType = {
   courseId: number;
   displayName: string;
+  title: string;
   startDate: Date;
   endDate: Date;
   status: TripStatus;

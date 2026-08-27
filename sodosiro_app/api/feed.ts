@@ -10,6 +10,10 @@ export async function getFeedsApi(params?: GetFeedsParams) {
   return axiosInstance.get("/api/v1/diggings", { params });
 }
 
+export async function getMyFeedsApi(params?: GetFeedsParams) {
+  return axiosInstance.get("/api/v1/diggings/me", { params });
+}
+
 export async function getFeedCandidatesApi(courseId: number) {
   return axiosInstance.get(`/api/v1/courses/${courseId}/digging-candidates`);
 }

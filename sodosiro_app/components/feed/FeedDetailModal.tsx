@@ -48,7 +48,7 @@ export default function FeedDetailModal({
         <FlatList
           horizontal
           pagingEnabled
-          decelerationRate="normal"
+          decelerationRate="fast"
           initialScrollIndex={initialIndex}
           getItemLayout={(_, index) => ({
             length: width,

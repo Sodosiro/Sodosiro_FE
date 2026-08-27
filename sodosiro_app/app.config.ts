@@ -2,7 +2,7 @@ import { ConfigContext, ExpoConfig } from "@expo/config";
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
-  name: "sodosiro",
+  name: "소도시로",
   slug: "sodosiro",
   version: "1.0.0",
   orientation: "portrait",

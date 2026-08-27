@@ -35,6 +35,7 @@ export default function OngoingTripSection({
   isPending: isCoursesPending,
   isError: isCoursesError,
 }: OngoingTripSectionProps) {
+  const [isLoading, setIsLoading] = useState(true);
   const courseId = courses?.[0]?.courseId ?? undefined;
   const courseStatus = COURSE_STATE.IN_PROGRESS;
   const {
@@ -158,6 +159,7 @@ export default function OngoingTripSection({
               mode={"navigation"}
               routeData={routeInfo}
               animatedPosition={animatedPosition}
+              setIsLoading={setIsLoading}
             />
           </View>
 

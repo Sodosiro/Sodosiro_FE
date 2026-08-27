@@ -67,6 +67,7 @@ export default function TimelineScreen() {
   } = useTimelineScrollSpy();
 
   const [isEditing, setIsEditing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [onDrag, setOnDrag] = useState(false);
   const insets = useSafeAreaInsets();
 
@@ -267,6 +268,7 @@ export default function TimelineScreen() {
             mode={"navigation"}
             routeData={routeInfo}
             animatedPosition={animatedPosition}
+            setIsLoading={setIsLoading}
           />
         </View>
       )}

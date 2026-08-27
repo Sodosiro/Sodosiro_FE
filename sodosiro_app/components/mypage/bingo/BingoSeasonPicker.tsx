@@ -39,10 +39,7 @@ export default function BingoSeasonPicker({
       <View className="gap-2">
         <Pressable onPress={openSheet}>
           <CustomText font="heading2">
-            {getBingoSeasonText(
-              selectedSeason?.year,
-              selectedSeason?.seasonType,
-            )}
+            {getBingoSeasonText(selectedSeason)}
           </CustomText>
         </Pressable>
 
@@ -178,9 +175,7 @@ const BingoSeasonPickerModal = ({
                 height: WHEEL_HEIGHT,
               }}
               data={bingoSeasons}
-              keyExtractor={(item) =>
-                getBingoSeasonText(item.year, item.seasonType)
-              }
+              keyExtractor={(item) => getBingoSeasonText(item)}
               showsVerticalScrollIndicator={false}
               initialScrollIndex={bingoSeasons?.indexOf(selectedSeason)}
               bounces={false}
@@ -213,7 +208,7 @@ const BingoSeasonPickerModal = ({
                         isSelected ? "text-primary-dark" : "text-text-muted"
                       }
                     >
-                      {getBingoSeasonText(item.year, item.seasonType)}
+                      {getBingoSeasonText(item)}
                     </CustomText>
                   </Pressable>
                 );

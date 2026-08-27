@@ -2,20 +2,12 @@ import { useLocationStore } from "@/stores/useLocationStore";
 import * as Location from "expo-location";
 import { useEffect } from "react";
 
-type SendLocation = (
-  location: {
-    latitude: number;
-    longitude: number;
-  },
-  denied?: boolean,
-) => void;
-
-export function useLocation(sendLocation: SendLocation, isMapReady: boolean) {
+export function useLocation() {
+  const isDenied = useLocationStore((state) => state.isDenied);
   const setIsDenied = useLocationStore((state) => state.setIsDenied);
+  const setLocation = useLocationStore((state) => state.setLocation);
 
   useEffect(() => {
-    if (!isMapReady) return;
-
     let subscription: Location.LocationSubscription | undefined;
 
     const start = async () => {
@@ -23,24 +15,21 @@ export function useLocation(sendLocation: SendLocation, isMapReady: boolean) {
 
       if (status !== "granted") {
         setIsDenied(true);
-        sendLocation(
-          {
-            latitude: 37.8528,
-            longitude: 128.2555,
-          },
-          true,
-        );
+        setLocation({
+          latitude: 37.8528,
+          longitude: 128.2555,
+        });
         return;
       }
 
       setIsDenied(false);
-      const location = await Location.getCurrentPositionAsync({
+      const currentLocation = await Location.getCurrentPositionAsync({
         accuracy: Location.Accuracy.BestForNavigation,
       });
 
-      sendLocation({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
+      setLocation({
+        latitude: currentLocation.coords.latitude,
+        longitude: currentLocation.coords.longitude,
       });
 
       subscription = await Location.watchPositionAsync(
@@ -50,7 +39,7 @@ export function useLocation(sendLocation: SendLocation, isMapReady: boolean) {
           timeInterval: 1000,
         },
         ({ coords }) => {
-          sendLocation({
+          setLocation({
             latitude: coords.latitude,
             longitude: coords.longitude,
           });
@@ -63,5 +52,5 @@ export function useLocation(sendLocation: SendLocation, isMapReady: boolean) {
     return () => {
       subscription?.remove();
     };
-  }, [isMapReady]);
+  }, [isDenied]);
 }

@@ -1,7 +1,7 @@
 import { useExploreStore } from "@/stores/useExploreStore";
 import { useLocationStore } from "@/stores/useLocationStore";
 import type { RefObject } from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { WebView, WebViewMessageEvent } from "react-native-webview";
 
 type WebViewToNativeMessage =
@@ -12,13 +12,13 @@ type WebViewToNativeMessage =
 export function useWebView({
   webViewRef,
   mode,
-  setIsLoading,
   initialData,
+  doNotSelect,
 }: {
   webViewRef: RefObject<WebView<unknown> | null>;
   mode: "marker" | "navigation";
-  setIsLoading: (value: boolean) => void;
   initialData: any;
+  doNotSelect?: boolean;
 }) {
   const setIsTracking = useLocationStore((state) => state.setIsTracking);
   const setSelectedPlaceId = useExploreStore(
@@ -26,6 +26,8 @@ export function useWebView({
   );
 
   const [isMapReady, setIsMapReady] = useState(false);
+  const location = useLocationStore((state) => state.location);
+  const isDenied = useLocationStore((state) => state.isDenied);
 
   const postMessage = useCallback(
     (payload: object) => {
@@ -44,8 +46,6 @@ export function useWebView({
     [postMessage],
   );
 
-  // mode에 따른 초기 데이터 전송 로직.
-  // MAP_READY 최초 1회 + 이후 필요할 때(예: 새로고침) 재사용 가능하도록 분리
   const updateData = useCallback(
     (data?: any, isPanTo?: boolean) => {
       if (mode === "marker") {
@@ -74,13 +74,13 @@ export function useWebView({
       MARKER_SELECTED: (
         data: Extract<WebViewToNativeMessage, { type: "MARKER_SELECTED" }>,
       ) => {
-        setSelectedPlaceId(data?.place?.contentId || null);
+        if (!doNotSelect) setSelectedPlaceId(data?.place?.contentId || null);
       },
       STOP_TRACKING: () => {
         setIsTracking(false);
       },
     }),
-    [setIsLoading, setSelectedPlaceId, setIsTracking, updateData],
+    [setSelectedPlaceId, setIsTracking, updateData],
   );
 
   const handleMessage = useCallback(
@@ -112,22 +112,25 @@ export function useWebView({
     [messageHandlers],
   );
 
-  const sendLocation = useCallback(
-    (location: { latitude: number; longitude: number }, denied = false) => {
-      if (!denied) {
-        postMessage({ type: "UPDATE_LOCATION", ...location });
-      } else {
-        postMessage({ type: "DENY_LOCATION" });
-      }
-    },
-    [postMessage],
-  );
+  useEffect(() => {
+    if (!isMapReady) return;
+
+    if (isDenied) {
+      postMessage({ type: "DENY_LOCATION" });
+      return;
+    }
+
+    if (location) {
+      postMessage({
+        type: "UPDATE_LOCATION",
+        ...location,
+      });
+    }
+  }, [isMapReady, isDenied, location, postMessage]);
 
   return {
-    isMapReady,
-    sendLocation,
     handleMessage,
-    updateData, // 필요할 때 (ex. 새로고침 버튼) 수동으로 재요청 가능
+    updateData,
     sendPlaceUpdates,
   };
 }

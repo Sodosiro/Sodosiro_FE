@@ -1,12 +1,17 @@
 import { useExploreStore } from "@/stores/useExploreStore";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { useEffect, useRef } from "react";
+import { SharedValue } from "react-native-reanimated";
 import PlaceItem from "./PlaceItem";
 
 export default function PlaceBottomSheet({
+  animatedPosition,
+  animatedIndex,
   handlePlaceItemPress,
   handleLike,
 }: {
+  animatedPosition: SharedValue<number>;
+  animatedIndex: SharedValue<number>;
   handlePlaceItemPress: (placeId: number) => void;
   handleLike: (contentId: number) => Promise<void>;
 }) {
@@ -27,6 +32,8 @@ export default function PlaceBottomSheet({
     <BottomSheet
       ref={bottomSheetRef}
       index={-1}
+      animatedIndex={animatedIndex}
+      animatedPosition={animatedPosition}
       enablePanDownToClose={false}
       handleIndicatorStyle={{
         backgroundColor: "#E6E6E6",

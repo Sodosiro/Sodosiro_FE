@@ -92,20 +92,20 @@ export default function OngoingTripSection({
         "path",
         "stopNames",
       ];
-      console.log(
-        "--------------------------courseDetail.transitRoutes--------------------------",
-        JSON.stringify(
-          courseDetail.carRoutes,
-          (key, value) => {
-            // 제외하고 싶은 좌표 키 값 필터링
-            if (EXCLUDE_KEYS.includes(key)) {
-              return undefined; // undefined를 반환하면 해당 키는 출력에서 제외됩니다.
-            }
-            return value;
-          },
-          2,
-        ),
-      );
+      // console.log(
+      //   "--------------------------courseDetail.transitRoutes--------------------------",
+      //   JSON.stringify(
+      //     courseDetail.carRoutes,
+      //     (key, value) => {
+      //       // 제외하고 싶은 좌표 키 값 필터링
+      //       if (EXCLUDE_KEYS.includes(key)) {
+      //         return undefined; // undefined를 반환하면 해당 키는 출력에서 제외됩니다.
+      //       }
+      //       return value;
+      //     },
+      //     2,
+      //   ),
+      // );
     }
   }, [courseResponse]);
 

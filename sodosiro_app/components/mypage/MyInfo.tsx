@@ -59,7 +59,7 @@ export default function MyInfo() {
                 className="flex-row items-center self-start"
                 onPress={() => router.push("/mypage/edit")}
               >
-                <CustomText font="body2" className="text-text-muted">
+                <CustomText font="body2" className="text-text-muted pr-0.5">
                   프로필 편집
                 </CustomText>
                 <RightIcon width={16} height={16} color={"#888888"} />

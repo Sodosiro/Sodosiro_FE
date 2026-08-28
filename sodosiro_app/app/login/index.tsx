@@ -1,11 +1,12 @@
 import { loginWithKakaoApi } from "@/api/auth";
 import { KakaoLogo } from "@/assets/svgs";
+import AnimatedButton from "@/components/common/animated/AnimatedButton";
 import CustomText from "@/components/common/CustomText";
 import { signInWithKakao } from "@/lib/kakao";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { router } from "expo-router";
 import { useState } from "react";
-import { Image, Pressable, Text, View } from "react-native";
+import { Image, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function LoginScreen() {
@@ -66,13 +67,16 @@ export default function LoginScreen() {
             소도시부터 숨은 명소까지{"\n"}내 취향에 맞는 여행지를 추천해드려요.
           </CustomText>
         </View>
-        <Pressable
+        <AnimatedButton
+          backgroundColor={["#fee500", "#EFD800"]}
           className={`w-full py-4 flex-row gap-2.5 items-center justify-center rounded-xl bg-[#fee500]`}
           onPress={handleKakaoLogin}
         >
           <KakaoLogo />
-          <CustomText font="body1">카카오 로그인</CustomText>
-        </Pressable>
+          <CustomText font="body1" className={`shrink-0 pr-0.5`}>
+            카카오 로그인
+          </CustomText>
+        </AnimatedButton>
       </View>
     </SafeAreaView>
   );

@@ -55,7 +55,7 @@ export default function PlaceListBottomSheet({
       return;
     }
 
-    if (keyword && places?.length) {
+    if (keyword) {
       bottomSheetRef.current?.snapToIndex(1);
 
       requestAnimationFrame(() => {

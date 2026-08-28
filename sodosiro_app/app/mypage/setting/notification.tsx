@@ -62,7 +62,7 @@ export default function NotificationSettingScreen() {
           >
             <CustomText font="title">여행 알림</CustomText>
             <CustomText font="body3" className={`text-text-muted`}>
-              여행 일정과 저장한 장소에 대한 알림을 받아요.
+              여행 진행 중 저장한 장소에 대한 알림을 받아요.
             </CustomText>
           </AnimatedView>
         </NotificationToggle>

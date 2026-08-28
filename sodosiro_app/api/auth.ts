@@ -17,3 +17,8 @@ export async function logoutApi() {
     refreshToken,
   });
 }
+
+export async function withdrawApi() {
+  const refreshToken = await SecureStore.getItemAsync("refreshToken");
+  return axiosInstance.post("/v1/auth/withdraw", { refreshToken });
+}

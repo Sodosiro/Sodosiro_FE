@@ -1,6 +1,8 @@
+import { withdrawApi } from "@/api/auth";
 import AnimatedButton from "@/components/common/animated/AnimatedButton";
 import CustomText from "@/components/common/CustomText";
 import Header from "@/components/common/Header";
+import { useAuthStore } from "@/stores/useAuthStore";
 import { router } from "expo-router";
 import { ScrollView, View } from "react-native";
 
@@ -12,6 +14,14 @@ const DELETE_INFO = [
 ];
 
 export default function WithdrawScreen() {
+  const logout = useAuthStore((state) => state.logout);
+
+  const handleWithDraw = async () => {
+    await withdrawApi();
+    await logout();
+    router.replace("/login");
+  };
+
   return (
     <>
       <Header title="회원 탈퇴" />
@@ -50,6 +60,7 @@ export default function WithdrawScreen() {
         <AnimatedButton
           backgroundColor={["#F04452", "#DD3846"]}
           className={`flex-1 py-4 items-center rounded-xl`}
+          onPress={handleWithDraw}
         >
           <CustomText font="body3 tight" className={`text-white`}>
             탈퇴하기

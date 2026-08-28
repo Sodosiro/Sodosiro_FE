@@ -87,9 +87,7 @@ export default function ProfileEditScreen() {
           disabled={
             nickNameTemp.trim().length < 2 ||
             nickNameTemp.trim().length > 10 ||
-            (introductionTemp.trim().length > 0 &&
-              (introductionTemp.trim().length < 2 ||
-                introductionTemp.trim().length > 20)) ||
+            introductionTemp.trim().length > 20 ||
             (user?.nickName === nickNameTemp &&
               user?.introduction === introductionTemp &&
               user?.profileImage === profileImageTemp)

@@ -60,7 +60,6 @@ function TimelineDaySection({
   onPlaceChanged,
   onRouteSpotChange,
 }: TimelineDaySectionProps) {
-  // console.log("transformedSpots", transformedSpots);
   const bottomSheetRef = useRef<BottomSheetModal>(null);
   const [selectedId, setSelectedId] = useState<string | number | null>(
     dayPlan.spots?.[0] ? `${dayPlan.day}_${dayPlan.spots[0]?.contentId}` : null,
@@ -218,8 +217,7 @@ function TimelineDaySection({
             const uniqueKey = `${dayPlan.day}_${place.contentId}`;
             const isExpanded = uniqueKey === selectedId;
             const nextPlace = dayPlan.spots?.[index + 1];
-            const transformedSpot = transformedSpots?.[index]; // 현재 장소의 경로 데이터 추출
-            // console.log("transformedSpot---", transformedSpot);
+            const transformedSpot = transformedSpots?.[index];
 
             return (
               <TimelineItem

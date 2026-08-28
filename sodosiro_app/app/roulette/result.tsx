@@ -54,8 +54,6 @@ export default function RouletteResultScreen() {
     else router.push({ pathname: "/trip/condition", params: { sigunguId } });
   };
 
-  console.log(chance);
-
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <Header

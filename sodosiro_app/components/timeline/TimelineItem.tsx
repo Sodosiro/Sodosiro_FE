@@ -165,7 +165,7 @@ function TimelineItem({
       <View className="flex-row">
         <View className="w-6 mr-2.5 h-3" />
         {isFirstIndex || isEditing ? null : (
-          <View className="h-3 flex-1 border-t border-[#D9D9D9]" />
+          <View className="h-3 flex-1 border-t border-border" />
         )}
       </View>
 
@@ -185,7 +185,7 @@ function TimelineItem({
                 <AlignIcon />
               </View>
             ) : (
-              <View className="w-6 h-6 rounded-xl bg-[#1A1A1A] items-center justify-center mr-2.5 shrink-0">
+              <View className="w-6 h-6 rounded-xl bg-text-primary items-center justify-center mr-2.5 shrink-0">
                 <CustomText font="body3" className="text-white">
                   {order}
                 </CustomText>

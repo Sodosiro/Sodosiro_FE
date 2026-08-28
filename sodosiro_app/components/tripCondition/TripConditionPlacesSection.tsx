@@ -23,7 +23,6 @@ export default function TripConditionPlacesSection({
   const [currentTab, setCurrentTab] = useState<TabType>("지금 많이 찾는 장소");
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>("all");
 
-  console.log(sigunguCode);
   const popularQuery = usePlacesQuery(selectedCategory, "POPULAR", 5);
   const likeQuery = useLikePlacesQuery(selectedCategory, undefined, "RECENT");
 

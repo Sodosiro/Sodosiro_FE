@@ -24,7 +24,7 @@ export default function EditText({
       <TextInput
         value={text}
         onChangeText={setText}
-        returnKeyType="search"
+        returnKeyType="done"
         placeholder={placeholder}
         placeholderTextColor={"#888888"}
         className={`${Body3Class} text-text-secondary w-full p-4 border border-border rounded-xl`}

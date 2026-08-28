@@ -20,11 +20,5 @@ export const updateGpsLocationApi = async (body: UpdateGpsRequest) => {
 export const useUpdateGpsMutation = () => {
   return useMutation({
     mutationFn: updateGpsLocationApi,
-    onSuccess: (data) => {
-      console.log("GPS 위치 전송 성공:", data);
-    },
-    onError: (error) => {
-      console.error("GPS 위치 전송 에러:", error);
-    },
   });
 };

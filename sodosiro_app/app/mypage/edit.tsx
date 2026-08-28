@@ -37,9 +37,6 @@ export default function ProfileEditScreen() {
         setUser(updatedUser);
         router.back();
       } catch (error: any) {
-        console.log("유저 정보 수정 에러", error);
-        console.log(error.response?.status);
-        console.log(error.response?.data);
       } finally {
         setIsPending(false);
       }

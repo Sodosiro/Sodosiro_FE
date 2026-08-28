@@ -36,9 +36,6 @@ export default function LoginScreen() {
 
       router.replace("/(tabs)");
     } catch (error: any) {
-      console.log("로그인 에러", error);
-      console.log(error.response?.status);
-      console.log(error.response?.data);
     } finally {
       setIsLoading(false);
     }

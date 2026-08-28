@@ -15,16 +15,12 @@ export function useLocationTracking() {
 
         const foreground = await Location.requestForegroundPermissionsAsync();
 
-        console.log("foreground:", foreground.status);
-
         if (foreground.status !== "granted") {
           return;
         }
 
         // 여기부터 백그라운드 권한 요청
         const background = await Location.requestBackgroundPermissionsAsync();
-
-        console.log("background:", background.status);
 
         if (background.status !== "granted") {
           return;

@@ -99,10 +99,6 @@ export function useWebView({
         return;
       }
 
-      if (__DEV__) {
-        console.log("[useWebView]", data);
-      }
-
       const handler = messageHandlers[data.type] as
         | ((d: typeof data) => void)
         | undefined;

@@ -7,7 +7,6 @@ import Rating from "@/components/placeDetail/review/write/Rating";
 import ReviewForm from "@/components/placeDetail/review/write/ReviewForm";
 import { invalidateQueries } from "@/util/query/invalidateQueries";
 import { hasBatchim } from "@/util/word/word";
-import axios from "axios";
 import { ImagePickerAsset } from "expo-image-picker";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
@@ -45,11 +44,6 @@ export default function ReviewWriteScreen() {
 
       router.back();
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.log("status:", error.response?.status);
-        console.log("data:", error.response?.data);
-      }
-      console.error("[postReviewApi] 리뷰 등록 실패:", error);
     } finally {
       setIsSubmitting(false);
     }

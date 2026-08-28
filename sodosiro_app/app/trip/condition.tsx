@@ -170,7 +170,6 @@ export default function TripScreen() {
 
     try {
       const response = await postCourseRecommendations(requestBody);
-      console.log("추천 코스 생성 성공:", response);
 
       if (router.canDismiss()) {
         router.dismissAll();
@@ -186,9 +185,6 @@ export default function TripScreen() {
     } catch (error) {
       console.error("추천 코스 생성 실패:", error);
       if (axios.isAxiosError(error)) {
-        console.log("status:", error.response?.status);
-        console.log("data:", error.response?.data);
-
         const errorCode = error.response?.data?.code || "";
         if (errorCode === "COURSE400-TRAVEL_DATE_OVERLAP") {
           showToast(error.response?.data?.message || "");

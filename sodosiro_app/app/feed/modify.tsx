@@ -6,7 +6,6 @@ import Spinner from "@/components/common/Spinner";
 import CreateFeedStepContent from "@/components/feed/create/step/CreateFeedStepContent";
 import { useFeedQuery } from "@/hooks/query/feed";
 import { invalidateQueries } from "@/util/query/invalidateQueries";
-import axios from "axios";
 import * as ImagePicker from "expo-image-picker";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
@@ -96,11 +95,6 @@ export default function ModifyFeedScreen() {
 
       router.back();
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.log("status:", error.response?.status);
-        console.log("data:", error.response?.data);
-      }
-      console.error("[postReviewApi] 피드 수정 실패:", error);
     } finally {
       setIsSubmitting(false);
     }

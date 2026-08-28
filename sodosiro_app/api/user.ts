@@ -1,3 +1,4 @@
+import { ImagePickerAsset } from "expo-image-picker";
 import { axiosInstance } from "./instance";
 
 export async function getMeApi() {
@@ -5,7 +6,11 @@ export async function getMeApi() {
   return data;
 }
 
-export async function patchMeApi(user: User) {
+export async function patchMeApi(user: {
+  nickName: string;
+  profileImage: string | ImagePickerAsset | null;
+  introduction: string | null;
+}) {
   const formData = new FormData();
   const image = user.profileImage;
 

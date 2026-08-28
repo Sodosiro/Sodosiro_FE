@@ -9,7 +9,6 @@ import CreateFeedStepPlace from "@/components/feed/create/step/CreateFeedStepPla
 import { COURSE_STATE } from "@/constants/Trip";
 import { useCoursePlacesQuery, useCoursesQuery } from "@/hooks/query/course";
 import { invalidateQueries } from "@/util/query/invalidateQueries";
-import axios from "axios";
 import * as ImagePicker from "expo-image-picker";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
@@ -140,11 +139,6 @@ export default function CreateFeedScreen() {
 
       router.push("/(tabs)/feed");
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.log("status:", error.response?.status);
-        console.log("data:", error.response?.data);
-      }
-      console.error("[postReviewApi] 피드 작성 실패:", error);
     } finally {
       setIsSubmitting(false);
     }

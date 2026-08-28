@@ -110,20 +110,6 @@ export default function OngoingTripSection({
         "path",
         "stopNames",
       ];
-      // console.log(
-      //   "--------------------------courseDetail.transitRoutes--------------------------",
-      //   JSON.stringify(
-      //     courseDetail.carRoutes,
-      //     (key, value) => {
-      //       // 제외하고 싶은 좌표 키 값 필터링
-      //       if (EXCLUDE_KEYS.includes(key)) {
-      //         return undefined; // undefined를 반환하면 해당 키는 출력에서 제외됩니다.
-      //       }
-      //       return value;
-      //     },
-      //     2,
-      //   ),
-      // );
     }
   }, [courseResponse]);
 
@@ -169,8 +155,8 @@ export default function OngoingTripSection({
     <View className="flex-1">
       {Number(courses?.length) === 0 ? (
         <EmptyState
-          title="아직 여행 일정이 없어요."
-          description="새로운 여행 일정을 만들까요?"
+          title="진행 중인 일정이 없어요."
+          description="여행 시작일이 되면 이곳에서 확인할 수 있어요."
           actionLabel="새 일정 만들기"
           onPressAction={() => router.push("/roulette")}
         />

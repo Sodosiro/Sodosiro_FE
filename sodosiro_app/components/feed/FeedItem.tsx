@@ -92,7 +92,7 @@ export default function FeedItem({
               className={`text-text-muted`}
               onPress={() => {
                 router.push({
-                  pathname: "/feed/[feedId]",
+                  pathname: "/feed/modify",
                   params: { feedId: String(feed.diggingId) },
                 });
               }}

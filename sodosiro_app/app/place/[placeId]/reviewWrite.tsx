@@ -2,6 +2,7 @@ import { postReviewApi } from "@/api/review";
 import CustomButton from "@/components/common/CustomButton";
 import CustomText from "@/components/common/CustomText";
 import Header from "@/components/common/Header";
+import CreatingModal from "@/components/common/modal/CreatingModal";
 import Rating from "@/components/placeDetail/review/write/Rating";
 import ReviewForm from "@/components/placeDetail/review/write/ReviewForm";
 import { invalidateQueries } from "@/util/query/invalidateQueries";
@@ -22,15 +23,15 @@ export default function ReviewWriteScreen() {
   const [content, setContent] = useState("");
   const [imageSources, setImageSources] = useState<ImagePickerAsset[]>([]);
   const [rate, setRate] = useState(0);
-  const [isPending, setIsPending] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isPicking, setIsPicking] = useState(false);
 
   const handleSubmit = async () => {
-    if (rate === 0 || content.trim() === "" || isPending || isPicking) {
+    if (rate === 0 || content.trim() === "" || isSubmitting || isPicking) {
       return;
     }
     try {
-      setIsPending(true);
+      setIsSubmitting(true);
 
       await postReviewApi(Number(placeId), rate, content.trim(), imageSources);
 
@@ -50,7 +51,7 @@ export default function ReviewWriteScreen() {
       }
       console.error("[postReviewApi] 리뷰 등록 실패:", error);
     } finally {
-      setIsPending(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -68,18 +69,14 @@ export default function ReviewWriteScreen() {
             {title}
             <Text className={`text-text-muted`}>{particle} 어떠셨나요?</Text>
           </CustomText>
-          <Rating
-            rate={rate}
-            setRate={setRate}
-            isPending={isPending}
-          />
+          <Rating rate={rate} setRate={setRate} isPending={isSubmitting} />
         </View>
         <ReviewForm
           content={content}
           setContent={setContent}
           imageSources={imageSources}
           setImageSources={setImageSources}
-          isPending={isPending}
+          isPending={isSubmitting}
           isPicking={isPicking}
           setIsPicking={setIsPicking}
         />
@@ -89,10 +86,15 @@ export default function ReviewWriteScreen() {
           type="primary"
           title="등록하기"
           disabled={rate === 0 || content.trim() === "" || isPicking}
-          loading={isPending}
+          loading={isSubmitting}
           onPress={handleSubmit}
         />
       </View>
+      <CreatingModal
+        isVisible={isSubmitting}
+        title="댓글을 등록 중이에요!"
+        description="잠시만 기다려주세요!"
+      />
     </SafeAreaView>
   );
 }

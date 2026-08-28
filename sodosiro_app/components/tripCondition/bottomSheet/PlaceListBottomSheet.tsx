@@ -107,10 +107,7 @@ export default function PlaceListBottomSheet({
           ) : isLikeTabEmpty ? (
             <View className="flex-1 justify-center items-center gap-2">
               <CustomText font="title">아직 저장한 장소가 없어요.</CustomText>
-              <CustomText
-                font="body2"
-                className="text-gray-400"
-              >
+              <CustomText font="body2" className="text-gray-400 text-center">
                 마음에 드는 장소를 저장하면 여기에서 선택할 수 있어요.
               </CustomText>
             </View>

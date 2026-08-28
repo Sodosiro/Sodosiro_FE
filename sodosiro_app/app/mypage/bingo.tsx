@@ -60,14 +60,12 @@ export default function BingoScreen() {
           <Spinner />
         </View>
       ) : isBingoSeasonsError || isBingoError ? (
-        <>
-          <EmptyState
-            title="빙고를 불러오지 못했어요."
-            description="네트워크 상태를 확인하고 다시 시도해주세요."
-            actionLabel="다시 시도"
-            onPressAction={() => bingoSeasonRefetch()}
-          />
-        </>
+        <EmptyState
+          title="빙고를 불러오지 못했어요."
+          description="네트워크 상태를 확인하고 다시 시도해주세요."
+          actionLabel="다시 시도"
+          onPressAction={() => bingoSeasonRefetch()}
+        />
       ) : bingoSeasons?.length > 0 ? (
         <>
           <RegionList

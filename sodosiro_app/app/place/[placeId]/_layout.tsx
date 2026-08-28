@@ -12,7 +12,7 @@ export default function PlaceLayout() {
       <Stack.Screen name="review" />
       <Stack.Screen name="photo" />
       <Stack.Screen name="reviewWrite" />
-      <Stack.Screen name="[reviewId]" />
+      <Stack.Screen name="reviewModify" />
     </Stack>
   );
 }

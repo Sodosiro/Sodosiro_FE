@@ -1,4 +1,5 @@
 import CustomCarousel from "@/components/common/CustomCarousel";
+import EmptyState from "@/components/common/EmptyState";
 import Header from "@/components/common/Header";
 import Spinner from "@/components/common/Spinner";
 import PlaceDetailBottomBar from "@/components/placeDetail/PlaceDetailBottomBar";
@@ -12,7 +13,7 @@ import { usePlaceDetailQuery } from "@/hooks/query/place";
 import { usePlaceDetailTab } from "@/hooks/usePlaceDetailTab";
 import { NumberToCategory } from "@/util/place/category";
 import { useLocalSearchParams } from "expo-router";
-import { ScrollView } from "react-native";
+import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function PlaceDetailScreen() {
@@ -31,7 +32,12 @@ export default function PlaceDetailScreen() {
     placeId: string;
   }>();
 
-  const { data: response, isPending } = usePlaceDetailQuery(Number(placeId));
+  const {
+    data: response,
+    isPending,
+    isError,
+    refetch,
+  } = usePlaceDetailQuery(Number(placeId));
 
   const placeDetail = response?.data;
 
@@ -53,7 +59,7 @@ export default function PlaceDetailScreen() {
     relatedSpots,
   } = placeDetail ?? {};
 
-  if (isPending || !placeDetail) {
+  if (isPending || !placeDetail || isError) {
     return (
       <SafeAreaView
         style={{
@@ -63,7 +69,19 @@ export default function PlaceDetailScreen() {
           justifyContent: "center",
         }}
       >
-        <Spinner />
+        <Header title="장소 상세보기" />
+        {isError ? (
+          <EmptyState
+            title="지역 정보를 불러오지 못했어요."
+            description="네트워크 상태를 확인하고 다시 시도해주세요"
+            actionLabel="다시 시도"
+            onPressAction={() => refetch()}
+          />
+        ) : (
+          <View className={`flex-1 justify-center items-center`}>
+            <Spinner />
+          </View>
+        )}
       </SafeAreaView>
     );
   }
@@ -76,7 +94,6 @@ export default function PlaceDetailScreen() {
       }}
     >
       <Header title="장소 상세보기" />
-
       <ScrollView
         ref={scrollRef}
         className="flex-1"

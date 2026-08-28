@@ -1,4 +1,9 @@
-import { CourseDayItem, CourseStatus, SpotItem, TransportMode } from "@/api/course";
+import {
+  CourseDayItem,
+  CourseStatus,
+  SpotItem,
+  TransportMode,
+} from "@/api/course";
 import BottomSheet from "@/components/common/BottomSheet";
 import CustomText from "@/components/common/CustomText";
 import TripPlacesSection from "@/components/tripCondition/TripPlacesSection";
@@ -7,7 +12,14 @@ import { useToast } from "@/contexts/ToastProvider";
 import { formatDateWithDay } from "@/util/date/date";
 import { RenderSpotItem } from "@/util/route/route";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import { Dispatch, memo, SetStateAction, useCallback, useRef, useState } from "react";
+import {
+  Dispatch,
+  memo,
+  SetStateAction,
+  useCallback,
+  useRef,
+  useState,
+} from "react";
 import { LayoutChangeEvent, View } from "react-native";
 import DraggableFlatList, {
   OpacityDecorator,
@@ -121,7 +133,9 @@ function TimelineDaySection({
       }
 
       const isDuplicatePlace = dayPlan.spots.some(
-        (item) => item.contentId === selectedPlace.contentId && item.contentId !== changeTargetId,
+        (item) =>
+          item.contentId === selectedPlace.contentId &&
+          item.contentId !== changeTargetId,
       );
 
       if (isDuplicatePlace) {
@@ -136,7 +150,9 @@ function TimelineDaySection({
             ? {
                 ...day,
                 spots: day.spots.map((place) =>
-                  place.contentId === changeTargetId ? { ...place, ...selectedPlace } : place,
+                  place.contentId === changeTargetId
+                    ? { ...place, ...selectedPlace }
+                    : place,
                 ),
               }
             : day,
@@ -152,7 +168,14 @@ function TimelineDaySection({
         changedPlace: selectedPlace,
       });
     },
-    [changeTargetId, dayPlan.date, dayPlan.spots, setPlan, showToast, onPlaceChanged],
+    [
+      changeTargetId,
+      dayPlan.date,
+      dayPlan.spots,
+      setPlan,
+      showToast,
+      onPlaceChanged,
+    ],
   );
 
   // 장소 변경 버튼
@@ -167,10 +190,7 @@ function TimelineDaySection({
       className="mb-6 px-5 rounded-2xl border border-border bg-white py-1 overflow-hidden"
     >
       <View className="pt-3 flex-row items-center gap-2">
-        <CustomText
-          font="title"
-          className="text-primary-dark"
-        >
+        <CustomText font="title" className="text-primary-dark">
           {`${dayPlan.day}일차`}
         </CustomText>
         <CustomText

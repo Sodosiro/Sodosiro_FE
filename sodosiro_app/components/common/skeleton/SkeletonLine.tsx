@@ -12,10 +12,12 @@ import CustomText from "../CustomText";
 export function SkeletonLine({
   width = "100%",
   font = "body3",
+  text,
   backgroundColors = ["#ededed", "#e6e6e6"],
 }: {
   width?: `${number}%`;
   font?: TypoType;
+  text?: string;
   backgroundColors?: string[];
 }) {
   const progress = useSharedValue(-1);
@@ -35,8 +37,13 @@ export function SkeletonLine({
   }));
 
   return (
-    <AnimatedView className="w-full rounded" style={[{ width }, animatedStyle]}>
-      <CustomText font={font}> </CustomText>
+    <AnimatedView
+      className={`${text && `self-start`} rounded`}
+      style={[{ width }, animatedStyle]}
+    >
+      <CustomText font={font} className={`opacity-0`}>
+        {text ?? " "}
+      </CustomText>
     </AnimatedView>
   );
 }

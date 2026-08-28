@@ -148,7 +148,7 @@ export default function ReviewScreen() {
             myReviewId
               ? () =>
                   router.push({
-                    pathname: "/place/[placeId]/[reviewId]",
+                    pathname: "/place/[placeId]/reviewModify",
                     params: {
                       placeId,
                       reviewId: myReviewId,

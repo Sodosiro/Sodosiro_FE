@@ -147,7 +147,9 @@ export async function getCoursesApi(status?: TripStatus) {
   return axiosInstance.get("/api/v1/courses/me", { params: { status } });
 }
 
-export async function postCourseRecommendationsApi(body: CourseRecommendationRequest) {
+export async function postCourseRecommendationsApi(
+  body: CourseRecommendationRequest,
+) {
   return await axiosInstance.post("/api/v1/courses/recommendations", body);
 }
 
@@ -180,7 +182,10 @@ export async function updateCourseDaysApi(
   courseId: string | number,
   requestData: UpdateCourseDaysRequest,
 ) {
-  return await axiosInstance.patch(`/api/v1/courses/${courseId}/days`, requestData);
+  return await axiosInstance.patch(
+    `/api/v1/courses/${courseId}/days`,
+    requestData,
+  );
 }
 
 /**
@@ -205,4 +210,8 @@ export async function postCourseGps(
     latitude,
     longitude,
   });
+}
+
+export async function getAiQuota() {
+  return await axiosInstance.get(`/api/v1/courses/recommendations/quota`);
 }

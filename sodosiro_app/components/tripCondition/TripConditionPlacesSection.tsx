@@ -23,8 +23,8 @@ export default function TripConditionPlacesSection({
   const [currentTab, setCurrentTab] = useState<TabType>("지금 많이 찾는 장소");
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>("all");
 
+  console.log(sigunguCode);
   const popularQuery = usePlacesQuery(selectedCategory, "POPULAR", 5);
-  // const popularQuery = usePlacesQuery(selectedCategory, "POPULAR", 5, sigunguCode); // 시군구 코드로 조회시 검색결과가 적음.
   const likeQuery = useLikePlacesQuery(selectedCategory, undefined, "RECENT");
 
   const isPopularTab = currentTab === "지금 많이 찾는 장소";
@@ -35,8 +35,6 @@ export default function TripConditionPlacesSection({
     : (likeQuery.data?.pages.flatMap((page) => page.data.content) ?? []);
 
   const isLikeTabEmpty = !isPopularTab && (!places || places.length === 0);
-
-  console.log("popularQuery", popularQuery.data?.data.items);
 
   return (
     <View className="flex-col px-5 gap-3">
@@ -57,10 +55,7 @@ export default function TripConditionPlacesSection({
         /* 저장한 장소가 없을 때 텍스트 표시 */
         <View className="justify-center items-center h-91.5 gap-2">
           <CustomText font="title">아직 저장한 장소가 없어요.</CustomText>
-          <CustomText
-            font="body2"
-            className="text-gray-400"
-          >
+          <CustomText font="body2" className="text-gray-400 text-center">
             마음에 드는 장소를 저장하면 여기에서 선택할 수 있어요.
           </CustomText>
         </View>

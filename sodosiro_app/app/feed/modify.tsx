@@ -1,7 +1,7 @@
 import { patchFeedApi } from "@/api/feed";
 import CustomButton from "@/components/common/CustomButton";
-import DimmedLoading from "@/components/common/DimmedLoading";
 import Header from "@/components/common/Header";
+import CreatingModal from "@/components/common/modal/CreatingModal";
 import Spinner from "@/components/common/Spinner";
 import CreateFeedStepContent from "@/components/feed/create/step/CreateFeedStepContent";
 import { useFeedQuery } from "@/hooks/query/feed";
@@ -144,7 +144,12 @@ export default function ModifyFeedScreen() {
           onPress={handleSubmit}
         />
       </View>
-      <DimmedLoading visible={isSubmitting} />
+
+      <CreatingModal
+        isVisible={isSubmitting}
+        title="피드를 수정 중이에요!"
+        description="잠시만 기다려주세요!"
+      />
     </SafeAreaView>
   );
 }

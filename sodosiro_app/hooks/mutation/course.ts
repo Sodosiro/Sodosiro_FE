@@ -25,7 +25,7 @@ export function useCourseGpsMutation() {
     }) => postCourseGps(courseId, contentId, day, latitude, longitude),
 
     onSuccess: (_, variables) => {
-      invalidateQueries([["courseDetail", variables.contentId]]);
+      invalidateQueries([["courseDetail", variables.contentId], ["aiQuota"]]);
     },
   });
 

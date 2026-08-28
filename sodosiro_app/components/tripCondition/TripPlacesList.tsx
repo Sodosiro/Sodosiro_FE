@@ -7,10 +7,14 @@ import TripPlaceMini from "../place/TripPlaceMini";
 type Props = {
   onSelectPlace?: (place: SpotItem) => void;
   places: SpotItem[];
-  sigunguName: string;
+  sigunguName?: string;
 };
 
-export default function TripPlacesList({ places, onSelectPlace, sigunguName }: Props) {
+export default function TripPlacesList({
+  places,
+  onSelectPlace,
+  sigunguName,
+}: Props) {
   const handleSelect = (place: SpotItem) => {
     onSelectPlace?.(place);
   };
@@ -20,7 +24,7 @@ export default function TripPlacesList({ places, onSelectPlace, sigunguName }: P
       data={places}
       keyExtractor={(item, index) => String(item.contentId ?? index)}
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingBottom: 40 }}
+      contentContainerStyle={{ paddingBottom: 12 }}
       ItemSeparatorComponent={() => <View className="h-4" />}
       renderItem={({ item: place }) => (
         <View className="flex-row items-center justify-between">
@@ -33,7 +37,9 @@ export default function TripPlacesList({ places, onSelectPlace, sigunguName }: P
             avgRating={place.avgRating}
             rankTag={place?.popularity?.rankTag}
             icon={<PlusIcon color={"#7E9432"} />}
-            disabled={Boolean(sigunguName && !place.region.includes(sigunguName))}
+            disabled={Boolean(
+              sigunguName && !place?.region?.includes(sigunguName),
+            )}
             onPress={() => handleSelect(place)}
           />
         </View>

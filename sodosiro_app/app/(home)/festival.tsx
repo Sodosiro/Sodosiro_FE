@@ -85,7 +85,7 @@ export default function FestivalScreen() {
           <View className="flex-1 justify-center items-center">
             <Spinner />
           </View>
-        ) : !isError ? (
+        ) : isError ? (
           <EmptyState
             title="축제를 불러오지 못했어요."
             description="네트워크 상태를 확인하고 다시 시도해주세요"

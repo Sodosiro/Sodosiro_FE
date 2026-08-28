@@ -1,8 +1,8 @@
 import { postFeedApi } from "@/api/feed";
 import CustomButton from "@/components/common/CustomButton";
 import CustomText from "@/components/common/CustomText";
-import DimmedLoading from "@/components/common/DimmedLoading";
 import Header from "@/components/common/Header";
+import CreatingModal from "@/components/common/modal/CreatingModal";
 import CreateFeedStepContent from "@/components/feed/create/step/CreateFeedStepContent";
 import CreateFeedStepHistory from "@/components/feed/create/step/CreateFeedStepHistory";
 import CreateFeedStepPlace from "@/components/feed/create/step/CreateFeedStepPlace";
@@ -260,7 +260,11 @@ export default function CreateFeedScreen() {
           </View>
         </>
       )}
-      <DimmedLoading visible={isSubmitting} />
+      <CreatingModal
+        isVisible={isSubmitting}
+        title="피드를 등록 중이에요!"
+        description="잠시만 기다려주세요!"
+      />
     </SafeAreaView>
   );
 }

@@ -1,12 +1,18 @@
 import { useEffect, useRef, useState } from "react";
-import { KeyboardAvoidingView, Platform, ScrollView, TextInput, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  TextInput,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import BottomSheet from "@/components/common/BottomSheet";
 import CategoryBadge from "@/components/common/category/CategoryBadge";
 import CustomText from "@/components/common/CustomText";
-import DimmedLoading from "@/components/common/DimmedLoading";
 import Header from "@/components/common/Header";
+import CreatingModal from "@/components/common/modal/CreatingModal";
 import Subtitle from "@/components/common/Subtitle";
 import BigBusIcon from "@/components/icon/transport/BusIcon";
 import CarIcon from "@/components/icon/transport/CarIcon";
@@ -74,7 +80,9 @@ export default function TripScreen() {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
   const datePickerRef = useRef<BottomSheetModal>(null);
 
-  const SODOSI = SODOSI_LIST.find((sodosi) => String(sodosi.sigunguId) == sigunguId);
+  const SODOSI = SODOSI_LIST.find(
+    (sodosi) => String(sodosi.sigunguId) == sigunguId,
+  );
 
   const [tripTitle, setTripTitle] = useState(`${SODOSI?.name} 여행`);
   const [showCalendar, setShowCalendar] = useState(false);
@@ -89,7 +97,8 @@ export default function TripScreen() {
   const [showErrorText, setShowErrorText] = useState(false);
 
   // useMutation hook
-  const { mutateAsync: postCourseRecommendations, isPending } = useCourseRecommendationsMutation();
+  const { mutateAsync: postCourseRecommendations, isPending } =
+    useCourseRecommendationsMutation();
 
   const [selectedCategory, setSelectedCategory] = useState<CategoryType[]>([]);
 
@@ -130,6 +139,7 @@ export default function TripScreen() {
     setTripTitle(`${SODOSI?.name} 여행`);
     setShowCalendar(false);
     setShowLocation(false);
+    setSelectedCategory([]);
     setTransport("");
     setDateRange({
       startDate: null,
@@ -149,7 +159,9 @@ export default function TripScreen() {
       transportMode: transport,
       startDate: formatDate(dateRange.startDate),
       endDate: formatDate(dateRange.endDate ?? dateRange.startDate),
-      travelStyles: selectedCategory.map((category) => CATEGORY_TO_TRAVEL_STYLE[category]),
+      travelStyles: selectedCategory.map(
+        (category) => CATEGORY_TO_TRAVEL_STYLE[category],
+      ),
       ...(selectedPlace?.contentId && {
         mustVisitContentId: selectedPlace.contentId,
       }),
@@ -210,7 +222,15 @@ export default function TripScreen() {
 
   function getDayName(date: Date | null): string {
     if (!date) return "";
-    const days = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
+    const days = [
+      "일요일",
+      "월요일",
+      "화요일",
+      "수요일",
+      "목요일",
+      "금요일",
+      "토요일",
+    ];
     return days[date.getDay()];
   }
 
@@ -255,10 +275,7 @@ export default function TripScreen() {
             <View className="gap-3">
               <View className="flex-row gap-1">
                 <View className="pt-1">
-                  <CustomText
-                    font="body3"
-                    style={{ color: "#F04452" }}
-                  >
+                  <CustomText font="body3" style={{ color: "#F04452" }}>
                     *
                   </CustomText>
                 </View>
@@ -275,10 +292,7 @@ export default function TripScreen() {
             <View className="gap-3">
               <View className="flex-row gap-1">
                 <View className="pt-1">
-                  <CustomText
-                    font="body3"
-                    style={{ color: "#F04452" }}
-                  >
+                  <CustomText font="body3" style={{ color: "#F04452" }}>
                     *
                   </CustomText>
                 </View>
@@ -307,7 +321,8 @@ export default function TripScreen() {
               </View>
               <View className="flex-row flex-wrap gap-2.5">
                 {CATEGORIES.filter(
-                  (category) => !(category == "accommodation" || category == "restaurant"),
+                  (category) =>
+                    !(category == "accommodation" || category == "restaurant"),
                 ).map((category) => {
                   const isSelected = selectedCategory.includes(category);
                   return (
@@ -349,10 +364,7 @@ export default function TripScreen() {
               </View>
 
               {showErrorText && (
-                <CustomText
-                  font="body3"
-                  style={{ color: "#F04452" }}
-                >
+                <CustomText font="body3" style={{ color: "#F04452" }}>
                   여행 일정과 해당 장소의 휴무일이 겹쳐요.
                 </CustomText>
               )}
@@ -372,10 +384,7 @@ export default function TripScreen() {
                   maxLength={20}
                 />
               </View>
-              <CustomText
-                font="body3"
-                className="text-text-muted text-right"
-              >
+              <CustomText font="body3" className="text-text-muted text-right">
                 {aiMessage.length}/20
               </CustomText>
             </View>
@@ -394,8 +403,9 @@ export default function TripScreen() {
       <DatePickerBottomSheet
         bottomSheetRef={datePickerRef}
         onConfirm={handleConfirmDate}
-        initialStartDate={dateRange.startDate ?? undefined}
-        initialEndDate={dateRange.endDate ?? undefined}
+        initialDateRange={
+          dateRange ?? { startDate: undefined, endDate: undefined }
+        }
       />
 
       <TripConditionFooter
@@ -404,8 +414,11 @@ export default function TripScreen() {
         disabled={handleDisabled}
       />
 
-      {/* 로딩 딤(Dim) 레이어 Modal */}
-      <DimmedLoading visible={isPending} />
+      <CreatingModal
+        isVisible={isPending}
+        title="여행 일정을 준비하고 있어요!"
+        description="잠시만 기다려주세요!"
+      />
     </SafeAreaView>
   );
 }

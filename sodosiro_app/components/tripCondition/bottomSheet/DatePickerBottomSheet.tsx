@@ -9,10 +9,17 @@ import {
   useBottomSheetSpringConfigs,
   type BottomSheetBackdropProps,
 } from "@gorhom/bottom-sheet";
-import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type RefObject,
+} from "react";
 import { Dimensions, Pressable, View } from "react-native";
 import { Calendar, DateData } from "react-native-calendars";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { DateRange } from "../TripConditionDatePickerButton";
 
 const width = Dimensions.get("window").width;
 // 달력 컨테이너 전체 너비 (좌우 패딩 20px씩 총 40px 제외)
@@ -40,16 +47,14 @@ const dateToString = (date?: Date | null): string | null => {
 type Props = {
   bottomSheetRef: RefObject<BottomSheetModal | null>;
   disabled?: boolean;
-  initialStartDate?: Date;
-  initialEndDate?: Date;
+  initialDateRange: DateRange;
   onConfirm: (start: string, end: string) => void;
 };
 
 export default function DatePickerBottomSheet({
   bottomSheetRef,
   disabled,
-  initialStartDate,
-  initialEndDate,
+  initialDateRange,
   onConfirm,
 }: Props) {
   const insets = useSafeAreaInsets();
@@ -76,7 +81,9 @@ export default function DatePickerBottomSheet({
     return `${dateStr.slice(0, 7)}-01`;
   };
 
-  const pendingScrollMonth = useRef<string | null>(normalizeToMonthKey(initialStartDate));
+  const pendingScrollMonth = useRef<string | null>(
+    normalizeToMonthKey(initialDateRange?.startDate ?? undefined),
+  );
   const animationConfigs = useBottomSheetSpringConfigs({
     damping: 100,
     stiffness: 400,
@@ -120,7 +127,8 @@ export default function DatePickerBottomSheet({
       }
 
       const diffDays =
-        (new Date(dateString).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24) +
+        (new Date(dateString).getTime() - new Date(startDate).getTime()) /
+          (1000 * 60 * 60 * 24) +
         1;
 
       if (diffDays > MAX_RANGE_DAYS) {
@@ -135,19 +143,30 @@ export default function DatePickerBottomSheet({
   );
 
   useEffect(() => {
-    if (!initialStartDate) return;
+    if (!initialDateRange?.startDate) {
+      setStartDate(null);
+      setEndDate(null);
+      pendingScrollMonth.current = null;
+      return;
+    }
 
-    const startStr = dateToString(initialStartDate);
-    if (!startStr || startStr < today) return;
+    const startStr = dateToString(initialDateRange.startDate);
 
-    const endStr = dateToString(initialEndDate) || startStr;
+    if (!startStr || startStr < today) {
+      setStartDate(null);
+      setEndDate(null);
+      return;
+    }
+
+    const endStr = dateToString(initialDateRange.endDate) || startStr;
 
     const monthKey = `${startStr.slice(0, 7)}-01`;
+
     pendingScrollMonth.current = monthKey;
 
     setStartDate(startStr);
     setEndDate(endStr);
-  }, [initialStartDate, initialEndDate, today]);
+  }, [initialDateRange?.startDate, initialDateRange?.endDate, today]);
 
   useEffect(() => {
     if (!startDate) return;
@@ -168,7 +187,9 @@ export default function DatePickerBottomSheet({
       if (index < 0) return; // 닫힌 상태면 무시
 
       // 열릴 때마다 최신 initialStartDate 기준으로 다시 계산
-      const monthKey = normalizeToMonthKey(initialStartDate) ?? pendingScrollMonth.current;
+      const monthKey =
+        normalizeToMonthKey(initialDateRange?.startDate ?? undefined) ??
+        pendingScrollMonth.current;
       if (!monthKey) return;
 
       const trySnap = () => {
@@ -186,7 +207,7 @@ export default function DatePickerBottomSheet({
 
       trySnap();
     },
-    [initialStartDate],
+    [initialDateRange?.startDate],
   );
 
   const handleConfirm = () => {
@@ -230,10 +251,7 @@ export default function DatePickerBottomSheet({
         {/* 1. 상단 고정 헤더 */}
         <View className="px-5 pt-2 pb-3">
           <Subtitle title="여행 날짜를 선택해주세요." />
-          <CustomText
-            font="body3 tight"
-            className="text-text-muted mt-1"
-          >
+          <CustomText font="body3 tight" className="text-text-muted mt-1">
             최대 7일까지 선택할 수 있어요.
           </CustomText>
         </View>
@@ -372,7 +390,13 @@ function DayCell({ date, state, startDate, endDate, onPress }: DayCellProps) {
   const isWeekend = day === 0 || day === 6;
   const isToday = state === "today";
 
-  const textColor = isDisabled ? "#C9C9C9" : isEdge ? "#FFFFFF" : isWeekend ? "#E0483C" : "#1A1A1A";
+  const textColor = isDisabled
+    ? "#C9C9C9"
+    : isEdge
+      ? "#FFFFFF"
+      : isWeekend
+        ? "#E0483C"
+        : "#1A1A1A";
   const CELL_SIZE = 40;
   const CELL_VERTICAL_PADDING = 4; // 기존 week margin(상하 8px)을 셀 높이로 대체
   return (

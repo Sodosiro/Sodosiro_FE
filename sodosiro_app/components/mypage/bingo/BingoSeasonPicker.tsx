@@ -41,10 +41,15 @@ export default function BingoSeasonPicker({
   return (
     <>
       <View className="gap-2">
-        {isPending ? (
-          <SkeletonLine font="heading2" />
+        {isPending || !selectedSeason ? (
+          <View className={`self-start`}>
+            <SkeletonLine font="heading2" text="2026년 여름" />
+          </View>
         ) : (
-          <Pressable onPress={openSheet} className={`flex-row gap-1`}>
+          <Pressable
+            onPress={openSheet}
+            className={`flex-row gap-1 items-center`}
+          >
             <CustomText font="heading2">
               {getBingoSeasonText(selectedSeason)}
             </CustomText>

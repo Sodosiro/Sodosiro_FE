@@ -69,7 +69,9 @@ export default function Header({
   };
 
   return (
-    <View className={`h-16 flex-row items-center px-5 ${isBgWhite && `bg-white`}`}>
+    <View
+      className={`h-16 flex-row items-center px-5 ${isBgWhite && `bg-white`}`}
+    >
       {showBackButton ? (
         <Pressable
           onPress={handleBack ?? defaultHandleBack}
@@ -83,19 +85,13 @@ export default function Header({
       <CustomText
         font="heading1"
         className={`${Heading1Class} ${!showPencil && `flex-1`}`}
+        numberOfLines={1}
       >
         {title}
       </CustomText>
       {showPencil ? (
-        <Pressable
-          onPress={startEditing}
-          hitSlop={12}
-          className="ml-1"
-        >
-          <PencilIcon
-            color="#1A1A1A"
-            style={{ height: `100%` }}
-          />
+        <Pressable onPress={startEditing} hitSlop={12} className="ml-1">
+          <PencilIcon color="#1A1A1A" width={16} />
         </Pressable>
       ) : null}
 
@@ -109,15 +105,9 @@ export default function Header({
         onRequestClose={cancelEdit}
         onShow={handleModalShow}
       >
-        <View
-          className="flex-1"
-          style={{ backgroundColor: "transparent" }}
-        >
+        <View className="flex-1" style={{ backgroundColor: "transparent" }}>
           {/* 상태바 영역 */}
-          <View
-            style={{ height: insets.top - 4 }}
-            className="bg-white"
-          />
+          <View style={{ height: insets.top - 4 }} className="bg-white" />
 
           {/* 헤더 자리 */}
           <View

@@ -59,7 +59,7 @@ export default function LikeList({
 
   return (
     <View className="pt-3 flex-1">
-      {places?.length < 0 ? (
+      {places?.length > 0 ? (
         <>
           {/* 상단 */}
           <View className="flex-row justify-between items-center px-5 mb-3">

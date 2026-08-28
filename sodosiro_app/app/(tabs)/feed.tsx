@@ -86,16 +86,16 @@ export default function FeedScreen() {
         <View className={`flex-1 justify-center items-center`}>
           <EmptyState
             title={
-              !isError ? "작성된 피드가 없어요." : "피드를 불러오지 못했어요."
+              isError ? "피드를 불러오지 못했어요." : "작성된 피드가 없어요."
             }
             description={
-              !isError
-                ? "첫 번째 피드를 작성해보세요!"
-                : "네트워크 상태를 확인하고 다시 시도해주세요."
+              isError
+                ? "네트워크 상태를 확인하고 다시 시도해주세요."
+                : "첫 번째 피드를 작성해보세요!"
             }
-            actionLabel={!isError ? "피드 작성하기" : "다시 시도"}
+            actionLabel={isError ? "다시 시도" : "피드 작성하기"}
             onPressAction={
-              !isError ? () => router.push("/feed/create") : () => refetch()
+              isError ? () => refetch() : () => router.push("/feed/create")
             }
           />
         </View>

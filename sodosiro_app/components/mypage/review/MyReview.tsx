@@ -39,7 +39,7 @@ export default function MyReview({
             className={`text-text-muted`}
             onPress={() =>
               router.push({
-                pathname: "/place/[placeId]/[reviewId]",
+                pathname: "/place/[placeId]/reviewModify",
                 params: {
                   placeId: review.spot.contentId,
                   reviewId: review.reviewId,

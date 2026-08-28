@@ -1,4 +1,4 @@
-import { getCourseDetail, getCoursesApi } from "@/api/course";
+import { getAiQuota, getCourseDetail, getCoursesApi } from "@/api/course";
 import { getFeedCandidatesApi } from "@/api/feed";
 import { getAlternativeSpotsApi } from "@/api/place";
 import { useQuery } from "@tanstack/react-query";
@@ -31,5 +31,12 @@ export function useAlternativeSpotsQuery(contentId?: number | string) {
     queryKey: ["alternativeSpots", contentId],
     queryFn: () => getAlternativeSpotsApi({ contentId: contentId! }),
     enabled: !!contentId,
+  });
+}
+
+export function useAiQuotaQuery() {
+  return useQuery({
+    queryKey: ["aiQuota"],
+    queryFn: () => getAiQuota(),
   });
 }

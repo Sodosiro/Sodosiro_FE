@@ -31,6 +31,7 @@ export type CourseSummaryItem = {
   isConfirmed: boolean; // 확정 여부 (draft 구분을 위함)
   status: CourseStatus;
   sigunguCode: string;
+  createdAt: Date;
 };
 
 // API 응답 구조 타입

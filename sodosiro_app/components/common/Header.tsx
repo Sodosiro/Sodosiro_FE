@@ -115,7 +115,7 @@ export default function Header({
             className="flex-row items-center px-5 bg-white"
           >
             {showBackButton ? (
-              <View className="mr-2 opacity-40">
+              <View className="mr-2 opacity-50">
                 <LeftIcon color="#1A1A1A" />
               </View>
             ) : (

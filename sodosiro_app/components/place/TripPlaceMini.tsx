@@ -30,16 +30,21 @@ export default function TripPlaceMini({
   rankTag,
   disabled = false,
   icon = <RightIcon color={"#777777"} />,
-  onPress = () => router.push({ pathname: "/place/[placeId]", params: { placeId: id } }),
+  onPress = () =>
+    router.push({ pathname: "/place/[placeId]", params: { placeId: id } }),
 }: Props) {
   return (
     <Pressable
-      className={`flex-row items-center flex-1 gap-3 min-h-14 ${disabled ? "opacity-40" : ""}`}
+      className={`flex-row items-center flex-1 gap-3 min-h-14 ${disabled ? "opacity-50" : ""}`}
       disabled={disabled}
       onPress={onPress}
     >
       <Image
-        source={imageUrl ? { uri: imageUrl } : DEFAULT_IMAGES[NumberToCategory[category]]}
+        source={
+          imageUrl
+            ? { uri: imageUrl }
+            : DEFAULT_IMAGES[NumberToCategory[category]]
+        }
         className={`rounded-xl`}
         style={{ width: 52, height: 52 }}
         resizeMode="cover"
@@ -63,11 +68,7 @@ export default function TripPlaceMini({
           {desc}
         </CustomText>
         {Number(avgRating) > 0 && (
-          <RateChip
-            rate={avgRating}
-            reviewCount={0}
-            noReviewCount={true}
-          />
+          <RateChip rate={avgRating} reviewCount={0} noReviewCount={true} />
         )}
       </View>
       {!disabled && icon}

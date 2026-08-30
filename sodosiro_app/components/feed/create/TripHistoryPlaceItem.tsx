@@ -15,10 +15,12 @@ export default function TripHistoryPlaceItem({
   place,
   selectedPlace,
   setSelectedPlace,
+  alreadyPosted,
 }: {
   place: TripSpotType;
   selectedPlace?: TripSpotType | null;
   setSelectedPlace?: Dispatch<SetStateAction<TripSpotType | null>>;
+  alreadyPosted: boolean;
 }) {
   const { contentId, title, category, firstImage } = place ?? {};
   const { containerStyle, borderStyle, strokeStyle, fillStyle } =
@@ -35,9 +37,13 @@ export default function TripHistoryPlaceItem({
 
   return (
     <AnimatedPressable
-      className={`flex-row rounded-xl gap-4 border p-2 pr-4 items-center justify-between`}
+      className={`flex-row rounded-xl gap-4 border p-2 pr-4 items-center justify-between ${alreadyPosted && `opacity-50`}`}
       style={[containerStyle, borderStyle]}
-      onPress={setSelectedPlace ? () => setSelectedPlace(place) : undefined}
+      onPress={
+        setSelectedPlace && !alreadyPosted
+          ? () => setSelectedPlace(place)
+          : undefined
+      }
     >
       <View className={`flex-row gap-3 items-center`}>
         <AnimatedView

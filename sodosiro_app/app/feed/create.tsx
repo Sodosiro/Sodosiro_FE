@@ -192,6 +192,7 @@ export default function CreateFeedScreen() {
               type="primary"
               size="small"
               title="진행 중인 여행 보기"
+              onPress={() => router.push("/(tabs)/trip")}
             />
           </View>
         </View>

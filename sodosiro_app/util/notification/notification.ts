@@ -1,4 +1,5 @@
 import { patchNotificationRead } from "@/api/notification";
+import { COURSE_STATE } from "@/constants/Trip";
 import { router } from "expo-router";
 import { invalidateQueries } from "../query/invalidateQueries";
 
@@ -40,6 +41,7 @@ export function getNotificationPressHandler(
           pathname: "/trip/timeline",
           params: {
             courseId: String(payload.courseId),
+            courseStatus: COURSE_STATE.FINISHED,
           },
         });
 

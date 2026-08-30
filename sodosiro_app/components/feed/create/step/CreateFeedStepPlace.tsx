@@ -30,15 +30,14 @@ export default function CreateFeedStepPlace({
         marginBottom: 16,
       }}
       ItemSeparatorComponent={() => <View className="h-2" />}
-      renderItem={({ item }) =>
-        !item.alreadyPosted ? (
-          <TripHistoryPlaceItem
-            place={item}
-            selectedPlace={selectedPlace}
-            setSelectedPlace={setSelectedPlace}
-          />
-        ) : null
-      }
+      renderItem={({ item }) => (
+        <TripHistoryPlaceItem
+          place={item}
+          selectedPlace={selectedPlace}
+          setSelectedPlace={setSelectedPlace}
+          alreadyPosted={item.alreadyPosted}
+        />
+      )}
     />
   );
 }

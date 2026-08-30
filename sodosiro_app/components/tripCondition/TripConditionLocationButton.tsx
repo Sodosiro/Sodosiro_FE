@@ -34,7 +34,7 @@ export default function LocationPickerButton({
         px-5
         py-4
         flex-1
-        ${disabled ? "opacity-40" : ""}
+        ${disabled ? "opacity-50" : ""}
       `}
     >
       {/* 좌측: 아이콘 + 장소 텍스트 */}

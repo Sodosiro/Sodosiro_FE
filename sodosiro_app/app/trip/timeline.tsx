@@ -40,11 +40,7 @@ export default function TimelineScreen() {
     courseStatus: CourseStatus | "TEMP";
   }>();
 
-  const {
-    data: courseResponse,
-    isPending,
-    isError,
-  } = useCourseDetailQuery(courseId);
+  const { data: courseResponse, isPending } = useCourseDetailQuery(courseId);
   const { mutate: confirmCourse, isPending: isConfirmPending } =
     useConfirmCourseMutation();
   const queryClient = useQueryClient();
@@ -92,20 +88,6 @@ export default function TimelineScreen() {
         setPlan(courseDetail.days);
         setTemp(courseDetail.days);
       }
-      const EXCLUDE_KEYS = [
-        "mapX",
-        "mapY",
-        "x",
-        "y",
-        "lat",
-        "lng",
-        "latitude",
-        "longitude",
-        "point",
-        "points",
-        "path",
-        "stopNames",
-      ];
     }
   }, [courseResponse]);
 
@@ -222,6 +204,13 @@ export default function TimelineScreen() {
 
   const screenWidth = Dimensions.get("window").width;
   const animatedPosition = useSharedValue((screenWidth * 2) / 3);
+
+  useEffect(() => {
+    return () => {
+      if (courseStatus === COURSE_STATE.TEMP)
+        showToast("일정이 임시저장되었어요.");
+    };
+  }, []);
 
   if (isPending || !courseResponse?.data) {
     return (

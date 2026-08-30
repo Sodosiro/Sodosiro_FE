@@ -49,7 +49,7 @@ export default function TripConditionDatePickerButton({
         bg-[#F5F5F5]
         px-5
         py-4
-        ${disabled ? "opacity-40" : ""}
+        ${disabled ? "opacity-50" : ""}
       `}
     >
       <Text

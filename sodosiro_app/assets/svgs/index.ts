@@ -49,6 +49,7 @@ export { default as PinIcon } from "./24px/pin.svg";
 export { default as RefreshIcon } from "./24px/refresh.svg";
 export { default as RemoveIcon } from "./24px/remove.svg";
 export { default as ReviewNoticeIcon } from "./24px/review_notice.svg";
+export { default as SaveIcon } from "./24px/save.svg";
 export { default as SearchIcon } from "./24px/search.svg";
 export { default as SwapIcon } from "./24px/swap.svg";
 export { default as ToTopIcon } from "./24px/to_top.svg";

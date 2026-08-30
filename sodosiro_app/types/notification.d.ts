@@ -1,8 +1,8 @@
 type NoticeType =
-  | "ALL"
   | "NEARBY_LIKED_SPOTS"
   | "REVIEW_REQUEST"
-  | "DIGGING_POST_LIKE";
+  | "DIGGING_POST_LIKE"
+  | "COURSE_CONFIRM_REMINDER";
 
 type NotificationType =
   | {
@@ -10,7 +10,7 @@ type NotificationType =
       type: "DIGGING_POST_LIKE";
       title: string;
       body?: string;
-      payload: {
+      payload?: {
         diggingId: number;
         likerUserId: number;
       };
@@ -22,7 +22,7 @@ type NotificationType =
       type: "NEARBY_LIKED_SPOTS";
       title: string;
       body?: string;
-      payload: {
+      payload?: {
         nearestContentIds: number[];
         nearbyCount: number;
       };
@@ -34,9 +34,21 @@ type NotificationType =
       type: "REVIEW_REQUEST";
       title: string;
       body?: string;
-      payload: {
+      payload?: {
         courseId: number;
         pendingSpotCount: number;
+      };
+      isRead: boolean;
+      createdAt?: Date;
+    }
+  | {
+      id: number;
+      type: "COURSE_CONFIRM_REMINDER";
+      title: string;
+      body?: string;
+      payload?: {
+        courseId: number;
+        startDate: number;
       };
       isRead: boolean;
       createdAt?: Date;

@@ -29,7 +29,7 @@ export async function getNotificationsSetting() {
 }
 
 export async function patchNotificationsSetting(
-  type: NoticeType,
+  type: NoticeType | "ALL",
   enabled: boolean,
 ) {
   return axiosInstance.patch(`/api/v1/notifications/preferences`, {

@@ -4,7 +4,7 @@ import { router } from "expo-router";
 import { invalidateQueries } from "../query/invalidateQueries";
 
 export function getNotificationPressHandler(
-  id: number,
+  id: number | null,
   type: NoticeType,
   payload: any,
 ): () => Promise<void> {
@@ -18,8 +18,10 @@ export function getNotificationPressHandler(
           },
         });
 
-        await patchNotificationRead(id);
-        invalidateQueries([["notifications"]]);
+        if (id) {
+          await patchNotificationRead(id);
+          invalidateQueries([["notifications"]]);
+        }
       };
 
     case "NEARBY_LIKED_SPOTS":
@@ -31,8 +33,10 @@ export function getNotificationPressHandler(
           },
         });
 
-        await patchNotificationRead(id);
-        invalidateQueries([["notifications"]]);
+        if (id) {
+          await patchNotificationRead(id);
+          invalidateQueries([["notifications"]]);
+        }
       };
 
     case "REVIEW_REQUEST":
@@ -45,11 +49,26 @@ export function getNotificationPressHandler(
           },
         });
 
-        await patchNotificationRead(id);
-        invalidateQueries([["notifications"]]);
+        if (id) {
+          await patchNotificationRead(id);
+          invalidateQueries([["notifications"]]);
+        }
       };
 
-    case "ALL":
-      return async () => {};
+    case "COURSE_CONFIRM_REMINDER":
+      return async () => {
+        router.push({
+          pathname: "/trip/timeline",
+          params: {
+            courseId: String(payload.courseId),
+            courseStatus: COURSE_STATE.TEMP,
+          },
+        });
+
+        if (id) {
+          await patchNotificationRead(id);
+          invalidateQueries([["notifications"]]);
+        }
+      };
   }
 }

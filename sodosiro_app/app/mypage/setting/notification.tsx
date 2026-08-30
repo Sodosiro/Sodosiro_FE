@@ -25,7 +25,10 @@ export default function NotificationSettingScreen() {
 
   const notificationsSetting = data?.data;
 
-  const handleSettingToggle = async (type: NoticeType, enabled: boolean) => {
+  const handleSettingToggle = async (
+    type: NoticeType | "ALL",
+    enabled: boolean,
+  ) => {
     if (isPending) return;
     mutate({ type, enabled });
   };

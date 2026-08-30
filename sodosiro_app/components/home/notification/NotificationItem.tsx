@@ -1,4 +1,9 @@
-import { HeartNoticeIcon, PinIcon, ReviewNoticeIcon } from "@/assets/svgs";
+import {
+  HeartNoticeIcon,
+  PinIcon,
+  ReviewNoticeIcon,
+  SaveIcon,
+} from "@/assets/svgs";
 import CustomText from "@/components/common/CustomText";
 import { formatTimeAgo } from "@/util/time/time";
 import { Pressable, View } from "react-native";
@@ -17,8 +22,10 @@ export default function NotificationItem({
       <HeartNoticeIcon color={"#7E9432"} width={20} />
     ) : notification.type === "NEARBY_LIKED_SPOTS" ? (
       <PinIcon color={"#7E9432"} width={20} />
-    ) : (
+    ) : notification.type === "REVIEW_REQUEST" ? (
       <ReviewNoticeIcon color={"#7E9432"} width={20} />
+    ) : (
+      <SaveIcon color={"#7E9432"} width={20} />
     );
 
   return (

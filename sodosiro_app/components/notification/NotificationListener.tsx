@@ -11,15 +11,10 @@ export default function NotificationListener() {
     const subscription = Notifications.addNotificationReceivedListener(
       (notification) => {
         const content = notification.request.content;
-        const id = content?.data?.id;
         const type = (content?.data?.type as NoticeType) ?? undefined;
         const payload = content?.data ?? undefined;
 
-        const onPress = getNotificationPressHandler(
-          id as number,
-          type,
-          payload,
-        );
+        const onPress = getNotificationPressHandler(null, type, payload);
 
         showNotification({
           title: content.title ?? undefined,

@@ -56,7 +56,7 @@ export default function TripPlanConfirmModal({
 
             <Pressable
               onPress={onClose}
-              className="w-9 h-9 rounded-full bg-gray-100 items-center justify-center"
+              className="w-9 h-9 rounded-full items-center justify-center"
               hitSlop={8}
             >
               <BigXIcon />
@@ -95,7 +95,7 @@ export default function TripPlanConfirmModal({
             >
               {currentPlaces.map((place) => (
                 <View key={place.contentId} className="flex-row gap-2 pl-2">
-                  <View className="w-1 h-1 rounded-full bg-gray-800 mt-1.5" />
+                  <View className="w-1 h-1 rounded-full bg-text-primary mt-1.5" />
                   <CustomText font="body2" className={`flex-1`}>
                     {place.title}
                   </CustomText>
@@ -116,7 +116,7 @@ export default function TripPlanConfirmModal({
             onPress={() => onConfirm(selectedDayIndex)}
             className="w-full py-4 rounded-full items-center justify-center"
           >
-            <Text className="text-base text-gray-900">
+            <Text className="text-base text-text-primary">
               이 일정으로 확정하기
             </Text>
           </AnimatedButton>

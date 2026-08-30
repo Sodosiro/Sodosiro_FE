@@ -78,7 +78,7 @@ export default function EditProfileImage({
             onPress={(event) => event.stopPropagation()}
           >
             <Pressable
-              className="border-b border-gray-100 py-4"
+              className="border-b border-border py-4"
               onPress={handleResetProfileImage}
             >
               <CustomText font="body1" className={`text-center`}>

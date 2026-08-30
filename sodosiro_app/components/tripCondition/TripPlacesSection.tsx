@@ -27,7 +27,7 @@ export default function TripPlacesSection({ contentId, onSelectPlace }: Props) {
         /* 대체 추천 장소가 없을 때 */
         <View className="justify-center items-center h-91.5 gap-2">
           <CustomText font="title">추천할 대체 장소가 없어요.</CustomText>
-          <CustomText font="body2" className="text-gray-400">
+          <CustomText font="body3" className="text-text-muted">
             주변에 추천할 만한 대체 장소를 찾지 못했습니다.
           </CustomText>
         </View>

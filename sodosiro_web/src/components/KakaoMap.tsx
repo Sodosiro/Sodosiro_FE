@@ -68,6 +68,7 @@ export default function KakaoMap({ mode }: { mode: "marker" | "navigation" }) {
     startTracking,
     denyLocation,
     selectMarkerByPlaceId,
+    clearSelectedMarker,
     updateMarkers,
   });
 

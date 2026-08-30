@@ -9,6 +9,7 @@ export function useWebViewMessage({
   startTracking,
   denyLocation,
   selectMarkerByPlaceId,
+  clearSelectedMarker,
   updateMarkers,
 }: {
   mapRef: React.RefObject<kakao.maps.Map | null>;
@@ -19,6 +20,7 @@ export function useWebViewMessage({
   startTracking: () => void;
   denyLocation: () => void;
   selectMarkerByPlaceId: (placeId: number) => kakao.maps.Marker | null;
+  clearSelectedMarker: () => void;
   updateMarkers: (places: PlaceType[]) => void;
 }) {
   useEffect(() => {
@@ -57,6 +59,11 @@ export function useWebViewMessage({
 
         case "PAN_TO": {
           selectMarkerByPlaceId(data.placeId);
+          break;
+        }
+
+        case "SELECT_CANCEL": {
+          clearSelectedMarker();
           break;
         }
 

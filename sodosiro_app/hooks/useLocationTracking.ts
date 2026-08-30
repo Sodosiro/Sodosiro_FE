@@ -10,16 +10,14 @@ export function useLocationTracking() {
           await Location.hasStartedLocationUpdatesAsync(LOCATION_TASK_NAME);
 
         if (isRunning) {
-          await Location.stopLocationUpdatesAsync(LOCATION_TASK_NAME);
+          return;
         }
-
         const foreground = await Location.requestForegroundPermissionsAsync();
 
         if (foreground.status !== "granted") {
           return;
         }
 
-        // 여기부터 백그라운드 권한 요청
         const background = await Location.requestBackgroundPermissionsAsync();
 
         if (background.status !== "granted") {

@@ -96,20 +96,6 @@ export default function OngoingTripSection({
       if (courseDetail.days) {
         setTemp(courseDetail.days);
       }
-      const EXCLUDE_KEYS = [
-        "mapX",
-        "mapY",
-        "x",
-        "y",
-        "lat",
-        "lng",
-        "latitude",
-        "longitude",
-        "point",
-        "points",
-        "path",
-        "stopNames",
-      ];
     }
   }, [courseResponse]);
 

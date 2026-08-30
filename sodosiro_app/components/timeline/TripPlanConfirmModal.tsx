@@ -2,6 +2,7 @@ import { CourseDayItem } from "@/api/course";
 import { BigXIcon, InfoMiniIcon } from "@/assets/svgs";
 import { useEffect, useState } from "react";
 import { Modal, Pressable, ScrollView, Text, View } from "react-native";
+import AnimatedButton from "../common/animated/AnimatedButton";
 import CustomText from "../common/CustomText";
 import DayBadge from "../trip/badge/DayBadge";
 
@@ -33,15 +34,18 @@ export default function TripPlanConfirmModal({
   const currentPlaces = currentPlanItem?.spots ?? [];
 
   return (
-    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
-      <Pressable
-        className="flex-1 bg-[rgba(0,0,0,0.5)] justify-center items-center"
-        onPress={onClose}
-      >
+    <Modal
+      visible={visible}
+      transparent
+      animationType="fade"
+      onRequestClose={onClose}
+    >
+      <View className={`flex-1 items-center justify-center`}>
         <Pressable
-          className="w-[80%] bg-white rounded-3xl p-5 gap-4"
-          onPress={(e) => e.stopPropagation()}
-        >
+          className="absolute inset-0 bg-[rgba(0,0,0,0.5)]"
+          onPress={onClose}
+        ></Pressable>
+        <View className="w-[80%] bg-white rounded-3xl p-5 gap-4">
           <View className="flex-row items-start justify-between">
             <View className={`gap-1`}>
               <CustomText font="heading2">{title}</CustomText>
@@ -107,14 +111,17 @@ export default function TripPlanConfirmModal({
             </CustomText>
           </View>
 
-          <Pressable
+          <AnimatedButton
+            backgroundColor={["#C4D96A", "#A9C92D"]}
             onPress={() => onConfirm(selectedDayIndex)}
-            className="w-full bg-[#C5E17A] py-4 rounded-full items-center justify-center"
+            className="w-full py-4 rounded-full items-center justify-center"
           >
-            <Text className="text-base text-gray-900">이 일정으로 확정하기</Text>
-          </Pressable>
-        </Pressable>
-      </Pressable>
+            <Text className="text-base text-gray-900">
+              이 일정으로 확정하기
+            </Text>
+          </AnimatedButton>
+        </View>
+      </View>
     </Modal>
   );
 }

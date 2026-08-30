@@ -8,6 +8,7 @@ import {
 } from "@gorhom/bottom-sheet";
 import { forwardRef, useEffect } from "react";
 import { BackHandler, Image, Linking, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface Props {
   festival: FestivalType | null;
@@ -30,6 +31,8 @@ const FestivalBottomSheetModal = forwardRef<BottomSheetModal, Props>(
         await Linking.openURL(festival.linkUrl);
       }
     };
+
+    const insets = useSafeAreaInsets();
 
     useEffect(() => {
       const subscription = BackHandler.addEventListener(
@@ -72,6 +75,7 @@ const FestivalBottomSheetModal = forwardRef<BottomSheetModal, Props>(
           <BottomSheetScrollView
             contentContainerStyle={{
               padding: 20,
+              paddingBottom: insets.bottom,
             }}
           >
             <View className="gap-4 pb-4">

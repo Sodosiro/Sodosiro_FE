@@ -31,8 +31,10 @@ export default function CreatingModal({
             }}
           />
           <View className={`items-center gap-2`}>
-            <CustomText font="title">{title}</CustomText>
-            <CustomText font="body3" className={`text-text-muted`}>
+            <CustomText font="title" className={`text-center`}>
+              {title}
+            </CustomText>
+            <CustomText font="body3" className={`text-text-muted text-center`}>
               {description}
             </CustomText>
           </View>

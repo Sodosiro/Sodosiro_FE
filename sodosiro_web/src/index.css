@@ -1,8 +1,32 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "gmarket-sans";
+  src: url("/fonts/GmarketSansMedium.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "pretendard-medium";
+  src: url("/fonts/Pretendard-Medium.otf") format("opentype");
+}
+
+@theme {
+  --font-gmarket-sans: "gmarket-sans";
+  --font-pretendard-medium: "pretendard-medium";
+
+  --color-primary: #c4d96a;
+  --color-primary-hover: #a9c92d;
+  --color-primary-dark: #7e9432;
+  --color-primary-light: #f3f8de;
+  --color-text-primary: #1a1a1a;
+  --color-text-secondary: #444444;
+  --color-text-muted: #888888;
+}
+
 html,
 body,
 #root {
-    width: 100%;
-    height: 100%;
+  font-family: "pretendard-medium";
+  width: 100%;
+  height: 100%;
 }

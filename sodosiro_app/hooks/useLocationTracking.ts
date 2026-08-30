@@ -29,6 +29,7 @@ export function useLocationTracking() {
         await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
           accuracy: Location.Accuracy.Balanced,
           distanceInterval: 100,
+          timeInterval: 10000,
           pausesUpdatesAutomatically: false,
         });
       } catch (error) {

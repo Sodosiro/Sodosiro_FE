@@ -114,6 +114,7 @@ export default function NearbyLikedScreen() {
             onMessage={handleMessage}
             onLoadStart={() => setIsLoading(true)}
             onLoadEnd={() => setIsLoading(false)}
+            userAgent="SodosiroAppWebView"
           />
           <PlaceListBottomSheet
             places={nearbyLikedPlaces}

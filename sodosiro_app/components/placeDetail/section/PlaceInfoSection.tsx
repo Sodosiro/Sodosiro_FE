@@ -196,6 +196,7 @@ const LocationMap = ({ address, placeDetail }: LocationMapProps) => {
         style={{ width: "100%", aspectRatio: 5 / 3 }}
         source={{ uri: process.env.EXPO_PUBLIC_WEBVIEW_URI as string }}
         onMessage={handleMessage}
+        userAgent="SodosiroAppWebView"
       />
       <View className={`p-4 gap-1`}>
         <View className={`flex-row gap-1 items-center`}>

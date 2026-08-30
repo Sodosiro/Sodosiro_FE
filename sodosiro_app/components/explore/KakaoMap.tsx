@@ -113,6 +113,7 @@ export default function KakaoMap({
         onMessage={handleMessage}
         onLoadStart={() => setIsLoading(true)}
         onLoadEnd={() => setIsLoading(false)}
+        userAgent="SodosiroAppWebView"
       />
     </Animated.View>
   );

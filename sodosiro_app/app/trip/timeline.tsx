@@ -27,7 +27,7 @@ import {
   transformCourseDetail,
 } from "@/util/route/route";
 import { useQueryClient } from "@tanstack/react-query";
-import { useLocalSearchParams, useNavigation } from "expo-router";
+import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Dimensions, ScrollView, View } from "react-native";
 import { useSharedValue } from "react-native-reanimated";
@@ -143,6 +143,8 @@ export default function TimelineScreen() {
       await queryClient.invalidateQueries({
         queryKey: ["courseDetail", courseId],
       });
+
+      showToast("일정이 임시저장되었어요.");
     } catch (error: any) {
     } finally {
       setIsPatchPending(false);
@@ -191,9 +193,11 @@ export default function TimelineScreen() {
       {
         onSuccess: () => {
           showToast("코스가 확정되었습니다.");
-          if (navigation.canGoBack()) {
-            navigation.goBack();
-          }
+          router.replace("/(tabs)/trip");
+          router.push({
+            pathname: "/trip/timeline",
+            params: { courseId: courseId, courseStatus: COURSE_STATE.UPCOMING },
+          });
         },
         onError: (error: any) => {
           console.error("코스 확정 에러:", error);
@@ -204,13 +208,6 @@ export default function TimelineScreen() {
 
   const screenWidth = Dimensions.get("window").width;
   const animatedPosition = useSharedValue((screenWidth * 2) / 3);
-
-  useEffect(() => {
-    return () => {
-      if (courseStatus === COURSE_STATE.TEMP)
-        showToast("일정이 임시저장되었어요.");
-    };
-  }, []);
 
   if (isPending || !courseResponse?.data) {
     return (

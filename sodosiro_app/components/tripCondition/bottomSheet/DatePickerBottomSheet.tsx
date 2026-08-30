@@ -61,8 +61,8 @@ export default function DatePickerBottomSheet({
 
   const months = Array.from({ length: 4 }, (_, i) => {
     const date = new Date();
-    date.setMonth(date.getMonth() + i);
     date.setDate(1);
+    date.setMonth(date.getMonth() + i);
 
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-01`;
   });

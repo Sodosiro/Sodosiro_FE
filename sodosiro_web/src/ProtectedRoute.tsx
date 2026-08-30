@@ -1,4 +1,4 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
 const isWebView = (): boolean => {
   return navigator.userAgent.includes("SodosiroAppWebView");
@@ -6,9 +6,9 @@ const isWebView = (): boolean => {
 
 const ProtectedRoute = () => {
   // WebView가 아니면 접근 차단
-  if (!isWebView()) {
-    return <Navigate to="/login" replace />;
-  }
+  // if (!isWebView()) {
+  //   return <Navigate to="/login" replace />;
+  // }
 
   return <Outlet />;
 };

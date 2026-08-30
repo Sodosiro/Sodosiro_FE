@@ -45,10 +45,10 @@ const BingoLineItem = ({
   isCompleted: boolean;
   style: any;
 }) => {
-  const opacity = useSharedValue(isCompleted ? 0.3 : 0.3);
+  const opacity = useSharedValue(isCompleted ? 0.8 : 0);
 
   useEffect(() => {
-    opacity.value = withTiming(isCompleted ? 0.8 : 0.3, {
+    opacity.value = withTiming(isCompleted ? 0.8 : 0, {
       duration: 300,
     });
   }, [isCompleted]);

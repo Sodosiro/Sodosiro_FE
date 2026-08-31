@@ -29,8 +29,8 @@ export default function KakaoMap({
   setIsLoading: Dispatch<SetStateAction<boolean>>;
 }) {
   const searchResult = useExploreStore((state) => state.searchResult);
-  const keyword = useExploreStore((state) => state.keyword);
   const allPlaces = useExploreStore((state) => state.allPlaces);
+  const onlySmallTown = useExploreStore((state) => state.onlySmallTown);
   const selectedCategory = useExploreStore((state) => state.selectedCategory);
 
   const previousPlacesRef = useRef<PlaceType[]>(allPlaces);
@@ -83,20 +83,21 @@ export default function KakaoMap({
   useEffect(() => {
     if (mode !== "marker") return;
 
-    if (!searchResult) searchInitialize();
-    else {
-      const data = searchResult as PlaceType[];
+    const data = searchResult ?? (allPlaces as PlaceType[]);
 
-      const filtered =
-        selectedCategory === "all"
-          ? data
-          : data.filter(
-              (place: PlaceType) =>
-                NumberToCategory[place.category] === selectedCategory,
-            );
+    const filtered = data.filter(
+      (place) =>
+        (selectedCategory === "all" ||
+          NumberToCategory[place.category] === selectedCategory) &&
+        (!onlySmallTown || place.smallTown),
+    );
+
+    if (!searchResult) {
+      searchInitialize(filtered);
+    } else {
       searchData(filtered);
     }
-  }, [searchResult, selectedCategory]);
+  }, [searchResult, selectedCategory, onlySmallTown]);
 
   useEffect(() => {
     if (mode !== "navigation") return;

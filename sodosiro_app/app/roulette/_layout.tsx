@@ -10,6 +10,7 @@ export default function RouletteLayout() {
     >
       <Stack.Screen name="index" />
       <Stack.Screen name="result" />
+      <Stack.Screen name="selectRegion" />
     </Stack>
   );
 }

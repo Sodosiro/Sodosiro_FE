@@ -25,7 +25,7 @@ export function useWebViewMessage({
   clearSelectedMarker: () => void;
   updateMarkers: (places: PlaceType[]) => void;
   searchPlaces: (placeIds: number[]) => void;
-  searchInitialize: () => void;
+  searchInitialize: (placeIds: number[]) => void;
 }) {
   useEffect(() => {
     const receiveMessage = (event: MessageEvent) => {
@@ -47,7 +47,9 @@ export function useWebViewMessage({
         }
         case "SEARCH_INITIALIZE": {
           if (!mapRef.current) return;
-          searchInitialize();
+          searchInitialize(
+            data.places.map((place: { contentId: number }) => place.contentId),
+          );
           return;
         }
         case "UPDATE_PLACE":

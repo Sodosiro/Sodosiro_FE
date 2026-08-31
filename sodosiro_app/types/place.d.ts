@@ -18,6 +18,7 @@ type PlaceType = {
   category: CategoryNumber;
   addr1: string;
   region: string;
+  smallTown: boolean;
   overview: string;
   restdate: string;
   firstImage: string;

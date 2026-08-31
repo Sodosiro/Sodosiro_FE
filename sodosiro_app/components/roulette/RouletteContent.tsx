@@ -5,20 +5,26 @@ import { Image, View } from "react-native";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import CustomButton from "../common/CustomButton";
 import CustomText from "../common/CustomText";
+import Toggle from "../common/Toggle";
 import RoulettePicker, { RoulettePickerHandle } from "./RoulettePicker";
 import RouletteTitle from "./RouletteTitle";
 
 export default function RoulleteContent({}: {}) {
+  const [onlySmallTown, setOnlySmallTown] = useState(true);
   const [showRoulette, setShowRoulette] = useState(false);
   const [isRolling, setIsRolling] = useState(false);
   const [result, setResult] = useState<SodosiType | null>(null);
   const rouletteRef = useRef<RoulettePickerHandle>(null);
 
+  const sodosiList = onlySmallTown
+    ? SODOSI_LIST.filter((sodosi) => sodosi.isSmallTown)
+    : SODOSI_LIST;
+
   const handleRoll = () => {
     setResult(null);
     setShowRoulette(true);
     requestAnimationFrame(() => {
-      const randomIndex = Math.floor(Math.random() * SODOSI_LIST.length);
+      const randomIndex = Math.floor(Math.random() * sodosiList.length);
       rouletteRef.current?.start(randomIndex);
     });
   };
@@ -37,7 +43,16 @@ export default function RoulleteContent({}: {}) {
             resizeMode="contain"
             className="w-full flex-1 mb-15"
           />
-          <View className={`px-13 h-25`}>
+          <View className={`px-13 h-25 gap-5 mb-5`}>
+            <View className={`flex-row items-center justify-center gap-3`}>
+              <CustomText font="body1" className={`text-text-secondary`}>
+                소도시만 추천받기
+              </CustomText>
+              <Toggle
+                toggle={onlySmallTown}
+                onPress={() => setOnlySmallTown(!onlySmallTown)}
+              />
+            </View>
             <CustomButton
               type="primary"
               title="주사위 굴리기"
@@ -54,7 +69,7 @@ export default function RoulleteContent({}: {}) {
         >
           <RoulettePicker
             ref={rouletteRef}
-            items={SODOSI_LIST}
+            items={sodosiList}
             isRolling={isRolling}
             setIsRolling={setIsRolling}
             onFinish={(result) => setResult(result)}

@@ -4,6 +4,7 @@ export const SODOSI_LIST = [
     areaCode: "51",
     sigunguCode: "210",
     name: "속초",
+    isSmallTown: false,
     comment:
       "푸른 바다와 설악산, 맛있는 먹거리를 함께 즐길 수 있는 여행지예요.",
   },
@@ -12,6 +13,7 @@ export const SODOSI_LIST = [
     areaCode: "51",
     sigunguCode: "780",
     name: "철원",
+    isSmallTown: true,
     comment: "드넓은 평야와 독특한 안보 관광을 함께 즐길 수 있는 곳이에요.",
   },
   {
@@ -19,6 +21,7 @@ export const SODOSI_LIST = [
     areaCode: "51",
     sigunguCode: "130",
     name: "원주",
+    isSmallTown: false,
     comment: "아름다운 자연과 문화 명소가 어우러진 편안한 여행지예요.",
   },
   {
@@ -26,6 +29,7 @@ export const SODOSI_LIST = [
     areaCode: "51",
     sigunguCode: "810",
     name: "인제",
+    isSmallTown: false,
     comment: "계곡과 숲길이 아름다워 자연을 온전히 느끼기 좋은 곳이에요.",
   },
   {
@@ -33,6 +37,7 @@ export const SODOSI_LIST = [
     areaCode: "51",
     sigunguCode: "770",
     name: "정선",
+    isSmallTown: true,
     comment: "아리랑의 고장으로, 산골의 정취와 전통시장이 매력적이에요.",
   },
   {
@@ -40,6 +45,7 @@ export const SODOSI_LIST = [
     areaCode: "51",
     sigunguCode: "830",
     name: "양양",
+    isSmallTown: true,
     comment: "푸른 산과 계곡이 매력적인 힐링 여행지예요.",
   },
   {
@@ -47,6 +53,7 @@ export const SODOSI_LIST = [
     areaCode: "51",
     sigunguCode: "730",
     name: "횡성",
+    isSmallTown: true,
     comment:
       "청정 자연 속에서 한우와 호수 풍경을 함께 즐길 수 있는 여행지예요.",
   },
@@ -55,6 +62,7 @@ export const SODOSI_LIST = [
     areaCode: "51",
     sigunguCode: "760",
     name: "평창",
+    isSmallTown: true,
     comment: "고원 풍경과 자연 속에서 특별한 쉼을 만날 수 있어요.",
   },
   {
@@ -62,6 +70,7 @@ export const SODOSI_LIST = [
     areaCode: "51",
     sigunguCode: "170",
     name: "동해",
+    isSmallTown: false,
     comment:
       "푸른 바다와 아름다운 해안 절경을 따라 여유롭게 즐기기 좋은 곳이에요.",
   },
@@ -70,6 +79,7 @@ export const SODOSI_LIST = [
     areaCode: "51",
     sigunguCode: "190",
     name: "태백",
+    isSmallTown: true,
     comment: "높은 산과 맑은 공기 속에서 특별한 자연 풍경을 만날 수 있어요.",
   },
   {
@@ -77,6 +87,7 @@ export const SODOSI_LIST = [
     areaCode: "51",
     sigunguCode: "230",
     name: "삼척",
+    isSmallTown: true,
     comment: "에메랄드빛 바다와 기암절벽이 어우러진 아름다운 해안 여행지예요.",
   },
   {
@@ -84,6 +95,7 @@ export const SODOSI_LIST = [
     areaCode: "51",
     sigunguCode: "790",
     name: "화천",
+    isSmallTown: true,
     comment: "맑은 호수와 산이 어우러져 사계절 내내 아름다운 소도시예요.",
   },
   {
@@ -91,6 +103,7 @@ export const SODOSI_LIST = [
     areaCode: "51",
     sigunguCode: "110",
     name: "춘천",
+    isSmallTown: false,
     comment:
       "호수와 산이 어우러진 풍경 속에서 여유로운 도시 여행을 즐길 수 있어요.",
   },
@@ -99,6 +112,7 @@ export const SODOSI_LIST = [
     areaCode: "51",
     sigunguCode: "150",
     name: "강릉",
+    isSmallTown: false,
     comment: "푸른 동해와 감성적인 카페, 맛있는 음식이 어우러진 여행지예요.",
   },
   {
@@ -106,6 +120,7 @@ export const SODOSI_LIST = [
     areaCode: "51",
     sigunguCode: "800",
     name: "양구",
+    isSmallTown: true,
     comment: "DMZ와 자연이 공존하는 조용하고 특별한 여행지예요.",
   },
   {
@@ -113,6 +128,7 @@ export const SODOSI_LIST = [
     areaCode: "51",
     sigunguCode: "820",
     name: "고성",
+    isSmallTown: true,
     comment: "동해의 푸른 바다와 해안 절경을 만끽할 수 있는 곳이에요.",
   },
   {
@@ -120,6 +136,7 @@ export const SODOSI_LIST = [
     areaCode: "51",
     sigunguCode: "720",
     name: "홍천",
+    isSmallTown: true,
     comment: "푸른 강과 숲이 펼쳐지는 여유로운 힐링 여행지예요.",
   },
   {
@@ -127,6 +144,7 @@ export const SODOSI_LIST = [
     areaCode: "51",
     sigunguCode: "750",
     name: "영월",
+    isSmallTown: true,
     comment: "별이 아름다운 밤하늘과 고즈넉한 강변 풍경이 기다리는 여행지예요.",
   },
 ];

@@ -13,6 +13,7 @@ import ClearSearchButton from "./ClearSearchButton";
 import GpsButton from "./GpsButton";
 import PlaceLegend from "./PlaceLegend";
 import SearchBar from "./SearchBar";
+import SodosiButton from "./SodosiButton";
 
 export default function MapOverlay({
   webViewRef,
@@ -95,12 +96,17 @@ export default function MapOverlay({
         <View className={`px-5 py-3`}>
           <SearchBar keyword={keyword} />
         </View>
-        <CategoryList
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-          paddingHorizontal={20}
-          onCategoryPress={() => setSelectedPlaceId(null)}
-        />
+        <View className={`flex-row pl-5`}>
+          <SodosiButton />
+          <View className={`h-full w-px bg-border ml-1.25`} />
+          <CategoryList
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+            paddingLeft={5}
+            paddingRight={20}
+            onCategoryPress={() => setSelectedPlaceId(null)}
+          />
+        </View>
       </View>
 
       <Animated.View

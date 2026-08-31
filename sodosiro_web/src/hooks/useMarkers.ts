@@ -295,7 +295,7 @@ export function useMarkers(
    *
    * contentId 배열만 전달하면 된다.
    */
-  const getSearchMarkers = (contentIds: number[]) => {
+  const getMarkers = (contentIds: number[]) => {
     return contentIds
       .map((contentId) => markerByPlaceIdRef.current.get(contentId))
       .filter((marker): marker is kakao.maps.Marker => marker !== undefined);
@@ -316,7 +316,7 @@ export function useMarkers(
     selectMarkerByPlaceId,
     clearSelectedMarker,
 
-    getSearchMarkers,
+    getMarkers,
     getAllMarkers,
 
     selectedMarkerRef,

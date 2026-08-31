@@ -55,7 +55,6 @@ export default function ExploreScreen() {
 
   useEffect(() => {
     const places = data?.data.items;
-
     if (places) {
       setSearchResult(places);
     }

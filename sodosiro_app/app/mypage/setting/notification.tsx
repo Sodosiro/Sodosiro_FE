@@ -1,7 +1,7 @@
 import { AnimatedView } from "@/components/common/animated/Animated";
 import CustomText from "@/components/common/CustomText";
 import Header from "@/components/common/Header";
-import NotificationToggle from "@/components/mypage/setting/NotificationToggle";
+import NotificationToggleContainer from "@/components/mypage/setting/NotificationToggleContainer";
 import { useNotificationsSettingMutation } from "@/hooks/mutation/notification";
 import { useNotificationsSettingQuery } from "@/hooks/query/notification";
 import { useEffect, useState } from "react";
@@ -44,15 +44,15 @@ export default function NotificationSettingScreen() {
     <>
       <Header title="알림 설정" />
       <ScrollView className={`px-5 py-3`}>
-        <NotificationToggle
+        <NotificationToggleContainer
           toggle={noticeToggle}
           onPress={() => handleSettingToggle("ALL", !noticeToggle)}
         >
           <CustomText font="heading2" className={`flex-1 py-2.5`}>
             전체 알림
           </CustomText>
-        </NotificationToggle>
-        <NotificationToggle
+        </NotificationToggleContainer>
+        <NotificationToggleContainer
           toggle={tripNoticeToggle}
           onPress={() =>
             handleSettingToggle("NEARBY_LIKED_SPOTS", !tripNoticeToggle)
@@ -68,8 +68,8 @@ export default function NotificationSettingScreen() {
               여행 진행 중 저장한 장소에 대한 알림을 받아요.
             </CustomText>
           </AnimatedView>
-        </NotificationToggle>
-        <NotificationToggle
+        </NotificationToggleContainer>
+        <NotificationToggleContainer
           toggle={activityNoticeToggle}
           onPress={() =>
             handleSettingToggle("DIGGING_POST_LIKE", !activityNoticeToggle)
@@ -85,8 +85,8 @@ export default function NotificationSettingScreen() {
               내 게시물의 좋아요 등 활동 소식을 받아요.
             </CustomText>
           </AnimatedView>
-        </NotificationToggle>
-        <NotificationToggle
+        </NotificationToggleContainer>
+        <NotificationToggleContainer
           toggle={reviewRequestToggle}
           onPress={() =>
             handleSettingToggle("REVIEW_REQUEST", !reviewRequestToggle)
@@ -102,7 +102,7 @@ export default function NotificationSettingScreen() {
               완료한 여행에 대한 리뷰 요청 알림을 받아요.
             </CustomText>
           </AnimatedView>
-        </NotificationToggle>
+        </NotificationToggleContainer>
       </ScrollView>
     </>
   );

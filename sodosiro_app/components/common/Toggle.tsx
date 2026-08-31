@@ -1,21 +1,17 @@
 import { AnimatedPressable } from "@/components/common/animated/Animated";
 import useSelectedAnimation from "@/hooks/useSelcetedAnimation";
-import { ReactNode } from "react";
-import { View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   withTiming,
 } from "react-native-reanimated";
 
-export default function NotificationToggle({
+export default function Toggle({
   toggle,
   onPress,
-  children,
   disabled,
 }: {
   toggle: boolean;
   onPress: () => void;
-  children: ReactNode;
   disabled?: boolean;
 }) {
   const animatedStyle = useAnimatedStyle(() => ({
@@ -35,19 +31,16 @@ export default function NotificationToggle({
   });
 
   return (
-    <View className="flex-row gap-2 py-3 items-center">
-      {children}
-      <AnimatedPressable
-        style={containerStyle}
-        onPress={onPress}
-        disabled={disabled}
-        className="w-11 h-6 rounded-full p-0.75 bg-primary-pressed"
-      >
-        <Animated.View
-          className="size-4.5 bg-bg rounded-full"
-          style={animatedStyle}
-        />
-      </AnimatedPressable>
-    </View>
+    <AnimatedPressable
+      style={containerStyle}
+      onPress={onPress}
+      disabled={disabled}
+      className="w-11 h-6 rounded-full p-0.75 bg-primary-pressed"
+    >
+      <Animated.View
+        className="size-4.5 bg-bg rounded-full"
+        style={animatedStyle}
+      />
+    </AnimatedPressable>
   );
 }

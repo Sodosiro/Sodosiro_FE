@@ -4,6 +4,7 @@ interface ExploreStore {
   keyword: string;
   searchResult: PlaceType[] | null;
   selectedCategory: CategoryType;
+  onlySmallTown: boolean;
   allPlaces: PlaceType[] | null;
 
   isPlacesPending: boolean;
@@ -12,6 +13,7 @@ interface ExploreStore {
   setKeyword: (keyword: string) => void;
   setSearchResult: (results: PlaceType[]) => void;
   setSelectedCategory: (category: CategoryType) => void;
+  setOnlySmallTown: (value: boolean) => void;
   clearSearchResult: () => void;
   setAllPlaces: (places: PlaceType[] | null) => void;
 
@@ -34,6 +36,7 @@ export const useExploreStore = create<ExploreStore>((set, get) => ({
   keyword: "",
   searchResult: null,
   selectedCategory: "all",
+  onlySmallTown: false,
   allPlaces: null,
 
   isPlacesPending: true,
@@ -44,6 +47,7 @@ export const useExploreStore = create<ExploreStore>((set, get) => ({
   setKeyword: (keyword) => set({ keyword }),
   setSearchResult: (results) => set({ searchResult: results }),
   setSelectedCategory: (category) => set({ selectedCategory: category }),
+  setOnlySmallTown: (value) => set({ onlySmallTown: value }),
   clearSearchResult: () => set({ keyword: "", searchResult: null }),
   setAllPlaces: (places) => set({ allPlaces: places }),
 

@@ -36,8 +36,7 @@ export default function KakaoMap({ mode }: { mode: "marker" | "navigation" }) {
     updateMarkers,
     selectMarkerByPlaceId,
     clearSelectedMarker,
-    getSearchMarkers,
-    getAllMarkers,
+    getMarkers,
   } = useMarkers(
     mapRef,
     getClusterByMarker,
@@ -62,7 +61,7 @@ export default function KakaoMap({ mode }: { mode: "marker" | "navigation" }) {
   const searchPlaces = (placeIds: number[]) => {
     clearSelectedMarker();
 
-    const markers = getSearchMarkers(placeIds);
+    const markers = getMarkers(placeIds);
     setMarkers(markers);
 
     if (placeIds.length > 0) {
@@ -70,9 +69,10 @@ export default function KakaoMap({ mode }: { mode: "marker" | "navigation" }) {
     }
   };
 
-  const searchInitialize = () => {
+  const searchInitialize = (placeIds: number[]) => {
     clearSelectedMarker();
-    const markers = getAllMarkers();
+
+    const markers = getMarkers(placeIds);
     setMarkers(markers);
   };
 

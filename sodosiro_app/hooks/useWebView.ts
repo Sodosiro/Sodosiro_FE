@@ -74,9 +74,10 @@ export function useWebView({
     });
   };
 
-  const searchInitialize = () => {
+  const searchInitialize = (places: PlaceType[]) => {
     postMessage({
       type: "SEARCH_INITIALIZE",
+      places: places,
     });
   };
 

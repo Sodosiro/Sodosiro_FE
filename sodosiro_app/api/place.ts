@@ -4,6 +4,7 @@ type GetPlacesParams = {
   cursor?: string;
   size?: number;
   category?: number[];
+  regionType?: "ALL" | "GANGWON_SMALL_TOWN" | "SMALL_TOWN";
   keyword?: string;
   sigunguCode?: string;
   sort?: "ALL" | "DEFAULT" | "POPULAR";
@@ -30,7 +31,9 @@ export async function getPlaceDetailApi(contentId: number) {
 }
 
 export async function postAiRecommendationApi(contentId: number) {
-  return axiosInstance.post(`/api/v1/travel/spots/${contentId}/ai-recommendation`);
+  return axiosInstance.post(
+    `/api/v1/travel/spots/${contentId}/ai-recommendation`,
+  );
 }
 
 export async function postLikePlacesApi(contentIds: number[]) {
@@ -41,6 +44,10 @@ export async function getLikePlacesApi(params?: GetLikePlacesParams) {
   return axiosInstance.get(`/api/v1/spots/likes`, { params });
 }
 
-export async function getAlternativeSpotsApi(params: GetAlternativeSpotsParams) {
-  return await axiosInstance.get("/api/v1/travel/spots/alternatives", { params });
+export async function getAlternativeSpotsApi(
+  params: GetAlternativeSpotsParams,
+) {
+  return await axiosInstance.get("/api/v1/travel/spots/alternatives", {
+    params,
+  });
 }

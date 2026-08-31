@@ -7,14 +7,14 @@ import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 
 export function usePlacesQuery(
   category: CategoryType,
-  sort?: "ALL" | "DEFAULT" | "POPULAR",
+  sort: "ALL" | "DEFAULT" | "POPULAR" = "ALL",
   size: number = 20,
   sigunguCode?: string,
 ) {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   return useQuery({
-    queryKey: ["places", category, sigunguCode, sort, size],
+    queryKey: ["places", category, sort, size, sigunguCode],
     queryFn: () =>
       getPlacesApi({
         size: size,
@@ -29,9 +29,10 @@ export function usePlacesQuery(
 export function useSearchPlacesQuery() {
   const keyword = useExploreStore((state) => state.keyword);
   const selectedCategory = useExploreStore((state) => state.selectedCategory);
+  const onlySmallTown = useExploreStore((state) => state.onlySmallTown);
 
   return useQuery({
-    queryKey: ["search", keyword, selectedCategory],
+    queryKey: ["search", keyword, selectedCategory, onlySmallTown],
     queryFn: () =>
       getPlacesApi({
         keyword: keyword || undefined,
@@ -40,6 +41,7 @@ export function useSearchPlacesQuery() {
           selectedCategory !== "all"
             ? [CategoryToNumber[selectedCategory]]
             : undefined,
+        regionType: onlySmallTown ? "SMALL_TOWN" : "ALL",
       }),
     enabled: !!keyword.trim(),
   });

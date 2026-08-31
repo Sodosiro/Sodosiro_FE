@@ -25,18 +25,19 @@ export default React.memo(function CategoryBadge({
     ? ["#888888", "#888888"]
     : ["#1A1A1A", "#FFFFFF"];
 
-  const { containerStyle, strokeStyle, textStyle } = useSelectedAnimation(
-    isSelected,
-    {
+  const borderColor: [string, string] = ["#d9d9d9", "#1a1a1a"];
+
+  const { containerStyle, strokeStyle, textStyle, borderStyle } =
+    useSelectedAnimation(isSelected, {
       background: ["#FFFFFF", "#1A1A1A"],
       color: color,
       stroke: color,
-    },
-  );
+      border: borderColor,
+    });
 
   return (
     <AnimatedPressable
-      style={containerStyle}
+      style={[containerStyle, borderStyle]}
       className={`px-3 py-2.5 ${badgeStyle}`}
       disabled={disabled}
       onPress={onPress}

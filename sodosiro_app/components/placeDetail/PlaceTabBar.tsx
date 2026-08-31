@@ -41,7 +41,7 @@ export default function PlaceTabBar({
       {tabs.map((tab) => (
         <CustomText
           key={tab}
-          className={`flex-1 text-center py-4 ${
+          className={`flex-1 text-center py-5 ${
             currentTab === tab ? "" : "text-text-muted"
           }`}
           font={currentTab === tab ? "body2 tight" : "body3 tight"}

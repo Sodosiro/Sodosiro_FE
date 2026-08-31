@@ -36,7 +36,10 @@ export function useSearchPlacesQuery() {
       getPlacesApi({
         keyword: keyword || undefined,
         size: 10000,
-        category: selectedCategory !== "all" ? [CategoryToNumber[selectedCategory]] : undefined,
+        category:
+          selectedCategory !== "all"
+            ? [CategoryToNumber[selectedCategory]]
+            : undefined,
       }),
     enabled: !!keyword.trim(),
   });

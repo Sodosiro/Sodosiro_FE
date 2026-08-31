@@ -34,9 +34,14 @@ export default function KakaoMap({
   const selectedCategory = useExploreStore((state) => state.selectedCategory);
 
   const previousPlacesRef = useRef<PlaceType[]>(allPlaces);
-  const previousKeywordRef = useRef(keyword);
 
-  const { handleMessage, updateData, sendPlaceUpdates } = useWebView({
+  const {
+    handleMessage,
+    updateData,
+    sendPlaceUpdates,
+    searchData,
+    searchInitialize,
+  } = useWebView({
     webViewRef,
     mode,
     initialData: routeData ? routeData : initialData,
@@ -78,19 +83,19 @@ export default function KakaoMap({
   useEffect(() => {
     if (mode !== "marker") return;
 
-    const data = searchResult ?? (allPlaces as PlaceType[]);
+    if (!searchResult) searchInitialize();
+    else {
+      const data = searchResult as PlaceType[];
 
-    const isKeywordChanged = previousKeywordRef.current !== keyword;
-
-    const filtered =
-      selectedCategory === "all"
-        ? data
-        : data.filter(
-            (place: PlaceType) =>
-              NumberToCategory[place.category] === selectedCategory,
-          );
-    updateData(filtered, !!searchResult && isKeywordChanged);
-    previousKeywordRef.current = keyword;
+      const filtered =
+        selectedCategory === "all"
+          ? data
+          : data.filter(
+              (place: PlaceType) =>
+                NumberToCategory[place.category] === selectedCategory,
+            );
+      searchData(filtered);
+    }
   }, [searchResult, selectedCategory]);
 
   useEffect(() => {

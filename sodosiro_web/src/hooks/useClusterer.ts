@@ -4,10 +4,17 @@ export function useClusterer() {
   const clustererRef = useRef<kakao.maps.MarkerClusterer | null>(null);
   const clustersRef = useRef<kakao.maps.Cluster[]>([]);
 
+  const allMarkersRef = useRef<Set<kakao.maps.Marker>>(new Set());
+
+  // 현재 낱개로 보이는 마커들
+  const boundMarkersRef = useRef<Set<kakao.maps.Marker>>(new Set());
+
   const create = (map: kakao.maps.Map) => {
     if (clustererRef.current) {
       clustererRef.current.clear();
     }
+
+    clustersRef.current = [];
 
     const clusterer = new kakao.maps.MarkerClusterer({
       map,
@@ -23,17 +30,32 @@ export function useClusterer() {
       "clustered",
       (clusters: kakao.maps.Cluster[]) => {
         clustersRef.current = clusters;
+
+        const bounds = map.getBounds();
+
+        // 현재 바운드 된 마커 전체
+        boundMarkersRef.current = new Set(
+          [...allMarkersRef.current].filter((marker) =>
+            bounds.contain(marker.getPosition()),
+          ),
+        );
       },
     );
 
     clustererRef.current = clusterer;
   };
 
+  /**
+   * 현재 클러스터의 마커를 모두 교체
+   */
   const setMarkers = (markers: kakao.maps.Marker[]) => {
     if (!clustererRef.current) return;
 
-    clustererRef.current.clear();
-    clustererRef.current.addMarkers(markers);
+    clustersRef.current = [];
+    clustererRef.current?.clear();
+    clustererRef.current?.addMarkers(markers);
+
+    allMarkersRef.current = new Set(markers);
   };
 
   const getClusterByMarker = (marker: kakao.maps.Marker) => {
@@ -42,6 +64,20 @@ export function useClusterer() {
     );
   };
 
+  const isMarkerBounding = (marker: kakao.maps.Marker) => {
+    return boundMarkersRef.current.has(marker);
+  };
+
+  const isMarkerRendering = (marker: kakao.maps.Marker) => {
+    return allMarkersRef.current.has(marker);
+  };
+
+  /**
+   * 클러스터러가 관리 중인 마커를 전부 숨김
+   *
+   * marker.setMap(null)을 직접 호출하지 않고
+   * 클러스터러를 통해 제거하므로 내부 상태와 어긋나지 않는다.
+   */
   const clear = () => {
     clustererRef.current?.clear();
     clustersRef.current = [];
@@ -51,6 +87,8 @@ export function useClusterer() {
     create,
     setMarkers,
     getClusterByMarker,
+    isMarkerRendering,
+    isMarkerBounding,
     clear,
   };
 }

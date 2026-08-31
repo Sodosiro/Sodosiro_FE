@@ -8,7 +8,6 @@ import { useMarker } from "../hooks/useMarker";
 import { useMarkers } from "../hooks/useMarkers";
 import { useRoute } from "../hooks/useRoute";
 import { useWebViewMessage } from "../hooks/useWebViewMessage";
-import { registerMapClick } from "../util/registerMapClick";
 
 export default function KakaoMap({ mode }: { mode: "marker" | "navigation" }) {
   const params = new URLSearchParams(window.location.search);
@@ -28,6 +27,8 @@ export default function KakaoMap({ mode }: { mode: "marker" | "navigation" }) {
     create: createCluster,
     setMarkers,
     getClusterByMarker,
+    isMarkerBounding,
+    isMarkerRendering,
   } = useClusterer();
 
   const {
@@ -35,10 +36,14 @@ export default function KakaoMap({ mode }: { mode: "marker" | "navigation" }) {
     updateMarkers,
     selectMarkerByPlaceId,
     clearSelectedMarker,
-    selectedMarkerRef,
-    markerImageMapRef,
-    overlayRef,
-  } = useMarkers(mapRef, getClusterByMarker);
+    getSearchMarkers,
+    getAllMarkers,
+  } = useMarkers(
+    mapRef,
+    getClusterByMarker,
+    isMarkerRendering,
+    isMarkerBounding,
+  );
 
   const { create: createMarker } = useMarker();
 
@@ -47,16 +52,28 @@ export default function KakaoMap({ mode }: { mode: "marker" | "navigation" }) {
   const { updateLocation, startTracking, stopTracking, denyLocation } =
     useCurrentLocationMarker(mapRef);
 
-  const renderPlaces = (places: PlaceType[], isPanTo = false) => {
+  const renderPlaces = (places: PlaceType[]) => {
     clearSelectedMarker();
 
     const markers = createMarkers(places);
+    setMarkers(markers);
+  };
 
+  const searchPlaces = (placeIds: number[]) => {
+    clearSelectedMarker();
+
+    const markers = getSearchMarkers(placeIds);
     setMarkers(markers);
 
-    if (places.length > 0 && isPanTo) {
-      selectMarkerByPlaceId(places[0].contentId);
+    if (placeIds.length > 0) {
+      selectMarkerByPlaceId(placeIds[0]);
     }
+  };
+
+  const searchInitialize = () => {
+    clearSelectedMarker();
+    const markers = getAllMarkers();
+    setMarkers(markers);
   };
 
   useWebViewMessage({
@@ -70,19 +87,14 @@ export default function KakaoMap({ mode }: { mode: "marker" | "navigation" }) {
     selectMarkerByPlaceId,
     clearSelectedMarker,
     updateMarkers,
+    searchPlaces,
+    searchInitialize,
   });
 
   const handleCreate = (map: kakao.maps.Map) => {
     mapRef.current = map;
 
     createCluster(map);
-
-    registerMapClick({
-      map,
-      markerImageMapRef: markerImageMapRef.current,
-      selectedMarkerRef,
-      overlayRef,
-    });
 
     kakao.maps.event.addListener(map, "dragstart", stopTracking);
 

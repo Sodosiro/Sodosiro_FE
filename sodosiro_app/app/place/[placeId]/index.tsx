@@ -72,7 +72,7 @@ export default function PlaceDetailScreen() {
         <Header title="장소 상세보기" />
         {isError ? (
           <EmptyState
-            title="지역 정보를 불러오지 못했어요."
+            title="장소 정보를 불러오지 못했어요."
             description="네트워크 상태를 확인하고 다시 시도해주세요"
             actionLabel="다시 시도"
             onPressAction={() => refetch()}

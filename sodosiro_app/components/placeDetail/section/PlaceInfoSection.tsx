@@ -207,7 +207,7 @@ const LocationMap = ({ address, placeDetail }: LocationMapProps) => {
         </View>
         <View className={`flex-row items-center`}>
           <CustomText font="body3" className={`text-text-muted`}>
-            지도 보기
+            카카오맵 바로가기
           </CustomText>
           <RightIcon color={"#888888"} width={18} height={18} />
         </View>

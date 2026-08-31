@@ -16,11 +16,13 @@ type recommendPlaces = {
 interface Props extends ViewProps {
   recommendPlaces: recommendPlaces;
   ref: RefObject<View | null>;
+  handlePlaceMini?: (() => void) | ((id: number) => void);
 }
 
 export default function RecommedSection({
   recommendPlaces,
   ref,
+  handlePlaceMini,
   ...props
 }: Props) {
   return (
@@ -39,6 +41,7 @@ export default function RecommedSection({
             title={place.title}
             desc={place.overview}
             category={place.category}
+            onPress={handlePlaceMini ?? undefined}
           />
         ))}
       </View>

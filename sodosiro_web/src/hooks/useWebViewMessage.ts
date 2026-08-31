@@ -11,9 +11,11 @@ export function useWebViewMessage({
   selectMarkerByPlaceId,
   clearSelectedMarker,
   updateMarkers,
+  searchPlaces,
+  searchInitialize,
 }: {
   mapRef: React.RefObject<kakao.maps.Map | null>;
-  renderPlaces: (places: PlaceType[], isPanTo?: boolean) => void;
+  renderPlaces: (places: PlaceType[]) => void;
   createMarker: (map: kakao.maps.Map, place: PlaceType) => void;
   drawRoute: (map: kakao.maps.Map, route: RouteInfo) => void;
   updateLocation: (lat: number, lng: number) => kakao.maps.LatLng | undefined;
@@ -22,6 +24,8 @@ export function useWebViewMessage({
   selectMarkerByPlaceId: (placeId: number) => kakao.maps.Marker | null;
   clearSelectedMarker: () => void;
   updateMarkers: (places: PlaceType[]) => void;
+  searchPlaces: (placeIds: number[]) => void;
+  searchInitialize: () => void;
 }) {
   useEffect(() => {
     const receiveMessage = (event: MessageEvent) => {
@@ -31,8 +35,20 @@ export function useWebViewMessage({
       switch (data.type) {
         case "SET_PLACES": {
           if (!mapRef.current) return;
-          renderPlaces(data.places, data.isPanTo);
+          renderPlaces(data.places);
           break;
+        }
+        case "SEARCH_PLACES": {
+          if (!mapRef.current) return;
+          searchPlaces(
+            data.places.map((place: { contentId: number }) => place.contentId),
+          );
+          break;
+        }
+        case "SEARCH_INITIALIZE": {
+          if (!mapRef.current) return;
+          searchInitialize();
+          return;
         }
         case "UPDATE_PLACE":
           if (!mapRef.current) return;

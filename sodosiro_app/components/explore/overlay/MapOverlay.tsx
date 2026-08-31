@@ -28,6 +28,7 @@ export default function MapOverlay({
     clearResult,
     selectedCategory,
     setSelectedCategory,
+    selectedPlaceId,
     setSelectedPlaceId,
   } = useExploreStore(
     useShallow((state) => ({
@@ -35,6 +36,7 @@ export default function MapOverlay({
       clearResult: state.clearSearchResult,
       selectedCategory: state.selectedCategory,
       setSelectedCategory: state.setSelectedCategory,
+      selectedPlaceId: state.selectedPlaceId,
       setSelectedPlaceId: state.setSelectedPlaceId,
     })),
   );
@@ -50,7 +52,10 @@ export default function MapOverlay({
     const sheetHeight = screenHeight - insets.bottom - animatedPosition.value;
 
     return {
-      bottom: Math.max(sheetHeight - 64, 16),
+      bottom: Math.min(
+        Math.max(sheetHeight - 64, 16),
+        selectedPlaceId ? 312 : 238,
+      ),
     };
   });
 
@@ -112,7 +117,7 @@ export default function MapOverlay({
           <GpsButton />
         </Pressable>
 
-        {keyword && (
+        {keyword && !selectedPlaceId && (
           <ClearSearchButton
             className={`absolute self-center left-1/2 -translate-x-1/2 bottom-0`}
             onPress={() => {

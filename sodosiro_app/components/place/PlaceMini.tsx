@@ -12,7 +12,7 @@ type Props = {
   desc: string;
   category: CategoryNumber;
   icon?: React.ReactNode;
-  onPress?: () => void;
+  onPress?: (() => void) | ((id: number) => void);
 };
 
 export default function PlaceMini({
@@ -22,13 +22,20 @@ export default function PlaceMini({
   desc,
   category,
   icon = <RightIcon color={"#777777"} />,
-  onPress = () =>
-    router.push({ pathname: "/place/[placeId]", params: { placeId: id } }),
+  onPress,
 }: Props) {
   return (
     <Pressable
       className={`flex-row items-center flex-1 gap-3 min-h-14`}
-      onPress={onPress}
+      onPress={
+        onPress
+          ? () => onPress(id)
+          : () =>
+              router.push({
+                pathname: "/place/[placeId]",
+                params: { placeId: id },
+              })
+      }
     >
       <Image
         source={

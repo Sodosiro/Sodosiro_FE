@@ -1,6 +1,6 @@
 import Header from "@/components/common/Header";
 import Spinner from "@/components/common/Spinner";
-import PlaceListBottomSheet from "@/components/explore/bottomSheet/PlaceListBottomSheet";
+import NearbyPlaceListBottomSheet from "@/components/explore/bottomSheet/NearbyPlaceListBottonSheet";
 import { useLikePlaceMutation } from "@/hooks/mutation/place";
 import { useWebView } from "@/hooks/useWebView";
 import { useExploreStore } from "@/stores/useExploreStore";
@@ -116,14 +116,13 @@ export default function NearbyLikedScreen() {
             onLoadEnd={() => setIsLoading(false)}
             applicationNameForUserAgent="SodosiroAppWebView"
           />
-          <PlaceListBottomSheet
+          <NearbyPlaceListBottomSheet
             places={nearbyLikedPlaces}
             animatedPosition={animatedPosition}
             animatedIndex={animatedIndex}
             bottomSheetRef={bottomSheetRef}
             handlePlaceItemPress={handlePlaceItemPress}
             handleLike={handleLike}
-            mode={"nearby"}
           />
         </>
       ) : (

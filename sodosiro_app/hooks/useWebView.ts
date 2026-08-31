@@ -7,7 +7,8 @@ import type { WebView, WebViewMessageEvent } from "react-native-webview";
 type WebViewToNativeMessage =
   | { type: "MAP_READY" }
   | { type: "MARKER_SELECTED"; place: PlaceType }
-  | { type: "STOP_TRACKING" };
+  | { type: "STOP_TRACKING" }
+  | { type: "TEST" };
 
 export function useWebView({
   webViewRef,
@@ -24,6 +25,7 @@ export function useWebView({
   const setSelectedPlaceId = useExploreStore(
     (state) => state.setSelectedPlaceId,
   );
+  const selectedPlaceId = useExploreStore((state) => state.selectedPlaceId);
 
   const [isMapReady, setIsMapReady] = useState(false);
   const location = useLocationStore((state) => state.location);
@@ -65,6 +67,19 @@ export function useWebView({
     [mode, postMessage, initialData],
   );
 
+  const searchData = (places: PlaceType[]) => {
+    postMessage({
+      type: "SEARCH_PLACES",
+      places: places,
+    });
+  };
+
+  const searchInitialize = () => {
+    postMessage({
+      type: "SEARCH_INITIALIZE",
+    });
+  };
+
   const messageHandlers = useMemo(
     () => ({
       MAP_READY: () => {
@@ -79,6 +94,7 @@ export function useWebView({
       STOP_TRACKING: () => {
         setIsTracking(false);
       },
+      TEST: () => {},
     }),
     [setSelectedPlaceId, setIsTracking, updateData],
   );
@@ -86,9 +102,9 @@ export function useWebView({
   const handleMessage = useCallback(
     (event: WebViewMessageEvent) => {
       let data: WebViewToNativeMessage;
-
       try {
         data = JSON.parse(event.nativeEvent.data);
+        console.log(data);
       } catch {
         if (__DEV__) {
           console.warn(
@@ -107,6 +123,15 @@ export function useWebView({
     },
     [messageHandlers],
   );
+
+  useEffect(() => {
+    webViewRef.current?.postMessage(
+      JSON.stringify({
+        type: "PAN_TO",
+        placeId: selectedPlaceId,
+      }),
+    );
+  }, [selectedPlaceId]);
 
   useEffect(() => {
     if (!isMapReady) return;
@@ -128,5 +153,7 @@ export function useWebView({
     handleMessage,
     updateData,
     sendPlaceUpdates,
+    searchData,
+    searchInitialize,
   };
 }

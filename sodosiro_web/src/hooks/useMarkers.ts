@@ -5,17 +5,35 @@ import { getMarkerIcon, getSelectedMarkerIcon } from "../util/getMarkerIcon";
 
 export function useMarkers(
   mapRef: React.RefObject<kakao.maps.Map | null>,
-  getClusterByMarker?: (
+  getClusterByMarker: (
     marker: kakao.maps.Marker,
   ) => kakao.maps.Cluster | undefined,
+  isMarkerRendering: (marker: kakao.maps.Marker) => boolean,
+  isMarkerBounding: (marker: kakao.maps.Marker) => boolean,
 ) {
   const selectedMarkerRef = useRef<kakao.maps.Marker | null>(null);
   const overlayRef = useRef<kakao.maps.CustomOverlay | null>(null);
+
+  // 선택을 위해 강제로 표시한 마커 (원래 숨겨져 있던 경우에만 기록)
+  const temporarilyShownMarkerRef = useRef<kakao.maps.Marker | null>(null);
+
+  // 이미지 캐시
   const imageCacheRef = useRef(new Map<string, MarkerImages>());
+
+  // 마커 -> 이미지
   const markerImageMapRef = useRef(
     new WeakMap<kakao.maps.Marker, MarkerImages>(),
   );
+
+  // 마커 -> 장소
   const markerPlaceMapRef = useRef(new Map<kakao.maps.Marker, PlaceType>());
+
+  // contentId -> 장소
+  const placesRef = useRef(new Map<number, PlaceType>());
+
+  // contentId -> 마커
+  const markerByPlaceIdRef = useRef(new Map<number, kakao.maps.Marker>());
+
   const getImageCacheKey = (place: PlaceType) => {
     const category = NumberToCategory[place.category];
 
@@ -49,11 +67,15 @@ export function useMarkers(
     return images;
   };
 
+  /**
+   * 마커 선택
+   */
   const selectMarker = (marker: kakao.maps.Marker, place: PlaceType) => {
     if (selectedMarkerRef.current === marker) {
       return;
     }
 
+    // 이전 선택 마커 원상복구
     if (selectedMarkerRef.current) {
       const prevImage = markerImageMapRef.current.get(
         selectedMarkerRef.current,
@@ -66,9 +88,11 @@ export function useMarkers(
       }
     }
 
+    // 기존 오버레이 제거
     overlayRef.current?.setMap(null);
     overlayRef.current = null;
 
+    // 선택 마커 이미지 변경
     const images = markerImageMapRef.current.get(marker);
 
     if (images) {
@@ -78,6 +102,7 @@ export function useMarkers(
 
     selectedMarkerRef.current = marker;
 
+    // 장소 이름 오버레이
     const overlay = new kakao.maps.CustomOverlay({
       position: marker.getPosition(),
       content: getLabel(place.title),
@@ -89,15 +114,38 @@ export function useMarkers(
     overlayRef.current = overlay;
   };
 
+  /**
+   * 마커 생성
+   *
+   * 최초에는 실제 마커를 생성하고,
+   * 이미 존재하는 contentId라면 기존 마커를 재사용한다.
+   */
   const create = (places: PlaceType[]) => {
-    selectedMarkerRef.current = null;
+    const markers: kakao.maps.Marker[] = [];
 
-    overlayRef.current?.setMap(null);
-    overlayRef.current = null;
+    places.forEach((place) => {
+      // 장소 정보 저장
+      placesRef.current.set(place.contentId, place);
 
-    markerPlaceMapRef.current.clear();
+      // 이미 만들어진 마커가 있는지 확인
+      const existingMarker = markerByPlaceIdRef.current.get(place.contentId);
 
-    return places.map((place) => {
+      if (existingMarker) {
+        const images = getMarkerImages(place);
+
+        markerImageMapRef.current.set(existingMarker, images);
+
+        markerPlaceMapRef.current.set(existingMarker, place);
+
+        existingMarker.setImage(images.normal);
+        existingMarker.setZIndex(0);
+
+        markers.push(existingMarker);
+
+        return;
+      }
+
+      // 새로운 마커 생성
       const images = getMarkerImages(place);
 
       const marker = new kakao.maps.Marker({
@@ -107,10 +155,13 @@ export function useMarkers(
       });
 
       markerImageMapRef.current.set(marker, images);
+
       markerPlaceMapRef.current.set(marker, place);
 
+      markerByPlaceIdRef.current.set(place.contentId, marker);
+
       kakao.maps.event.addListener(marker, "click", () => {
-        selectMarker(marker, place);
+        // selectMarker(marker, place);
 
         mapRef.current?.panTo(marker.getPosition());
 
@@ -122,60 +173,86 @@ export function useMarkers(
         );
       });
 
-      return marker;
+      markers.push(marker);
     });
+
+    return markers;
   };
 
+  /**
+   * 장소 정보 업데이트
+   *
+   * liked / isPopular 등이 변경되었을 때
+   * 기존 마커의 이미지만 변경한다.
+   */
   const updateMarkers = (places: PlaceType[]) => {
     for (const place of places) {
-      const target = [...markerPlaceMapRef.current.entries()].find(
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        ([_, markerPlace]) => markerPlace.contentId === place.contentId,
-      );
+      const marker = markerByPlaceIdRef.current.get(place.contentId);
 
-      if (!target) continue;
+      if (!marker) {
+        continue;
+      }
 
-      const [marker] = target;
+      // 최신 장소 정보 저장
+      placesRef.current.set(place.contentId, place);
+
+      markerPlaceMapRef.current.set(marker, place);
 
       const images = getMarkerImages(place);
 
       markerImageMapRef.current.set(marker, images);
-      markerPlaceMapRef.current.set(marker, place);
 
       const isSelected = selectedMarkerRef.current === marker;
 
       marker.setImage(isSelected ? images.selected : images.normal);
+
       marker.setZIndex(isSelected ? 999 : 0);
     }
   };
 
+  /**
+   * 특정 장소의 마커 선택
+   */
   const selectMarkerByPlaceId = (placeId: number) => {
-    const target = [...markerPlaceMapRef.current.entries()].find(
-      (entry) => entry[1].contentId === placeId,
-    );
+    const marker = markerByPlaceIdRef.current.get(placeId);
 
-    if (!target) {
+    if (!marker) {
       return null;
     }
 
-    const [marker, place] = target;
+    const place = placesRef.current.get(placeId);
+
+    if (!place) {
+      return null;
+    }
+
+    // 혹시 숨겨져 있는 마커라면 다시 표시하고, 되돌리기 위해 기록
+    const isVisible = isMarkerRendering(marker);
+
+    if (!isVisible) {
+      temporarilyShownMarkerRef.current = marker;
+      marker.setMap(mapRef.current);
+    } else {
+      temporarilyShownMarkerRef.current = null;
+    }
 
     // 현재 마커가 클러스터에 포함되어 있는지 확인
-    const cluster = getClusterByMarker?.(marker);
+    const isBounding = isMarkerBounding(marker);
 
-    if (cluster) {
+    const cluster = getClusterByMarker(marker);
+
+    if (cluster || !isBounding) {
       const map = mapRef.current;
 
       if (map) {
-        // minLevel이 5이므로 4로 내리면 클러스터가 풀림
+        // 클러스터를 풀기 위해 레벨 조정
         if (map.getLevel() >= 5) {
           map.setLevel(4, {
             anchor: marker.getPosition(),
           });
-          map.panTo(marker.getPosition());
-        } else {
-          map.panTo(marker.getPosition());
         }
+
+        map.panTo(marker.getPosition());
       }
     } else {
       mapRef.current?.panTo(marker.getPosition());
@@ -186,6 +263,9 @@ export function useMarkers(
     return marker;
   };
 
+  /**
+   * 현재 선택된 마커 제거
+   */
   const clearSelectedMarker = () => {
     const selectedMarker = selectedMarkerRef.current;
 
@@ -203,17 +283,47 @@ export function useMarkers(
 
     overlayRef.current?.setMap(null);
     overlayRef.current = null;
+
+    if (temporarilyShownMarkerRef.current) {
+      temporarilyShownMarkerRef.current.setMap(null);
+      temporarilyShownMarkerRef.current = null;
+    }
+  };
+
+  /**
+   * 특정 장소들만 표시
+   *
+   * contentId 배열만 전달하면 된다.
+   */
+  const getSearchMarkers = (contentIds: number[]) => {
+    return contentIds
+      .map((contentId) => markerByPlaceIdRef.current.get(contentId))
+      .filter((marker): marker is kakao.maps.Marker => marker !== undefined);
+  };
+
+  /**
+   * 모든 마커 표시
+   */
+  const getAllMarkers = () => {
+    return Array.from(markerByPlaceIdRef.current.values());
   };
 
   return {
     create,
     updateMarkers,
+
     selectMarker,
     selectMarkerByPlaceId,
     clearSelectedMarker,
 
+    getSearchMarkers,
+    getAllMarkers,
+
     selectedMarkerRef,
     markerImageMapRef,
+    markerPlaceMapRef,
+    placesRef,
+    markerByPlaceIdRef,
     overlayRef,
   };
 }

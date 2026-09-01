@@ -5,6 +5,7 @@ import {
   SpotItem,
   updateCourseDaysApi,
 } from "@/api/course";
+import { OnAirIcon } from "@/assets/svgs";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
 import CustomText from "@/components/common/CustomText";
 import DimmedLoading from "@/components/common/DimmedLoading";
@@ -21,16 +22,17 @@ import { useConfirmCourseMutation } from "@/hooks/mutation/course";
 import { useCourseDetailQuery } from "@/hooks/query/course";
 import { useTimelineScrollSpy } from "@/hooks/useTimelineScrollSpy";
 import { formatCoursePeriod } from "@/util/date/date";
-import {
-  createRouteInfo,
-  RenderCourseDayItem,
-  transformCourseDetail,
-} from "@/util/route/route";
+import { createRouteInfo, RenderCourseDayItem, transformCourseDetail } from "@/util/route/route";
 import { useQueryClient } from "@tanstack/react-query";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Dimensions, ScrollView, View } from "react-native";
-import { useSharedValue } from "react-native-reanimated";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withTiming,
+} from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import WebView from "react-native-webview";
 
@@ -41,8 +43,7 @@ export default function TimelineScreen() {
   }>();
 
   const { data: courseResponse, isPending } = useCourseDetailQuery(courseId);
-  const { mutate: confirmCourse, isPending: isConfirmPending } =
-    useConfirmCourseMutation();
+  const { mutate: confirmCourse, isPending: isConfirmPending } = useConfirmCourseMutation();
   const queryClient = useQueryClient();
   const navigation = useNavigation();
   const { showToast } = useToast();
@@ -71,9 +72,7 @@ export default function TimelineScreen() {
   const [temp, setTemp] = useState<CourseDayItem[]>([]);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isPatchPending, setIsPatchPending] = useState(false);
-  const [selectedSpotIndexes, setSelectedSpotIndexes] = useState<
-    Record<number, number>
-  >({});
+  const [selectedSpotIndexes, setSelectedSpotIndexes] = useState<Record<number, number>>({});
   const selectedSpotIndex = selectedSpotIndexes[activeIndex] ?? 0;
 
   const webViewRef = useRef<React.ComponentRef<typeof WebView>>(null);
@@ -94,10 +93,7 @@ export default function TimelineScreen() {
   useEffect(() => {
     // 최초 렌더링 시점이거나 아직 데이터 로딩 전이라면 실행하지 않음
     if (isInitialRender.current) {
-      if (
-        courseResponse?.data?.title &&
-        tripTitle === courseResponse.data.title
-      ) {
+      if (courseResponse?.data?.title && tripTitle === courseResponse.data.title) {
         isInitialRender.current = false;
       }
       return;
@@ -132,9 +128,7 @@ export default function TimelineScreen() {
         title: tripTitle,
         days: daysToSave.map((item) => ({
           day: item.day,
-          contentIds: item.spots
-            ? item.spots.map((spot) => spot.contentId)
-            : [],
+          contentIds: item.spots ? item.spots.map((spot) => spot.contentId) : [],
         })),
       };
 
@@ -166,9 +160,7 @@ export default function TimelineScreen() {
           ? {
               ...day,
               spots: day.spots.map((place) =>
-                place.contentId === changeTargetId
-                  ? { ...place, ...changedPlace }
-                  : place,
+                place.contentId === changeTargetId ? { ...place, ...changedPlace } : place,
               ),
             }
           : day,
@@ -209,6 +201,16 @@ export default function TimelineScreen() {
   const screenWidth = Dimensions.get("window").width;
   const animatedPosition = useSharedValue((screenWidth * 2) / 3);
 
+  const opacity = useSharedValue(1);
+
+  useEffect(() => {
+    opacity.value = withRepeat(withTiming(0.3, { duration: 1200 }), -1, true);
+  }, [opacity]);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+  }));
+
   if (isPending || !courseResponse?.data) {
     return (
       <View className={`flex-1 justify-center items-center bg-bg`}>
@@ -232,8 +234,31 @@ export default function TimelineScreen() {
         onTitleChange={(newTitle) => setTripTitle(newTitle)}
       />
 
-      {courseStatus !== COURSE_STATE.TEMP && (
+      {/* {courseStatus !== COURSE_STATE.TEMP && (
         <View className={`w-full aspect-3/2 overflow-hidden`}>
+          <KakaoMap
+            webViewRef={webViewRef}
+            mode={"navigation"}
+            routeData={routeInfo}
+            animatedPosition={animatedPosition}
+            setIsLoading={setIsLoading}
+          />
+        </View>
+      )} */}
+
+      {courseStatus === COURSE_STATE.IN_PROGRESS && (
+        <View className={`w-full aspect-3/2 overflow-hidden`}>
+          <View className="absolute top-3 left-3 z-10 flex-row items-center px-3.5 py-1.5 min-h-9 rounded-full bg-primary gap-1.5">
+            <Animated.View style={animatedStyle}>
+              <OnAirIcon width={6} />
+            </Animated.View>
+            <CustomText
+              font="title"
+              className=""
+            >
+              진행 중
+            </CustomText>
+          </View>
           <KakaoMap
             webViewRef={webViewRef}
             mode={"navigation"}
@@ -262,7 +287,10 @@ export default function TimelineScreen() {
 
         {isEditing && (
           <View className="pl-7 pb-1">
-            <CustomText font="body3" className="min-w-5 text-text-muted">
+            <CustomText
+              font="body3"
+              className="min-w-5 text-text-muted"
+            >
               끌어서 장소의 순서를 변경해보세요.
             </CustomText>
           </View>
@@ -286,9 +314,7 @@ export default function TimelineScreen() {
               setOnDrag={setOnDrag}
               dayPlan={item}
               // ★ 2. 해당 일차(day)에 해당하는 경로 통합 데이터(transformedSpots) 추가 전달
-              transformedSpots={
-                transformedDays.find((td) => td.day === item.day)?.spots
-              }
+              transformedSpots={transformedDays.find((td) => td.day === item.day)?.spots}
               transportMode={courseResponse.data.transportMode}
               mode={courseStatus}
               isEditing={isEditing}

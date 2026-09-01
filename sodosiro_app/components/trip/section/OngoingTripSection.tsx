@@ -1,123 +1,50 @@
-import {
-  CourseDayItem,
-  CourseDetailResponse,
-  CourseSummaryItem,
-} from "@/api/course";
+import { CourseSummaryItem } from "@/api/course";
 import Spinner from "@/components/common/Spinner";
-import KakaoMap from "@/components/explore/KakaoMap";
-import TimelineDayBadgeSection from "@/components/timeline/section/TimelineDayBadgeSection";
-import TimelineDaySection from "@/components/timeline/section/TimelineDaySection";
 import { COURSE_STATE } from "@/constants/Trip";
-import { useCourseDetailQuery } from "@/hooks/query/course";
-import { useTimelineScrollSpy } from "@/hooks/useTimelineScrollSpy";
-import {
-  createRouteInfo,
-  RenderCourseDayItem,
-  transformCourseDetail,
-} from "@/util/route/route";
-import { router } from "expo-router";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Dimensions, View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
-import { useSharedValue } from "react-native-reanimated";
-import WebView from "react-native-webview";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { router, useFocusEffect } from "expo-router";
+import { useCallback, useRef } from "react";
+import { ScrollView, View } from "react-native";
 import EmptyState from "../../common/EmptyState";
-import OnAirBanner from "../OnAirBanner";
+import TripCard from "../TripCard";
 
-type OngoingTripSectionProps = {
+type CompletedTripSectionProps = {
   courses: CourseSummaryItem[] | undefined;
   isPending: boolean;
   isError: boolean;
   refetch: () => {};
 };
 
-export default function OngoingTripSection({
+export default function CompletedTripSection({
   courses,
-  isPending: isCoursesPending,
-  isError: isCoursesError,
+  isPending,
+  isError,
   refetch,
-}: OngoingTripSectionProps) {
-  const [isLoading, setIsLoading] = useState(true);
-  const courseId = courses?.[0]?.courseId ?? undefined;
-  const courseStatus = COURSE_STATE.IN_PROGRESS;
-  const {
-    data: courseResponse,
-    isFetching,
-    isError,
-  } = useCourseDetailQuery(courseId);
+}: CompletedTripSectionProps) {
+  const bottomSheetRef = useRef<BottomSheetModal>(null);
 
-  const [tripTitle, setTripTitle] = useState("");
-  const webViewRef = useRef<React.ComponentRef<typeof WebView>>(null);
-  const [temp, setTemp] = useState<CourseDayItem[]>([]);
+  // 다른 페이지 이동 시 바텀시트 모달 자동 닫기
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        bottomSheetRef.current?.dismiss();
+      };
+    }, []),
+  );
 
-  // 오늘 날짜 구하기 (YYYY-MM-DD 포맷)
-  const todayStr = useMemo(() => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0");
-    const day = String(today.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  }, []);
-
-  // 오늘 날짜에 해당하는 days 배열의 인덱스 계산
-  const targetInitialIndex = useMemo(() => {
-    if (!courseResponse?.data?.days) return 0;
-    const courseDetail: CourseDetailResponse = courseResponse.data;
-
-    const foundIndex = courseDetail.days.findIndex(
-      (item) => item.date === todayStr,
-    );
-
-    // 오늘 날짜를 찾지 못했거나 범위를 벗어난 경우 0(첫 번째 날)으로 fallback
-    return foundIndex !== -1 ? foundIndex : 0;
-  }, [courseResponse, todayStr]);
-
-  const {
-    activeIndex,
-    setActiveIndex,
-    mainScrollRef,
-    badgeScrollRef,
-    moveToSection,
-    handleScroll,
-    handleBadgeLayout,
-    handleBadgeContainerLayout,
-    getSectionLayoutHandler,
-  } = useTimelineScrollSpy(targetInitialIndex);
-
-  const [selectedSpotIndexes, setSelectedSpotIndexes] = useState<
-    Record<number, number>
-  >({});
-  const selectedSpotIndex = selectedSpotIndexes[activeIndex] ?? 0;
-
-  useEffect(() => {
-    if (courseResponse?.data) {
-      const courseDetail: CourseDetailResponse = courseResponse.data;
-      if (courseDetail.title) setTripTitle(courseDetail.title);
-      if (courseDetail.days) {
-        setTemp(courseDetail.days);
-      }
-    }
-  }, [courseResponse]);
-
-  const transformedDays: RenderCourseDayItem[] = useMemo(() => {
-    if (!courseResponse?.data) return [];
-    return transformCourseDetail(courseResponse.data);
-  }, [courseResponse]);
-
-  const routeInfo = useMemo(() => {
-    if (!courseResponse?.data) {
-      return null;
-    }
-
-    return createRouteInfo(courseResponse.data, activeIndex, selectedSpotIndex);
-  }, [courseResponse, activeIndex, selectedSpotIndex]);
-
-  const badgeOrder = useMemo(() => temp.map((_, index) => index + 1), [temp]);
-  const screenWidth = Dimensions.get("window").width;
-  const animatedPosition = useSharedValue((screenWidth * 2) / 3);
+  // 버튼 클릭 핸들러
+  const handleCardPress = (course: CourseSummaryItem) => {
+    router.push({
+      pathname: "/trip/timeline",
+      params: {
+        courseId: course.courseId,
+        courseStatus: COURSE_STATE.IN_PROGRESS,
+      },
+    });
+  };
 
   // 1. 로딩 상태 처리
-  if (isFetching) {
+  if (isPending) {
     return (
       <View className={`flex-1 justify-center items-center`}>
         <Spinner />
@@ -141,70 +68,25 @@ export default function OngoingTripSection({
     <View className="flex-1">
       {Number(courses?.length) === 0 ? (
         <EmptyState
-          title="진행 중인 일정이 없어요."
-          description="여행 시작일이 되면 이곳에서 확인할 수 있어요."
+          title="아직 여행 일정이 없어요."
+          description="새로운 여행 일정을 만들까요?"
           actionLabel="새 일정 만들기"
           onPressAction={() => router.push("/roulette")}
         />
       ) : (
         <>
-          <OnAirBanner tripTitle={tripTitle} />
-          <View className={`w-full aspect-3/2 overflow-hidden`}>
-            <KakaoMap
-              webViewRef={webViewRef}
-              mode={"navigation"}
-              routeData={routeInfo}
-              animatedPosition={animatedPosition}
-              setIsLoading={setIsLoading}
-            />
-          </View>
-
-          <View className="flex-1">
-            <TimelineDayBadgeSection
-              badgeOrder={badgeOrder}
-              showEditButton={false}
-              onPressDayBadge={moveToSection}
-              onLayoutDayBadge={handleBadgeLayout}
-              onBadgeContainerLayout={handleBadgeContainerLayout}
-              activeIndex={activeIndex}
-              setActiveIndex={setActiveIndex}
-              badgeScrollRef={badgeScrollRef}
-            />
-
-            <ScrollView
-              className="flex-1"
-              ref={mainScrollRef}
-              contentContainerStyle={{
-                paddingHorizontal: 20,
-              }}
-              onScroll={handleScroll}
-              scrollEventThrottle={32}
-              showsVerticalScrollIndicator={false}
-            >
-              {temp.map((item, index) => (
-                <TimelineDaySection
-                  courseId={Number(courseId)}
-                  key={item.day}
-                  dayPlan={item}
-                  // ★ 2. 해당 일차(day)에 해당하는 경로 통합 데이터(transformedSpots) 추가 전달
-                  transformedSpots={
-                    transformedDays.find((td) => td.day === item.day)?.spots
-                  }
-                  transportMode={courseResponse?.data.transportMode}
-                  mode={courseStatus}
-                  dayIndex={index}
-                  setPlan={setTemp}
-                  onLayout={getSectionLayoutHandler(index)}
-                  onRouteSpotChange={(spotIndex) => {
-                    setSelectedSpotIndexes((prev) => ({
-                      ...prev,
-                      [index]: spotIndex,
-                    }));
-                  }}
+          <ScrollView className="flex-1">
+            <View className="p-5">
+              {courses?.map((course) => (
+                <TripCard
+                  key={course.courseId}
+                  courseStatus={COURSE_STATE.IN_PROGRESS}
+                  course={course}
+                  onPress={() => handleCardPress(course)}
                 />
               ))}
-            </ScrollView>
-          </View>
+            </View>
+          </ScrollView>
         </>
       )}
     </View>

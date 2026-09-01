@@ -9,8 +9,9 @@ import {
   useBottomSheetSpringConfigs,
   type BottomSheetBackdropProps,
 } from "@gorhom/bottom-sheet";
-import { useCallback, useState, type RefObject } from "react";
+import { useCallback, useMemo, useState, type RefObject } from "react";
 import { View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import TripConditionTabBar from "../TripConditionTabBar";
 import TripPlacesList from "../TripPlacesList";
 import CategoryList from "./CategoryList";
@@ -30,6 +31,7 @@ export default function PlaceListBottomSheet({
   sigunguCode,
   sigunguName,
 }: Props) {
+  const insets = useSafeAreaInsets();
   const [currentTab, setCurrentTab] = useState<TabType>("지금 많이 찾는 장소");
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>("all");
 
@@ -42,6 +44,18 @@ export default function PlaceListBottomSheet({
   const places = isPopularTab
     ? popularQuery.data?.data.items
     : (likeQuery.data?.pages.flatMap((page) => page.data.content) ?? []);
+
+  const sortedPlaces = useMemo(() => {
+    if (!places) return [];
+
+    return [...places].sort((a, b) => {
+      const aDisabled = Boolean(sigunguName && !a?.region?.includes(sigunguName));
+      const bDisabled = Boolean(sigunguName && !b?.region?.includes(sigunguName));
+
+      if (aDisabled === bDisabled) return 0;
+      return aDisabled ? 1 : -1;
+    });
+  }, [places, sigunguName]);
 
   const isLikeTabEmpty = !isPopularTab && (!places || places.length === 0);
 
@@ -85,7 +99,10 @@ export default function PlaceListBottomSheet({
       enableDynamicSizing={false} // ★ 컨텐츠 크기에 따른 동적 확장 방지
     >
       {/* 일반 View로 레이아웃 구성 (h-full 사용) */}
-      <View className="h-full px-5 pt-2 pb-6 flex-col">
+      <View
+        className="h-full px-5 pt-2 pb-6 flex-col"
+        style={{ paddingBottom: insets.bottom }}
+      >
         {/* 상단 헤더 & 카테고리 (자연스러운 간격 gap-3) */}
         <View className="gap-3 mb-3">
           <TripConditionTabBar
@@ -107,13 +124,16 @@ export default function PlaceListBottomSheet({
           ) : isLikeTabEmpty ? (
             <View className="flex-1 justify-center items-center gap-2">
               <CustomText font="title">아직 저장한 장소가 없어요.</CustomText>
-              <CustomText font="body3" className="text-text-muted text-center">
+              <CustomText
+                font="body3"
+                className="text-text-muted text-center"
+              >
                 마음에 드는 장소를 저장하면 여기에서 선택할 수 있어요.
               </CustomText>
             </View>
           ) : (
             <TripPlacesList
-              places={places}
+              places={sortedPlaces}
               sigunguName={sigunguName}
               onSelectPlace={handlePlaceSelect}
             />

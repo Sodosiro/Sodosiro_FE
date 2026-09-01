@@ -1,6 +1,7 @@
 import { useExploreStore } from "@/stores/useExploreStore";
 import BottomSheet, { useBottomSheetSpringConfigs } from "@gorhom/bottom-sheet";
-import { useEffect, useRef } from "react";
+import { useFocusEffect } from "expo-router";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { BackHandler } from "react-native";
 import { SharedValue } from "react-native-reanimated";
 import PlaceDetailContent from "./PlaceDetailContent";
@@ -26,7 +27,7 @@ export default function ExploreBottomSheet({
     stiffness: 400,
     mass: 1,
   });
-
+  const [index, setIndex] = useState(-1);
   const bottomSheetRef = useRef<BottomSheet>(null);
   const selectedPlaceId = useExploreStore((state) => state.selectedPlaceId);
   const setSelectedPlaceId = useExploreStore(
@@ -36,29 +37,39 @@ export default function ExploreBottomSheet({
   const clearSearchResult = useExploreStore((state) => state.clearSearchResult);
 
   useEffect(() => {
-    if (!selectedPlaceId && !keyword) bottomSheetRef.current?.close();
-    else if (animatedIndex.value !== 1) bottomSheetRef.current?.snapToIndex(1);
+    if (!selectedPlaceId && !keyword) {
+      bottomSheetRef.current?.close();
+      return;
+    }
+
+    setTimeout(() => {
+      bottomSheetRef.current?.snapToIndex(1);
+    }, 100);
   }, [selectedPlaceId, keyword]);
 
-  useEffect(() => {
-    const subscription = BackHandler.addEventListener(
-      "hardwareBackPress",
-      () => {
-        if (selectedPlaceId) {
-          setSelectedPlaceId(null);
-          handleSelectCancel();
-          return true;
-        } else if (keyword) {
-          clearSearchResult();
-          return true;
-        }
+  useFocusEffect(
+    useCallback(() => {
+      const subscription = BackHandler.addEventListener(
+        "hardwareBackPress",
+        () => {
+          if (selectedPlaceId) {
+            setSelectedPlaceId(null);
+            handleSelectCancel();
+            return true;
+          }
 
-        return false;
-      },
-    );
+          if (keyword) {
+            clearSearchResult();
+            return true;
+          }
 
-    return () => subscription.remove();
-  }, [selectedPlaceId, keyword]);
+          return false;
+        },
+      );
+
+      return () => subscription.remove();
+    }, [selectedPlaceId, keyword]),
+  );
 
   return (
     <BottomSheet
@@ -66,11 +77,14 @@ export default function ExploreBottomSheet({
       index={-1}
       snapPoints={
         selectedPlaceId
-          ? [24, 300, "95%"]
+          ? [24, 336, "95%"]
           : (places?.length ?? 0) > 1
             ? [24, 226, "95%"]
             : [24, 136]
       }
+      onChange={(toIndex) => {
+        setIndex(toIndex);
+      }}
       animatedIndex={animatedIndex}
       animatedPosition={animatedPosition}
       enablePanDownToClose={false}
@@ -87,7 +101,7 @@ export default function ExploreBottomSheet({
       animationConfigs={animationConfigs}
     >
       {selectedPlaceId ? (
-        <PlaceDetailContent placeId={selectedPlaceId} />
+        <PlaceDetailContent placeId={selectedPlaceId} index={index} />
       ) : (
         <SearchPlacesContent
           places={places}

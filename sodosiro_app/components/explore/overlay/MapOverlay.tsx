@@ -55,7 +55,7 @@ export default function MapOverlay({
     return {
       bottom: Math.min(
         Math.max(sheetHeight - 64, 16),
-        selectedPlaceId ? 312 : 238,
+        selectedPlaceId ? 348 : 238,
       ),
     };
   });

@@ -1,5 +1,6 @@
-import CustomCarousel from "@/components/common/CustomCarousel";
+import { AnimatedView } from "@/components/common/animated/Animated";
 import EmptyState from "@/components/common/EmptyState";
+import { ExpandableTextRef } from "@/components/common/ExpandableText";
 import Spinner from "@/components/common/Spinner";
 import AIRecommend from "@/components/placeDetail/placeOverview/AIRecommend";
 import PlaceInfo from "@/components/placeDetail/placeOverview/PlaceInfo";
@@ -12,17 +13,25 @@ import { usePlaceDetailTab } from "@/hooks/usePlaceDetailTab";
 import { useExploreStore } from "@/stores/useExploreStore";
 import { NumberToCategory } from "@/util/place/category";
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
+import { FadeIn } from "react-native-reanimated";
+import ImageList from "./ImageList";
 
 export default function PlaceDetailContent({
   placeId,
+  index,
 }: {
   placeId: number | null;
+  index: number;
 }) {
+  const [placeInfoHeight, setPlaceInfoHeight] = useState(0);
+  const expandableTextRef = useRef<ExpandableTextRef>(null);
   const setSelectedPlaceId = useExploreStore(
     (state) => state.setSelectedPlaceId,
   );
+  const placeInfoRef = useRef<View>(null);
+
   const {
     scrollRef,
     infoRef,
@@ -54,7 +63,6 @@ export default function PlaceDetailContent({
     avgRating,
     reviewCount,
     latestReviews,
-    liked,
     popularity,
     relatedSpots,
   } = placeDetail ?? {};
@@ -67,6 +75,22 @@ export default function PlaceDetailContent({
       animated: false,
     });
   }, [placeId]);
+
+  // useEffect(() => {
+  //   if (
+  //     expandableTextRef.current?.collapsedHeight.value !==
+  //     expandableTextRef.current?.animatedHeight.value
+  //   )
+  //     return;
+
+  //   placeInfoRef.current?.measure((x, y, width, height) => {
+  //     setPlaceInfoHeight(height);
+  //   });
+  // }, [
+  //   index,
+  //   expandableTextRef.current?.collapsedHeight.value,
+  //   expandableTextRef.current?.animatedHeight.value,
+  // ]);
 
   if (isPending || !placeDetail || isError) {
     return (
@@ -96,23 +120,40 @@ export default function PlaceDetailContent({
       onScroll={handleScroll}
     >
       {/* 장소 정보 */}
-      <PlaceInfo
-        category={NumberToCategory[category as CategoryNumber]}
-        title={title}
-        rankTag={popularity?.rankTag as string}
-        overview={overview}
-        avgRating={avgRating}
-        reviewCount={reviewCount}
-      />
+      <View
+        ref={placeInfoRef}
+        onLayout={(e) => {
+          if (
+            expandableTextRef.current?.collapsedHeight.value ===
+            expandableTextRef.current?.animatedHeight.value
+          ) {
+            setPlaceInfoHeight(e.nativeEvent.layout.height);
+          }
+        }}
+      >
+        <PlaceInfo
+          category={NumberToCategory[category as CategoryNumber]}
+          title={title}
+          rankTag={popularity?.rankTag as string}
+          overview={overview}
+          avgRating={avgRating}
+          reviewCount={reviewCount}
+          expandableTextRef={expandableTextRef}
+        />
+      </View>
 
-      {/* 캐러셀 */}
-      <CustomCarousel
-        images={
-          images?.length > 0
-            ? images.slice(0, 10)
-            : firstImage || require("@/assets/images/no_image.png")
-        }
-      />
+      {/* 이미지 */}
+      {placeInfoHeight === 0 ? (
+        <View className={`min-h-80`} />
+      ) : (
+        <AnimatedView entering={FadeIn}>
+          <ImageList
+            placeId={contentId as number}
+            images={images?.length > 0 ? images.slice(0, 10) : firstImage || []}
+            height={336 - placeInfoHeight - 38}
+          />
+        </AnimatedView>
+      )}
 
       {/* AI 한 줄 요약 */}
       <AIRecommend

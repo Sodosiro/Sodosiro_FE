@@ -1,7 +1,10 @@
 import CustomText from "@/components/common/CustomText";
-import ExpandableText from "@/components/common/ExpandableText";
+import ExpandableText, {
+  ExpandableTextRef,
+} from "@/components/common/ExpandableText";
 import RateChip from "@/components/place/RateChip";
 import Tag from "@/components/place/Tag";
+import { RefObject } from "react";
 import { View } from "react-native";
 
 export default function PlaceInfo({
@@ -11,6 +14,7 @@ export default function PlaceInfo({
   overview,
   avgRating,
   reviewCount,
+  expandableTextRef,
 }: {
   category: CategoryType;
   title: string;
@@ -18,6 +22,7 @@ export default function PlaceInfo({
   overview: string;
   avgRating: number;
   reviewCount: number;
+  expandableTextRef?: RefObject<ExpandableTextRef | null>;
 }) {
   return (
     <View className="px-5 py-4 gap-1">
@@ -30,7 +35,11 @@ export default function PlaceInfo({
 
       <View className="gap-2 items-start">
         <View className="w-full">
-          <ExpandableText font="body3" textClass="text-text-muted pr-6">
+          <ExpandableText
+            font="body3"
+            textClass="text-text-muted pr-6"
+            ref={expandableTextRef}
+          >
             {overview}
           </ExpandableText>
         </View>

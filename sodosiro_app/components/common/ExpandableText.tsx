@@ -1,7 +1,14 @@
 import { DownIcon } from "@/assets/svgs";
-import { useState } from "react";
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from "react";
 import { Pressable, View } from "react-native";
 import Animated, {
+  SharedValue,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
@@ -17,114 +24,133 @@ type Props = {
   textClass?: string;
 };
 
-export default function ExpandableText({
-  children,
-  font = "body3",
-  textClass,
-}: Props) {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [isLimited, setIsLimited] = useState(true);
-  const [isOverflow, setIsOverflow] = useState(false);
+export type ExpandableTextRef = {
+  collapsedHeight: SharedValue<number>;
+  animatedHeight: SharedValue<number>;
+  expandedHeight: SharedValue<number>;
+};
 
-  const collapsedHeight = useSharedValue(0);
-  const expandedHeight = useSharedValue(0);
-  const animatedHeight = useSharedValue(0);
+const ExpandableText = forwardRef<ExpandableTextRef, Props>(
+  function ExpandableText({ children, font = "body3", textClass }, ref) {
+    const [isExpanded, setIsExpanded] = useState(false);
+    const [isLimited, setIsLimited] = useState(true);
+    const [isOverflow, setIsOverflow] = useState(false);
 
-  const containerStyle = useAnimatedStyle(() => ({
-    height: animatedHeight.value,
-  }));
+    const collapsedHeight = useSharedValue(0);
+    const expandedHeight = useSharedValue(0);
+    const animatedHeight = useSharedValue(0);
 
-  const iconStyle = useAnimatedStyle(() => ({
-    transform: [
-      {
-        rotate: withTiming(isExpanded ? "-180deg" : "0deg", {
-          duration: ANIMATION_DURATION,
-        }),
+    useImperativeHandle(ref, () => ({
+      collapsedHeight,
+      animatedHeight,
+      expandedHeight,
+    }));
+
+    const containerStyle = useAnimatedStyle(() => ({
+      height: animatedHeight.value,
+    }));
+
+    const iconStyle = useAnimatedStyle(() => ({
+      transform: [
+        {
+          rotate: withTiming(isExpanded ? "-180deg" : "0deg", {
+            duration: ANIMATION_DURATION,
+          }),
+        },
+      ],
+    }));
+
+    // 전체 텍스트 높이 측정
+    const handleMeasure = useCallback(
+      (event: any) => {
+        const lines = event.nativeEvent.lines;
+
+        if (lines.length === 0) return;
+
+        const lineHeight = lines[0].height;
+
+        const expanded = lines.length * lineHeight;
+        const collapsed = Math.min(lines.length, MAX_LINES) * lineHeight;
+
+        expandedHeight.value = expanded;
+        collapsedHeight.value = collapsed;
+
+        animatedHeight.value = collapsed;
+
+        setIsOverflow(lines.length > MAX_LINES);
       },
-    ],
-  }));
+      [children],
+    );
 
-  // 전체 텍스트 높이 측정
-  const handleMeasure = (event: any) => {
-    const lines = event.nativeEvent.lines;
+    const handleToggle = () => {
+      if (isExpanded) {
+        // 펼침 → 닫힘
+        setIsExpanded(false);
 
-    if (lines.length === 0) return;
+        animatedHeight.value = withTiming(collapsedHeight.value, {
+          duration: ANIMATION_DURATION,
+        });
 
-    const lineHeight = lines[0].height;
+        setTimeout(() => {
+          setIsLimited(true);
+        }, ANIMATION_DURATION);
+      } else {
+        // 닫힘 → 펼침
+        setIsLimited(false);
+        setIsExpanded(true);
 
-    const expanded = lines.length * lineHeight;
-    const collapsed = Math.min(lines.length, MAX_LINES) * lineHeight;
+        animatedHeight.value = withTiming(expandedHeight.value, {
+          duration: ANIMATION_DURATION,
+        });
+      }
+    };
 
-    expandedHeight.value = expanded;
-    collapsedHeight.value = collapsed;
-
-    // 최초 측정
-    if (animatedHeight.value === 0) {
-      animatedHeight.value = collapsed;
-    }
-
-    setIsOverflow(lines.length > MAX_LINES);
-  };
-
-  const handleToggle = () => {
-    if (isExpanded) {
-      // 펼침 → 닫힘
+    useEffect(() => {
       setIsExpanded(false);
+      setIsLimited(true);
+      setIsOverflow(false);
+    }, [children]);
 
-      animatedHeight.value = withTiming(collapsedHeight.value, {
-        duration: ANIMATION_DURATION,
-      });
+    return (
+      <View className="w-full">
+        {/* 측정용 텍스트 */}
+        <View className="absolute opacity-0" pointerEvents="none">
+          <CustomText
+            key={children}
+            font={font}
+            className={textClass}
+            onTextLayout={handleMeasure}
+          >
+            {children}
+          </CustomText>
+        </View>
 
-      setTimeout(() => {
-        setIsLimited(true);
-      }, ANIMATION_DURATION);
-    } else {
-      // 닫힘 → 펼침
-      setIsLimited(false);
-      setIsExpanded(true);
+        {/* 실제 텍스트 */}
+        <Animated.View className="overflow-hidden" style={containerStyle}>
+          <CustomText
+            font={font}
+            className={textClass}
+            numberOfLines={isLimited ? MAX_LINES : undefined}
+          >
+            {children}
+          </CustomText>
+        </Animated.View>
 
-      animatedHeight.value = withTiming(expandedHeight.value, {
-        duration: ANIMATION_DURATION,
-      });
-    }
-  };
-
-  return (
-    <View className="w-full">
-      {/* 측정용 텍스트 */}
-      <View className="absolute opacity-0" pointerEvents="none">
-        <CustomText
-          font={font}
-          className={textClass}
-          onTextLayout={handleMeasure}
-        >
-          {children}
-        </CustomText>
+        {/* 3줄 초과일 때만 버튼 */}
+        {isOverflow && (
+          <Pressable
+            className="absolute right-0 top-0"
+            hitSlop={8}
+            onPress={handleToggle}
+          >
+            <Animated.View style={iconStyle}>
+              <DownIcon width={16} />
+            </Animated.View>
+          </Pressable>
+        )}
       </View>
+    );
+  },
+);
 
-      {/* 실제 텍스트 */}
-      <Animated.View className="overflow-hidden" style={containerStyle}>
-        <CustomText
-          font={font}
-          className={textClass}
-          numberOfLines={isLimited ? MAX_LINES : undefined}
-        >
-          {children}
-        </CustomText>
-      </Animated.View>
-
-      {/* 3줄 초과일 때만 버튼 */}
-      {isOverflow && (
-        <Pressable
-          className="absolute right-0 top-0"
-          hitSlop={8}
-          onPress={handleToggle}
-        >
-          <Animated.View style={iconStyle}>
-            <DownIcon width={16} />
-          </Animated.View>
-        </Pressable>
-      )}
-    </View>
-  );
-}
+export default ExpandableText;

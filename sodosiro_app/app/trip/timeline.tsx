@@ -27,9 +27,14 @@ import {
   transformCourseDetail,
 } from "@/util/route/route";
 import { useQueryClient } from "@tanstack/react-query";
-import { router, useLocalSearchParams, useNavigation } from "expo-router";
+import {
+  router,
+  useFocusEffect,
+  useLocalSearchParams,
+  useNavigation,
+} from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Dimensions, ScrollView, View } from "react-native";
+import { BackHandler, Dimensions, ScrollView, View } from "react-native";
 import { useSharedValue } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import WebView from "react-native-webview";
@@ -107,6 +112,28 @@ export default function TimelineScreen() {
     handleSaveCourseDays();
   }, [tripTitle]);
 
+  useFocusEffect(
+    useCallback(() => {
+      if (courseStatus !== COURSE_STATE.TEMP) {
+        return;
+      }
+
+      const subscription = BackHandler.addEventListener(
+        "hardwareBackPress",
+        () => {
+          if (isEditing) {
+            setIsEditing(false);
+            return true;
+          }
+          showToast("일정이 임시저장되었어요.");
+          return false;
+        },
+      );
+
+      return () => subscription.remove();
+    }, [courseStatus, isEditing]),
+  );
+
   // ★ 1. 경로 데이터가 매핑된 렌더링용 Day 데이터 생성
   const transformedDays: RenderCourseDayItem[] = useMemo(() => {
     if (!courseResponse?.data) return [];
@@ -143,8 +170,6 @@ export default function TimelineScreen() {
       await queryClient.invalidateQueries({
         queryKey: ["courseDetail", courseId],
       });
-
-      showToast("일정이 임시저장되었어요.");
     } catch (error: any) {
     } finally {
       setIsPatchPending(false);
@@ -230,6 +255,14 @@ export default function TimelineScreen() {
         title={tripTitle}
         showPencil={courseStatus === COURSE_STATE.TEMP}
         onTitleChange={(newTitle) => setTripTitle(newTitle)}
+        handleBack={
+          courseStatus === "TEMP"
+            ? () => {
+                showToast("일정이 임시저장되었어요.");
+                router.back();
+              }
+            : undefined
+        }
       />
 
       {courseStatus !== COURSE_STATE.TEMP && (

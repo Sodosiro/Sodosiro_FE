@@ -75,8 +75,6 @@ export default function TripScreen() {
   const SODOSI = SODOSI_LIST.find((sodosi) => String(sodosi.sigunguId) == sigunguId);
 
   const [tripTitle, setTripTitle] = useState(`${SODOSI?.name} 여행`);
-  const [showCalendar, setShowCalendar] = useState(false);
-  const [showLocation, setShowLocation] = useState(false);
   const [transport, setTransport] = useState<TransportType>("");
   const [dateRange, setDateRange] = useState<DateRange>({
     startDate: null,
@@ -109,7 +107,6 @@ export default function TripScreen() {
     if (selectedPlace) {
       setSelectedPlace(null);
     } else {
-      // setShowLocation(true);
       bottomSheetRef.current?.present();
     }
   };
@@ -126,8 +123,6 @@ export default function TripScreen() {
 
   const handleReset = () => {
     setTripTitle(`${SODOSI?.name} 여행`);
-    setShowCalendar(false);
-    setShowLocation(false);
     setSelectedCategory([]);
     setTransport("");
     setDateRange({
@@ -188,11 +183,6 @@ export default function TripScreen() {
       return true;
     }
     return false;
-  };
-
-  const handleSelectPlace = (place: PlaceType) => {
-    setSelectedPlace(place);
-    setShowLocation(false);
   };
 
   function formatDate(date: Date | null): string {

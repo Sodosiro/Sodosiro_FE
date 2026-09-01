@@ -7,7 +7,7 @@ import AIRecommend from "@/components/placeDetail/placeOverview/AIRecommend";
 import PlaceInfo from "@/components/placeDetail/placeOverview/PlaceInfo";
 import PlaceTabBar from "@/components/placeDetail/PlaceTabBar";
 import PlaceInfoSection from "@/components/placeDetail/section/PlaceInfoSection";
-import RecommedSection from "@/components/placeDetail/section/RecommendSection";
+import RecommendSection from "@/components/placeDetail/section/RecommendSection";
 import ReviewSection from "@/components/placeDetail/section/ReviewSection";
 import { usePlaceDetailQuery } from "@/hooks/query/place";
 import { usePlaceDetailTab } from "@/hooks/usePlaceDetailTab";
@@ -148,7 +148,7 @@ export default function PlaceDetailScreen() {
         />
 
         {/* 함께 추천 */}
-        <RecommedSection
+        <RecommendSection
           ref={recommendRef}
           recommendPlaces={relatedSpots}
           onLayout={(e) => handleOnLayout(e, "함께 추천")}

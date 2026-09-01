@@ -5,7 +5,6 @@ import Tag from "@/components/place/Tag";
 import { DEFAULT_IMAGES } from "@/constants/Category";
 import useSelectedAnimation from "@/hooks/useSelcetedAnimation";
 import { NumberToCategory } from "@/util/place/category";
-import { router } from "expo-router";
 import { Image, Pressable, View } from "react-native";
 
 export default function PlaceItem({
@@ -61,18 +60,6 @@ export default function PlaceItem({
               reviewCount={place?.reviewCount}
             />
           )}
-          <CustomText
-            font="body2"
-            className={`text-primary-dark self-start`}
-            onPress={() =>
-              router.push({
-                pathname: "/place/[placeId]",
-                params: { placeId: place?.contentId },
-              })
-            }
-          >
-            상세보기
-          </CustomText>
         </View>
       </View>
       <Pressable onPress={handleLikeToggle} className={`p-2`}>

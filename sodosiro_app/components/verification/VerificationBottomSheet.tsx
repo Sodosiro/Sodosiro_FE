@@ -28,6 +28,7 @@ type Props = {
 const VerificationBottomSheet = forwardRef<BottomSheetModal, Props>(
   ({ selectedItem, onClose, bingoStatus }, ref) => {
     const { showToast } = useToast();
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
     const { mutateAsync: bingoMutateAsync } = useBingoGpsMutation();
@@ -100,17 +101,27 @@ const VerificationBottomSheet = forwardRef<BottomSheetModal, Props>(
     };
 
     useEffect(() => {
-      if (!isLoading) return;
-
       const subscription = BackHandler.addEventListener(
         "hardwareBackPress",
         () => {
-          return true;
+          // 로딩 중이면 뒤로가기 무시
+          if (isLoading) {
+            return true;
+          }
+
+          // 모달이 열려 있으면 닫기
+          if (isModalOpen) {
+            onClose();
+            return true;
+          }
+
+          // 모달이 닫혀 있으면 다른 화면의 뒤로가기 처리
+          return false;
         },
       );
 
       return () => subscription.remove();
-    }, [isLoading]);
+    }, [isLoading, isModalOpen, onClose]);
 
     return (
       <BottomSheetModal
@@ -120,6 +131,9 @@ const VerificationBottomSheet = forwardRef<BottomSheetModal, Props>(
           backgroundColor: "#E6E6E6",
           width: 50,
           height: 5,
+        }}
+        onChange={(index) => {
+          setIsModalOpen(index >= 0);
         }}
         backdropComponent={(props) => (
           <BottomSheetBackdrop

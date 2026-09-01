@@ -19,7 +19,7 @@ interface Props extends ViewProps {
   handlePlaceMini?: (() => void) | ((id: number) => void);
 }
 
-export default function RecommedSection({
+export default function RecommendSection({
   recommendPlaces,
   ref,
   handlePlaceMini,

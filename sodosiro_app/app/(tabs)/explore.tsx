@@ -9,10 +9,12 @@ import { useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { Dimensions, View } from "react-native";
 import { useSharedValue } from "react-native-reanimated";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import WebView from "react-native-webview";
 
 export default function ExploreScreen() {
+  const insets = useSafeAreaInsets();
+
   const [isLoading, setIsLoading] = useState(true);
 
   const { placeId } = useLocalSearchParams<{ placeId: string }>();
@@ -65,7 +67,7 @@ export default function ExploreScreen() {
   }, [placeId]);
 
   return (
-    <SafeAreaView edges={["top"]} style={{ flex: 1 }}>
+    <View style={{ flex: 1, paddingTop: insets.top }}>
       {!isPlacesPending && allPlaces && (
         <KakaoMap
           webViewRef={webViewRef}
@@ -98,7 +100,8 @@ export default function ExploreScreen() {
         handleSelectCancel={handleSelectCancel}
         handlePlaceItemPress={handlePlaceItemPress}
         handleLike={handleLike}
+        isLikePending={isLikePending}
       />
-    </SafeAreaView>
+    </View>
   );
 }

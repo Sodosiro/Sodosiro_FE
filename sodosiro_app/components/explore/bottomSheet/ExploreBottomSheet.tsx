@@ -1,7 +1,7 @@
 import { useExploreStore } from "@/stores/useExploreStore";
 import BottomSheet, { useBottomSheetSpringConfigs } from "@gorhom/bottom-sheet";
 import { useFocusEffect } from "expo-router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { BackHandler } from "react-native";
 import { SharedValue } from "react-native-reanimated";
 import PlaceDetailContent from "./PlaceDetailContent";
@@ -14,6 +14,7 @@ export default function ExploreBottomSheet({
   handleSelectCancel,
   handlePlaceItemPress,
   handleLike,
+  isLikePending,
 }: {
   places: PlaceType[] | null;
   animatedPosition: SharedValue<number>;
@@ -21,13 +22,13 @@ export default function ExploreBottomSheet({
   handleSelectCancel: () => void;
   handlePlaceItemPress: (placeId: number) => void;
   handleLike: (contentId: number) => Promise<void>;
+  isLikePending: boolean;
 }) {
   const animationConfigs = useBottomSheetSpringConfigs({
     damping: 100,
     stiffness: 400,
     mass: 1,
   });
-  const [index, setIndex] = useState(-1);
   const bottomSheetRef = useRef<BottomSheet>(null);
   const selectedPlaceId = useExploreStore((state) => state.selectedPlaceId);
   const setSelectedPlaceId = useExploreStore(
@@ -82,9 +83,6 @@ export default function ExploreBottomSheet({
             ? [24, 226, "95%"]
             : [24, 136]
       }
-      onChange={(toIndex) => {
-        setIndex(toIndex);
-      }}
       animatedIndex={animatedIndex}
       animatedPosition={animatedPosition}
       enablePanDownToClose={false}
@@ -101,7 +99,11 @@ export default function ExploreBottomSheet({
       animationConfigs={animationConfigs}
     >
       {selectedPlaceId ? (
-        <PlaceDetailContent placeId={selectedPlaceId} index={index} />
+        <PlaceDetailContent
+          placeId={selectedPlaceId}
+          handleLike={handleLike}
+          isLikePending={isLikePending}
+        />
       ) : (
         <SearchPlacesContent
           places={places}

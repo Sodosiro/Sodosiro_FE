@@ -6,7 +6,7 @@ import AIRecommend from "@/components/placeDetail/placeOverview/AIRecommend";
 import PlaceInfo from "@/components/placeDetail/placeOverview/PlaceInfo";
 import PlaceTabBar from "@/components/placeDetail/PlaceTabBar";
 import PlaceInfoSection from "@/components/placeDetail/section/PlaceInfoSection";
-import RecommedSection from "@/components/placeDetail/section/RecommendSection";
+import RecommendSection from "@/components/placeDetail/section/RecommendSection";
 import ReviewSection from "@/components/placeDetail/section/ReviewSection";
 import { usePlaceDetailQuery } from "@/hooks/query/place";
 import { usePlaceDetailTab } from "@/hooks/usePlaceDetailTab";
@@ -20,10 +20,12 @@ import ImageList from "./ImageList";
 
 export default function PlaceDetailContent({
   placeId,
-  index,
+  handleLike,
+  isLikePending,
 }: {
   placeId: number | null;
-  index: number;
+  handleLike: (contentId: number) => Promise<void>;
+  isLikePending: boolean;
 }) {
   const [placeInfoHeight, setPlaceInfoHeight] = useState(0);
   const expandableTextRef = useRef<ExpandableTextRef>(null);
@@ -65,6 +67,7 @@ export default function PlaceDetailContent({
     latestReviews,
     popularity,
     relatedSpots,
+    liked,
   } = placeDetail ?? {};
 
   useEffect(() => {
@@ -75,22 +78,6 @@ export default function PlaceDetailContent({
       animated: false,
     });
   }, [placeId]);
-
-  // useEffect(() => {
-  //   if (
-  //     expandableTextRef.current?.collapsedHeight.value !==
-  //     expandableTextRef.current?.animatedHeight.value
-  //   )
-  //     return;
-
-  //   placeInfoRef.current?.measure((x, y, width, height) => {
-  //     setPlaceInfoHeight(height);
-  //   });
-  // }, [
-  //   index,
-  //   expandableTextRef.current?.collapsedHeight.value,
-  //   expandableTextRef.current?.animatedHeight.value,
-  // ]);
 
   if (isPending || !placeDetail || isError) {
     return (
@@ -132,6 +119,7 @@ export default function PlaceDetailContent({
         }}
       >
         <PlaceInfo
+          contentId={contentId as number}
           category={NumberToCategory[category as CategoryNumber]}
           title={title}
           rankTag={popularity?.rankTag as string}
@@ -139,6 +127,9 @@ export default function PlaceDetailContent({
           avgRating={avgRating}
           reviewCount={reviewCount}
           expandableTextRef={expandableTextRef}
+          liked={liked}
+          handleLike={handleLike}
+          isLikePending={isLikePending}
         />
       </View>
 
@@ -182,7 +173,7 @@ export default function PlaceDetailContent({
       />
 
       {/* 함께 추천 */}
-      <RecommedSection
+      <RecommendSection
         ref={recommendRef}
         recommendPlaces={relatedSpots}
         onLayout={(e) => handleOnLayout(e, "함께 추천")}

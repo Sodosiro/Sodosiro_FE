@@ -3,13 +3,15 @@ import { AnimatedPressable } from "@/components/common/animated/Animated";
 import CustomText from "@/components/common/CustomText";
 import { CELL_SIZE } from "@/constants/Bingo";
 import useSelectedAnimation from "@/hooks/useSelcetedAnimation";
+import { getBingoSeasonImage } from "@/util/bingo/bingoSeason";
 import { Image, PressableProps, View } from "react-native";
 
 interface Props extends PressableProps {
   bingoItem: BingoItem;
+  season: BingoSeasonType;
 }
 
-export default function BingoCell({ bingoItem, onPress }: Props) {
+export default function BingoCell({ bingoItem, season, onPress }: Props) {
   const { containerStyle, borderStyle } = useSelectedAnimation(
     bingoItem.completed,
     {
@@ -17,6 +19,10 @@ export default function BingoCell({ bingoItem, onPress }: Props) {
       border: ["#88888888", "#7e9432dd"],
     },
   );
+
+  const imageSource = bingoItem.firstImage
+    ? { uri: bingoItem.firstImage }
+    : getBingoSeasonImage(season);
 
   return (
     <AnimatedPressable
@@ -33,7 +39,7 @@ export default function BingoCell({ bingoItem, onPress }: Props) {
           <>
             <View className={`w-full h-full bg-black`} />
             <Image
-              source={{ uri: bingoItem.firstImage }}
+              source={imageSource}
               className={`w-full h-full absolute opacity-70`}
               resizeMode="cover"
             />

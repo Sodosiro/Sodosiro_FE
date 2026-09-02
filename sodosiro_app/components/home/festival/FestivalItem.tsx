@@ -2,7 +2,7 @@ import { CalendarMiniIcon, PinMiniIcon } from "@/assets/svgs";
 import CustomText from "@/components/common/CustomText";
 import KeywordBadgeList from "@/components/common/keywordBadge/KeywordBadgeList";
 import InfoChip from "@/components/place/InfoChip";
-import { getSeasonImage } from "@/util/festival/festival";
+import { getFestivalSeasonImage } from "@/util/festival/festival";
 import { formatDate } from "@/util/time/time";
 import { Image, LayoutChangeEvent, Pressable, View } from "react-native";
 import DdayBadge from "./DdayBadge";
@@ -28,7 +28,9 @@ export default function FestivalItem({
       tags: ["tag"],
     };
 
-  const imageSource = imageUrl ? { uri: imageUrl } : getSeasonImage(startDate);
+  const imageSource = imageUrl
+    ? { uri: imageUrl }
+    : getFestivalSeasonImage(startDate);
 
   return (
     <View

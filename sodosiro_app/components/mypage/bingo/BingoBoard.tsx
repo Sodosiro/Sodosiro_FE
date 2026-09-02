@@ -71,6 +71,7 @@ export default function BingoBoard({
               <BingoCell
                 key={index}
                 bingoItem={item}
+                season={selectedSeason}
                 onPress={() => {
                   setSelectedItem(item);
                   bottomSheetRef.current?.present();

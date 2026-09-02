@@ -1,5 +1,5 @@
 import CustomText from "@/components/common/CustomText";
-import { getSeasonImage } from "@/util/festival/festival";
+import { getFestivalSeasonImage } from "@/util/festival/festival";
 import { formatDate } from "@/util/time/time";
 import { Image, Pressable, View } from "react-native";
 import DdayBadge from "./DdayBadge";
@@ -13,7 +13,9 @@ export default function FestivalPrevItem({
 }) {
   const { imageUrl, regionName, title, startDate, endDate, linkUrl } = festival;
 
-  const imageSource = imageUrl ? { uri: imageUrl } : getSeasonImage(startDate);
+  const imageSource = imageUrl
+    ? { uri: imageUrl }
+    : getFestivalSeasonImage(startDate);
 
   return (
     <Pressable

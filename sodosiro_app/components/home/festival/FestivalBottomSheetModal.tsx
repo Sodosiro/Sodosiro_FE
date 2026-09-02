@@ -1,6 +1,6 @@
 import AnimatedButton from "@/components/common/animated/AnimatedButton";
 import CustomText from "@/components/common/CustomText";
-import { getSeasonImage } from "@/util/festival/festival";
+import { getFestivalSeasonImage } from "@/util/festival/festival";
 import {
   BottomSheetBackdrop,
   BottomSheetModal,
@@ -20,7 +20,7 @@ const FestivalBottomSheetModal = forwardRef<BottomSheetModal, Props>(
     const imageSource = festival?.imageUrl
       ? { uri: festival.imageUrl }
       : festival
-        ? getSeasonImage(festival.startDate)
+        ? getFestivalSeasonImage(festival.startDate)
         : undefined;
 
     const handleOpenFestivalLink = async () => {

@@ -5,7 +5,7 @@ export const SEASON_IMAGES = {
   winter: require("@/assets/images/festival/winter.png"),
 };
 
-export function getSeasonImage(date: Date) {
+export function getFestivalSeasonImage(date: Date) {
   const month = new Date(date).getMonth() + 1;
 
   if (month >= 3 && month <= 5) {

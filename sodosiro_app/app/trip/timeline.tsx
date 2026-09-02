@@ -5,6 +5,7 @@ import {
   SpotItem,
   updateCourseDaysApi,
 } from "@/api/course";
+import { OnAirIcon } from "@/assets/svgs";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
 import CustomText from "@/components/common/CustomText";
 import DimmedLoading from "@/components/common/DimmedLoading";
@@ -35,7 +36,12 @@ import {
 } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BackHandler, Dimensions, ScrollView, View } from "react-native";
-import { useSharedValue } from "react-native-reanimated";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withTiming,
+} from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import WebView from "react-native-webview";
 
@@ -234,6 +240,16 @@ export default function TimelineScreen() {
   const screenWidth = Dimensions.get("window").width;
   const animatedPosition = useSharedValue((screenWidth * 2) / 3);
 
+  const opacity = useSharedValue(1);
+
+  useEffect(() => {
+    opacity.value = withRepeat(withTiming(0.3, { duration: 1200 }), -1, true);
+  }, [opacity]);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+  }));
+
   if (isPending || !courseResponse?.data) {
     return (
       <View className={`flex-1 justify-center items-center bg-bg`}>
@@ -265,8 +281,28 @@ export default function TimelineScreen() {
         }
       />
 
-      {courseStatus !== COURSE_STATE.TEMP && (
+      {/* {courseStatus !== COURSE_STATE.TEMP && (
         <View className={`w-full aspect-3/2 overflow-hidden`}>
+          <KakaoMap
+            webViewRef={webViewRef}
+            mode={"navigation"}
+            routeData={routeInfo}
+            animatedPosition={animatedPosition}
+            setIsLoading={setIsLoading}
+          />
+        </View>
+      )} */}
+
+      {courseStatus === COURSE_STATE.IN_PROGRESS && (
+        <View className={`w-full aspect-3/2 overflow-hidden`}>
+          <View className="absolute top-3 left-3 z-10 flex-row items-center px-3.5 py-1.5 min-h-9 rounded-full bg-primary gap-1.5">
+            <Animated.View style={animatedStyle}>
+              <OnAirIcon width={6} />
+            </Animated.View>
+            <CustomText font="title" className="">
+              진행 중
+            </CustomText>
+          </View>
           <KakaoMap
             webViewRef={webViewRef}
             mode={"navigation"}

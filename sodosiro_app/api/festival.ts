@@ -3,6 +3,7 @@ import { axiosInstance } from "./instance";
 type GetFestivalsParams = {
   areaCode?: string;
   status?: FestivalStatus;
+  sigunguId?: number;
   cursor?: number;
   size?: number;
   year?: number;

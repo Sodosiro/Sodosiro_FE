@@ -9,6 +9,7 @@ import FestivalPrevList from "./FestivalPrevList";
 export default function FestivalSection() {
   const { data, isPending, isError, refetch } = useFestivalsQuery(
     undefined,
+    undefined,
     "ACTIVE",
     5,
   );

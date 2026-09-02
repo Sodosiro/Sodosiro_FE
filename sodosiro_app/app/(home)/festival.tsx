@@ -2,9 +2,12 @@ import AnimatedBadge from "@/components/common/animated/AnimatedBadge";
 import EmptyState from "@/components/common/EmptyState";
 import Header from "@/components/common/Header";
 import Spinner from "@/components/common/Spinner";
+import WheelPicker from "@/components/common/WheelPicker";
 import FestivalBottomSheetModal from "@/components/home/festival/FestivalBottomSheetModal";
 import FestivalItem from "@/components/home/festival/FestivalItem";
+import { SODOSI_LIST } from "@/constants/Sodosi";
 import { useFestivalsQuery } from "@/hooks/query/festival";
+import { getSigunguId } from "@/util/region/region";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useEffect, useRef, useState } from "react";
 import { FlatList, LayoutChangeEvent, View } from "react-native";
@@ -26,6 +29,9 @@ export default function FestivalScreen() {
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
+  const [selectedRegion, setSelectedRegion] = useState<string>("전체");
+  const [festivalItemHeight, setFestivalItemHeight] = useState(0);
+
   const {
     data,
     isPending,
@@ -34,9 +40,12 @@ export default function FestivalScreen() {
     isFetchingNextPage,
     isError,
     refetch,
-  } = useFestivalsQuery(undefined, selectedSchedule, 20);
-
-  const [festivalItemHeight, setFestivalItemHeight] = useState(0);
+  } = useFestivalsQuery(
+    undefined,
+    getSigunguId(selectedRegion),
+    selectedSchedule,
+    20,
+  );
 
   const handleMeasure = (event: LayoutChangeEvent) => {
     setFestivalItemHeight(event.nativeEvent.layout.height);
@@ -79,6 +88,15 @@ export default function FestivalScreen() {
               />
             )}
           />
+          <View className={`pt-4 px-5`}>
+            <WheelPicker
+              title={"지역 선택"}
+              values={["전체", ...SODOSI_LIST.map((sodosi) => sodosi.name)]}
+              selectedValue={selectedRegion}
+              setSelectedValue={setSelectedRegion}
+              isPending={false}
+            />
+          </View>
         </View>
         <FestivalItem onLayout={handleMeasure} />
         {isPending || festivalItemHeight === 0 ? (
@@ -92,7 +110,7 @@ export default function FestivalScreen() {
             actionLabel="다시 시도"
             onPressAction={() => refetch()}
           />
-        ) : (
+        ) : festivals.length > 0 ? (
           <FlatList
             data={festivals}
             keyExtractor={(item) => String(item.festivalId)}
@@ -118,6 +136,13 @@ export default function FestivalScreen() {
               ) : null
             }
           />
+        ) : (
+          <View className={`flex-1 justify-center items-center pb-20`}>
+            <EmptyState
+              title={`${ScheduleMap[selectedSchedule as "ONGOING" | "UPCOMING"]}인 축제가 없어요.`}
+              description="다른 지역을 선택해주세요."
+            />
+          </View>
         )}
       </View>
       <FestivalBottomSheetModal

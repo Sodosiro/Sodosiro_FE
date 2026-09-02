@@ -1,13 +1,14 @@
 import EmptyState from "@/components/common/EmptyState";
 import Header from "@/components/common/Header";
 import Spinner from "@/components/common/Spinner";
+import WheelPicker from "@/components/common/WheelPicker";
 import BingoAdvantage from "@/components/mypage/bingo/BingoAdventage";
 import BingoBoard from "@/components/mypage/bingo/BingoBoard";
 import BingoEmpty from "@/components/mypage/bingo/BingoEmpty";
-import BingoSeasonPicker from "@/components/mypage/bingo/BingoSeasonPicker";
 import RegionList from "@/components/mypage/bingo/RegionList";
 import { SODOSI_LIST } from "@/constants/Sodosi";
 import { useBingoQuery, useBingoSeasonsQuery } from "@/hooks/query/bingo";
+import { getBingoSeasonText } from "@/util/bingo/bingoSeason";
 import { getBingoResult } from "@/util/bingo/getBingoResult";
 import { useEffect, useMemo, useState } from "react";
 import { ScrollView, View } from "react-native";
@@ -76,11 +77,22 @@ export default function BingoScreen() {
           <ScrollView
             contentContainerClassName={`gap-6 py-3 px-5 justify-start`}
           >
-            <BingoSeasonPicker
-              bingoSeasons={bingoSeasons}
-              selectedSeason={selectedSeason}
-              setSelectedSeason={setSelectedSeason}
-              isPending={isBingoSeasonsPending}
+            <WheelPicker
+              title={"시즌 선택"}
+              values={bingoSeasons.map((season: BingoSeasonType) =>
+                getBingoSeasonText(season),
+              )}
+              selectedValue={getBingoSeasonText(selectedSeason)}
+              setSelectedValue={(value) => {
+                const season = bingoSeasons.find(
+                  (season: BingoSeasonType) =>
+                    getBingoSeasonText(season) === value,
+                );
+                if (season) {
+                  setSelectedSeason(season);
+                }
+              }}
+              isPending={false}
             />
             <BingoBoard
               bingoItems={bingoItems}

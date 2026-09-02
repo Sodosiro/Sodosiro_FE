@@ -1,7 +1,6 @@
 import { DownIcon } from "@/assets/svgs";
 import CustomText from "@/components/common/CustomText";
 import { SkeletonLine } from "@/components/common/skeleton/SkeletonLine";
-import { getBingoSeasonText } from "@/util/bingo/bingoSeason";
 import {
   BottomSheetBackdrop,
   BottomSheetFlatList,
@@ -10,8 +9,16 @@ import {
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import { LinearGradient } from "expo-linear-gradient";
-import { Dispatch, RefObject, SetStateAction, useRef, useState } from "react";
 import {
+  Dispatch,
+  RefObject,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import {
+  BackHandler,
   NativeScrollEvent,
   NativeSyntheticEvent,
   Pressable,
@@ -22,15 +29,17 @@ const ITEM_HEIGHT = 48;
 const VISIBLE_ITEMS = 3;
 const WHEEL_HEIGHT = ITEM_HEIGHT * VISIBLE_ITEMS;
 
-export default function BingoSeasonPicker({
-  bingoSeasons,
-  selectedSeason,
-  setSelectedSeason,
+export default function WheelPicker({
+  title,
+  values,
+  selectedValue,
+  setSelectedValue,
   isPending,
 }: {
-  bingoSeasons: BingoSeasonType[];
-  selectedSeason: BingoSeasonType;
-  setSelectedSeason: Dispatch<SetStateAction<BingoSeasonType>>;
+  title: string;
+  values: string[];
+  selectedValue: string;
+  setSelectedValue: Dispatch<SetStateAction<any>>;
   isPending: boolean;
 }) {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
@@ -41,7 +50,7 @@ export default function BingoSeasonPicker({
   return (
     <>
       <View className="gap-2">
-        {isPending || !selectedSeason ? (
+        {isPending || !selectedValue ? (
           <View className={`self-start`}>
             <SkeletonLine font="heading2" text="2026년 여름" />
           </View>
@@ -50,56 +59,54 @@ export default function BingoSeasonPicker({
             onPress={openSheet}
             className={`flex-row gap-1 items-center`}
           >
-            <CustomText font="heading2">
-              {getBingoSeasonText(selectedSeason)}
-            </CustomText>
+            <CustomText font="heading2">{selectedValue}</CustomText>
             <DownIcon width={16} />
           </Pressable>
         )}
-
-        <CustomText font="body2" className="text-text-muted">
-          계절이 바뀌면 새로운 빙고가 열려요.
-        </CustomText>
       </View>
 
-      <BingoSeasonPickerModal
+      <WheelPickerModal
         bottomSheetRef={bottomSheetRef}
-        selectedSeason={selectedSeason}
-        setSelectedSeason={setSelectedSeason}
-        bingoSeasons={bingoSeasons}
+        title={title}
+        selectedValue={selectedValue}
+        setSelectedValue={setSelectedValue}
+        values={values}
       />
     </>
   );
 }
 
-const BingoSeasonPickerModal = ({
+const WheelPickerModal = ({
   bottomSheetRef,
-  selectedSeason,
-  setSelectedSeason,
-  bingoSeasons,
+  title,
+  values,
+  selectedValue,
+  setSelectedValue,
 }: {
   bottomSheetRef: RefObject<BottomSheetModal | null>;
-  selectedSeason: BingoSeasonType;
-  setSelectedSeason: Dispatch<SetStateAction<BingoSeasonType>>;
-  bingoSeasons: BingoSeasonType[];
+  title: string;
+  values: string[];
+  selectedValue: string;
+  setSelectedValue: Dispatch<SetStateAction<string>>;
 }) => {
   const flatListRef = useRef<BottomSheetFlatListMethods>(null);
 
-  const [tempSelectedSeason, setTempSelectedSeason] = useState(selectedSeason);
-  const selectedSeasonRef = useRef(selectedSeason);
-  selectedSeasonRef.current = selectedSeason;
+  const [isOpen, setIsOpen] = useState(false);
+  const [tempSelectedValue, setTempSelectedValue] = useState(selectedValue);
+  const selectedValueRef = useRef(selectedValue);
+  selectedValueRef.current = selectedValue;
 
   const handleScrollEnd = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const offsetY = event.nativeEvent.contentOffset.y;
     const index = Math.round(offsetY / ITEM_HEIGHT);
-    const clampedIndex = Math.max(0, Math.min(index, bingoSeasons?.length - 1));
-    const season = bingoSeasons?.[clampedIndex];
+    const clampedIndex = Math.max(0, Math.min(index, values?.length - 1));
+    const value = values?.[clampedIndex];
 
-    setTempSelectedSeason(season);
+    setTempSelectedValue(value);
   };
 
-  const handleSelect = (item: BingoSeasonType) => {
-    const index = bingoSeasons?.indexOf(item);
+  const handleSelect = (item: string) => {
+    const index = values?.indexOf(item);
 
     if (index < 0) return;
 
@@ -108,14 +115,30 @@ const BingoSeasonPickerModal = ({
       animated: true,
     });
 
-    setTempSelectedSeason(item);
+    setTempSelectedValue(item);
   };
 
   const handleConfirm = () => {
-    setSelectedSeason(tempSelectedSeason);
+    setSelectedValue(tempSelectedValue);
 
     bottomSheetRef.current?.dismiss();
   };
+
+  useEffect(() => {
+    const subscription = BackHandler.addEventListener(
+      "hardwareBackPress",
+      () => {
+        if (!isOpen) {
+          return false;
+        }
+
+        bottomSheetRef.current?.dismiss();
+        return true;
+      },
+    );
+
+    return () => subscription.remove();
+  }, [isOpen]);
 
   return (
     <BottomSheetModal
@@ -123,15 +146,17 @@ const BingoSeasonPickerModal = ({
       index={0}
       snapPoints={[300]}
       enableDynamicSizing={false}
-      enablePanDownToClose
       enableContentPanningGesture={false}
+      onChange={(index) => {
+        setIsOpen(index >= 0);
+      }}
       backdropComponent={(props) => (
         <BottomSheetBackdrop
           {...props}
           appearsOnIndex={0}
           disappearsOnIndex={-1}
           opacity={0.5}
-          pressBehavior="close"
+          pressBehavior="none"
         />
       )}
       handleIndicatorStyle={{
@@ -154,9 +179,9 @@ const BingoSeasonPickerModal = ({
             완료
           </CustomText>
           <CustomText font="heading2" className="text-center flex-1">
-            시즌 선택
+            {title}
           </CustomText>
-          <Pressable onPress={handleConfirm}>
+          <Pressable onPress={handleConfirm} hitSlop={20}>
             <CustomText font="body1" className="text-primary-dark">
               완료
             </CustomText>
@@ -188,10 +213,10 @@ const BingoSeasonPickerModal = ({
               style={{
                 height: WHEEL_HEIGHT,
               }}
-              data={bingoSeasons}
-              keyExtractor={(item) => getBingoSeasonText(item)}
+              data={values}
+              keyExtractor={(item) => item}
               showsVerticalScrollIndicator={false}
-              initialScrollIndex={bingoSeasons?.indexOf(selectedSeason)}
+              initialScrollIndex={values?.indexOf(selectedValue)}
               bounces={false}
               snapToInterval={ITEM_HEIGHT}
               onMomentumScrollEnd={handleScrollEnd}
@@ -204,7 +229,7 @@ const BingoSeasonPickerModal = ({
                 paddingVertical: ITEM_HEIGHT,
               }}
               renderItem={({ item }) => {
-                const isSelected = item === selectedSeason;
+                const isSelected = item === selectedValue;
 
                 return (
                   <Pressable
@@ -222,7 +247,7 @@ const BingoSeasonPickerModal = ({
                         isSelected ? "text-primary-dark" : "text-text-muted"
                       }
                     >
-                      {getBingoSeasonText(item)}
+                      {item}
                     </CustomText>
                   </Pressable>
                 );

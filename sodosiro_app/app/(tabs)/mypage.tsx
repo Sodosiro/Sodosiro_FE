@@ -1,4 +1,5 @@
 import MyInfo from "@/components/mypage/MyInfo";
+import MyBadgeSection from "@/components/mypage/section/MyBadgeSection";
 import MyHistorySection from "@/components/mypage/section/MyHistorySection";
 import MyVisitedSection from "@/components/mypage/section/MyVisitedSection";
 import SettingSection from "@/components/mypage/section/SettingSection";
@@ -26,6 +27,7 @@ export default function MyPageScreen() {
         }}
       >
         <MyInfo />
+        <MyBadgeSection />
         <MyVisitedSection
           selectedRegionId={selectedRegionId}
           setSelectedRegionId={setSelectedRegionId}

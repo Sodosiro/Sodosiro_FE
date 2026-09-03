@@ -1,16 +1,25 @@
 import CustomText from "@/components/common/CustomText";
-import { View } from "react-native";
+import { Pressable, View } from "react-native";
 
 export default function MypageSectionContainer({
   title,
   children,
+  rightIcon,
+  onPress,
 }: {
   title: string;
   children: React.ReactNode;
+  rightIcon?: React.ReactNode;
+  onPress?: () => void;
 }) {
   return (
     <View className={`px-5 gap-3`}>
-      <CustomText font="heading2">{title}</CustomText>
+      <Pressable className={`flex-row`} onPress={onPress}>
+        <CustomText font="heading2" className={`flex-1`}>
+          {title}
+        </CustomText>
+        {rightIcon && rightIcon}
+      </Pressable>
       {children}
     </View>
   );

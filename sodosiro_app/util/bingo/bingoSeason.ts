@@ -10,15 +10,15 @@ export const SEASON_IMAGES = {
 };
 
 export function getBingoSeasonImage(season: BingoSeasonType) {
-  if (season.seasonType === "SPRING") {
+  if (season?.seasonType === "SPRING") {
     return SEASON_IMAGES.spring;
   }
 
-  if (season.seasonType === "SUMMER") {
+  if (season?.seasonType === "SUMMER") {
     return SEASON_IMAGES.summer;
   }
 
-  if (season.seasonType === "FALL") {
+  if (season?.seasonType === "FALL") {
     return SEASON_IMAGES.autumn;
   }
 

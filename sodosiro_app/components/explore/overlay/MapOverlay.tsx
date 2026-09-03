@@ -9,7 +9,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import WebView from "react-native-webview";
 import { useShallow } from "zustand/react/shallow";
 import CategoryList from "../../common/category/CategoryList";
-import ClearSearchButton from "./ClearSearchButton";
 import GpsButton from "./GpsButton";
 import PlaceLegend from "./PlaceLegend";
 import SearchBar from "./SearchBar";
@@ -122,16 +121,6 @@ export default function MapOverlay({
         >
           <GpsButton />
         </Pressable>
-
-        {keyword && !selectedPlaceId && (
-          <ClearSearchButton
-            className={`absolute self-center left-1/2 -translate-x-1/2 bottom-0`}
-            onPress={() => {
-              clearResult();
-              setSelectedPlaceId(null);
-            }}
-          />
-        )}
       </Animated.View>
     </View>
   );

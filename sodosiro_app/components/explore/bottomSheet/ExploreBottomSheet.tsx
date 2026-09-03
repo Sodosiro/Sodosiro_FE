@@ -60,8 +60,13 @@ export default function ExploreBottomSheet({
           }
 
           if (keyword) {
-            clearSearchResult();
-            return true;
+            if (animatedIndex.value === 2) {
+              bottomSheetRef.current?.snapToIndex(1);
+              return true;
+            } else {
+              clearSearchResult();
+              return true;
+            }
           }
 
           return false;

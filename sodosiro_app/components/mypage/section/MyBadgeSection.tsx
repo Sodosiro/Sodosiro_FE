@@ -13,13 +13,18 @@ export default function MyBadgeSection() {
 
   const { collectedCount, badges } = data?.data ?? {};
 
-  const filteredBadges = badges
-    ?.filter((badge: BadgeType) => badge.earned)
+  const filteredBadges = [...(badges ?? [])]
+    .sort((a, b) => {
+      if (a.earned !== b.earned) {
+        return Number(b.earned) - Number(a.earned);
+      }
+      return a.name.localeCompare(b.name);
+    })
     .slice(0, 4);
 
   return (
     <MypageSectionContainer
-      title="내 배지"
+      title="소도시 배지"
       rightIcon={<RightIcon width={20} color={"#888888"} />}
       onPress={() => router.push("/mypage/badge")}
     >
@@ -41,9 +46,9 @@ export default function MyBadgeSection() {
               onPressAction={() => refetch()}
             />
           </View>
-        ) : filteredBadges?.length > 0 ? (
+        ) : (
           <View className={`gap-3 shrink-0`}>
-            <View className={`flex-row flex-warp`}>
+            <View className={`flex-1 flex-row flex-wrap shrink-0`}>
               {filteredBadges?.map((badge: BadgeType) => (
                 <View key={badge.badgeId} className={`w-1/4`}>
                   <BadgeItem badge={badge} />
@@ -51,15 +56,10 @@ export default function MyBadgeSection() {
               ))}
             </View>
             <CustomText font="body3" className={`text-text-secondary`}>
-              소도시 {collectedCount}곳을 발견했어요
+              {collectedCount > 0
+                ? `소도시 ${collectedCount}곳을 발견했어요`
+                : `소도시 배지를 모아보세요!`}
             </CustomText>
-          </View>
-        ) : (
-          <View className={`flex-1 justify-center items-center py-4 shrink-0`}>
-            <EmptyState
-              title={"아직 수집한 배지가 없어요."}
-              description={"소도시를 방문하고 배지를 모아보세요."}
-            />
           </View>
         )}
       </Pressable>

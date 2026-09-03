@@ -281,28 +281,16 @@ export default function TimelineScreen() {
         }
       />
 
-      {/* {courseStatus !== COURSE_STATE.TEMP && (
+      {courseStatus !== "TEMP" && (
         <View className={`w-full aspect-3/2 overflow-hidden`}>
-          <KakaoMap
-            webViewRef={webViewRef}
-            mode={"navigation"}
-            routeData={routeInfo}
-            animatedPosition={animatedPosition}
-            setIsLoading={setIsLoading}
-          />
-        </View>
-      )} */}
-
-      {courseStatus === COURSE_STATE.IN_PROGRESS && (
-        <View className={`w-full aspect-3/2 overflow-hidden`}>
-          <View className="absolute top-3 left-3 z-10 flex-row items-center px-3.5 py-1.5 min-h-9 rounded-full bg-primary gap-1.5">
-            <Animated.View style={animatedStyle}>
-              <OnAirIcon width={6} />
-            </Animated.View>
-            <CustomText font="title" className="">
-              진행 중
-            </CustomText>
-          </View>
+          {courseStatus === "IN_PROGRESS" && (
+            <View className="absolute top-3 left-3 z-10 flex-row items-center px-3.5 py-1.5 min-h-9 rounded-full bg-primary gap-1.5">
+              <Animated.View style={animatedStyle}>
+                <OnAirIcon width={6} />
+              </Animated.View>
+              <CustomText font="body3">진행 중</CustomText>
+            </View>
+          )}
           <KakaoMap
             webViewRef={webViewRef}
             mode={"navigation"}

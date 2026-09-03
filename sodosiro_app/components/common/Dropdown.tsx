@@ -20,13 +20,13 @@ export default function Dropdown({
 }: DropdownProps) {
   return (
     <View className="question_section w-full bg-white">
-      <View className="flex-row items-center justify-between min-h-[26px] w-full flex-shrink-0 z-10 bg-white">
+      <View className="flex-row items-center justify-between min-h-6.5 w-full shrink-0 z-10 bg-white">
         <View className="flex-1 mr-2 min-w-0 overflow-hidden">{header}</View>
 
         {!disabled ? (
           <Pressable
             onPress={onToggle}
-            className={`p-1 flex-shrink-0 ${disabled ? "pointer-events-none" : ""}`}
+            className={`p-1 shrink-0 ${disabled ? "pointer-events-none" : ""}`}
             hitSlop={8}
           >
             <RotatingArrowIcon isExpanded={isExpanded} />

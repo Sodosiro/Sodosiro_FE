@@ -1,6 +1,6 @@
 import { SODOSI_LIST } from "@/constants/Sodosi";
 import { router } from "expo-router";
-import { useRef, useState } from "react";
+import { Dispatch, SetStateAction, useRef, useState } from "react";
 import { Image, View } from "react-native";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import CustomButton from "../common/CustomButton";
@@ -9,10 +9,15 @@ import Toggle from "../common/Toggle";
 import RoulettePicker, { RoulettePickerHandle } from "./RoulettePicker";
 import RouletteTitle from "./RouletteTitle";
 
-export default function RoulleteContent({}: {}) {
+export default function RoulleteContent({
+  isRolling,
+  setIsRolling,
+}: {
+  isRolling: boolean;
+  setIsRolling: Dispatch<SetStateAction<boolean>>;
+}) {
   const [onlySmallTown, setOnlySmallTown] = useState(true);
   const [showRoulette, setShowRoulette] = useState(false);
-  const [isRolling, setIsRolling] = useState(false);
   const [result, setResult] = useState<SodosiType | null>(null);
   const rouletteRef = useRef<RoulettePickerHandle>(null);
 

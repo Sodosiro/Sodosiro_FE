@@ -198,7 +198,7 @@ const LocationMap = ({ address, placeDetail }: LocationMapProps) => {
         onMessage={handleMessage}
         applicationNameForUserAgent="SodosiroAppWebView"
       />
-      <View className={`p-4 gap-1`}>
+      <View className={`p-4 gap-2`}>
         <View className={`flex-row gap-1 items-center`}>
           <PinMiniIcon color={"#444444"} height={14} />
           <CustomText font="body2" numberOfLines={1} className={`shrink`}>

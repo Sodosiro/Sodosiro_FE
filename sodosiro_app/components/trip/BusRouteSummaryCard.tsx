@@ -23,9 +23,11 @@ const formatDistance = (meters: number): string => {
 // 헬퍼 함수: TransitRouteStep을 UI 표시용 속성으로 변환
 const parseStepItem = (step: TransitRouteStep, index: number) => {
   const isBus =
-    step.type?.toUpperCase().includes("BUS") || (step.vehicleNames && step.vehicleNames.length > 0);
+    step.type?.toUpperCase().includes("BUS") ||
+    (step.vehicleNames && step.vehicleNames.length > 0);
   const isWalk =
-    step.type?.toUpperCase().includes("WALK") || (!isBus && step.vehicleNames?.length === 0);
+    step.type?.toUpperCase().includes("WALK") ||
+    (!isBus && step.vehicleNames?.length === 0);
 
   let label = isWalk ? "도보" : "대중교통";
   if (isBus && step.vehicleNames && step.vehicleNames.length > 0) {
@@ -59,15 +61,14 @@ export default function BusRouteSummaryCard({
   const fare = `${routeDetail?.fare?.toLocaleString()}원`;
 
   // steps 데이터 바인딩
-  const formattedSteps = routeDetail.steps.map((step, index) => parseStepItem(step, index));
+  const formattedSteps = routeDetail.steps.map((step, index) =>
+    parseStepItem(step, index),
+  );
 
   if (!routeDetail.success) {
     return (
       <View className="bg-white rounded-2xl px-4 py-4 ml-8.5 mt-3 justify-center items-center">
-        <CustomText
-          font="body3"
-          className="text-text-muted"
-        >
+        <CustomText font="body3" className="text-text-muted">
           이동 경로를 찾을 수 없어요.
         </CustomText>
       </View>
@@ -75,20 +76,17 @@ export default function BusRouteSummaryCard({
   }
 
   return (
-    <View className="bg-white rounded-2xl px-4 py-4 border border-[#D9D9D9] ml-8.5 mt-3 shrink-0">
-      <CustomText
-        font="title"
-        className="text-text-primary"
-      >
+    <View className="bg-white rounded-2xl px-4 py-4 border border-border ml-8.5 mt-3 shrink-0">
+      <CustomText font="title" className="text-text-primary">
         {totalDuration} · {totalDistance} {routeDetail?.fare ? `· ${fare}` : ""}
       </CustomText>
 
       {/* 구간별 비율 진행 바 */}
-      <View className="flex-row h-1.5 w-full rounded-full overflow-hidden mt-2.5 mb-4 bg-[#D9D9D9]">
+      <View className="flex-row h-1.5 w-full rounded-full overflow-hidden mt-2.5 mb-4 bg-border">
         {formattedSteps.map((step) => (
           <View
             key={step.id}
-            className={`h-full ${step.type === "bus" ? "bg-[#2A71FB]" : "bg-[#D9D9D9]"}`}
+            className={`h-full ${step.type === "bus" ? "bg-[#2A71FB]" : "bg-border"}`}
             style={{
               flexGrow: Math.max(step.durationMinutes, MIN_SEGMENT_FLEX),
               flexBasis: 0,
@@ -99,10 +97,7 @@ export default function BusRouteSummaryCard({
 
       <View className="gap-3">
         {formattedSteps.map((step) => (
-          <View
-            key={step.id}
-            className="flex-row items-center"
-          >
+          <View key={step.id} className="flex-row items-center">
             <View
               className={`w-6 h-6 rounded-full items-center justify-center mr-2 shrink-0 ${
                 step.type === "bus" ? "bg-[#2A71FB]" : "bg-bg-subtle"
@@ -130,22 +125,14 @@ export default function BusRouteSummaryCard({
         ))}
       </View>
 
-      <View className="h-px bg-[#E5E5E5] my-3" />
-
       <Pressable
         onPress={onPressKakaoMap}
-        className="flex-row items-center justify-between py-1"
+        className="flex-row items-center justify-between pt-7"
       >
-        <CustomText
-          font="body2"
-          className="text-text-muted"
-        >
+        <CustomText font="body2" className="text-text-muted">
           카카오맵에서 경로 더보기
         </CustomText>
-        <RightIcon
-          color={"#888888"}
-          width={20}
-        />
+        <RightIcon color={"#888888"} height={20} />
       </Pressable>
     </View>
   );

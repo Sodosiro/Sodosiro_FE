@@ -105,7 +105,6 @@ export function useWebView({
       let data: WebViewToNativeMessage;
       try {
         data = JSON.parse(event.nativeEvent.data);
-        console.log(data);
       } catch {
         if (__DEV__) {
           console.warn(

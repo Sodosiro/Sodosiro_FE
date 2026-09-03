@@ -1,4 +1,8 @@
-import { getRegionIntroductionApi, getVisitedRegions } from "@/api/region";
+import {
+  getRegionIntroductionApi,
+  getRegionList,
+  getVisitedRegions,
+} from "@/api/region";
 import { useQuery } from "@tanstack/react-query";
 
 export function useRegionIntroductionQuery(sigunguId: number) {
@@ -13,6 +17,14 @@ export function useVisitedRegionsQuery(areaCode: string) {
   return useQuery({
     queryKey: ["visitedRegion", areaCode],
     queryFn: () => getVisitedRegions(areaCode),
+    enabled: !!areaCode,
+  });
+}
+
+export function useRegionListQuery(areaCode: string) {
+  return useQuery({
+    queryKey: ["regionList", areaCode],
+    queryFn: () => getRegionList(areaCode),
     enabled: !!areaCode,
   });
 }

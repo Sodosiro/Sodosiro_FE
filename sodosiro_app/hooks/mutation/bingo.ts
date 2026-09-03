@@ -15,7 +15,7 @@ export function useBingoGpsMutation() {
     }) => postBingoGps(contentId, latitude, longitude),
 
     onSuccess: () => {
-      invalidateQueries([["bingo"], ["visitedRegion"]]);
+      invalidateQueries([["bingo"], ["visitedRegion"], ["badge"]]);
     },
   });
 

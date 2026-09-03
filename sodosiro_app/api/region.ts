@@ -9,3 +9,9 @@ export async function getVisitedRegions(areaCode: string) {
     params: { areaCode },
   });
 }
+
+export async function getRegionList(areaCode: string) {
+  return axiosInstance.get(`/api/v1/regions`, {
+    params: { areaCode },
+  });
+}

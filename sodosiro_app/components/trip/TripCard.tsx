@@ -1,10 +1,16 @@
 import { CourseStatus, CourseSummaryItem } from "@/api/course";
-import { CalendarMiniIcon, OnAirIcon, PinMiniIcon, TrashIcon } from "@/assets/svgs";
+import {
+  CalendarMiniIcon,
+  OnAirIcon,
+  PinMiniIcon,
+  TrashIcon,
+} from "@/assets/svgs";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
 import CustomText from "@/components/common/CustomText";
 import { SODOSI_LIST } from "@/constants/Sodosi";
 import { COURSE_STATE } from "@/constants/Trip";
 import { useDeleteCourseMutation } from "@/hooks/mutation/course";
+import { tagStyle } from "@/styles/Tag";
 import { calculateDDay, formatNightsAndDays } from "@/util/date/date";
 import { router } from "expo-router";
 import { memo, useEffect, useState } from "react";
@@ -24,11 +30,18 @@ type TripCardProps = {
   onDeleteSuccess?: () => void; // 삭제 성공 후 부모 컴포넌트에 알릴 콜백 (선택)
 };
 
-function TripCard({ course, courseStatus, onPress, onDeleteSuccess }: TripCardProps) {
+function TripCard({
+  course,
+  courseStatus,
+  onPress,
+  onDeleteSuccess,
+}: TripCardProps) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { mutateAsync: deleteCourse } = useDeleteCourseMutation();
 
-  const SODOSI = SODOSI_LIST.find((sodosi) => String(sodosi.sigunguCode) == course.sigunguCode);
+  const SODOSI = SODOSI_LIST.find(
+    (sodosi) => String(sodosi.sigunguCode) == course.sigunguCode,
+  );
 
   const dDay = calculateDDay(course?.startDate);
   const nightDayText = formatNightsAndDays(course?.startDate, course?.endDate);
@@ -67,10 +80,7 @@ function TripCard({ course, courseStatus, onPress, onDeleteSuccess }: TripCardPr
             {/* D-Day Badge */}
             {course.status == COURSE_STATE.FINISHED && (
               <View className="flex-row items-center self-start px-3.5 py-1.5 min-h-9 rounded-full bg-text-secondary">
-                <CustomText
-                  font="body3 tight"
-                  className="text-white"
-                >
+                <CustomText font="body3 tight" className="text-white">
                   완료
                 </CustomText>
               </View>
@@ -78,7 +88,11 @@ function TripCard({ course, courseStatus, onPress, onDeleteSuccess }: TripCardPr
             {course.status == COURSE_STATE.UPCOMING && (
               <View className="flex-row items-center self-start px-3.5 py-1.5 min-h-9 rounded-full bg-primary">
                 <CustomText font="body3 tight">
-                  {dDay === 0 ? "D-Day" : dDay > 0 ? `D-${dDay}` : `D+${Math.abs(dDay)}`}
+                  {dDay === 0
+                    ? "D-Day"
+                    : dDay > 0
+                      ? `D-${dDay}`
+                      : `D+${Math.abs(dDay)}`}
                 </CustomText>
               </View>
             )}
@@ -91,10 +105,7 @@ function TripCard({ course, courseStatus, onPress, onDeleteSuccess }: TripCardPr
           </View>
           {/* 삭제하기 버튼 */}
           {course.status !== COURSE_STATE.IN_PROGRESS && (
-            <Pressable
-              onPress={handleOpenDeleteModal}
-              hitSlop={8}
-            >
+            <Pressable onPress={handleOpenDeleteModal} hitSlop={8}>
               <TrashIcon color={"#888888"} />
             </Pressable>
           )}
@@ -102,9 +113,9 @@ function TripCard({ course, courseStatus, onPress, onDeleteSuccess }: TripCardPr
 
         {/* 제목 */}
         <View className="flex-row items-center mt-2 gap-1 justify-between">
-          <View className="flex-row">
+          <View className="flex-row items-center gap-1">
             <CustomText font="title">{course.title}</CustomText>
-            <View className="flex-row items-center px-1.5 py-1.5 min-h-7 rounded bg-[#F5F5F5]">
+            <View className={`${tagStyle} flex-row items-center bg-bg-subtle`}>
               <CustomText font="body3 tight">{SODOSI?.name}</CustomText>
             </View>
           </View>
@@ -113,12 +124,7 @@ function TripCard({ course, courseStatus, onPress, onDeleteSuccess }: TripCardPr
               <Animated.View style={animatedStyle}>
                 <OnAirIcon width={6} />
               </Animated.View>
-              <CustomText
-                font="title"
-                className=""
-              >
-                진행 중
-              </CustomText>
+              <CustomText font="body3">진행 중</CustomText>
             </View>
           )}
         </View>
@@ -127,10 +133,7 @@ function TripCard({ course, courseStatus, onPress, onDeleteSuccess }: TripCardPr
         <View className="flex-row items-center mt-2">
           <CalendarMiniIcon color={"#1A1A1A"} />
 
-          <CustomText
-            font="body2"
-            className="ml-2"
-          >
+          <CustomText font="body2" className="ml-2">
             {course.startDate} · {nightDayText}
           </CustomText>
         </View>
@@ -139,10 +142,7 @@ function TripCard({ course, courseStatus, onPress, onDeleteSuccess }: TripCardPr
         <View className="flex-row items-center mt-2">
           <PinMiniIcon color={"#444444"} />
 
-          <CustomText
-            font="body2"
-            className="ml-2"
-          >
+          <CustomText font="body2" className="ml-2">
             {course.displayName}
           </CustomText>
         </View>

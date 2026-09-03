@@ -176,7 +176,7 @@ const VerificationBottomSheet = forwardRef<BottomSheetModal, Props>(
                 className={`${isSeasonEnded ? `text-text-muted` : `text-text-secondary`} px-1`}
               >
                 {isSeasonEnded
-                  ? `지난 시즌의 빙고에요.`
+                  ? `방문 인증이 종료된 빙고에요.`
                   : isCompleted
                     ? `방문이 인증되었어요.`
                     : `현재 위치를 확인하여 방문을 인증할게요.`}

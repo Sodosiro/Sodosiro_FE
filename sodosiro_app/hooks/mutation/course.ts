@@ -25,7 +25,7 @@ export function useCourseGpsMutation() {
     }) => postCourseGps(courseId, contentId, day, latitude, longitude),
 
     onSuccess: (_, variables) => {
-      invalidateQueries([["courseDetail", variables.contentId], ["aiQuota"]]);
+      invalidateQueries([["courseDetail", variables.contentId], ["badge"]]);
     },
   });
 
@@ -41,7 +41,7 @@ export function useCourseRecommendationsMutation() {
     mutationFn: (body: CourseRecommendationRequest) =>
       postCourseRecommendationsApi(body),
     onSuccess: () => {
-      invalidateQueries([["courses", "UPCOMING"]]);
+      invalidateQueries([["courses", "UPCOMING"], ["aiQuota"]]);
     },
   });
 
@@ -57,9 +57,6 @@ export const useDeleteCourseMutation = () => {
     mutationFn: (courseId: number) => deleteCourse(courseId),
     onSuccess: () => {
       invalidateQueries([["courses"]]);
-    },
-    onError: (error) => {
-      console.error("코스 삭제 실패:", error);
     },
   });
 };

@@ -3,7 +3,9 @@ import CustomButton from "@/components/common/CustomButton";
 import Header from "@/components/common/Header";
 import EditProfileImage from "@/components/mypage/edit/EditProfileImage";
 import EditText from "@/components/mypage/edit/EditText";
+import { useToast } from "@/contexts/ToastProvider";
 import { useUserStore } from "@/stores/useUserStore";
+import axios from "axios";
 import { ImagePickerAsset } from "expo-image-picker";
 import { router } from "expo-router";
 import { useState } from "react";
@@ -12,6 +14,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ProfileEditScreen() {
   const { user, setUser } = useUserStore();
+
+  const { showToast } = useToast();
 
   const [profileImageTemp, setProfileImageTemp] = useState<
     string | ImagePickerAsset | null
@@ -37,6 +41,10 @@ export default function ProfileEditScreen() {
         setUser(updatedUser);
         router.back();
       } catch (error: any) {
+        if (axios.isAxiosError(error)) {
+          if (error.response?.data.code === "USER409-CONFLICT")
+            showToast("중복된 닉네임이에요.");
+        }
       } finally {
         setIsPending(false);
       }

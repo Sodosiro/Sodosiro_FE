@@ -4,7 +4,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   name: "소도시로",
   slug: "sodosiro",
-  version: "1.0.0",
+  version: "1.0.1",
   orientation: "portrait",
   icon: "./assets/images/logo.png",
   scheme: "sodosiro",

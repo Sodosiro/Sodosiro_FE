@@ -51,6 +51,7 @@ export default function ReviewSection({
       {...props}
     >
       <ReviewList
+        contentId={contentId}
         title={title}
         reviews={reviews?.slice(0, 3)}
         prev

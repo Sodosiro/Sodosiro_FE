@@ -1,17 +1,17 @@
 import AnimatedButton from "@/components/common/animated/AnimatedButton";
 import CustomText from "@/components/common/CustomText";
-import { router, useLocalSearchParams } from "expo-router";
+import { router } from "expo-router";
 import { View } from "react-native";
 
 export default function EmptyReview({
+  placeId,
   title,
   showWriteButton,
 }: {
+  placeId: number;
   title?: string;
   showWriteButton?: boolean;
 }) {
-  const { placeId } = useLocalSearchParams<{ placeId: string }>();
-
   return (
     <View className={`pt-4 gap-5 items-center`}>
       <View className={`gap-2 items-center`}>

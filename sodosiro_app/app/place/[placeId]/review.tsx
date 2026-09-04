@@ -124,7 +124,11 @@ export default function ReviewScreen() {
             />
           )}
           ListEmptyComponent={
-            <EmptyReview title={title} showWriteButton={true} />
+            <EmptyReview
+              placeId={Number(placeId)}
+              title={title}
+              showWriteButton={true}
+            />
           }
         />
       )}

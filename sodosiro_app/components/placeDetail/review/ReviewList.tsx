@@ -4,11 +4,13 @@ import EmptyReview from "./ReviewEmpty";
 import ReviewImageModal from "./ReviewImageModal";
 
 export default function ReviewList({
+  contentId,
   title,
   reviews,
   prev = false,
   isPending,
 }: {
+  contentId: number;
   title: string;
   reviews: ReviewType[];
   prev?: boolean;
@@ -37,7 +39,7 @@ export default function ReviewList({
           />
         ))
       ) : (
-        <EmptyReview title={title} showWriteButton={prev} />
+        <EmptyReview placeId={contentId} title={title} showWriteButton={prev} />
       )}
       <ReviewImageModal
         isModalVisible={isModalVisible}

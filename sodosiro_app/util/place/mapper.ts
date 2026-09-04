@@ -1,6 +1,5 @@
 import { SpotItem } from "@/api/course";
 
-// utils/mapper.ts (또는 해당 파일 상단)
 export function spotItemToPlaceType(spot: SpotItem): PlaceType {
   return {
     contentId: spot.contentId,
@@ -12,7 +11,7 @@ export function spotItemToPlaceType(spot: SpotItem): PlaceType {
     mapY: spot.mapY,
     avgRating: spot.avgRating ?? 0,
     reviewCount: spot.reviewCount ?? 0,
-    // SpotItem에 없는 필수 값들은 기본값(Fallback) 채움
+    smallTown: false,
     addr1: "",
     region: "",
     restdate: "",

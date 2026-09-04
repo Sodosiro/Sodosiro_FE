@@ -1,7 +1,6 @@
 import BottomBar from "@/components/bottombar/BottomBar";
 import { useNotificationsQuery } from "@/hooks/query/notification";
 import { usePlacesQuery } from "@/hooks/query/place";
-import { useLocationTracking } from "@/hooks/useLocationTracking";
 import { useExploreStore } from "@/stores/useExploreStore";
 import { useNotificationStore } from "@/stores/useNotificationStore";
 import { Tabs } from "expo-router";
@@ -17,8 +16,6 @@ export default function TabLayout() {
 
   const { data: notificationData } = useNotificationsQuery();
   const { data: allPlaceData } = usePlacesQuery("all", undefined, 10000);
-
-  useLocationTracking();
 
   useEffect(() => {
     const places = allPlaceData?.data.items;

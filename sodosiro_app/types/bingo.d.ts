@@ -2,6 +2,8 @@ type GpsVerificationItem = {
   contentId: number;
   title: string;
   category: CategoryNumber;
+  latitude: number;
+  longitude: number;
   completed?: boolean;
   firstImage?: string;
   courseId?: number;
@@ -13,6 +15,8 @@ type BingoItem = {
   contentId: number;
   title: string;
   category: CategoryNumber;
+  latitude: number;
+  longitude: number;
   completed: boolean;
   firstImage?: string;
 };

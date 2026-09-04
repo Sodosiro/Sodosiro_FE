@@ -52,8 +52,8 @@ function TimelineDaySection({
   dayIndex,
   mode,
   isEditing = false,
-  transformedSpots, // 인자 추가
-  transportMode, // 인자 추가
+  transformedSpots,
+  transportMode,
   setPlan,
   setOnDrag,
   onLayout,
@@ -266,6 +266,8 @@ function TimelineDaySection({
             selectedItem={
               {
                 ...selectedItem,
+                latitude: selectedItem?.mapY,
+                longitude: selectedItem?.mapX,
                 day: dayPlan?.day,
                 courseId,
               } as GpsVerificationItem

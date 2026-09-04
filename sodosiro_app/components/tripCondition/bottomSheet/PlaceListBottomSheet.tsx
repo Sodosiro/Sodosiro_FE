@@ -49,8 +49,12 @@ export default function PlaceListBottomSheet({
     if (!places) return [];
 
     return [...places].sort((a, b) => {
-      const aDisabled = Boolean(sigunguName && !a?.region?.includes(sigunguName));
-      const bDisabled = Boolean(sigunguName && !b?.region?.includes(sigunguName));
+      const aDisabled = Boolean(
+        sigunguName && !a?.region?.includes(sigunguName),
+      );
+      const bDisabled = Boolean(
+        sigunguName && !b?.region?.includes(sigunguName),
+      );
 
       if (aDisabled === bDisabled) return 0;
       return aDisabled ? 1 : -1;
@@ -96,7 +100,7 @@ export default function PlaceListBottomSheet({
         height: 5,
       }}
       enablePanDownToClose={true}
-      enableDynamicSizing={false} // ★ 컨텐츠 크기에 따른 동적 확장 방지
+      enableDynamicSizing={false}
     >
       {/* 일반 View로 레이아웃 구성 (h-full 사용) */}
       <View
@@ -124,10 +128,7 @@ export default function PlaceListBottomSheet({
           ) : isLikeTabEmpty ? (
             <View className="flex-1 justify-center items-center gap-2">
               <CustomText font="title">아직 저장한 장소가 없어요.</CustomText>
-              <CustomText
-                font="body3"
-                className="text-text-muted text-center"
-              >
+              <CustomText font="body3" className="text-text-muted text-center">
                 마음에 드는 장소를 저장하면 여기에서 선택할 수 있어요.
               </CustomText>
             </View>

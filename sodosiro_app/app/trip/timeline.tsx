@@ -28,14 +28,9 @@ import {
   transformCourseDetail,
 } from "@/util/route/route";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  router,
-  useFocusEffect,
-  useLocalSearchParams,
-  useNavigation,
-} from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { BackHandler, Dimensions, ScrollView, View } from "react-native";
+import { Dimensions, ScrollView, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -51,11 +46,12 @@ export default function TimelineScreen() {
     courseStatus: CourseStatus | "TEMP";
   }>();
 
-  const { data: courseResponse, isPending } = useCourseDetailQuery(courseId);
+  const { data: courseResponse, isPending } = useCourseDetailQuery(
+    Number(courseId),
+  );
   const { mutate: confirmCourse, isPending: isConfirmPending } =
     useConfirmCourseMutation();
   const queryClient = useQueryClient();
-  const navigation = useNavigation();
   const { showToast } = useToast();
 
   const [tripTitle, setTripTitle] = useState("");
@@ -117,28 +113,6 @@ export default function TimelineScreen() {
     // 사용자가 직접 제목을 수정했을 때만 실행
     handleSaveCourseDays();
   }, [tripTitle]);
-
-  useFocusEffect(
-    useCallback(() => {
-      if (courseStatus !== COURSE_STATE.TEMP) {
-        return;
-      }
-
-      const subscription = BackHandler.addEventListener(
-        "hardwareBackPress",
-        () => {
-          if (isEditing) {
-            setIsEditing(false);
-            return true;
-          }
-          showToast("일정이 임시저장되었어요.");
-          return false;
-        },
-      );
-
-      return () => subscription.remove();
-    }, [courseStatus, isEditing]),
-  );
 
   // ★ 1. 경로 데이터가 매핑된 렌더링용 Day 데이터 생성
   const transformedDays: RenderCourseDayItem[] = useMemo(() => {
@@ -271,14 +245,6 @@ export default function TimelineScreen() {
         title={tripTitle}
         showPencil={courseStatus === COURSE_STATE.TEMP}
         onTitleChange={(newTitle) => setTripTitle(newTitle)}
-        handleBack={
-          courseStatus === "TEMP"
-            ? () => {
-                showToast("일정이 임시저장되었어요.");
-                router.back();
-              }
-            : undefined
-        }
       />
 
       {courseStatus !== "TEMP" && (

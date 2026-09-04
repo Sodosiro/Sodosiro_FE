@@ -18,7 +18,7 @@ export function useCoursePlacesQuery(courseId: number | undefined) {
   });
 }
 
-export const useCourseDetailQuery = (courseId: string | number | undefined) => {
+export const useCourseDetailQuery = (courseId: number) => {
   return useQuery({
     queryKey: ["courseDetail", courseId],
     queryFn: () => getCourseDetail(courseId!),

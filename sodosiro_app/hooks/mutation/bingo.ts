@@ -4,15 +4,8 @@ import { useMutation } from "@tanstack/react-query";
 
 export function useBingoGpsMutation() {
   const { mutate, mutateAsync, isPending } = useMutation({
-    mutationFn: ({
-      contentId,
-      latitude,
-      longitude,
-    }: {
-      contentId: number;
-      latitude: number;
-      longitude: number;
-    }) => postBingoGps(contentId, latitude, longitude),
+    mutationFn: ({ contentId }: { contentId: number }) =>
+      postBingoGps(contentId),
 
     onSuccess: () => {
       invalidateQueries([["bingo"], ["visitedRegion"], ["badge"]]);

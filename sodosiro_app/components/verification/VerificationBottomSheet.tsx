@@ -3,6 +3,7 @@ import { DEFAULT_IMAGES } from "@/constants/Category";
 import { useToast } from "@/contexts/ToastProvider";
 import { useBingoGpsMutation } from "@/hooks/mutation/bingo";
 import { useCourseGpsMutation } from "@/hooks/mutation/course";
+import { getDistanceInMeters } from "@/util/location/location";
 import { NumberToCategory } from "@/util/place/category";
 import {
   BottomSheetBackdrop,
@@ -50,7 +51,7 @@ const VerificationBottomSheet = forwardRef<BottomSheetModal, Props>(
           "내가 쓴 피드에 방문 인증 표시가 붙어요.",
         ];
 
-    const handleVerivication = async () => {
+    const handleVerification = async () => {
       if (!selectedItem) return;
 
       try {
@@ -65,27 +66,36 @@ const VerificationBottomSheet = forwardRef<BottomSheetModal, Props>(
         }
 
         const location = await Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.High,
+          accuracy: Location.Accuracy.Balanced,
         });
 
         const { latitude, longitude } = location.coords;
 
+        const distance = getDistanceInMeters(
+          latitude,
+          longitude,
+          selectedItem.latitude,
+          selectedItem.longitude,
+        );
+
+        if (distance > 300) {
+          showToast("300m 이내에서 인증할 수 있어요.");
+          return;
+        }
+
         if (bingoStatus) {
           await bingoMutateAsync({
             contentId: selectedItem.contentId,
-            latitude,
-            longitude,
           });
+          showToast("방문이 인증되었어요!.");
         } else {
           await courseMutateAsync({
             courseId: selectedItem.courseId as number,
             contentId: selectedItem.contentId,
             day: selectedItem.day as number,
-            latitude,
-            longitude,
           });
+          showToast("방문이 인증되었어요!.");
         }
-        showToast("방문이 인증되었어요!.");
       } catch (error) {
         if (axios.isAxiosError(error)) {
           if (error.response?.data?.code === "GPS409-OUT_OF_RANGE") {
@@ -218,7 +228,7 @@ const VerificationBottomSheet = forwardRef<BottomSheetModal, Props>(
                   className={`h-13 flex-1 rounded-xl justify-center items-center`}
                   onPress={
                     !isCompleted && !isSeasonEnded
-                      ? handleVerivication
+                      ? handleVerification
                       : () => {
                           onClose();
                           router.push({

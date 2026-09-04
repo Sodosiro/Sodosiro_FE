@@ -17,14 +17,8 @@ export async function getBingoApi(
   });
 }
 
-export async function postBingoGps(
-  contentId: number,
-  latitude: number,
-  longitude: number,
-) {
+export async function postBingoGps(contentId: number) {
   return await axiosInstance.post(`/api/v1/bingo/gps`, {
     contentId,
-    latitude,
-    longitude,
   });
 }

@@ -114,7 +114,7 @@ function TimelineItem({
           text="방문 인증하기"
           selected={true}
           primary={true}
-          isGpsVerificated={place.gpsVerified}
+          isGpsVerificated={false}
         />
       );
     }

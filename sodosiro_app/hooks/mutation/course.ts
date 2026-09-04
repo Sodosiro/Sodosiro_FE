@@ -14,18 +14,14 @@ export function useCourseGpsMutation() {
       courseId,
       contentId,
       day,
-      latitude,
-      longitude,
     }: {
       courseId: number;
       contentId: number;
       day: number;
-      latitude: number;
-      longitude: number;
-    }) => postCourseGps(courseId, contentId, day, latitude, longitude),
+    }) => postCourseGps(courseId, contentId, day),
 
     onSuccess: (_, variables) => {
-      invalidateQueries([["courseDetail", variables.contentId], ["badge"]]);
+      invalidateQueries([["courseDetail", variables.courseId], ["badge"]]);
     },
   });
 

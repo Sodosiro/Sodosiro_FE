@@ -53,23 +53,6 @@ export default function NotificationSettingScreen() {
           </CustomText>
         </NotificationToggleContainer>
         <NotificationToggleContainer
-          toggle={tripNoticeToggle}
-          onPress={() =>
-            handleSettingToggle("NEARBY_LIKED_SPOTS", !tripNoticeToggle)
-          }
-          disabled={!noticeToggle}
-        >
-          <AnimatedView
-            style={disabledAnimatedStyle}
-            className={`flex-1 gap-1`}
-          >
-            <CustomText font="title">여행 알림</CustomText>
-            <CustomText font="body3" className={`text-text-muted`}>
-              여행 진행 중 저장한 장소에 대한 알림을 받아요.
-            </CustomText>
-          </AnimatedView>
-        </NotificationToggleContainer>
-        <NotificationToggleContainer
           toggle={activityNoticeToggle}
           onPress={() =>
             handleSettingToggle("DIGGING_POST_LIKE", !activityNoticeToggle)

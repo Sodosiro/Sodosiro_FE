@@ -12,6 +12,9 @@ import { WebView } from "react-native-webview";
 import { useWebView } from "@/hooks/useWebView";
 import { useExploreStore } from "@/stores/useExploreStore";
 import { NumberToCategory } from "@/util/place/category";
+import { Dimensions } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { BOTTOM_BAR_HEIGHT } from "../bottombar/BottomBar";
 
 export default function KakaoMap({
   webViewRef,
@@ -47,9 +50,17 @@ export default function KakaoMap({
     initialData: routeData ? routeData : initialData,
   });
 
+  const insets = useSafeAreaInsets();
+
+  const screenHeight = Dimensions.get("window").height;
+
   const animatedStyle = animatedPosition
     ? useAnimatedStyle(() => ({
-        height: animatedPosition.value + 8,
+        height:
+          Math.min(
+            animatedPosition.value,
+            screenHeight - BOTTOM_BAR_HEIGHT - insets.bottom,
+          ) + 10,
       }))
     : undefined;
 
@@ -107,7 +118,7 @@ export default function KakaoMap({
 
   const uri =
     mode === "marker"
-      ? (process.env.EXPO_PUBLIC_WEBVIEW_URI as string)
+      ? `${process.env.EXPO_PUBLIC_WEBVIEW_URI}?explore=${true}`
       : `${process.env.EXPO_PUBLIC_WEBVIEW_URI}/navigation`;
 
   return (

@@ -4,7 +4,7 @@ export default function Marker() {
   return (
     <>
       <div className={`w-screen h-screen`}>
-        <KakaoMap mode="marker" />
+        <KakaoMap />
       </div>
     </>
   );

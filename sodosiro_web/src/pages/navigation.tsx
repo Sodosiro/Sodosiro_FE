@@ -4,7 +4,7 @@ export default function Navigation() {
   return (
     <>
       <div className={`w-screen h-screen`}>
-        <KakaoMap mode="navigation" />
+        <KakaoMap />
       </div>
     </>
   );

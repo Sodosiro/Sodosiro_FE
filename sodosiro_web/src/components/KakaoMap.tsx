@@ -9,12 +9,14 @@ import { useMarkers } from "../hooks/useMarkers";
 import { useRoute } from "../hooks/useRoute";
 import { useWebViewMessage } from "../hooks/useWebViewMessage";
 
-export default function KakaoMap({ mode }: { mode: "marker" | "navigation" }) {
+export default function KakaoMap() {
   const params = new URLSearchParams(window.location.search);
 
   const lat = Number(params.get("lat"));
   const lng = Number(params.get("lng"));
   const level = Number(params.get("level"));
+
+  const isExplore = params.get("explore") === "true";
 
   useKakaoLoader({
     appkey: import.meta.env.VITE_KAKAO_MAP_KEY,
@@ -94,6 +96,19 @@ export default function KakaoMap({ mode }: { mode: "marker" | "navigation" }) {
   const handleCreate = (map: kakao.maps.Map) => {
     mapRef.current = map;
 
+    map.setCopyrightPosition(kakao.maps.CopyrightPosition.BOTTOMRIGHT, true);
+
+    if (isExplore) {
+      const mapContainer = map.getNode();
+
+      const copyright = mapContainer.querySelector(
+        'div[style*="bottom: 0px"][style*="right: 0px"]',
+      ) as HTMLElement | null;
+
+      if (copyright) {
+        copyright.style.bottom = "110px";
+      }
+    }
     createCluster(map);
 
     kakao.maps.event.addListener(map, "dragstart", stopTracking);
@@ -107,9 +122,9 @@ export default function KakaoMap({ mode }: { mode: "marker" | "navigation" }) {
 
   return (
     <div
-      className={`w-screen h-screen ${mode === "marker" && "mt-5"} flex flex-col items-center justify-center`}
+      className={`w-screen h-screen flex flex-col items-center justify-center`}
     >
-      <div className={`w-screen ${mode === "marker" && "min-h-250"} h-screen`}>
+      <div className={`w-screen h-screen`}>
         <Map
           ref={mapRef}
           center={{
@@ -119,7 +134,7 @@ export default function KakaoMap({ mode }: { mode: "marker" | "navigation" }) {
           level={level || 12}
           style={{
             width: "100%",
-            height: "100%",
+            height: isExplore ? "calc(100% + 100px)" : "100%",
           }}
           onCreate={handleCreate}
         />

@@ -248,7 +248,7 @@ export default function TimelineScreen() {
       />
 
       {courseStatus !== "TEMP" && (
-        <View className={`w-full aspect-3/2 overflow-hidden`}>
+        <View className={`w-full aspect-3/2 mb-3`}>
           {courseStatus === "IN_PROGRESS" && (
             <View className="absolute top-3 left-3 z-10 flex-row items-center px-3.5 py-1.5 min-h-9 rounded-full bg-primary gap-1.5">
               <Animated.View style={animatedStyle}>

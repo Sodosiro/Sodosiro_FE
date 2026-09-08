@@ -194,7 +194,9 @@ const LocationMap = ({ address, placeDetail }: LocationMapProps) => {
       <WebView
         ref={webViewRef}
         style={{ width: "100%", aspectRatio: 5 / 3 }}
-        source={{ uri: process.env.EXPO_PUBLIC_WEBVIEW_URI as string }}
+        source={{
+          uri: `${process.env.EXPO_PUBLIC_WEBVIEW_URI}`,
+        }}
         onMessage={handleMessage}
         applicationNameForUserAgent="SodosiroAppWebView"
       />

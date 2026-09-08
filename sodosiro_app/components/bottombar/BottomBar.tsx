@@ -9,7 +9,12 @@ import TripIcon from "../icon/bottomBar/TripIcon";
 
 import { BottomTabBarProps } from "expo-router/build/react-navigation/bottom-tabs";
 import { Pressable, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
+
+export const BOTTOM_BAR_HEIGHT = 80;
 
 const ICONS = {
   index: HomeIcon,
@@ -28,8 +33,16 @@ const TITLES = {
 } as const;
 
 export default function BottomBar({ state, navigation }: BottomTabBarProps) {
+  const insets = useSafeAreaInsets();
+
   return (
-    <SafeAreaView edges={["bottom"]} style={{ backgroundColor: "white" }}>
+    <SafeAreaView
+      edges={["bottom"]}
+      style={{
+        backgroundColor: "white",
+        height: BOTTOM_BAR_HEIGHT + insets.bottom,
+      }}
+    >
       <View className="flex-row border-t border-border bg-bg py-4 px-2">
         {state.routes.map((route, index) => {
           const focused = state.index === index;

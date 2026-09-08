@@ -4,6 +4,7 @@ import {
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import { ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type Props = {
   visible: boolean;
@@ -20,12 +21,14 @@ export default function BottomSheet({
 }: Props) {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 
+  const insets = useSafeAreaInsets();
+
   const snapPoints = useMemo(() => {
     if (minHeight) {
       return [`${minHeight}px`, "80%"];
     }
 
-    return [280, "80%"];
+    return [280 + insets.bottom, "80%"];
   }, [minHeight]);
 
   useEffect(() => {

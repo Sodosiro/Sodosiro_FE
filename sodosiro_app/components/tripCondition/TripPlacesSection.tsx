@@ -3,6 +3,7 @@ import CustomText from "@/components/common/CustomText";
 import Spinner from "@/components/common/Spinner";
 import { useAlternativeSpotsQuery } from "@/hooks/query/course";
 import { View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import TripPlacesList from "./TripPlacesList";
 
 type Props = {
@@ -17,15 +18,23 @@ export default function TripPlacesSection({ contentId, onSelectPlace }: Props) {
   const isEmpty = !data || data?.data.length == 0;
   const places = data?.data;
 
+  const insets = useSafeAreaInsets();
+
   return (
     <View className="flex-col px-5 gap-3">
       {isPending ? (
-        <View className="justify-center items-center h-91.5">
+        <View
+          className="justify-center items-center"
+          style={{ height: 260 + insets.bottom }}
+        >
           <Spinner />
         </View>
       ) : isEmpty ? (
         /* 대체 추천 장소가 없을 때 */
-        <View className="justify-center items-center h-91.5 gap-2">
+        <View
+          className="justify-center items-center gap-2"
+          style={{ height: 260 + insets.bottom }}
+        >
           <CustomText font="title">추천할 대체 장소가 없어요.</CustomText>
           <CustomText font="body3" className="text-text-muted">
             주변에 추천할 만한 대체 장소를 찾지 못했습니다.

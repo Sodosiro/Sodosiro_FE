@@ -4,13 +4,14 @@ import Header from "@/components/common/Header";
 import DeleteModal from "@/components/common/modal/DeleteModal";
 import Spinner from "@/components/common/Spinner";
 import FeedItem from "@/components/feed/FeedItem";
+import { useToast } from "@/contexts/ToastProvider";
 import { useMyFeedsQuery } from "@/hooks/query/feed";
 import { invalidateQueries } from "@/util/query/invalidateQueries";
 import { useRef, useState } from "react";
 import { FlatList, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function FeedScreen() {
+export default function MyFeedScreen() {
   const flatListRef = useRef<FlatList>(null);
 
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
@@ -18,16 +19,24 @@ export default function FeedScreen() {
 
   const { data, isPending } = useMyFeedsQuery();
 
+  const { showToast } = useToast();
+
   const feeds =
     data?.pages.flatMap((page) => page.data.items) ?? ([] as FeedType[]);
 
   const handleConfirmDelete = async (feedId: number) => {
-    await deleteFeedApi(feedId);
+    try {
+      await deleteFeedApi(feedId);
 
-    invalidateQueries([["feeds"]]);
+      showToast("피드가 삭제되었어요.");
 
-    setDeleteFeedId(null);
-    setIsDeleteModalVisible(false);
+      invalidateQueries([["feeds"]]);
+    } catch (error) {
+      showToast("피드 삭제에 실패했어요.");
+    } finally {
+      setDeleteFeedId(null);
+      setIsDeleteModalVisible(false);
+    }
   };
 
   return (

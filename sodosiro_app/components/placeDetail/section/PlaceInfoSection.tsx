@@ -147,7 +147,7 @@ export default function PlaceInfoSection({
           placeDetail={placeDetail}
         />
         <CustomText font="body3" className={`text-text-muted`}>
-          일부 정보는 제공되지 않을 수 있습니다.
+          출처: ⓒ한국관광공사
         </CustomText>
       </View>
     </PlaceDetailSectionContainer>

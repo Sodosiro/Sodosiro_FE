@@ -1,5 +1,3 @@
-import { RefreshIcon } from "@/assets/svgs";
-import AnimatedButton from "@/components/common/animated/AnimatedButton";
 import BottomActionBar from "@/components/common/BottomActionBar";
 import CustomButton from "@/components/common/CustomButton";
 import CustomCarousel from "@/components/common/CustomCarousel";
@@ -57,7 +55,7 @@ export default function RouletteResultScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <Header
-        title="오늘의 소도시"
+        title={`${title} 둘러보기`}
         rightComponent={
           chance !== undefined ? (
             <View className={`flex-row gap-1 items-center shrink`}>
@@ -104,14 +102,6 @@ export default function RouletteResultScreen() {
         </ScrollView>
       )}
       <BottomActionBar>
-        <AnimatedButton
-          className={`flex-row items-center justify-center px-4 gap-1.5 rounded-full`}
-          backgroundColor={["#FFFFFF", "#F5F5F5"]}
-          onPress={() => router.back()}
-        >
-          <RefreshIcon width={16} />
-          <CustomText font="body1">다시 돌리기</CustomText>
-        </AnimatedButton>
         <CustomButton
           stretch
           type="primary"

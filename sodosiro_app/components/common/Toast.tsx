@@ -1,5 +1,6 @@
 import { InfoMiniIcon } from "@/assets/svgs";
 import CustomText from "@/components/common/CustomText";
+import { useSegments } from "expo-router";
 import { ReactNode, useEffect, useRef } from "react";
 import { Animated } from "react-native";
 
@@ -16,10 +17,13 @@ export default function Toast({
   visible,
   message,
   icon = <InfoMiniIcon />,
-  bottomOffset = 90,
 }: ToastProps) {
   const opacity = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(8)).current;
+
+  const segments = useSegments();
+
+  const routeBottomOffset = segments[0] === "(tabs)" ? 90 : 40;
 
   useEffect(() => {
     Animated.parallel([
@@ -43,7 +47,7 @@ export default function Toast({
         position: "absolute",
         left: 16,
         right: 16,
-        bottom: bottomOffset + 10,
+        bottom: routeBottomOffset + 10,
         opacity,
         transform: [{ translateY }],
         backgroundColor: "rgba(26, 26, 26, 0.92)",

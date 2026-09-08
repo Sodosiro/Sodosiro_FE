@@ -19,7 +19,7 @@ export default function SodosiButton() {
       className={`${badgeStyle} px-4`}
       onPress={() => setOnlySmallTown(!onlySmallTown)}
     >
-      <CustomText font="body3 tight">소도시만</CustomText>
+      <CustomText font="body3 tight">소도시</CustomText>
     </AnimatedPressable>
   );
 }

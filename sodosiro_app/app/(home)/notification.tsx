@@ -87,7 +87,9 @@ export default function NotificationScreen() {
                   <NotificationDay date={new Date(item.createdAt)} />
                 )}
 
-                {!isDifferentDay && <View className="w-full h-px bg-border" />}
+                {!isDifferentDay && (
+                  <View className="w-full h-px bg-border opacity-50" />
+                )}
 
                 <NotificationItem notification={item} onPress={handlePress} />
               </View>

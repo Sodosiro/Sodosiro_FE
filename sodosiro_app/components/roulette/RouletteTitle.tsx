@@ -16,15 +16,15 @@ export default function RouletteTitle({
   }, []);
 
   const title = !showRoulette
-    ? "오늘의 소도시 뽑기"
+    ? "강원도 랜덤 여행지 뽑기"
     : !result
-      ? "오늘의 소도시 뽑는 중"
+      ? "강원도 여행지 뽑는 중"
       : "오늘 떠날 곳은";
 
   const comment = !showRoulette
-    ? "AI가 숨은 여행지를 찾아드려요"
+    ? "AI가 강원도에서 떠날 새로운 곳을 찾아드려요"
     : !result
-      ? "아직 많이 알려지지 않은 곳을 찾고 있어요"
+      ? "강원도의 다양한 지역을 살펴보고 있어요"
       : result.comment;
 
   return (

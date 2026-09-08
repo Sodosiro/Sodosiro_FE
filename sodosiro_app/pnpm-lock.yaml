@@ -47,6 +47,9 @@ importers:
       expo-application:
         specifier: ^57.0.2
         version: 57.0.2(expo@57.0.9)
+      expo-blob:
+        specifier: ^57.0.1
+        version: 57.0.1(expo@57.0.9)
       expo-build-properties:
         specifier: ^57.0.8
         version: 57.0.8(expo@57.0.9)
@@ -1949,6 +1952,11 @@ packages:
       expo: '*'
       react: '*'
       react-native: '*'
+
+  expo-blob@57.0.1:
+    resolution: {integrity: sha512-wBcXcmLdEv0VF+E4ogWGGUAUdVuMJLXZ7Zfc4lFHLahMkcw5Bu7wDFAc1m1x8qlwnmjda0Xd/2jI/sYJw5Y9pg==}
+    peerDependencies:
+      expo: '*'
 
   expo-build-properties@57.0.8:
     resolution: {integrity: sha512-6/SDeqKLKaF8MRfLZ3JhiiDN0y5uXtyefhWRZ42ZX03QVZ8Fw4dnbdTSHpsBvbKNIluYk5bP/zosdwkbeeNd9A==}
@@ -5811,6 +5819,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
       - typescript
+
+  expo-blob@57.0.1(expo@57.0.9):
+    dependencies:
+      expo: 57.0.9(30910fed17e8897989ea91debefce707)
 
   expo-build-properties@57.0.8(expo@57.0.9):
     dependencies:

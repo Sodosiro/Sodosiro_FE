@@ -106,7 +106,7 @@ export default function TripPlanConfirmModal({
 
           <View className="flex-row gap-2">
             <InfoMiniIcon />
-            <CustomText font="body3" className={`text-text-muted`}>
+            <CustomText font="body3" className={`text-text-muted flex-1`}>
               일정을 확정하면 장소와 순서를 변경할 수 없어요.
             </CustomText>
           </View>

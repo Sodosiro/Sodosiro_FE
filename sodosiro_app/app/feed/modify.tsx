@@ -4,6 +4,7 @@ import Header from "@/components/common/Header";
 import CreatingModal from "@/components/common/modal/CreatingModal";
 import Spinner from "@/components/common/Spinner";
 import CreateFeedStepContent from "@/components/feed/create/step/CreateFeedStepContent";
+import { useToast } from "@/contexts/ToastProvider";
 import { useFeedQuery } from "@/hooks/query/feed";
 import { invalidateQueries } from "@/util/query/invalidateQueries";
 import * as ImagePicker from "expo-image-picker";
@@ -19,6 +20,8 @@ export default function ModifyFeedScreen() {
     ImagePicker.ImagePickerAsset[]
   >([]);
   const [isPicking, setIsPicking] = useState(false);
+
+  const { showToast } = useToast();
 
   const { feedId } = useLocalSearchParams<{
     feedId: string;
@@ -93,8 +96,10 @@ export default function ModifyFeedScreen() {
 
       await invalidateQueries([["feeds"], ["feed"]]);
 
+      showToast("피드를 수정했어요.");
       router.back();
     } catch (error) {
+      showToast("피드 수정에 실패했어요.");
     } finally {
       setIsSubmitting(false);
     }

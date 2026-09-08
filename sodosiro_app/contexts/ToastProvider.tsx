@@ -1,5 +1,5 @@
 import Toast from "@/components/common/Toast";
-import { createContext, ReactNode, useContext, useState } from "react";
+import { createContext, ReactNode, useContext, useRef, useState } from "react";
 
 type ToastContextType = {
   showToast: (message: string) => void;
@@ -11,19 +11,25 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const [visible, setVisible] = useState(false);
   const [message, setMessage] = useState("");
 
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const showToast = (text: string) => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
     setMessage(text);
     setVisible(true);
 
-    setTimeout(() => {
+    timeoutRef.current = setTimeout(() => {
       setVisible(false);
+      timeoutRef.current = null;
     }, 2000);
   };
 
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-
       <Toast visible={visible} message={message} />
     </ToastContext.Provider>
   );

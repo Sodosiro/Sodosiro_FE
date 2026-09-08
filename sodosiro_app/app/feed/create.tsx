@@ -7,6 +7,7 @@ import CreateFeedStepContent from "@/components/feed/create/step/CreateFeedStepC
 import CreateFeedStepHistory from "@/components/feed/create/step/CreateFeedStepHistory";
 import CreateFeedStepPlace from "@/components/feed/create/step/CreateFeedStepPlace";
 import { COURSE_STATE } from "@/constants/Trip";
+import { useToast } from "@/contexts/ToastProvider";
 import { useCoursePlacesQuery, useCoursesQuery } from "@/hooks/query/course";
 import { invalidateQueries } from "@/util/query/invalidateQueries";
 import * as ImagePicker from "expo-image-picker";
@@ -27,6 +28,8 @@ export default function CreateFeedScreen() {
 
   const { courseId } = useLocalSearchParams<{ courseId?: string }>();
   const paramCourseId = courseId ? Number(courseId) : undefined;
+
+  const { showToast } = useToast();
 
   const initialStep = paramCourseId ? 1 : 0;
   const [step, setStep] = useState(initialStep);
@@ -138,7 +141,9 @@ export default function CreateFeedScreen() {
       await invalidateQueries([["feeds"]]);
 
       router.push("/(tabs)/feed");
+      showToast("피드가 게시됐어요.");
     } catch (error) {
+      showToast("피드 작성에 실패했어요.");
     } finally {
       setIsSubmitting(false);
     }

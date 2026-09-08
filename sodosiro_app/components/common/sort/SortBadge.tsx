@@ -7,6 +7,7 @@ import {
 } from "@gorhom/bottom-sheet";
 import { Dispatch, SetStateAction, useRef } from "react";
 import { Pressable } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import CustomText from "../CustomText";
 
 export default function SortBadge({
@@ -27,6 +28,8 @@ export default function SortBadge({
   const closeSheet = () => {
     bottomSheetRef.current?.dismiss();
   };
+
+  const insets = useSafeAreaInsets();
 
   return (
     <>
@@ -61,7 +64,10 @@ export default function SortBadge({
           borderTopRightRadius: 24,
         }}
       >
-        <BottomSheetView className="px-5 pb-8 pt-6">
+        <BottomSheetView
+          className="px-5 pt-6"
+          style={{ paddingBottom: 8 + insets.bottom }}
+        >
           <CustomText font="heading2" className="mb-4">
             정렬
           </CustomText>

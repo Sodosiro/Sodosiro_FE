@@ -6,7 +6,7 @@ import { signInWithKakao } from "@/lib/kakao";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { router } from "expo-router";
 import { useState } from "react";
-import { Image, Text, View } from "react-native";
+import { Image, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function LoginScreen() {
@@ -51,33 +51,37 @@ export default function LoginScreen() {
           소도시로
         </Text>
       </View>
-      <View className={`w-screen aspect-square`}>
-        <Image
-          source={require("@/assets/images/login_hero.png")}
-          className={`w-full h-full`}
-          resizeMode="contain"
-        />
-      </View>
-      <View className={`px-5 py-8 flex-1 justify-between`}>
-        <View className={`gap-6`}>
-          <CustomText font="display">
-            강원도 숨은 명소로{"\n"}여행을 떠나요!
-          </CustomText>
-          <CustomText font="body1" className={`text-text-muted`}>
-            소도시부터 숨은 명소까지{"\n"}내 취향에 맞는 여행지를 추천해드려요.
-          </CustomText>
+      <ScrollView className={`w-screen`} contentContainerClassName={`grow`}>
+        <View className={`w-screen aspect-square`}>
+          <Image
+            source={require("@/assets/images/login_hero.png")}
+            className={`w-full h-full`}
+            resizeMode="contain"
+          />
         </View>
-        <AnimatedButton
-          backgroundColor={["#fee500", "#EFD800"]}
-          className={`w-full py-4 flex-row gap-2.5 items-center justify-center rounded-xl bg-[#fee500]`}
-          onPress={handleKakaoLogin}
-        >
-          <KakaoLogo />
-          <CustomText font="body1" className={`shrink-0 pr-0.5`}>
-            카카오 로그인
-          </CustomText>
-        </AnimatedButton>
-      </View>
+
+        <View className={`px-5 py-8 flex-1 justify-between gap-4`}>
+          <View className={`gap-6 flex-1`}>
+            <CustomText font="display">
+              강원도 숨은 명소로{"\n"}여행을 떠나요!
+            </CustomText>
+            <CustomText font="body1" className={`text-text-muted`}>
+              소도시부터 숨은 명소까지{"\n"}내 취향에 맞는 여행지를
+              추천해드려요.
+            </CustomText>
+          </View>
+          <AnimatedButton
+            backgroundColor={["#fee500", "#EFD800"]}
+            className={`w-full py-4 flex-row gap-2.5 items-center justify-center rounded-xl bg-[#fee500]`}
+            onPress={handleKakaoLogin}
+          >
+            <KakaoLogo />
+            <CustomText font="body1" className={`shrink-0 pr-0.5`}>
+              카카오 로그인
+            </CustomText>
+          </AnimatedButton>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }

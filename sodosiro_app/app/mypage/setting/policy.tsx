@@ -326,6 +326,26 @@ export default function PolicyScreen() {
             </View>
           </View>
 
+          {/* 4. 개인정보의 제3자 제공 */}
+          <View className={`gap-3`}>
+            <CustomText font="body1">4. 개인정보의 제3자 제공</CustomText>
+            <CustomText
+              font="body3 review"
+              className="text-text-muted"
+            >
+              운영자는 원칙적으로 이용자의 개인정보를 제3자에게 제공하지 않습니다. 다만, 이용자가
+              사전에 동의한 경우 또는 법률에 특별한 규정이 있는 경우에만 필요한 범위에서 제공합니다.
+            </CustomText>
+            <CustomText
+              font="body3 review"
+              className="text-text-muted"
+            >
+              닉네임, 프로필 이미지, 리뷰·피드와 첨부 이미지는 서비스의 공개 화면에 표시될 수
+              있습니다. 이는 이용자가 공개 게시 기능을 선택한 범위에서 이루어지며, 이용자는 게시물을
+              수정하거나 삭제할 수 있습니다.
+            </CustomText>
+          </View>
+
           {/* 5. 개인정보 처리업무의 위탁 */}
           <View className={`gap-3`}>
             <CustomText font="body1">5. 개인정보 처리업무의 위탁</CustomText>

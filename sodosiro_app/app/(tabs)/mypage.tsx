@@ -3,6 +3,7 @@ import MyBadgeSection from "@/components/mypage/section/MyBadgeSection";
 import MyHistorySection from "@/components/mypage/section/MyHistorySection";
 import MyVisitedSection from "@/components/mypage/section/MyVisitedSection";
 import SettingSection from "@/components/mypage/section/SettingSection";
+import TermsSection from "@/components/mypage/section/TermsSection";
 import { useState } from "react";
 import { ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -34,6 +35,7 @@ export default function MyPageScreen() {
         />
         <MyHistorySection />
         <SettingSection />
+        <TermsSection />
       </ScrollView>
     </View>
   );

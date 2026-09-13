@@ -7,9 +7,9 @@ export default function TermsScreen() {
     { category: "서비스명", content: "소도시로" },
     { category: "운영형태", content: "개인 운영 비상업적 공모전·시범 서비스" },
     { category: "운영자", content: "랜더스" },
-    { category: "이메일", content: "문의 이메일" },
-    { category: "전화번호", content: "번호" },
-    { category: "주소", content: "주소" },
+    { category: "이메일", content: "sodosiro0921@gmail.com" },
+    // { category: "전화번호", content: "번호" },
+    // { category: "주소", content: "주소" },
   ];
 
   return (

@@ -1,4 +1,48 @@
-import { useEffect } from "react";
+import { useCallback, useEffect, useMemo } from "react";
+
+type NativeToWebViewMessage =
+  | {
+      type: "SET_PLACES";
+      places: PlaceType[];
+    }
+  | {
+      type: "SEARCH_PLACES";
+      places: PlaceType[];
+    }
+  | {
+      type: "SEARCH_INITIALIZE";
+      places: PlaceType[];
+    }
+  | {
+      type: "UPDATE_PLACE";
+      places: PlaceType[];
+    }
+  | {
+      type: "SET_PLACE";
+      place: PlaceType;
+    }
+  | {
+      type: "SET_ROUTE";
+      routeInfo: RouteInfo;
+    }
+  | {
+      type: "UPDATE_LOCATION";
+      latitude: number;
+      longitude: number;
+    }
+  | {
+      type: "DENY_LOCATION";
+    }
+  | {
+      type: "PAN_TO";
+      placeId: number;
+    }
+  | {
+      type: "SELECT_CANCEL";
+    }
+  | {
+      type: "START_TRACKING";
+    };
 
 export function useWebViewMessage({
   mapRef,
@@ -27,78 +71,122 @@ export function useWebViewMessage({
   searchPlaces: (placeIds: number[]) => void;
   searchInitialize: (placeIds: number[]) => void;
 }) {
-  useEffect(() => {
-    const receiveMessage = (event: MessageEvent) => {
-      const data =
-        typeof event.data === "string" ? JSON.parse(event.data) : event.data;
+  const messageHandlers = useMemo(
+    () => ({
+      SET_PLACES: (
+        data: Extract<NativeToWebViewMessage, { type: "SET_PLACES" }>,
+      ) => {
+        if (!mapRef.current) return;
 
-      switch (data.type) {
-        case "SET_PLACES": {
-          if (!mapRef.current) return;
-          renderPlaces(data.places);
-          break;
-        }
-        case "SEARCH_PLACES": {
-          if (!mapRef.current) return;
-          searchPlaces(
-            data.places.map((place: { contentId: number }) => place.contentId),
-          );
-          break;
-        }
-        case "SEARCH_INITIALIZE": {
-          if (!mapRef.current) return;
-          searchInitialize(
-            data.places.map((place: { contentId: number }) => place.contentId),
-          );
-          return;
-        }
-        case "UPDATE_PLACE":
-          if (!mapRef.current) return;
-          updateMarkers(data.places);
-          break;
+        renderPlaces(data.places);
+      },
 
-        case "SET_PLACE":
-          if (!mapRef.current) return;
-          createMarker(mapRef.current, data.place);
-          break;
+      SEARCH_PLACES: (
+        data: Extract<NativeToWebViewMessage, { type: "SEARCH_PLACES" }>,
+      ) => {
+        if (!mapRef.current) return;
 
-        case "SET_ROUTE":
-          if (!mapRef.current) return;
-          drawRoute(mapRef.current, data.routeInfo);
-          break;
+        searchPlaces(data.places.map((place) => place.contentId));
+      },
 
-        case "UPDATE_LOCATION":
-          updateLocation(data.latitude, data.longitude);
-          break;
+      SEARCH_INITIALIZE: (
+        data: Extract<NativeToWebViewMessage, { type: "SEARCH_INITIALIZE" }>,
+      ) => {
+        if (!mapRef.current) return;
 
-        case "DENY_LOCATION":
-          denyLocation();
-          break;
+        searchInitialize(data.places.map((place) => place.contentId));
+      },
 
-        case "PAN_TO": {
-          selectMarkerByPlaceId(data.placeId);
-          break;
-        }
+      UPDATE_PLACE: (
+        data: Extract<NativeToWebViewMessage, { type: "UPDATE_PLACE" }>,
+      ) => {
+        if (!mapRef.current) return;
 
-        case "SELECT_CANCEL": {
-          clearSelectedMarker();
-          break;
-        }
+        updateMarkers(data.places);
+      },
 
-        case "START_TRACKING":
-          startTracking();
-          break;
+      SET_PLACE: (
+        data: Extract<NativeToWebViewMessage, { type: "SET_PLACE" }>,
+      ) => {
+        if (!mapRef.current) return;
+
+        createMarker(mapRef.current, data.place);
+      },
+
+      SET_ROUTE: (
+        data: Extract<NativeToWebViewMessage, { type: "SET_ROUTE" }>,
+      ) => {
+        if (!mapRef.current) return;
+
+        drawRoute(mapRef.current, data.routeInfo);
+      },
+
+      UPDATE_LOCATION: (
+        data: Extract<NativeToWebViewMessage, { type: "UPDATE_LOCATION" }>,
+      ) => {
+        updateLocation(data.latitude, data.longitude);
+      },
+
+      DENY_LOCATION: () => {
+        denyLocation();
+      },
+
+      PAN_TO: (data: Extract<NativeToWebViewMessage, { type: "PAN_TO" }>) => {
+        selectMarkerByPlaceId(data.placeId);
+      },
+
+      SELECT_CANCEL: () => {
+        clearSelectedMarker();
+      },
+
+      START_TRACKING: () => {
+        startTracking();
+      },
+    }),
+    [
+      mapRef,
+      renderPlaces,
+      searchPlaces,
+      searchInitialize,
+      updateMarkers,
+      createMarker,
+      drawRoute,
+      updateLocation,
+      denyLocation,
+      selectMarkerByPlaceId,
+      clearSelectedMarker,
+      startTracking,
+    ],
+  );
+
+  const handleMessage = useCallback(
+    (event: MessageEvent) => {
+      let data: NativeToWebViewMessage;
+
+      try {
+        data =
+          typeof event.data === "string" ? JSON.parse(event.data) : event.data;
+      } catch {
+        console.warn("[useWebViewMessage] 메시지 파싱 실패:", event.data);
+        return;
       }
-    };
 
-    window.addEventListener("message", receiveMessage);
+      const handler = messageHandlers[data.type];
 
-    document.addEventListener("message", receiveMessage as EventListener);
+      handler?.(data as never);
+    },
+    [messageHandlers],
+  );
+
+  useEffect(() => {
+    window.addEventListener("message", handleMessage);
+
+    document.addEventListener("message", handleMessage as EventListener);
 
     return () => {
-      window.removeEventListener("message", receiveMessage);
+      window.removeEventListener("message", handleMessage);
 
-      document.removeEventListener("message", receiveMessage as EventListener);
+      document.removeEventListener("message", handleMessage as EventListener);
     };
-  }, []);
+  }, [handleMessage]);
 }

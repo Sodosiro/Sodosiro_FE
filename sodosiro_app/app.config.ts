@@ -46,7 +46,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       "expo-location",
       {
-        isAndroidBackgroundLocationEnabled: true,
         locationAlwaysAndWhenInUsePermission:
           "여행 중 현재 위치를 사용하기 위해 위치 권한이 필요합니다.",
       },

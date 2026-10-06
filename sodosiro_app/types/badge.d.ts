@@ -1,6 +1,6 @@
 type BadgeType = {
   badgeId: number;
   name: string;
-  earned: true;
+  earned: boolean;
   earnedAt: Date;
 };
